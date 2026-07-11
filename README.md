@@ -35,9 +35,11 @@ NEXT_PUBLIC_SITE_URL=https://motngum.cafe
 NEXT_PUBLIC_CONTACT_EMAIL=cskh@zotcafe.com
 LEAD_RECEIVER_EMAIL=cskh@zotcafe.com
 RESEND_API_KEY=
+GOOGLE_SHEETS_WEB_APP_URL=https://script.google.com/macros/s/DEPLOYMENT_ID/exec
+GOOGLE_SHEETS_WEB_APP_SECRET=thay-bang-chuoi-bi-mat-dai
 ```
 
-Nếu chưa có `RESEND_API_KEY`, form sẽ hướng người dùng sang phương án liên hệ dự phòng.
+Google Sheets và Resend là hai kênh độc lập. Chỉ cần cấu hình một trong hai; nếu cấu hình cả hai, lead được lưu vào Sheet và đồng thời gửi email. Xem hướng dẫn Apps Script tại `integrations/google-sheets/README.md`.
 
 ## Router chính
 
