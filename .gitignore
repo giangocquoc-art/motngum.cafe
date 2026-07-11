@@ -7,3 +7,10 @@ out
 .DS_Store
 npm-debug.log*
 *.tsbuildinfo
+node_modules/
+.next/
+.vercel/
+.env.*.local
+.npmrc
+.npmrc.backup
+*.log
