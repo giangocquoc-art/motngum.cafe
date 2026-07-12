@@ -20,9 +20,9 @@ export default function BrandMark({ href = "/", compact = false, className = "" 
     <span className={`brand-mark ${compact ? "is-compact" : ""} ${className}`.trim()}>
       <span className="brand-mark-name">MỘT NGỤM</span>
       <span className="brand-mark-rule" aria-hidden="true">
-        <i />
-        <b><CoffeeBean /></b>
-        <i />
+        <span className="brand-mark-rule-line" />
+        <span className="brand-mark-rule-bean"><CoffeeBean /></span>
+        <span className="brand-mark-rule-line" />
       </span>
       <span className="brand-mark-domain">motngum.cafe</span>
     </span>

@@ -20,10 +20,16 @@ export default function Header() {
 
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
+      <a className="skip-link" href="#main-content">Bỏ qua tới nội dung chính</a>
       <div className="container header-inner">
-        <div onClick={() => setOpen(false)}>
+        <Link
+          href="/"
+          className="header-home"
+          aria-label="Một Ngụm — Trang chủ"
+          onClick={() => setOpen(false)}
+        >
           <BrandMark compact />
-        </div>
+        </Link>
 
         <button
           className="menu-toggle"
@@ -38,24 +44,27 @@ export default function Header() {
         </button>
 
         <nav id="primary-navigation" className={`primary-nav ${open ? "is-open" : ""}`} aria-label="Điều hướng chính">
-          {NAV_LINKS.map((link) => {
-            const active =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname === link.href || pathname.startsWith(`${link.href}/`);
+          <ul className="nav-list">
+            {NAV_LINKS.map((link) => {
+              const active =
+                link.href === "/"
+                  ? pathname === "/"
+                  : pathname === link.href || pathname.startsWith(`${link.href}/`);
 
-            return (
-              <Link
-                href={link.href}
-                key={link.href}
-                className={active ? "nav-link is-active" : "nav-link"}
-                aria-current={active ? "page" : undefined}
-                onClick={() => setOpen(false)}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
+              return (
+                <li key={link.href} className="nav-item">
+                  <Link
+                    href={link.href}
+                    className={active ? "nav-link is-active" : "nav-link"}
+                    aria-current={active ? "page" : undefined}
+                    onClick={() => setOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
           <Link className="button button-dark nav-cta" href="/tu-van-marketing" onClick={() => setOpen(false)}>
             Tư vấn miễn phí
           </Link>

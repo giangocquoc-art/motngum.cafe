@@ -27,7 +27,7 @@ export const BRAND = {
   domain: "motngum.cafe",
   phone: "0583799593",
   phoneDisplay: "0583 799 593",
-  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "cskh@zotcafe.com",
+  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "cskh@motngum.cafe",
   city: "TP.HCM",
   tagline: "Một ngụm cà phê. Một hướng giải quyết.",
 };
@@ -36,6 +36,7 @@ export const NAV_LINKS = [
   { href: "/", label: "Trang chủ" },
   { href: "/menu", label: "Menu" },
   { href: "/dich-vu", label: "Dịch vụ" },
+  { href: "/kien-thuc", label: "Kiến thức" },
   { href: "/qr", label: "Chọn vấn đề" },
   { href: "/bang-gia", label: "Bảng giá" },
   { href: "/ve-mot-ngum", label: "Về Một Ngụm" },
@@ -148,7 +149,7 @@ export const SERVICES: Service[] = [
     shortTitle: "Chatbot AI",
     eyebrow: "Hỏi đáp tự động",
     price: "Từ 100.000đ",
-    summary: "Trợ lý hỏi đáp có giới hạn rõ, dùng cho website, tài liệu hoặc bước chăm sóc khách hàng ban đầu.",
+    summary: "Trợ lý hỏi đáp với phạm vi rõ ràng, dùng cho website, tài liệu hoặc bước chăm sóc khách hàng ban đầu.",
     description:
       "Chatbot được xây theo phạm vi dữ liệu và tình huống sử dụng cụ thể. Hệ thống hỗ trợ trả lời câu hỏi thường gặp, thu thập nhu cầu và chuyển sang người phụ trách khi không chắc chắn; không được xem là nguồn quyết định duy nhất.",
     suitableFor: [
@@ -161,14 +162,14 @@ export const SERVICES: Service[] = [
       "Kịch bản FAQ hoặc AI theo dữ liệu được cung cấp",
       "Giao diện chat phù hợp nhận diện thương hiệu",
       "Thu thập thông tin liên hệ có kiểm soát",
-      "Fallback sang nhân viên khi chatbot không chắc chắn",
+      "Chuyển sang nhân viên khi chatbot không chắc chắn",
       "Không để khóa API ở phía trình duyệt",
     ],
     process: [
       "Xác định câu hỏi và nguồn dữ liệu",
       "Thiết kế luồng hội thoại",
       "Cấu hình, thử nghiệm và tinh chỉnh",
-      "Nhúng lên website và hướng dẫn theo dõi",
+      "Tích hợp vào website và hướng dẫn theo dõi",
     ],
     faq: [
       {
@@ -299,7 +300,7 @@ export const SERVICES: Service[] = [
     price: "Liên hệ",
     summary: "Gom bình luận, tin nhắn, lead và nhắc chăm sóc vào một luồng dễ theo dõi.",
     description:
-      "Hệ thống hỗ trợ người dùng quản lý phản hồi, phân loại khách hàng và chuẩn bị câu trả lời. Các hành động gửi đi có thể giữ bước xác nhận của người phụ trách.",
+      "Hệ thống hỗ trợ người dùng quản lý phản hồi, phân loại khách hàng và chuẩn bị câu trả lời. Các hành động gửi đi có thể yêu cầu người phụ trách xác nhận trước.",
     suitableFor: [
       "Shop có nhiều bình luận và tin nhắn",
       "Nhóm sales cần theo dõi lead",
@@ -439,6 +440,12 @@ export const SERVICES: Service[] = [
 
 export function getService(slug: string) {
   return SERVICES.find((service) => service.slug === slug);
+}
+
+export function getServiceHref(slug: string) {
+  if (slug === "dao-tao-ai-co-ban") return "/dao-tao-ai";
+  if (slug === "tu-van-marketing") return "/tu-van-marketing";
+  return `/dich-vu/${slug}`;
 }
 
 export const AI_LIMITATIONS = [

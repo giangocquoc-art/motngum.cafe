@@ -19,6 +19,10 @@ Mở `http://localhost:3000`.
 ```powershell
 npm run build
 npm run start
+npm run seo:audit -- http://127.0.0.1:3000
+npm run seo:audit -- https://motngum.cafe
+npm run indexnow:submit -- --dry-run
+npm run indexnow:submit
 ```
 
 ## Deploy Vercel
@@ -32,8 +36,9 @@ npx vercel@latest --prod
 
 ```env
 NEXT_PUBLIC_SITE_URL=https://motngum.cafe
-NEXT_PUBLIC_CONTACT_EMAIL=cskh@zotcafe.com
-LEAD_RECEIVER_EMAIL=cskh@zotcafe.com
+NEXT_PUBLIC_CONTACT_EMAIL=cskh@motngum.cafe
+NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=
+LEAD_RECEIVER_EMAIL=cskh@motngum.cafe
 RESEND_API_KEY=
 GOOGLE_SHEETS_WEB_APP_URL=https://script.google.com/macros/s/DEPLOYMENT_ID/exec
 GOOGLE_SHEETS_WEB_APP_SECRET=thay-bang-chuoi-bi-mat-dai
@@ -48,11 +53,13 @@ Google Sheets và Resend là hai kênh độc lập. Chỉ cần cấu hình m�
 - `/qr`
 - `/dich-vu`
 - `/dich-vu/[slug]`
+- `/kien-thuc`
+- `/kien-thuc/[slug]`
 - `/dao-tao-ai`
 - `/tu-van-marketing`
 - `/bang-gia`
 - `/ve-mot-ngum`
 - `/lien-he`
+- `/nguyen-tac-noi-dung`
 
 Xem `QA_REPORT_2026-07-11.md` để biết các thay đổi và kết quả kiểm tra.
-# motngum.cafe

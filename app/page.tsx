@@ -6,53 +6,66 @@ import ServicesGrid from "@/components/ServicesGrid";
 import Reveal from "@/components/Reveal";
 import ProblemFinder from "@/components/ProblemFinder";
 import LeadForm from "@/components/LeadForm";
+import KnowledgeCards from "@/components/KnowledgeCards";
+import { SEO_ARTICLES } from "@/data/seo-content";
 
 export default function HomePage() {
   return (
     <>
       <Hero />
 
-      <section className="section journey-section">
+      <section className="section journey-section" aria-labelledby="journey-title">
         <div className="container">
-          <Reveal className="journey-heading">
-            <span className="eyebrow">Một mô hình nhỏ, một ý tưởng rõ</span>
-            <h2>
+          <Reveal as="header" className="journey-heading">
+            <p className="eyebrow">Một mô hình nhỏ, một ý tưởng rõ</p>
+            <h2 id="journey-title">
               <span>Từ <em>một ngụm</em></span>
               <span>đến một hướng đi.</span>
             </h2>
             <p>Cà phê không phải lớp trang trí. Đó là điểm bắt đầu tự nhiên cho một cuộc trò chuyện rõ ràng và vừa sức.</p>
           </Reveal>
-          <div className="journey-steps">
-            <Reveal className="journey-step"><span>01</span><strong>Uống một ngụm</strong><p>Chọn một ly cà phê thật, gọn và dễ bắt đầu.</p></Reveal>
-            <Reveal className="journey-step" delay={0.06}><span>02</span><strong>Quét chiếc QR</strong><p>Mở đúng điểm chạm, không cần tìm kiếm vòng quanh.</p></Reveal>
-            <Reveal className="journey-step" delay={0.12}><span>03</span><strong>Kể việc đang vướng</strong><p>Chọn vấn đề trước, rồi mới cân nhắc công cụ phù hợp.</p></Reveal>
-          </div>
+          <ol className="journey-steps" role="list">
+            <Reveal as="li" className="journey-step">
+              <span>01</span><strong>Uống một ngụm</strong><p>Chọn một ly cà phê thật, gọn và dễ bắt đầu.</p>
+            </Reveal>
+            <Reveal as="li" className="journey-step" delay={0.06}>
+              <span>02</span><strong>Quét chiếc QR</strong><p>Mở đúng nơi cần xem, không phải tìm kiếm vòng quanh.</p>
+            </Reveal>
+            <Reveal as="li" className="journey-step" delay={0.12}>
+              <span>03</span><strong>Kể việc đang vướng</strong><p>Chọn vấn đề trước, rồi mới cân nhắc công cụ phù hợp.</p>
+            </Reveal>
+          </ol>
         </div>
       </section>
 
-      <section className="section finder-home-section">
+      <section className="section finder-home-section" aria-labelledby="finder-home-title">
         <div className="container finder-home-grid">
-          <Reveal className="finder-home-intro">
-            <span className="eyebrow">Chọn vấn đề trước</span>
-            <h2>Bạn chưa cần biết tên giải pháp.</h2>
+          <Reveal as="header" className="finder-home-intro">
+            <p className="eyebrow">Chọn vấn đề trước</p>
+            <h2 id="finder-home-title">Bạn chưa cần biết tên giải pháp.</h2>
             <p>Chỉ cần chọn việc đang làm bạn mất thời gian nhất. Một Ngụm sẽ gợi ý điểm bắt đầu và nói rõ chi phí, phạm vi.</p>
-            <div className="qr-inline">
+            <figure className="qr-inline">
               <Image src="/assets/brand/qr-motngum.png" alt="QR dẫn tới trang chọn vấn đề Một Ngụm" width={132} height={132} loading="lazy" />
-              <div><strong>motngum.cafe/qr</strong><span>Quét một ngụm, mở một hướng.</span></div>
-            </div>
+              <figcaption>
+                <strong>motngum.cafe/qr</strong>
+                <span>Quét một ngụm, mở một hướng.</span>
+              </figcaption>
+            </figure>
           </Reveal>
-          <Reveal className="finder-shell" delay={0.08}><ProblemFinder /></Reveal>
+          <Reveal as="section" className="finder-shell" delay={0.08} aria-label="Công cụ chọn vấn đề">
+            <ProblemFinder />
+          </Reveal>
         </div>
       </section>
 
       <CoffeeMenu compact />
 
-      <section className="section services-section">
+      <section className="section services-section" aria-labelledby="services-title">
         <div className="container">
-          <Reveal className="section-heading split-heading">
+          <Reveal as="header" className="section-heading split-heading">
             <div>
-              <span className="eyebrow">Giải pháp phía sau chiếc ly</span>
-              <h2>Giải pháp số vừa sức, làm đúng việc.</h2>
+              <p className="eyebrow">Giải pháp phía sau chiếc ly</p>
+              <h2 id="services-title">Giải pháp số vừa sức, làm đúng việc.</h2>
             </div>
             <p>
               Bắt đầu từ việc cần nhất, đo hiệu quả rồi mới mở rộng — vừa ngân sách và dễ vận hành.
@@ -67,25 +80,45 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section story-section story-section-closing">
+      <section className="section home-knowledge-section" aria-labelledby="home-knowledge-title">
+        <div className="container">
+          <Reveal as="header" className="section-heading split-heading">
+            <div>
+              <p className="eyebrow">Kiến thức dễ áp dụng</p>
+              <h2 id="home-knowledge-title">Hiểu rõ trước khi bỏ tiền làm.</h2>
+            </div>
+            <p>
+              Checklist thực tế cho chủ shop, người làm văn phòng và doanh nghiệp nhỏ đang cân nhắc website, AI hoặc marketing.
+            </p>
+          </Reveal>
+          <KnowledgeCards articles={SEO_ARTICLES.slice(0, 3)} headingLevel={3} />
+          <div className="section-actions">
+            <Link href="/kien-thuc" className="button button-light">
+              Xem tất cả hướng dẫn
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section story-section story-section-closing" aria-labelledby="story-title">
         <div className="container story-grid">
-          <Reveal className="story-visual">
+          <Reveal as="figure" className="story-visual">
             <div className="story-line-art" aria-hidden="true"><Image src="/assets/brand/coffee-tree.svg" alt="" fill sizes="(max-width: 820px) 90vw, 520px" loading="lazy" /></div>
           </Reveal>
-          <Reveal className="story-copy" delay={0.08}>
-            <span className="eyebrow">Về Một Ngụm</span>
-            <h2>Cà phê mở lời. Sự rõ ràng tạo niềm tin.</h2>
+          <Reveal as="article" className="story-copy" delay={0.08}>
+            <p className="eyebrow">Về Một Ngụm</p>
+            <h2 id="story-title">Cà phê mở lời. Sự rõ ràng tạo niềm tin.</h2>
             <p>Một Ngụm bán cà phê lưu động tại TP.HCM và dùng chiếc QR trên ly để kết nối khách với những giải pháp số vừa sức.</p>
-            <Link className="text-link" href="/ve-mot-ngum">Đọc câu chuyện Một Ngụm <span>→</span></Link>
+            <Link className="text-link" href="/ve-mot-ngum">Đọc câu chuyện Một Ngụm <span aria-hidden="true">→</span></Link>
           </Reveal>
         </div>
       </section>
 
-      <section className="section consultation-section">
+      <section className="section consultation-section" aria-labelledby="consultation-title">
         <div className="container consultation-grid">
-          <Reveal className="consultation-copy">
-            <span className="eyebrow">Tư vấn marketing miễn phí</span>
-            <h2>Kể vấn đề trước. Chọn dịch vụ sau.</h2>
+          <Reveal as="article" className="consultation-copy">
+            <p className="eyebrow">Tư vấn marketing miễn phí</p>
+            <h2 id="consultation-title">Kể vấn đề trước. Chọn dịch vụ sau.</h2>
             <p>
               Bạn có thể chưa biết mình cần website, quảng cáo hay tự động hóa. Một Ngụm bắt đầu bằng
               việc làm rõ vấn đề, thứ tự ưu tiên và ngân sách phù hợp.
@@ -96,7 +129,7 @@ export default function HomePage() {
               <li>Ưu tiên việc có thể làm gọn trước</li>
             </ul>
           </Reveal>
-          <Reveal delay={0.08}>
+          <Reveal as="section" delay={0.08} aria-label="Form tư vấn">
             <LeadForm defaultService="tu-van-marketing" />
           </Reveal>
         </div>

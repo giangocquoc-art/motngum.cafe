@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useId, useState } from "react";
 import { BRAND } from "@/data/site";
 
 type Status = "idle" | "sending" | "success" | "fallback" | "error";
@@ -8,6 +8,7 @@ type Status = "idle" | "sending" | "success" | "fallback" | "error";
 export default function LeadForm({ defaultService = "" }: { defaultService?: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
+  const baseId = useId();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -42,7 +43,7 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
         `Họ tên: ${data.name}\nSố điện thoại: ${data.phone}\nDịch vụ: ${data.service}\nVấn đề: ${data.problem}\nNgân sách: ${data.budget}\nLời nhắn: ${data.note}`
       );
       setStatus("fallback");
-      setMessage("Hệ thống gửi tự động chưa được cấu hình. Hãy dùng email dự phòng bên dưới.");
+      setMessage("Hệ thống gửi tự động chưa kết nối. Ứng dụng email của bạn sẽ mở để gửi yêu cầu.");
       window.location.href = `mailto:${BRAND.email}?subject=${subject}&body=${body}`;
     } catch {
       setStatus("error");
@@ -50,24 +51,28 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
     }
   }
 
+  const statusId = `${baseId}-status`;
+
   return (
-    <form className="lead-form" onSubmit={handleSubmit}>
-      <div className="form-grid">
-        <label>
-          <span>Họ và tên *</span>
-          <input name="name" required autoComplete="name" placeholder="Tên của bạn" />
-        </label>
-        <label>
-          <span>Số điện thoại *</span>
-          <input name="phone" required inputMode="tel" autoComplete="tel" placeholder="09..." />
-        </label>
-        <label>
-          <span>Email</span>
-          <input name="email" type="email" autoComplete="email" placeholder="Email không bắt buộc" />
-        </label>
-        <label>
-          <span>Dịch vụ quan tâm</span>
-          <select name="service" defaultValue={defaultService}>
+    <form className="lead-form" onSubmit={handleSubmit} aria-describedby={statusId}>
+      <fieldset className="form-grid">
+        <legend className="form-legend">Thông tin tư vấn</legend>
+
+        <p className="form-field">
+          <label htmlFor={`${baseId}-name`}>Họ và tên *</label>
+          <input id={`${baseId}-name`} name="name" required autoComplete="name" placeholder="Tên của bạn" />
+        </p>
+        <p className="form-field">
+          <label htmlFor={`${baseId}-phone`}>Số điện thoại *</label>
+          <input id={`${baseId}-phone`} name="phone" required inputMode="tel" autoComplete="tel" placeholder="09..." />
+        </p>
+        <p className="form-field">
+          <label htmlFor={`${baseId}-email`}>Email</label>
+          <input id={`${baseId}-email`} name="email" type="email" autoComplete="email" placeholder="Email không bắt buộc" />
+        </p>
+        <p className="form-field">
+          <label htmlFor={`${baseId}-service`}>Bạn quan tâm dịch vụ nào?</label>
+          <select id={`${baseId}-service`} name="service" defaultValue={defaultService}>
             <option value="">Chưa xác định</option>
             <option value="thiet-ke-website">Thiết kế website</option>
             <option value="chatbot-ai">Chatbot AI</option>
@@ -79,42 +84,48 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
             <option value="dao-tao-ai-co-ban">Đào tạo AI</option>
             <option value="tu-van-marketing">Tư vấn marketing miễn phí</option>
           </select>
-        </label>
-        <label className="span-2">
-          <span>Vấn đề cần giải quyết *</span>
-          <textarea name="problem" required rows={4} placeholder="Mô tả ngắn việc đang làm bạn mất thời gian hoặc khó tăng khách..." />
-        </label>
-        <label>
-          <span>Ngân sách dự kiến</span>
-          <select name="budget" defaultValue="">
+        </p>
+        <p className="form-field span-2">
+          <label htmlFor={`${baseId}-problem`}>Bạn đang vướng gì? *</label>
+          <textarea id={`${baseId}-problem`} name="problem" required rows={4} placeholder="Mô tả ngắn việc đang làm bạn mất thời gian hoặc khiến bạn khó có thêm khách..." />
+        </p>
+        <p className="form-field">
+          <label htmlFor={`${baseId}-budget`}>Ngân sách dự kiến</label>
+          <select id={`${baseId}-budget`} name="budget" defaultValue="">
             <option value="">Chưa xác định</option>
             <option>Dưới 1 triệu</option>
             <option>1–3 triệu</option>
             <option>3–10 triệu</option>
             <option>Trên 10 triệu</option>
           </select>
-        </label>
-        <label>
-          <span>Thời gian liên hệ</span>
-          <input name="contactTime" placeholder="Ví dụ: sau 18h" />
-        </label>
-        <label className="span-2">
-          <span>Lời nhắn thêm</span>
-          <textarea name="note" rows={3} placeholder="Thông tin bổ sung..." />
-        </label>
-        <label className="honeypot" aria-hidden="true">
-          <span>Website</span>
-          <input name="website" tabIndex={-1} autoComplete="off" />
-        </label>
-      </div>
+        </p>
+        <p className="form-field">
+          <label htmlFor={`${baseId}-contactTime`}>Khung giờ tiện liên hệ</label>
+          <input id={`${baseId}-contactTime`} name="contactTime" placeholder="Ví dụ: sau 18h" />
+        </p>
+        <p className="form-field span-2">
+          <label htmlFor={`${baseId}-note`}>Thông tin thêm</label>
+          <textarea id={`${baseId}-note`} name="note" rows={3} placeholder="Thông tin bổ sung..." />
+        </p>
+        <p className="form-field honeypot" aria-hidden="true">
+          <label htmlFor={`${baseId}-website`}>Website</label>
+          <input id={`${baseId}-website`} name="website" tabIndex={-1} autoComplete="off" />
+        </p>
+      </fieldset>
 
       <button className="button button-dark submit-button" type="submit" disabled={status === "sending"}>
         {status === "sending" ? "Đang gửi..." : "Gửi yêu cầu tư vấn"}
       </button>
 
-      {message && <p className={`form-status ${status}`}>{message}</p>}
+      <output id={statusId} className={`form-status ${status}`} aria-live="polite">
+        {message}
+      </output>
       <p className="form-note">
-        Hoặc gọi trực tiếp <a href={`tel:+84${BRAND.phone.slice(1)}`}>{BRAND.phoneDisplay}</a>.
+        <small>
+          Bạn cũng có thể gọi trực tiếp <a href={`tel:+84${BRAND.phone.slice(1)}`}>{BRAND.phoneDisplay}</a>.
+          <br />
+          Thông tin gửi qua form được xử lý theo <a href="/chinh-sach-bao-mat">chính sách bảo mật</a>.
+        </small>
       </p>
     </form>
   );
