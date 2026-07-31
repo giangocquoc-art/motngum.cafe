@@ -28,7 +28,7 @@ export default function Header() {
           aria-label="Một Ngụm — Trang chủ"
           onClick={() => setOpen(false)}
         >
-          <BrandMark compact />
+          <BrandMark href="" compact />
         </Link>
 
         <button

@@ -34,16 +34,16 @@ export default function CoffeeMenu({ compact = false, showHeading = true }: Prop
                 <figure className="menu-image-wrap">
                   <Image
                     src={item.image}
-                    alt={item.name}
-                    width={190}
-                    height={220}
+                    alt=""
+                    width={220}
+                    height={240}
                     className="menu-image"
                     loading="lazy"
-                    sizes="(max-width: 560px) 46vw, (max-width: 820px) 28vw, 190px"
+                    sizes="(max-width: 560px) 42vw, (max-width: 820px) 30vw, 210px"
                   />
                 </figure>
                 <h3>{item.name}</h3>
-                <p>{item.description}</p>
+                <p className="menu-description">{item.description}</p>
 
                 {item.single ? (
                   <p className="single-price" aria-label={`Giá ${item.single} nghìn đồng`}>

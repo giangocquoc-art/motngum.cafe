@@ -1,21 +1,10 @@
 import Link from "next/link";
 import { getServiceHref, SERVICES } from "@/data/site";
 import Reveal from "./Reveal";
+import ServiceGlyph from "./ServiceGlyph";
 
 type Props = {
   limit?: number;
-};
-
-const glyphs: Record<string, string> = {
-  "thiet-ke-website": "⌘",
-  "chatbot-ai": "◌",
-  "xu-ly-du-lieu": "▦",
-  "tu-dong-hoa-quy-trinh": "↻",
-  "ho-tro-dang-bai": "✎",
-  "ho-tro-tuong-tac": "◎",
-  "quang-cao": "↗",
-  "dao-tao-ai-co-ban": "◇",
-  "tu-van-marketing": "☕",
 };
 
 export default function ServicesGrid({ limit }: Props) {
@@ -27,7 +16,9 @@ export default function ServicesGrid({ limit }: Props) {
         <Reveal as="li" className="service-card" key={service.slug} delay={Math.min(index * 0.05, 0.25)}>
           <article>
             <p className="service-topline">
-              <span className="service-glyph" aria-hidden="true">{glyphs[service.slug] ?? "•"}</span>
+              <span className="service-glyph" aria-hidden="true">
+                <ServiceGlyph slug={service.slug} />
+              </span>
               <span>{service.eyebrow}</span>
             </p>
             <h3>{service.shortTitle}</h3>

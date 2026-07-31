@@ -2,7 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const frames = [1, 2, 3, 4];
+const frames = [1, 2, 3, 4] as const;
+
+function frameSrc(frame: number) {
+  return `/assets/hero-frames/cup-${frame}.webp`;
+}
+
+function frameSrcSet(frame: number) {
+  return [
+    `/assets/hero-frames/cup-${frame}-420.webp 420w`,
+    `/assets/hero-frames/cup-${frame}-640.webp 640w`,
+    `/assets/hero-frames/cup-${frame}.webp 840w`,
+  ].join(", ");
+}
 
 export default function CupTurntable() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -69,13 +81,15 @@ export default function CupTurntable() {
       {frames.map((frame, index) => (
         <img
           key={frame}
-          src={`/assets/hero-frames/cup-${frame}.webp`}
+          src={frameSrc(frame)}
+          srcSet={frameSrcSet(frame)}
+          sizes="(max-width: 560px) 70vw, (max-width: 900px) 48vw, min(570px, 42vw)"
           alt=""
-          width="840"
-          height="840"
+          width={840}
+          height={840}
           className={`cup-frame cup-frame-${frame}`}
-          loading={index === 0 || ready ? "eager" : "lazy"}
-          fetchPriority={index === 0 ? "high" : "auto"}
+          loading={index === 0 ? "eager" : ready ? "eager" : "lazy"}
+          fetchPriority={index === 0 ? "high" : "low"}
           decoding="async"
         />
       ))}

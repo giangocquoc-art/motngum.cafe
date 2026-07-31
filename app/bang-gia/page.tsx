@@ -23,20 +23,22 @@ export default function PricingPage() {
         </div>
       </section>
       <section className="section pricing-section" aria-labelledby="pricing-table-title">
-        <h2 id="pricing-table-title" className="visually-hidden">Bảng giá dịch vụ</h2>
-        <ul className="pricing-table" role="list">
-          {SERVICES.map((service) => (
-            <Reveal as="li" className="pricing-row" key={service.slug}>
-              <article>
-                <p className="pricing-eyebrow">{service.eyebrow}</p>
-                <h3>{service.title}</h3>
-                <p>{service.summary}</p>
-              </article>
-              <strong>{service.price}</strong>
-              <Link href={getServiceHref(service.slug)}>Chi tiết <span aria-hidden="true">→</span></Link>
-            </Reveal>
-          ))}
-        </ul>
+        <div className="container">
+          <h2 id="pricing-table-title" className="visually-hidden">Bảng giá dịch vụ</h2>
+          <ul className="pricing-table" role="list">
+            {SERVICES.map((service) => (
+              <Reveal as="li" className="pricing-row" key={service.slug}>
+                <article>
+                  <p className="pricing-eyebrow">{service.eyebrow}</p>
+                  <h3>{service.title}</h3>
+                  <p>{service.summary}</p>
+                </article>
+                <strong>{service.price}</strong>
+                <Link href={getServiceHref(service.slug)}>Chi tiết <span aria-hidden="true">→</span></Link>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
       </section>
     </>
   );
