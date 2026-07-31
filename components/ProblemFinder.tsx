@@ -94,8 +94,21 @@ function researchMatches(query: string) {
   }).slice(0, 3);
 }
 
-export default function ProblemFinder() {
-  const [mode, setMode] = useState<Mode>("research");
+type ProblemFinderProps = {
+  /** Tab mở mặc định khi vào component */
+  defaultMode?: Mode;
+  /** Ẩn thanh chuyển tab (dùng khi chỉ muốn nổi bật Check API key) */
+  hideModeToggle?: boolean;
+  /** Thu gọn min-height / tiêu đề cho block spotlight trang chủ */
+  compact?: boolean;
+};
+
+export default function ProblemFinder({
+  defaultMode = "research",
+  hideModeToggle = false,
+  compact = false,
+}: ProblemFinderProps) {
+  const [mode, setMode] = useState<Mode>(defaultMode);
   const [research, setResearch] = useState("");
   const [problem, setProblem] = useState<(typeof problems)[number] | null>(null);
   const [goal, setGoal] = useState<string | null>(null);
@@ -316,30 +329,37 @@ export default function ProblemFinder() {
   const progressValue = mode === "guide" ? (problem ? 100 : 50) : mode === "key" ? 100 : research ? 70 : 30;
 
   return (
-    <section className="problem-finder" aria-labelledby="finder-title">
-      <div className="finder-progress">
-        <span>{mode === "key" ? "API key" : mode === "guide" ? (problem ? "Bước 2/2" : "Bước 1/2") : "Research"}</span>
-        <progress
-          className="finder-progress-bar"
-          value={progressValue}
-          max={100}
-          aria-label="Tiến trình tìm hướng giải quyết"
-        >
-          {progressValue}%
-        </progress>
-      </div>
+    <section
+      className={`problem-finder${compact ? " problem-finder-compact" : ""}`}
+      aria-labelledby="finder-title"
+    >
+      {!compact && (
+        <div className="finder-progress">
+          <span>{mode === "key" ? "API key" : mode === "guide" ? (problem ? "Bước 2/2" : "Bước 1/2") : "Research"}</span>
+          <progress
+            className="finder-progress-bar"
+            value={progressValue}
+            max={100}
+            aria-label="Tiến trình tìm hướng giải quyết"
+          >
+            {progressValue}%
+          </progress>
+        </div>
+      )}
 
-      <div className="finder-mode-toggle" role="tablist" aria-label="Chế độ tìm hướng">
-        <button type="button" className={mode === "research" ? "is-active" : ""} onClick={() => setMode("research")}>
-          Research
-        </button>
-        <button type="button" className={mode === "guide" ? "is-active" : ""} onClick={() => setMode("guide")}>
-          Chọn vấn đề
-        </button>
-        <button type="button" className={mode === "key" ? "is-active" : ""} onClick={() => setMode("key")}>
-          Check API key
-        </button>
-      </div>
+      {!hideModeToggle && (
+        <div className="finder-mode-toggle" role="tablist" aria-label="Chế độ tìm hướng">
+          <button type="button" className={mode === "research" ? "is-active" : ""} onClick={() => setMode("research")}>
+            Research
+          </button>
+          <button type="button" className={mode === "guide" ? "is-active" : ""} onClick={() => setMode("guide")}>
+            Chọn vấn đề
+          </button>
+          <button type="button" className={mode === "key" ? "is-active" : ""} onClick={() => setMode("key")}>
+            Check API key
+          </button>
+        </div>
+      )}
 
       {mode === "research" && (
         <>
@@ -485,10 +505,10 @@ export default function ProblemFinder() {
                 onClick={() => {
                   setApiKey("");
                   setKeyResult(null);
-                  setMode("research");
+                  if (!hideModeToggle) setMode("research");
                 }}
               >
-                Về research
+                {hideModeToggle ? "Xóa" : "Về research"}
               </button>
             </div>
 

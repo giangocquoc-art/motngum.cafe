@@ -219,6 +219,38 @@
   .journey-step strong { display: block; margin: 42px 0 10px; font-family: var(--serif); font-size: 1.65rem; font-weight: 400; }
   .journey-step p { color: rgba(255,253,249,0.58); font-size: 0.88rem; }
 
+  .key-check-home-section {
+    padding-top: clamp(36px, 5vw, 56px);
+    padding-bottom: clamp(36px, 5vw, 56px);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(194, 122, 74, 0.14), transparent 42%),
+      radial-gradient(circle at 88% 10%, rgba(128, 80, 56, 0.1), transparent 36%),
+      #f7f1ea;
+  }
+  .key-check-home-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(28px, 5vw, 64px);
+  }
+  .key-check-home-intro h2 {
+    margin-bottom: 14px;
+    font-size: clamp(2.35rem, 4vw, 3.6rem);
+  }
+  .key-check-home-intro > p {
+    max-width: 42ch;
+    color: var(--muted);
+  }
+  .key-check-home-intro code {
+    font-size: 0.92em;
+    padding: 0.08em 0.35em;
+    border-radius: 6px;
+    background: rgba(128, 80, 56, 0.08);
+  }
+  .key-check-home-shell .problem-finder-compact {
+    min-height: 0;
+  }
+
   .finder-home-section { background: #f2ebe4; }
   .finder-home-grid { display: grid; grid-template-columns: 0.72fr 1.28fr; align-items: start; gap: clamp(36px, 7vw, 92px); }
   .finder-home-intro { position: sticky; top: 112px; }
@@ -255,6 +287,7 @@
     .journey-step { min-height: 150px; padding: 24px 0; }
     .journey-step + .journey-step { padding-left: 0; border-top: 1px solid rgba(255,255,255,0.18); border-left: 0; }
     .journey-step strong { margin-top: 30px; }
+    .key-check-home-grid { grid-template-columns: 1fr; }
     .finder-home-grid { grid-template-columns: 1fr; }
     .finder-home-intro { position: static; }
     .menu-section.compact .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -3637,6 +3670,7 @@
   .section[id],
   .page-hero,
   .hero,
+  .key-check-home-section,
   .finder-home-section,
   .services-section,
   .menu-section,
@@ -3716,6 +3750,20 @@
     border-color: var(--coffee);
     background: #fcf8f4;
     color: var(--ink);
+  }
+
+  .problem-finder-compact {
+    min-height: 0;
+    padding: clamp(22px, 2.8vw, 30px);
+  }
+
+  .problem-finder-compact h2 {
+    margin-bottom: 16px;
+    font-size: clamp(1.55rem, 2.4vw, 2.15rem);
+  }
+
+  .problem-finder-compact .finder-key-panel h3 {
+    font-size: 0.98rem;
   }
 
   .finder-key-panel {

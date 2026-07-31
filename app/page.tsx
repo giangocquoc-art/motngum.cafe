@@ -14,6 +14,22 @@ export default function HomePage() {
     <>
       <Hero />
 
+      <section className="section key-check-home-section" aria-labelledby="key-check-home-title">
+        <div className="container key-check-home-grid">
+          <Reveal as="header" className="key-check-home-intro">
+            <p className="eyebrow">VietAPI · tra cứu nhanh</p>
+            <h2 id="key-check-home-title">Check API key ngay tại đây</h2>
+            <p>
+              Dán key dạng <code>sk-…</code> để xem trạng thái và số dư credit (đồng bộ portal VietAPI). Key không được
+              lưu trên website.
+            </p>
+          </Reveal>
+          <Reveal as="section" className="finder-shell key-check-home-shell" delay={0.06} aria-label="Check API key VietAPI">
+            <ProblemFinder defaultMode="key" hideModeToggle compact />
+          </Reveal>
+        </div>
+      </section>
+
       <section className="section journey-section" aria-labelledby="journey-title">
         <div className="container">
           <Reveal as="header" className="journey-heading">
