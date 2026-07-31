@@ -3781,6 +3781,58 @@
     font-weight: 650;
   }
 
+  .finder-key-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 14px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+  }
+
+  .finder-key-status strong {
+    font-size: 0.95rem;
+  }
+
+  .finder-key-status span {
+    color: var(--muted);
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+
+  .finder-key-status.is-ok {
+    background: rgba(46, 125, 50, 0.08);
+    border-color: rgba(46, 125, 50, 0.28);
+  }
+
+  .finder-key-status.is-ok strong {
+    color: #1b5e20;
+  }
+
+  .finder-key-status.is-bad {
+    background: rgba(183, 28, 28, 0.08);
+    border-color: rgba(183, 28, 28, 0.28);
+  }
+
+  .finder-key-status.is-bad strong {
+    color: #8e0000;
+  }
+
+  .finder-key-error {
+    margin: 0;
+    color: #8e0000;
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 560px) {
+    .finder-key-meta {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .finder-divider {
     display: flex;
     align-items: center;

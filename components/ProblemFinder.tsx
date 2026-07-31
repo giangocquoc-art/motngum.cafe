@@ -28,10 +28,25 @@ const goals = [
 type Mode = "research" | "guide" | "key";
 
 type KeyCheckResult = {
+  ok: boolean;
+  valid: boolean;
   validFormat: boolean;
   masked: string;
+  status: string | null;
+  active: boolean | null;
+  displayName: string | null;
+  group: string | null;
+  primaryLabel: string | null;
+  primaryCredit: string | null;
+  planCredit: string | null;
+  dailyWalletCredit: string | null;
+  paygCredit: string | null;
+  expiresAt: string | null;
+  usedTodayCredit: string | null;
   latencyMs: number | null;
   note: string;
+  error: string | null;
+  portalUrl: string;
   logs: string[];
 };
 
@@ -43,6 +58,10 @@ function maskKey(value: string) {
 
 function looksLikeApiKey(value: string) {
   return /^sk-[A-Za-z0-9_\-]{10,}$/i.test(value.trim()) || value.trim().startsWith("sk-");
+}
+
+function nowLog(message: string) {
+  return `${new Date().toLocaleTimeString("vi-VN")} · ${message}`;
 }
 
 function researchMatches(query: string) {
@@ -103,39 +122,156 @@ export default function ProblemFinder() {
   const runKeyCheck = async () => {
     const value = apiKey.trim();
     const logs = [
-      `${new Date().toLocaleTimeString("vi-VN")} · Nhận key (không lưu server)`,
-      `${new Date().toLocaleTimeString("vi-VN")} · Định dạng: ${value.startsWith("sk-") ? "có tiền tố sk-" : "không rõ provider"}`,
+      nowLog("Nhận key (không lưu DB, chỉ kiểm tra qua server Một Ngụm)"),
+      nowLog(`Định dạng: ${value.startsWith("sk-") ? "có tiền tố sk-" : "không rõ provider"}`),
     ];
 
     if (!value.startsWith("sk-") || value.length < 20) {
       setKeyResult({
+        ok: false,
+        valid: false,
         validFormat: false,
         masked: maskKey(value || "sk-"),
+        status: null,
+        active: null,
+        displayName: null,
+        group: null,
+        primaryLabel: null,
+        primaryCredit: null,
+        planCredit: null,
+        dailyWalletCredit: null,
+        paygCredit: null,
+        expiresAt: null,
+        usedTodayCredit: null,
         latencyMs: null,
         note: "Key chưa đủ điều kiện kiểm tra. Cần tiền tố sk- và độ dài hợp lệ.",
-        logs: [...logs, `${new Date().toLocaleTimeString("vi-VN")} · Dừng: format không hợp lệ`],
+        error: "Format key chưa hợp lệ.",
+        portalUrl: "https://vietapi.tech/login.html",
+        logs: [...logs, nowLog("Dừng: format không hợp lệ")],
       });
       return;
     }
 
     setChecking(true);
     const started = performance.now();
-    // UI-only stub: không gửi key ra ngoài. Backend provider-specific sẽ gắn sau.
-    await new Promise((resolve) => window.setTimeout(resolve, 650));
-    const latencyMs = Math.round(performance.now() - started);
+    logs.push(nowLog("Gửi yêu cầu tới /api/vietapi/check-key"));
+    logs.push(nowLog("Server sẽ hỏi portal VietAPI (login + usage)"));
 
-    logs.push(`${new Date().toLocaleTimeString("vi-VN")} · Kiểm tra format local: OK`);
-    logs.push(`${new Date().toLocaleTimeString("vi-VN")} · Chưa gọi provider (tránh lộ key phía client)`);
-    logs.push(`${new Date().toLocaleTimeString("vi-VN")} · Gợi ý: nối API route server-side + rate limit`);
+    try {
+      const response = await fetch("/api/vietapi/check-key", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apiKey: value }),
+        cache: "no-store",
+      });
 
-    setKeyResult({
-      validFormat: true,
-      masked: maskKey(value),
-      latencyMs,
-      note: "Đã xác nhận format. Token còn lại / usage thật chỉ có khi nối endpoint của đúng nhà cung cấp (server-side).",
-      logs,
-    });
-    setChecking(false);
+      const data = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        valid?: boolean;
+        validFormat?: boolean;
+        maskedKey?: string | null;
+        status?: string | null;
+        active?: boolean | null;
+        displayName?: string | null;
+        group?: string | null;
+        primaryLabel?: string | null;
+        primaryCredit?: string | null;
+        planCredit?: string | null;
+        dailyWallet?: { remainCredit?: string | null } | null;
+        paygCredit?: string | null;
+        expiresAt?: string | null;
+        usedTodayCredit?: string | null;
+        note?: string | null;
+        error?: string | null;
+        portalUrl?: string | null;
+        latencyMs?: number | null;
+      };
+
+      const latencyMs = Math.round(performance.now() - started);
+      const masked = data.maskedKey || maskKey(value);
+
+      if (!response.ok || data.ok === false || data.valid === false) {
+        logs.push(nowLog(`VietAPI trả lỗi HTTP ${response.status}`));
+        logs.push(nowLog(data.error || "Không xác thực được key"));
+        setKeyResult({
+          ok: false,
+          valid: false,
+          validFormat: data.validFormat !== false,
+          masked,
+          status: data.status || "Không hợp lệ",
+          active: false,
+          displayName: data.displayName || null,
+          group: data.group || null,
+          primaryLabel: null,
+          primaryCredit: null,
+          planCredit: null,
+          dailyWalletCredit: null,
+          paygCredit: null,
+          expiresAt: null,
+          usedTodayCredit: null,
+          latencyMs: data.latencyMs ?? latencyMs,
+          note: "Key không hợp lệ, hết quyền, hoặc portal tạm thời không phản hồi.",
+          error: data.error || "Không kiểm tra được key.",
+          portalUrl: data.portalUrl || "https://vietapi.tech/login.html",
+          logs,
+        });
+        return;
+      }
+
+      logs.push(nowLog("Xác thực thành công từ portal VietAPI"));
+      logs.push(nowLog(`Trạng thái: ${data.status || "Hoạt động"}`));
+      if (data.primaryCredit) logs.push(nowLog(`${data.primaryLabel || "Số dư"}: ${data.primaryCredit}`));
+
+      setKeyResult({
+        ok: true,
+        valid: true,
+        validFormat: true,
+        masked,
+        status: data.status || "Hoạt động",
+        active: data.active ?? true,
+        displayName: data.displayName || null,
+        group: data.group || null,
+        primaryLabel: data.primaryLabel || "Số dư chính",
+        primaryCredit: data.primaryCredit || "—",
+        planCredit: data.planCredit || "—",
+        dailyWalletCredit: data.dailyWallet?.remainCredit || "—",
+        paygCredit: data.paygCredit || "—",
+        expiresAt: data.expiresAt || "—",
+        usedTodayCredit: data.usedTodayCredit || null,
+        latencyMs: data.latencyMs ?? latencyMs,
+        note: data.note || "Số liệu lấy trực tiếp từ portal VietAPI.",
+        error: null,
+        portalUrl: data.portalUrl || "https://vietapi.tech/login.html",
+        logs,
+      });
+    } catch {
+      const latencyMs = Math.round(performance.now() - started);
+      logs.push(nowLog("Lỗi mạng hoặc server không phản hồi"));
+      setKeyResult({
+        ok: false,
+        valid: false,
+        validFormat: true,
+        masked: maskKey(value),
+        status: null,
+        active: null,
+        displayName: null,
+        group: null,
+        primaryLabel: null,
+        primaryCredit: null,
+        planCredit: null,
+        dailyWalletCredit: null,
+        paygCredit: null,
+        expiresAt: null,
+        usedTodayCredit: null,
+        latencyMs,
+        note: "Không gọi được API check key trên server Một Ngụm.",
+        error: "Lỗi kết nối. Thử lại sau.",
+        portalUrl: "https://vietapi.tech/login.html",
+        logs,
+      });
+    } finally {
+      setChecking(false);
+    }
   };
 
   if (problem && goal && service) {
@@ -223,7 +359,7 @@ export default function ProblemFinder() {
               />
             </label>
             <p className="finder-research-hint">
-              Mặc định là ô research. Nếu bạn dán key bắt đầu bằng <code>sk-</code>, giao diện check key sẽ mở riêng — key không được gửi đi trong bản UI này.
+              Mặc định là ô research. Nếu bạn dán key bắt đầu bằng <code>sk-</code>, tab Check API key sẽ mở để tra cứu số dư VietAPI.
             </p>
           </div>
 
@@ -310,10 +446,10 @@ export default function ProblemFinder() {
 
       {mode === "key" && (
         <>
-          <p className="eyebrow">Kiểm tra key (UI)</p>
-          <h2 id="finder-title">Check API key an toàn phía trình duyệt</h2>
+          <p className="eyebrow">Kiểm tra key VietAPI</p>
+          <h2 id="finder-title">Check API key ngay trên Một Ngụm</h2>
           <div className="finder-key-panel">
-            <h3>Key của bạn chỉ hiện khi có tiền tố sk-</h3>
+            <h3>Dán key dạng sk-… để xem trạng thái và số dư</h3>
             <label className="finder-research-label" htmlFor="finder-key-input">
               <span>API key</span>
               <input
@@ -324,6 +460,12 @@ export default function ProblemFinder() {
                   setApiKey(event.target.value);
                   setKeyResult(null);
                 }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    void runKeyCheck();
+                  }
+                }}
                 placeholder="sk-..."
                 autoComplete="off"
                 spellCheck={false}
@@ -331,11 +473,11 @@ export default function ProblemFinder() {
               />
             </label>
             <p className="finder-research-hint">
-              Bản này chỉ kiểm tra format + mô phỏng log. Không lưu key, không gửi key lên server. “Token còn lại” cần endpoint provider riêng (OpenAI thường không trả balance qua key chat).
+              Key chỉ gửi tới server Một Ngụm để hỏi portal VietAPI, không lưu DB. Số credit = quota token ÷ 600.000 (cùng công thức dashboard VietAPI).
             </p>
             <div className="finder-key-actions">
-              <button className="button button-dark" type="button" onClick={runKeyCheck} disabled={checking || !apiKey.trim()}>
-                {checking ? "Đang kiểm tra..." : "Check key"}
+              <button className="button button-dark" type="button" onClick={() => void runKeyCheck()} disabled={checking || !apiKey.trim()}>
+                {checking ? "Đang hỏi VietAPI..." : "Check key"}
               </button>
               <button
                 className="button button-light"
@@ -352,25 +494,75 @@ export default function ProblemFinder() {
 
             {keyResult && (
               <>
+                <div
+                  className={`finder-key-status ${keyResult.valid ? "is-ok" : "is-bad"}`}
+                  role="status"
+                >
+                  <strong>{keyResult.valid ? "Key hợp lệ" : "Key không hợp lệ"}</strong>
+                  <span>{keyResult.status || keyResult.error || "—"}</span>
+                </div>
+
                 <dl className="finder-key-meta">
                   <div>
                     <dt>Key</dt>
                     <dd>{keyResult.masked}</dd>
                   </div>
                   <div>
-                    <dt>Format</dt>
-                    <dd>{keyResult.validFormat ? "Hợp lệ (sk-)" : "Chưa hợp lệ"}</dd>
+                    <dt>Trạng thái</dt>
+                    <dd>{keyResult.status || (keyResult.valid ? "Hoạt động" : "Không hợp lệ")}</dd>
                   </div>
                   <div>
-                    <dt>Latency (local)</dt>
+                    <dt>{keyResult.primaryLabel || "Số dư chính"}</dt>
+                    <dd>{keyResult.primaryCredit || "—"}</dd>
+                  </div>
+                  <div>
+                    <dt>Ví PAYG</dt>
+                    <dd>{keyResult.paygCredit || "—"}</dd>
+                  </div>
+                  <div>
+                    <dt>Ví gói ngày</dt>
+                    <dd>{keyResult.dailyWalletCredit || "—"}</dd>
+                  </div>
+                  <div>
+                    <dt>Gói tháng (Plan)</dt>
+                    <dd>{keyResult.planCredit || "—"}</dd>
+                  </div>
+                  <div>
+                    <dt>Hạn</dt>
+                    <dd>{keyResult.expiresAt || "—"}</dd>
+                  </div>
+                  <div>
+                    <dt>Latency</dt>
                     <dd>{keyResult.latencyMs != null ? `${keyResult.latencyMs} ms` : "—"}</dd>
                   </div>
-                  <div>
-                    <dt>Token còn lại</dt>
-                    <dd>Cần provider API</dd>
-                  </div>
+                  {keyResult.displayName && (
+                    <div>
+                      <dt>Tài khoản</dt>
+                      <dd>{keyResult.displayName}</dd>
+                    </div>
+                  )}
+                  {keyResult.group && (
+                    <div>
+                      <dt>Group</dt>
+                      <dd>{keyResult.group}</dd>
+                    </div>
+                  )}
                 </dl>
+
+                {keyResult.error && <p className="finder-key-error">{keyResult.error}</p>}
                 <p className="finder-research-hint">{keyResult.note}</p>
+
+                <div className="finder-key-actions">
+                  <a
+                    className="button button-light"
+                    href={keyResult.portalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Mở portal VietAPI
+                  </a>
+                </div>
+
                 <pre className="finder-key-log" aria-label="Nhật ký kiểm tra key">
                   {keyResult.logs.join("\n")}
                 </pre>
