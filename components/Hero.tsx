@@ -16,15 +16,13 @@ export default function Hero() {
           </p>
 
           <div className="hero-actions">
-            <Link className="button button-dark" href="/qr">
-              Chọn vấn đề của tôi
+            <Link className="button button-dark" href="#check-key">
+              Check API key
             </Link>
-            <Link className="hero-secondary-link" href="/menu">
-              Xem menu <span aria-hidden="true">→</span>
+            <Link className="hero-secondary-link" href="/qr">
+              Chọn vấn đề <span aria-hidden="true">→</span>
             </Link>
           </div>
-
-          <p className="hero-scroll-cue"><span aria-hidden="true">↓</span> Cuộn để khám phá Một Ngụm</p>
         </div>
 
         <figure className="hero-cup-wrap" aria-label="Ly cà phê Một Ngụm">

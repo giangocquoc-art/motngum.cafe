@@ -14,17 +14,14 @@ export default function HomePage() {
     <>
       <Hero />
 
-      <section className="section key-check-home-section" aria-labelledby="key-check-home-title">
+      <section id="check-key" className="section key-check-home-section" aria-labelledby="key-check-home-title">
         <div className="container key-check-home-grid">
           <Reveal as="header" className="key-check-home-intro">
-            <p className="eyebrow">VietAPI · tra cứu nhanh</p>
-            <h2 id="key-check-home-title">Check API key ngay tại đây</h2>
-            <p>
-              Dán key dạng <code>sk-…</code> để xem trạng thái và số dư credit (đồng bộ portal VietAPI). Key không được
-              lưu trên website.
-            </p>
+            <p className="eyebrow">Tra cứu nhanh</p>
+            <h2 id="key-check-home-title">Check API key</h2>
+            <p>Dán key <code>sk-…</code> để xem trạng thái và số dư credit.</p>
           </Reveal>
-          <Reveal as="section" className="finder-shell key-check-home-shell" delay={0.06} aria-label="Check API key VietAPI">
+          <Reveal as="section" className="finder-shell key-check-home-shell" delay={0.06} aria-label="Check API key">
             <ProblemFinder defaultMode="key" hideModeToggle compact />
           </Reveal>
         </div>
@@ -69,7 +66,7 @@ export default function HomePage() {
             </figure>
           </Reveal>
           <Reveal as="section" className="finder-shell" delay={0.08} aria-label="Công cụ chọn vấn đề">
-            <ProblemFinder />
+            <ProblemFinder hideKeyMode />
           </Reveal>
         </div>
       </section>

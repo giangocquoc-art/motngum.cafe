@@ -21,9 +21,7 @@ export default function CoffeeMenu({ compact = false, showHeading = true }: Prop
           <Reveal as="div" className="section-heading">
             <p className="eyebrow">Menu Một Ngụm</p>
             <h2 id="menu-heading">Cà phê & đồ uống</h2>
-            <p>
-              Hình ly rõ ràng, giá S/L dễ đọc và những lựa chọn vừa đủ cho một buổi sáng gọn nhẹ.
-            </p>
+            <p>Giá S/L rõ ràng, chọn nhanh cho một buổi sáng gọn nhẹ.</p>
           </Reveal>
         )}
 
