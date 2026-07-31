@@ -492,12 +492,9 @@ export default function ProblemFinder({
                 inputMode="text"
               />
             </label>
-            <p className="finder-research-hint">
-              Key chỉ gửi tới server Một Ngụm để hỏi portal VietAPI, không lưu DB. Số credit = quota token ÷ 600.000 (cùng công thức dashboard VietAPI).
-            </p>
             <div className="finder-key-actions">
               <button className="button button-dark" type="button" onClick={() => void runKeyCheck()} disabled={checking || !apiKey.trim()}>
-                {checking ? "Đang hỏi VietAPI..." : "Check key"}
+                {checking ? "Đang kiểm tra..." : "Check key"}
               </button>
               <button
                 className="button button-light"
@@ -570,18 +567,7 @@ export default function ProblemFinder({
                 </dl>
 
                 {keyResult.error && <p className="finder-key-error">{keyResult.error}</p>}
-                <p className="finder-research-hint">{keyResult.note}</p>
-
-                <div className="finder-key-actions">
-                  <a
-                    className="button button-light"
-                    href={keyResult.portalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Mở portal VietAPI
-                  </a>
-                </div>
+                {keyResult.note ? <p className="finder-research-hint">{keyResult.note}</p> : null}
 
                 <pre className="finder-key-log" aria-label="Nhật ký kiểm tra key">
                   {keyResult.logs.join("\n")}
