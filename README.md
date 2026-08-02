@@ -16,6 +16,9 @@ Mở `http://localhost:3000`.
 
 ## Kiểm tra production
 
+Yêu cầu Node.js 22+. `npm run build` kiểm tra Next.js và đồng thời tạo artifact
+OpenNext trong `dist/` để deploy lên Cloudflare Workers/Sites.
+
 ```powershell
 npm run build
 npm run start
