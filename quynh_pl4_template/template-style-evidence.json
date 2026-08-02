@@ -1,0 +1,91 @@
+{
+  "input": "Volume{fab7e996-0000-0000-0000-100000000000}\\VaultData\\nghi\u00ean c\u1ee9u khoa h\u1ecdc\\ti\u1ec3u lu\u1eadn Qu\u1ef3nh Ph\u01b0\u01a1ng x3\\PL4. MO HINH NANG LUC GIAO DUC HOA NHAP CHO GIAO VIEN.docx",
+  "fonts_by_char_count": {},
+  "direct_run_formatting_runs": 30,
+  "direct_paragraph_formatting_paragraphs": 0,
+  "heading_like_paragraphs_not_heading_style": [
+    {
+      "para_index": 1,
+      "text": "KHUNG N\u0102NG L\u1ef0C GI\u00c1O D\u1ee4C H\u00d2A NH\u1eacP C\u1ee6A GI\u00c1O VI\u00caN PH\u1ed4 TH\u00d4NG",
+      "style": "Normal"
+    },
+    {
+      "para_index": 2,
+      "text": "1. C\u01a1 s\u1edf \u0111\u1ec1 xu\u1ea5t khung n\u0103ng l\u1ef1c",
+      "style": "Normal"
+    },
+    {
+      "para_index": 5,
+      "text": "2. \u0110\u1ec1 xu\u1ea5t khung n\u0103ng l\u1ef1c gi\u00e1o d\u1ee5c h\u00f2a nh\u1eadp c\u1ee7a gi\u00e1o vi\u00ean ph\u1ed5 th\u00f4ng",
+      "style": "Normal"
+    },
+    {
+      "para_index": 6,
+      "text": "3. Bi\u1ec7n ph\u00e1p ph\u00e1t tri\u1ec3n n\u0103ng l\u1ef1c gi\u00e1o d\u1ee5c h\u00f2a nh\u1eadp c\u1ee7a gi\u00e1o vi\u00ean ph\u1ed5 th\u00f4ng ",
+      "style": "Normal"
+    },
+    {
+      "para_index": 9,
+      "text": "STT",
+      "style": "Normal"
+    },
+    {
+      "para_index": 10,
+      "text": "N\u0103ng l\u1ef1c",
+      "style": "Normal"
+    },
+    {
+      "para_index": 11,
+      "text": "M\u00f4 t\u1ea3 ch\u1ec9 s\u1ed1 n\u0103ng l\u1ef1c",
+      "style": "Normal"
+    },
+    {
+      "para_index": 21,
+      "text": "M\u1ee5c ti\u00eau",
+      "style": "Normal"
+    },
+    {
+      "para_index": 22,
+      "text": "C\u00e1ch th\u1ee9c th\u1ef1c hi\u1ec7n",
+      "style": "Normal"
+    },
+    {
+      "para_index": 23,
+      "text": "Ngu\u1ed3n l\u1ef1c/ ph\u1ed1i h\u1ee3p/ \u0110i\u1ec1u ki\u1ec7n",
+      "style": "Normal"
+    }
+  ],
+  "examples": {
+    "direct_run_formatting": [
+      {
+        "para_index": 1,
+        "run_text": "KHUNG",
+        "style": "Normal"
+      },
+      {
+        "para_index": 1,
+        "run_text": " N\u0102NG L\u1ef0C",
+        "style": "Normal"
+      },
+      {
+        "para_index": 1,
+        "run_text": " GI\u00c1O D\u1ee4C H\u00d2A NH\u1eacP",
+        "style": "Normal"
+      },
+      {
+        "para_index": 1,
+        "run_text": " C\u1ee6A GI\u00c1O VI\u00caN ",
+        "style": "Normal"
+      },
+      {
+        "para_index": 1,
+        "run_text": "PH\u1ed4 TH\u00d4NG",
+        "style": "Normal"
+      }
+    ]
+  },
+  "notes": [
+    "Direct formatting is not always wrong, but it often causes inconsistent output when templates change.",
+    "Heading-like paragraphs not using Heading styles can break TOC and accessibility."
+  ]
+}
