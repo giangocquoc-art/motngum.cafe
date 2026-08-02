@@ -79,6 +79,9 @@ export default function CupTurntable() {
       aria-label="Ly cà phê đá Một Ngụm chuyển động theo trang"
     >
       {frames.map((frame, index) => (
+        // Native img is intentional: every animation frame uses an explicit
+        // responsive srcSet and independent fetch priority.
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           key={frame}
           src={frameSrc(frame)}

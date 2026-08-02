@@ -9,6 +9,9 @@ import { BRAND } from "@/data/site";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://motngum.cafe";
 const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
+// Vercel injects these script endpoints only on its platform. Rendering the
+// components on a plain `next start` host creates avoidable 404/MIME errors.
+const vercelInsightsEnabled = process.env.VERCEL === "1";
 const siteDescription =
   "Một Ngụm là cà phê lưu động tại TP.HCM, kết nối bạn với website, chatbot AI, tự động hóa và tư vấn marketing vừa sức.";
 
@@ -44,7 +47,7 @@ export const metadata: Metadata = {
   verification: googleSiteVerification ? { google: googleSiteVerification } : undefined,
   icons: {
     icon: [
-      { url: "/favicon.png", type: "image/png", sizes: "1254x1254" },
+      { url: "/favicon.png", type: "image/png", sizes: "512x512" },
     ],
     shortcut: "/favicon.png",
     apple: "/favicon.png",
@@ -161,8 +164,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Header />
         <main id="main-content">{children}</main>
         <Footer />
-        <Analytics />
-        <SpeedInsights sampleRate={0.5} />
+        {vercelInsightsEnabled ? (
+          <>
+            <Analytics />
+            <SpeedInsights sampleRate={0.5} />
+          </>
+        ) : null}
       </body>
     </html>
   );

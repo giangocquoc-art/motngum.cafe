@@ -4,11 +4,12 @@ import { SEO_ARTICLES } from "@/data/seo-content";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "https://motngum.cafe";
-  const siteUpdatedAt = new Date("2026-07-11T00:00:00+07:00");
+  const siteUpdatedAt = new Date("2026-08-03T00:00:00+07:00");
   const routes = [
     "",
     "/menu",
     "/dich-vu",
+    "/api",
     "/kien-thuc",
     "/chinh-sach-bao-mat",
     "/nguyen-tac-noi-dung",

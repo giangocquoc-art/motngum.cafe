@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+// Keep this endpoint cheap to parse. A lead is tiny; accepting arbitrary JSON
+// bodies only gives bots an easy way to consume memory before validation.
+const MAX_BODY_BYTES = 32 * 1024;
+const DELIVERY_TIMEOUT_MS = 12_000;
+
 type LeadPayload = {
   name?: string;
   phone?: string;
@@ -20,6 +28,17 @@ function clean(value: unknown, max = 1500) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function jsonResponse(body: unknown, status = 200) {
+  return NextResponse.json(body, {
+    status,
+    headers: { "Cache-Control": "no-store" },
+  });
+}
+
 async function saveToGoogleSheets(lead: Record<string, string>) {
   const url = process.env.GOOGLE_SHEETS_WEB_APP_URL;
   const secret = process.env.GOOGLE_SHEETS_WEB_APP_SECRET;
@@ -32,7 +51,7 @@ async function saveToGoogleSheets(lead: Record<string, string>) {
     body: JSON.stringify({ ...lead, secret }),
     cache: "no-store",
     redirect: "follow",
-    signal: AbortSignal.timeout(12_000),
+    signal: AbortSignal.timeout(DELIVERY_TIMEOUT_MS),
   });
 
   if (!response.ok) throw new Error(`Google Sheets HTTP ${response.status}`);
@@ -49,6 +68,13 @@ async function sendLeadEmail(lead: Record<string, string>) {
 
   if (!apiKey || !receiver) return false;
 
+  // Resend requires a verified sender in production. Keep the old sandbox
+  // value as a development fallback, while allowing deployments to configure
+  // their own domain through an environment variable.
+  const sender = process.env.RESEND_FROM_EMAIL || "Một Ngụm <onboarding@resend.dev>";
+  const subjectService = (lead.service || "Chưa chọn dịch vụ").replace(/[\r\n]+/g, " ");
+  const subjectName = lead.name.replace(/[\r\n]+/g, " ");
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -56,9 +82,9 @@ async function sendLeadEmail(lead: Record<string, string>) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Một Ngụm <onboarding@resend.dev>",
+      from: sender,
       to: [receiver],
-      subject: `Lead mới: ${lead.name} — ${lead.service || "Chưa chọn dịch vụ"}`,
+      subject: `Lead mới: ${subjectName} — ${subjectService}`,
       text: [
         `Họ tên: ${lead.name}`,
         `Điện thoại: ${lead.phone}`,
@@ -72,6 +98,8 @@ async function sendLeadEmail(lead: Record<string, string>) {
         `UTM: ${lead.utmSource} / ${lead.utmMedium} / ${lead.utmCampaign}`,
       ].join("\n"),
     }),
+    cache: "no-store",
+    signal: AbortSignal.timeout(DELIVERY_TIMEOUT_MS),
   });
 
   if (!response.ok) throw new Error(`Resend HTTP ${response.status}`);
@@ -79,16 +107,33 @@ async function sendLeadEmail(lead: Record<string, string>) {
 }
 
 export async function POST(request: Request) {
-  let payload: LeadPayload;
-
-  try {
-    payload = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Dữ liệu không hợp lệ." }, { status: 400 });
+  const contentLength = Number(request.headers.get("content-length") || "");
+  if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES) {
+    return jsonResponse({ error: "Dữ liệu gửi lên quá lớn." }, 413);
   }
 
+  let parsed: unknown;
+
+  try {
+    const raw = await request.text();
+    // Content-Length is optional (chunked requests are common), so check the
+    // actual UTF-8 payload as well before JSON.parse.
+    if (new TextEncoder().encode(raw).byteLength > MAX_BODY_BYTES) {
+      return jsonResponse({ error: "Dữ liệu gửi lên quá lớn." }, 413);
+    }
+    parsed = JSON.parse(raw);
+  } catch {
+    return jsonResponse({ error: "Dữ liệu không hợp lệ." }, 400);
+  }
+
+  if (!isRecord(parsed)) {
+    return jsonResponse({ error: "Dữ liệu không hợp lệ." }, 400);
+  }
+
+  const payload = parsed as LeadPayload;
+
   if (clean(payload.website)) {
-    return NextResponse.json({ ok: true });
+    return jsonResponse({ ok: true });
   }
 
   const name = clean(payload.name, 120);
@@ -96,7 +141,7 @@ export async function POST(request: Request) {
   const problem = clean(payload.problem, 2000);
 
   if (!name || !phone || !problem) {
-    return NextResponse.json({ error: "Thiếu họ tên, số điện thoại hoặc vấn đề." }, { status: 400 });
+    return jsonResponse({ error: "Thiếu họ tên, số điện thoại hoặc vấn đề." }, 400);
   }
 
   const lead = {
@@ -120,10 +165,7 @@ export async function POST(request: Request) {
   const emailConfigured = Boolean(process.env.RESEND_API_KEY && process.env.LEAD_RECEIVER_EMAIL);
 
   if (!sheetsConfigured && !emailConfigured) {
-    return NextResponse.json(
-      { error: "Chưa cấu hình nơi nhận dữ liệu.", fallback: true },
-      { status: 503 }
-    );
+    return jsonResponse({ error: "Chưa cấu hình nơi nhận dữ liệu.", fallback: true }, 503);
   }
 
   const deliveries = await Promise.allSettled([
@@ -136,11 +178,8 @@ export async function POST(request: Request) {
 
   if (!sheetsSaved && !emailSent) {
     console.error("Lead delivery failed", deliveries);
-    return NextResponse.json(
-      { error: "Không lưu được yêu cầu tư vấn.", fallback: true },
-      { status: 502 }
-    );
+    return jsonResponse({ error: "Không lưu được yêu cầu tư vấn.", fallback: true }, 502);
   }
 
-  return NextResponse.json({ ok: true, sheetsSaved, emailSent });
+  return jsonResponse({ ok: true, sheetsSaved, emailSent });
 }

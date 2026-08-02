@@ -1,9 +1,18 @@
-const [url = "http://127.0.0.1:3012/", widthArg = "390", heightArg = "844", portArg = "9224"] =
-  process.argv.slice(2);
+import { mkdir, writeFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+
+const [
+  url = "http://127.0.0.1:3012/",
+  widthArg = "390",
+  heightArg = "844",
+  portArg = "9224",
+  screenshotArg,
+] = process.argv.slice(2);
 
 const width = Number(widthArg);
 const height = Number(heightArg);
 const port = Number(portArg);
+const isMobile = width <= 820;
 const targets = await fetch(`http://127.0.0.1:${port}/json/list`).then((response) => response.json());
 const target = targets.find((item) => item.type === "page");
 
@@ -41,13 +50,14 @@ await send("Emulation.setDeviceMetricsOverride", {
   width,
   height,
   deviceScaleFactor: 1,
-  mobile: true,
+  mobile: isMobile,
   screenWidth: width,
   screenHeight: height,
 });
 await send("Emulation.setUserAgentOverride", {
-  userAgent:
-    "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36",
+  userAgent: isMobile
+    ? "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36"
+    : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
 });
 await send("Page.enable");
 await send("Page.navigate", { url });
@@ -74,4 +84,17 @@ const expression = `(() => {
 
 const result = await send("Runtime.evaluate", { expression, returnByValue: true });
 console.log(JSON.stringify(result.result.value, null, 2));
+
+if (screenshotArg) {
+  const screenshotPath = resolve(screenshotArg);
+  const screenshot = await send("Page.captureScreenshot", {
+    format: "png",
+    fromSurface: true,
+    captureBeyondViewport: false,
+  });
+  await mkdir(dirname(screenshotPath), { recursive: true });
+  await writeFile(screenshotPath, Buffer.from(screenshot.data, "base64"));
+  console.log(`Screenshot: ${screenshotPath}`);
+}
+
 socket.close();

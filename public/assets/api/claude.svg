@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">Abstract language model network</title>
+  <desc id="desc">Warm copper nodes connected in a calm neural network.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2d201b"/><stop offset="1" stop-color="#704732"/></linearGradient><radialGradient id="glow"><stop stop-color="#e6ae83" stop-opacity=".7"/><stop offset="1" stop-color="#e6ae83" stop-opacity="0"/></radialGradient></defs>
+  <rect width="640" height="360" rx="28" fill="url(#bg)"/><circle cx="500" cy="74" r="145" fill="url(#glow)" opacity=".46"/>
+  <g fill="none" stroke="#edc3a3" stroke-opacity=".42" stroke-width="2"><path d="M65 278 177 102l134 168 122-185 137 185"/><path d="m65 278 202-36 175 28 128-85"/><path d="m177 102 90 140 64-72 107 100"/></g>
+  <g fill="#f6d5ba" stroke="#3b251c" stroke-width="5"><circle cx="65" cy="278" r="13"/><circle cx="177" cy="102" r="13"/><circle cx="311" cy="270" r="13"/><circle cx="433" cy="85" r="13"/><circle cx="570" cy="270" r="13"/><circle cx="267" cy="242" r="10"/><circle cx="442" cy="270" r="10"/></g>
+  <g fill="#fff9f3" font-family="Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="3"><text x="38" y="48">LANGUAGE · REASONING</text></g>
+</svg>

@@ -36,6 +36,7 @@ export const NAV_LINKS = [
   { href: "/", label: "Trang chủ" },
   { href: "/menu", label: "Menu" },
   { href: "/dich-vu", label: "Dịch vụ" },
+  { href: "/api", label: "API model" },
   { href: "/kien-thuc", label: "Kiến thức" },
   { href: "/qr", label: "Chọn vấn đề" },
   { href: "/bang-gia", label: "Bảng giá" },

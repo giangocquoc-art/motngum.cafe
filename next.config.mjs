@@ -7,18 +7,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-    async rewrites() {
-    return [
-      {
-        source: "/v1",
-        destination: "https://api.vietapi.tech/v1",
-      },
-      {
-        source: "/v1/:path*",
-        destination: "https://api.vietapi.tech/v1/:path*",
-      },
-    ];
-  },
   async headers() {
     return [
       {

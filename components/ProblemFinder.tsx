@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import Link from "next/link";
 import { getServiceHref, SERVICES } from "@/data/site";
 
@@ -97,6 +97,10 @@ export default function ProblemFinder({
   hideKeyMode = false,
   compact = false,
 }: ProblemFinderProps) {
+  const instanceId = useId();
+  const titleId = `${instanceId}-finder-title`;
+  const researchInputId = `${instanceId}-finder-research-input`;
+  const keyInputId = `${instanceId}-finder-key-input`;
   const [mode, setMode] = useState<Mode>(defaultMode);
   const [research, setResearch] = useState("");
   const [problem, setProblem] = useState<(typeof problems)[number] | null>(null);
@@ -255,7 +259,7 @@ export default function ProblemFinder({
   return (
     <section
       className={`problem-finder${compact ? " problem-finder-compact" : ""}`}
-      aria-labelledby="finder-title"
+      aria-labelledby={titleId}
     >
       {!compact && (
         <div className="finder-progress">
@@ -272,15 +276,15 @@ export default function ProblemFinder({
       )}
 
       {!hideModeToggle && (
-        <div className="finder-mode-toggle" role="tablist" aria-label="Chế độ tìm hướng">
-          <button type="button" className={mode === "research" ? "is-active" : ""} onClick={() => setMode("research")}>
+        <div className="finder-mode-toggle" role="group" aria-label="Chế độ tìm hướng">
+          <button type="button" aria-pressed={mode === "research"} className={mode === "research" ? "is-active" : ""} onClick={() => setMode("research")}>
             Research
           </button>
-          <button type="button" className={mode === "guide" ? "is-active" : ""} onClick={() => setMode("guide")}>
+          <button type="button" aria-pressed={mode === "guide"} className={mode === "guide" ? "is-active" : ""} onClick={() => setMode("guide")}>
             Chọn vấn đề
           </button>
           {!hideKeyMode && (
-            <button type="button" className={mode === "key" ? "is-active" : ""} onClick={() => setMode("key")}>
+            <button type="button" aria-pressed={mode === "key"} className={mode === "key" ? "is-active" : ""} onClick={() => setMode("key")}>
               Check API key
             </button>
           )}
@@ -290,12 +294,12 @@ export default function ProblemFinder({
       {mode === "research" && (
         <>
           <p className="eyebrow">Kể Một Ngụm nghe nhé</p>
-          <h2 id="finder-title">Bạn đang cần làm rõ việc gì?</h2>
+          <h2 id={titleId}>Bạn đang cần làm rõ việc gì?</h2>
           <div className="finder-research">
-            <label className="finder-research-label" htmlFor="finder-research-input">
+            <label className="finder-research-label" htmlFor={researchInputId}>
               <span>Ô research</span>
               <input
-                id="finder-research-input"
+                id={researchInputId}
                 className="finder-research-input"
                 value={research}
                 onChange={(event) => onResearchChange(event.target.value)}
@@ -353,7 +357,7 @@ export default function ProblemFinder({
       {mode === "guide" && !problem && (
         <>
           <p className="eyebrow">Kể Một Ngụm nghe nhé</p>
-          <h2 id="finder-title">Việc gì đang làm bạn mất thời gian nhất?</h2>
+          <h2 id={titleId}>Việc gì đang làm bạn mất thời gian nhất?</h2>
           <ul className="choice-grid" role="list">
             {problems.map((item) => (
               <li key={item.id}>
@@ -373,7 +377,7 @@ export default function ProblemFinder({
             ← Quay lại
           </button>
           <p className="eyebrow">Mục tiêu bạn muốn ưu tiên</p>
-          <h2 id="finder-title">Bạn muốn cải thiện điều gì trước?</h2>
+          <h2 id={titleId}>Bạn muốn cải thiện điều gì trước?</h2>
           <ul className="choice-grid goal-grid" role="list">
             {goals.map((item) => (
               <li key={item}>
@@ -392,15 +396,15 @@ export default function ProblemFinder({
           {!compact && (
             <>
               <p className="eyebrow">Kiểm tra key</p>
-              <h2 id="finder-title">Check API key</h2>
+              <h2 id={titleId}>Check API key</h2>
             </>
           )}
-          {compact && <h2 id="finder-title" className="visually-hidden">Check API key</h2>}
+          {compact && <h2 id={titleId} className="visually-hidden">Check API key</h2>}
           <div className="finder-key-panel">
-            <label className="finder-research-label" htmlFor="finder-key-input">
+            <label className="finder-research-label" htmlFor={keyInputId}>
               <span>API key</span>
               <input
-                id="finder-key-input"
+                id={keyInputId}
                 className="finder-key-input"
                 value={apiKey}
                 onChange={(event) => {

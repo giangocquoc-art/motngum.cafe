@@ -6,8 +6,10 @@ export const dynamic = "force-dynamic";
 const PORTAL_BASE = (process.env.VIETAPI_PORTAL_BASE || "https://vietapi.tech").replace(/\/$/, "");
 const CREDIT_DIVISOR = 600_000;
 const MAX_BODY_KEYS = 4;
+const MAX_BODY_BYTES = 8 * 1024;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 12;
+const MAX_RATE_ENTRIES = 10_000;
 
 type PortalUsage = {
   name?: string;
@@ -48,6 +50,20 @@ function clean(value: unknown, max = 200) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function jsonResponse(body: unknown, status = 200, headers: Record<string, string> = {}) {
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      "Cache-Control": "no-store",
+      ...headers,
+    },
+  });
+}
+
 function maskKey(value: string) {
   const key = value.trim();
   if (key.length <= 12) return `${key.slice(0, 3)}…`;
@@ -59,13 +75,31 @@ function isLikelyApiKey(value: string) {
 }
 
 function clientIp(request: Request) {
-  const xf = request.headers.get("x-forwarded-for");
-  if (xf) return xf.split(",")[0]?.trim() || "unknown";
-  return request.headers.get("x-real-ip") || "unknown";
+  // Prefer the provider-populated header when available. Cap the value so a
+  // forged header cannot create an unbounded in-memory map key.
+  const forwarded =
+    request.headers.get("x-vercel-forwarded-for") ||
+    request.headers.get("x-forwarded-for") ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
+  return (forwarded.split(",")[0]?.trim() || "unknown").slice(0, 100);
 }
 
 function takeRateLimit(ip: string) {
   const now = Date.now();
+
+  // This is intentionally best-effort for a single Node instance. Pruning is
+  // still important on long-lived servers so rotating IPs cannot grow memory
+  // without bound; a shared store should be used for multi-instance limits.
+  for (const [key, bucket] of rateMap) {
+    if (bucket.resetAt <= now) rateMap.delete(key);
+  }
+  while (rateMap.size >= MAX_RATE_ENTRIES && !rateMap.has(ip)) {
+    const oldest = rateMap.keys().next().value as string | undefined;
+    if (oldest === undefined) break;
+    rateMap.delete(oldest);
+  }
+
   const current = rateMap.get(ip);
 
   if (!current || current.resetAt <= now) {
@@ -99,15 +133,30 @@ function formatCredit(quota: number | null | undefined, unlimited = false) {
 
 function formatExpiry(ts: number | null | undefined) {
   const value = Number(ts || 0);
-  if (!value || value < 0) return "Không hết hạn";
+  if (!Number.isFinite(value) || value <= 0) return "Không hết hạn";
   // portal dùng unix seconds
   const ms = value > 1e12 ? value : value * 1000;
-  if (!Number.isFinite(ms) || ms <= 0) return "Không hết hạn";
+  // Date/Intl throw for values outside the valid ECMAScript Date range.
+  if (!Number.isFinite(ms) || ms <= 0 || ms > 8.64e15) return "Không hết hạn";
+  const date = new Date(ms);
+  if (Number.isNaN(date.getTime())) return "Không hết hạn";
   return new Intl.DateTimeFormat("vi-VN", {
     dateStyle: "short",
     timeStyle: "short",
     timeZone: "Asia/Ho_Chi_Minh",
-  }).format(new Date(ms));
+  }).format(date);
+}
+
+function asBoolean(value: unknown) {
+  return value === true || value === 1 || value === "1" || value === "true";
+}
+
+function isActiveStatus(value: string) {
+  const status = value.toLocaleLowerCase("vi-VN");
+  if (/không\s+hoạt động|không\s+kích hoạt|inactive|disabled|expired|hết hạn|đã tắt/.test(status)) {
+    return false;
+  }
+  return /hoạt động|kích hoạt|active|enabled/.test(status);
 }
 
 function parseSetCookie(headerValue: string | null) {
@@ -127,19 +176,23 @@ function cookieHeaderFromSetCookies(setCookies: string[]) {
 }
 
 function summarizeUsage(usage: PortalUsage) {
-  const group = String(usage.user_group || usage.token_group || "").toLowerCase();
+  const group = String(usage.user_group || usage.token_group || "").trim().toLowerCase();
   const isPureDaily = group === "daily_payg";
-  const unlimited = Boolean(usage.unlimited_quota);
-  const planRemainRaw = Number(usage.user_remain_quota ?? usage.user_quota ?? usage.remain_quota ?? 0);
-  const paygRaw = Number(usage.payg_quota ?? 0);
+  const unlimited = asBoolean(usage.unlimited_quota);
+  const planCandidate = Number(usage.user_remain_quota ?? usage.user_quota ?? usage.remain_quota ?? 0);
+  const paygCandidate = Number(usage.payg_quota ?? 0);
+  const planRemainRaw = Number.isFinite(planCandidate) ? planCandidate : 0;
+  const paygRaw = Number.isFinite(paygCandidate) ? paygCandidate : 0;
   const daily = usage.daily_wallet || {};
-  const dailyActive = Boolean(daily.active);
-  const dailyRemainRaw = dailyActive ? Number(daily.quota_remain ?? 0) : 0;
+  const dailyActive = asBoolean(daily.active);
+  const dailyExhausted = asBoolean(daily.exhausted);
+  const dailyRemainCandidate = Number(daily.quota_remain ?? 0);
+  const dailyRemainRaw = dailyActive && Number.isFinite(dailyRemainCandidate) ? dailyRemainCandidate : 0;
 
   const status =
     clean(usage.status_text, 80) ||
     clean(usage.token_status_text, 80) ||
-    (usage.token_status === 1 ? "Hoạt động" : "Không hoạt động");
+    (Number(usage.token_status) === 1 ? "Hoạt động" : "Không hoạt động");
 
   const expireSource = dailyActive
     ? daily.expires_at
@@ -156,7 +209,7 @@ function summarizeUsage(usage: PortalUsage) {
     primaryCredit = formatCredit(paygRaw);
   } else if (isPureDaily && dailyActive) {
     primaryLabel = "Ví gói ngày";
-    primaryCredit = daily.exhausted ? "Đã hết" : formatCredit(dailyRemainRaw);
+    primaryCredit = dailyExhausted ? "Đã hết" : formatCredit(dailyRemainRaw);
   } else if (planRemainRaw <= 0 && paygRaw > 0) {
     primaryLabel = "Ví Pay-as-you-go";
     primaryCredit = formatCredit(paygRaw);
@@ -169,7 +222,7 @@ function summarizeUsage(usage: PortalUsage) {
     ok: true,
     valid: true,
     status,
-    active: /hoạt động/i.test(status) || usage.token_status === 1,
+    active: Number(usage.token_status) === 1 || isActiveStatus(status),
     maskedKey: clean(usage.masked_key, 80) || null,
     displayName: clean(usage.display_name || usage.username || usage.name, 80) || null,
     group: clean(usage.user_group || usage.token_group, 40) || null,
@@ -179,8 +232,8 @@ function summarizeUsage(usage: PortalUsage) {
     planRemainQuota: unlimited ? null : Math.max(0, planRemainRaw),
     dailyWallet: {
       active: dailyActive,
-      exhausted: Boolean(daily.exhausted),
-      remainCredit: dailyActive ? (daily.exhausted ? "Đã hết" : formatCredit(dailyRemainRaw)) : "—",
+      exhausted: dailyExhausted,
+      remainCredit: dailyActive ? (dailyExhausted ? "Đã hết" : formatCredit(dailyRemainRaw)) : "—",
       usedCredit: dailyActive ? formatCredit(daily.quota_used) : null,
       totalCredit: dailyActive ? formatCredit(daily.quota_total) : null,
       expiresAt: dailyActive ? formatExpiry(daily.expires_at) : null,
@@ -215,7 +268,7 @@ async function portalLoginAndUsage(apiKey: string) {
   const loginJson = (await loginRes.json().catch(() => ({}))) as {
     success?: boolean;
     message?: string;
-    data?: { usage?: PortalUsage };
+    data?: { usage?: unknown };
   };
 
   if (!loginRes.ok || loginJson.success === false) {
@@ -230,8 +283,8 @@ async function portalLoginAndUsage(apiKey: string) {
   }
 
   // Login đã trả usage — dùng luôn nếu có
-  if (loginJson.data?.usage) {
-    return loginJson.data.usage;
+  if (isRecord(loginJson.data?.usage)) {
+    return loginJson.data.usage as PortalUsage;
   }
 
   const anyHeaders = loginRes.headers as Headers & { getSetCookie?: () => string[] };
@@ -254,10 +307,10 @@ async function portalLoginAndUsage(apiKey: string) {
   const meJson = (await meRes.json().catch(() => ({}))) as {
     success?: boolean;
     message?: string;
-    data?: { usage?: PortalUsage };
+    data?: { usage?: unknown };
   };
 
-  if (!meRes.ok || meJson.success === false || !meJson.data?.usage) {
+  if (!meRes.ok || meJson.success === false || !isRecord(meJson.data?.usage)) {
     const message = clean(meJson.message, 240) || `VietAPI me HTTP ${meRes.status}`;
     const error = new Error(message) as Error & { status?: number };
     error.status = meRes.status || 502;
@@ -278,7 +331,7 @@ async function portalLoginAndUsage(apiKey: string) {
     }).catch(() => undefined);
   }
 
-  return meJson.data.usage;
+  return meJson.data.usage as PortalUsage;
 }
 
 export async function POST(request: Request) {
@@ -288,42 +341,59 @@ export async function POST(request: Request) {
 
   if (!limit.ok) {
     const retryAfter = Math.max(1, Math.ceil((limit.resetAt - Date.now()) / 1000));
-    return NextResponse.json(
+    return jsonResponse(
       {
         ok: false,
         valid: false,
         error: "Bạn check key hơi nhanh. Thử lại sau vài phút.",
       },
-      {
-        status: 429,
-        headers: {
-          "Retry-After": String(retryAfter),
-          "Cache-Control": "no-store",
-        },
-      }
+      429,
+      { "Retry-After": String(retryAfter) }
     );
   }
 
-  let payload: Record<string, unknown>;
-  try {
-    payload = await request.json();
-  } catch {
-    return NextResponse.json({ ok: false, valid: false, error: "Dữ liệu không hợp lệ." }, { status: 400 });
+  const contentLength = Number(request.headers.get("content-length") || "");
+  if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES) {
+    return jsonResponse({ ok: false, valid: false, error: "Payload quá lớn." }, 413);
   }
 
-  if (Object.keys(payload || {}).length > MAX_BODY_KEYS) {
-    return NextResponse.json({ ok: false, valid: false, error: "Payload không hợp lệ." }, { status: 400 });
+  let raw: string;
+  try {
+    raw = await request.text();
+  } catch {
+    return jsonResponse({ ok: false, valid: false, error: "Dữ liệu không hợp lệ." }, 400);
+  }
+
+  if (new TextEncoder().encode(raw).byteLength > MAX_BODY_BYTES) {
+    return jsonResponse({ ok: false, valid: false, error: "Payload quá lớn." }, 413);
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return jsonResponse({ ok: false, valid: false, error: "Dữ liệu không hợp lệ." }, 400);
+  }
+
+  if (!isRecord(parsed)) {
+    return jsonResponse({ ok: false, valid: false, error: "Dữ liệu không hợp lệ." }, 400);
+  }
+
+  const payload = parsed;
+
+  if (Object.keys(payload).length > MAX_BODY_KEYS) {
+    return jsonResponse({ ok: false, valid: false, error: "Payload không hợp lệ." }, 400);
   }
 
   // honeypot
   if (clean(payload.website) || clean(payload.company)) {
-    return NextResponse.json({ ok: true, valid: true, status: "Hoạt động", primaryCredit: "—" });
+    return jsonResponse({ ok: true, valid: true, status: "Hoạt động", primaryCredit: "—" });
   }
 
   const apiKey = clean(payload.apiKey ?? payload.api_key ?? payload.key, 256);
 
   if (!apiKey || !isLikelyApiKey(apiKey)) {
-    return NextResponse.json(
+    return jsonResponse(
       {
         ok: false,
         valid: false,
@@ -332,7 +402,7 @@ export async function POST(request: Request) {
         error: "Key chưa đúng định dạng. Cần dạng sk-... và đủ độ dài.",
         latencyMs: Date.now() - started,
       },
-      { status: 400, headers: { "Cache-Control": "no-store" } }
+      400
     );
   }
 
@@ -340,7 +410,7 @@ export async function POST(request: Request) {
     const usage = await portalLoginAndUsage(apiKey);
     const summary = summarizeUsage(usage);
 
-    return NextResponse.json(
+    return jsonResponse(
       {
         ...summary,
         validFormat: true,
@@ -349,13 +419,8 @@ export async function POST(request: Request) {
         source: "vietapi.portal",
         portalUrl: `${PORTAL_BASE}/login.html`,
       },
-      {
-        status: 200,
-        headers: {
-          "Cache-Control": "no-store",
-          "X-RateLimit-Remaining": String(limit.remaining),
-        },
-      }
+      200,
+      { "X-RateLimit-Remaining": String(limit.remaining) }
     );
   } catch (error) {
     const err = error as Error & { status?: number };
@@ -373,7 +438,7 @@ export async function POST(request: Request) {
       message,
     });
 
-    return NextResponse.json(
+    return jsonResponse(
       {
         ok: false,
         valid: false,
@@ -383,10 +448,7 @@ export async function POST(request: Request) {
         latencyMs: Date.now() - started,
         portalUrl: `${PORTAL_BASE}/login.html`,
       },
-      {
-        status: status === 401 || status === 403 ? 401 : status,
-        headers: { "Cache-Control": "no-store" },
-      }
+      status === 401 || status === 403 ? 401 : status
     );
   }
 }
