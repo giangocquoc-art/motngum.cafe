@@ -48,6 +48,10 @@ function formatSyncedAt(value?: string) {
   return new Intl.DateTimeFormat("vi-VN", { dateStyle: "short", timeStyle: "short" }).format(date);
 }
 
+function endpointLabel(value: string) {
+  return value === "openai" ? "OpenAI-compatible" : value === "anthropic" ? "Anthropic" : value;
+}
+
 export default function ApiModelShowcase({ initialModels }: Props) {
   const [models, setModels] = useState(initialModels);
   const [family, setFamily] = useState<(typeof MODEL_FAMILIES)[number]>("Tất cả");
@@ -180,26 +184,37 @@ export default function ApiModelShowcase({ initialModels }: Props) {
             return (
               <li className={`api-model-card ${featured ? "is-featured" : ""}`} key={model.id} style={style}>
                 <div className="api-model-card-art">
-                  <Image src={model.image} alt="" loading="lazy" width={640} height={360} />
+                  <Image
+                    src={model.image}
+                    alt={`${model.label} — ${model.imageAlt}`}
+                    loading="lazy"
+                    width={640}
+                    height={360}
+                    sizes="(max-width: 560px) 100vw, (max-width: 960px) 50vw, 33vw"
+                  />
                   {featured ? <span className="api-featured-tag">Gợi ý bắt đầu</span> : null}
                 </div>
                 <div className="api-model-card-body">
                   <div className="api-model-meta">
                     <span className="api-model-family">{model.family}</span>
-                    {model.owner ? <span>{model.owner}</span> : null}
+                    {model.ownerLabel ? <span>{model.ownerLabel}</span> : null}
                   </div>
                   <h3>{model.label}</h3>
                   <code className="api-model-id">{model.id}</code>
                   <p>{model.description}</p>
                   <div className="api-model-card-footer">
                     <span>{model.suggestedFor}</span>
-                    <button type="button" onClick={() => copyText(model.id, "id")}>
+                    <button
+                      type="button"
+                      aria-label={`Copy model ID ${model.id}`}
+                      onClick={() => copyText(model.id, "id")}
+                    >
                       {copiedId === model.id ? "Đã copy" : "Copy ID"}
                     </button>
                   </div>
                   <div className="api-endpoints" aria-label="Endpoint hỗ trợ">
                     {model.endpointTypes.length ? (
-                      model.endpointTypes.map((endpoint) => <span key={endpoint}>{endpoint}</span>)
+                      model.endpointTypes.map((endpoint) => <span key={endpoint}>{endpointLabel(endpoint)}</span>)
                     ) : (
                       <span>Kiểm tra endpoint</span>
                     )}

@@ -40,7 +40,11 @@ Khởi động Chrome với remote debugging trước khi chạy (hoặc dùng C
 npm run test:web -- http://127.0.0.1:3000 --cdp=http://127.0.0.1:9224
 ```
 
-Mặc định là `http://127.0.0.1:3000` và `http://127.0.0.1:9224`; cũng có thể đặt `WEB_SMOKE_BASE_URL` và `WEB_SMOKE_CDP_URL`.
+Mặc định là `http://127.0.0.1:3000` và `http://127.0.0.1:9224`; cũng có thể đặt `WEB_SMOKE_BASE_URL` và `WEB_SMOKE_CDP_URL`. Kết quả được ghi vào `output/web-smoke/summary.json` (thư mục này nằm trong `.gitignore`). Để tách artifact theo từng vòng chạy, dùng:
+
+```powershell
+npm run test:web -- http://127.0.0.1:3000 --cdp=http://127.0.0.1:9224 --artifacts=output/web-smoke-release
+```
 
 ## Deploy Vercel
 

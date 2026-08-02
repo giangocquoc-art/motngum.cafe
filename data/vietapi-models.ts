@@ -14,10 +14,12 @@ export type VietApiModel = {
   label: string;
   family: VietApiModelFamily;
   owner: string | null;
+  ownerLabel: string | null;
   endpointTypes: string[];
   description: string;
   suggestedFor: string;
   image: string;
+  imageAlt: string;
   accent: string;
 };
 
@@ -32,48 +34,55 @@ export const VIETAPI_BASE_URL = "https://api.vietapi.tech/v1";
 
 export const FAMILY_META: Record<
   VietApiModelFamily,
-  { description: string; suggestedFor: string; image: string; accent: string }
+  { description: string; suggestedFor: string; image: string; imageAlt: string; accent: string }
 > = {
   Claude: {
     description: "Viết, phân tích và suy luận dài — hợp với tác vụ cần giọng điệu chắc tay.",
     suggestedFor: "Viết · phân tích · reasoning",
     image: "/assets/api/claude.svg",
+    imageAlt: "Minh họa mạng lưới ngôn ngữ và suy luận của họ Claude",
     accent: "#8e5d41",
   },
   GPT: {
     description: "Lựa chọn đa dụng cho sản phẩm, code và các luồng cần đầu ra ổn định.",
     suggestedFor: "Đa dụng · code · tích hợp",
     image: "/assets/api/gpt.svg",
+    imageAlt: "Minh họa vòng kết nối cho nhóm model đa dụng GPT",
     accent: "#477864",
   },
   DeepSeek: {
     description: "Nhóm model thiên về code và phân tích kỹ thuật, có lựa chọn Flash và Pro.",
     suggestedFor: "Code · dữ liệu · kỹ thuật",
     image: "/assets/api/deepseek.svg",
+    imageAlt: "Minh họa các lớp dữ liệu màu xanh cho nhóm DeepSeek",
     accent: "#4777a7",
   },
   GLM: {
     description: "Mô hình đa ngôn ngữ cho nội dung, tổng hợp và các tác vụ hội thoại.",
     suggestedFor: "Đa ngôn ngữ · nội dung",
     image: "/assets/api/glm.svg",
+    imageAlt: "Minh họa luồng hội thoại đa ngôn ngữ của nhóm GLM",
     accent: "#8763a5",
   },
   Kimi: {
     description: "Lựa chọn cho ngữ cảnh dài, đọc tài liệu và tổng hợp nhiều nguồn.",
     suggestedFor: "Tài liệu · ngữ cảnh dài",
     image: "/assets/api/kimi.svg",
+    imageAlt: "Minh họa ngữ cảnh dài và các lớp tài liệu của nhóm Kimi",
     accent: "#af7049",
   },
   Grok: {
     description: "Hợp tác vụ sáng tạo, hội thoại và những ý tưởng cần nhịp phản hồi nhanh.",
     suggestedFor: "Sáng tạo · hội thoại",
     image: "/assets/api/grok.svg",
+    imageAlt: "Minh họa tia sáng ý tưởng cho nhóm model Grok",
     accent: "#4d5969",
   },
   Khác: {
     description: "Model mới được VietAPI bổ sung; xem endpoint trước khi tích hợp vào sản phẩm.",
     suggestedFor: "Khám phá · thử nghiệm",
     image: "/assets/api/other.svg",
+    imageAlt: "Minh họa khám phá các model mới trên VietAPI",
     accent: "#805038",
   },
 };
@@ -131,6 +140,16 @@ function humanizeModelId(id: string) {
     .replace(/ · (Thinking)/i, " · Thinking");
 }
 
+function humanizeOwner(value: string | null) {
+  if (!value) return null;
+  const labels: Record<string, string> = {
+    custom: "VietAPI",
+    "vertex-ai": "Vertex AI",
+    openai: "OpenAI",
+  };
+  return labels[value.toLowerCase()] || value;
+}
+
 function safeId(value: unknown) {
   if (typeof value !== "string") return "";
   const id = value.trim().slice(0, 120);
@@ -158,10 +177,12 @@ export function enrichModel(record: VietApiModelRecord): VietApiModel | null {
     label: humanizeModelId(id),
     family,
     owner,
+    ownerLabel: humanizeOwner(owner),
     endpointTypes: endpointList(record.supported_endpoint_types),
     description: familyMeta.description,
     suggestedFor: familyMeta.suggestedFor,
     image: familyMeta.image,
+    imageAlt: familyMeta.imageAlt,
     accent: familyMeta.accent,
   };
 }
@@ -188,4 +209,4 @@ export function normalizeModelRecords(value: unknown) {
     .slice(0, 100);
 }
 
-export const MODEL_FAMILIES = ["Tất cả", "Claude", "GPT", "DeepSeek", "GLM", "Kimi", "Grok"] as const;
+export const MODEL_FAMILIES = ["Tất cả", "Claude", "GPT", "DeepSeek", "GLM", "Kimi", "Grok", "Khác"] as const;

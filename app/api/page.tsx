@@ -1,6 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import ApiModelShowcase from "@/components/ApiModelShowcase";
-import { FALLBACK_MODELS } from "@/data/vietapi-models";
+import JsonLd from "@/components/JsonLd";
+import { FALLBACK_MODELS, FAMILY_META } from "@/data/vietapi-models";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
@@ -23,6 +26,8 @@ const answer = await client.chat.completions.create({
   messages: [{ role: "user", content: "Xin chào" }],
 });`;
 
+const API_HERO_FAMILIES = ["GPT", "Claude", "DeepSeek", "Kimi"] as const;
+
 export default function ApiPage() {
   const modelListStructuredData = {
     "@context": "https://schema.org",
@@ -39,10 +44,7 @@ export default function ApiPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(modelListStructuredData) }}
-      />
+      <JsonLd data={modelListStructuredData} />
 
       <section className="api-hero" aria-labelledby="api-page-title">
         <div className="container api-hero-grid">
@@ -60,14 +62,37 @@ export default function ApiPage() {
           </div>
 
           <aside className="api-hero-panel" aria-label="Tóm tắt VietAPI">
-            <span className="api-card-kicker">Sẵn sàng tích hợp</span>
-            <strong>OpenAI-compatible</strong>
-            <p>Không cần đổi SDK trong phần lớn trường hợp — chỉ dùng base URL và key ở phía server.</p>
-            <dl>
-              <div><dt>Base URL</dt><dd>/v1</dd></div>
-              <div><dt>Họ model</dt><dd>6+</dd></div>
-              <div><dt>Khóa API</dt><dd>Server only</dd></div>
-            </dl>
+            <div className="api-hero-gallery" aria-label="Một số họ model nổi bật">
+              {API_HERO_FAMILIES.map((family, index) => {
+                const meta = FAMILY_META[family];
+                return (
+                  <figure
+                    className={`api-hero-gallery-tile api-hero-gallery-tile-${index + 1}`}
+                    key={family}
+                    style={{ "--model-accent": meta.accent } as CSSProperties}
+                  >
+                    <Image
+                      src={meta.image}
+                      alt={`${family}: ${meta.imageAlt}`}
+                      width={640}
+                      height={360}
+                      priority={index === 0}
+                    />
+                    <figcaption>{family}</figcaption>
+                  </figure>
+                );
+              })}
+            </div>
+            <div className="api-hero-panel-copy">
+              <span className="api-card-kicker">Sẵn sàng tích hợp</span>
+              <strong>OpenAI-compatible</strong>
+              <p>Không cần đổi SDK trong phần lớn trường hợp — chỉ dùng base URL và key ở phía server.</p>
+              <dl>
+                <div><dt>Base URL</dt><dd>/v1</dd></div>
+                <div><dt>Model công khai</dt><dd>{FALLBACK_MODELS.length}</dd></div>
+                <div><dt>Khóa API</dt><dd>Server only</dd></div>
+              </dl>
+            </div>
           </aside>
         </div>
       </section>

@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+import { mkdir, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+
 /**
  * Browser smoke test with only Node's built-ins and the Chrome DevTools Protocol.
  *
@@ -32,6 +35,7 @@ const VIEWPORTS = [
 function parseArgs(argv) {
   let base = process.env.WEB_SMOKE_BASE_URL || "http://127.0.0.1:3000";
   let cdp = process.env.WEB_SMOKE_CDP_URL || "http://127.0.0.1:9224";
+  let artifacts = process.env.WEB_SMOKE_ARTIFACT_DIR || "output/web-smoke";
 
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index];
@@ -39,12 +43,15 @@ function parseArgs(argv) {
     else if (value.startsWith("--cdp=")) cdp = value.slice("--cdp=".length);
     else if (value === "--base") base = argv[++index];
     else if (value.startsWith("--base=")) base = value.slice("--base=".length);
+    else if (value === "--artifacts") artifacts = argv[++index];
+    else if (value.startsWith("--artifacts=")) artifacts = value.slice("--artifacts=".length);
     else if (!value.startsWith("--")) base = value;
   }
 
   return {
     baseUrl: new URL(base),
     cdpUrl: new URL(cdp),
+    artifactDir: resolve(artifacts),
   };
 }
 
@@ -88,8 +95,8 @@ async function createTarget(cdpUrl) {
   const response = await fetch(endpoint, { method: "PUT" });
   if (!response.ok) throw new Error(`Chrome không tạo được target mới (HTTP ${response.status}).`);
   const target = await response.json();
-  if (!target.webSocketDebuggerUrl) throw new Error("Chrome không trả về WebSocket Debugger URL.");
-  return target.webSocketDebuggerUrl;
+  if (!target.id || !target.webSocketDebuggerUrl) throw new Error("Chrome không trả về target Debugger hợp lệ.");
+  return target;
 }
 
 class CdpClient {
@@ -271,6 +278,8 @@ async function runPage(client, baseUrl, viewport, path, issues, links) {
   });
 
   try {
+    loaded = false;
+    documentResponses.length = 0;
     await client.send("Page.navigate", { url: pageUrl });
     const deadline = Date.now() + 10_000;
     while (!loaded && Date.now() < deadline) await delay(100);
@@ -333,16 +342,16 @@ async function checkLinks(links, issues) {
 }
 
 async function main() {
-  const { baseUrl, cdpUrl } = parseArgs(process.argv.slice(2));
+  const { baseUrl, cdpUrl, artifactDir } = parseArgs(process.argv.slice(2));
   const routes = await routesFromSitemap(baseUrl);
   const issues = [];
   const links = new Set();
-  let webSocketUrl;
+  let target;
   let client;
 
   try {
-    webSocketUrl = await createTarget(cdpUrl);
-    client = new CdpClient(webSocketUrl);
+    target = await createTarget(cdpUrl);
+    client = new CdpClient(target.webSocketDebuggerUrl);
     await client.connect();
     await Promise.all([client.send("Page.enable"), client.send("Runtime.enable"), client.send("Network.enable"), client.send("Log.enable")]);
 
@@ -377,13 +386,27 @@ async function main() {
     await checkLinks(links, issues);
   } finally {
     client?.close();
-    if (webSocketUrl) {
-      const targetId = new URL(webSocketUrl).pathname.split("/").pop();
-      if (targetId) fetch(new URL(`/json/close/${targetId}`, cdpUrl), { method: "PUT" }).catch(() => {});
-    }
+    if (target?.id) fetch(new URL(`/json/close/${target.id}`, cdpUrl), { method: "PUT" }).catch(() => {});
   }
 
+  await mkdir(artifactDir, { recursive: true });
+  await writeFile(
+    resolve(artifactDir, "summary.json"),
+    JSON.stringify(
+      {
+        baseUrl: baseUrl.href,
+        routes: routes.length,
+        viewports: VIEWPORTS,
+        internalLinks: links.size,
+        issues,
+        generatedAt: new Date().toISOString(),
+      },
+      null,
+      2
+    )
+  );
   console.log(`Web smoke test: ${routes.length} route, ${VIEWPORTS.length} viewport, ${links.size} internal link.`);
+  console.log(`Artifact: ${resolve(artifactDir, "summary.json")}`);
   if (issues.length) {
     console.error(`Lỗi (${issues.length}):`);
     for (const issue of issues) console.error(`- ${issue}`);

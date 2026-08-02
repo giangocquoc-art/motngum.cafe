@@ -1971,19 +1971,6 @@
 
 @layer responsive {
   @media (max-width: 1060px) {
-    .primary-nav {
-      gap: 0;
-    }
-
-    .nav-link {
-      padding-inline: 8px;
-      font-size: 0.73rem;
-    }
-
-    .nav-cta {
-      display: none;
-    }
-
     .hero-grid {
       grid-template-columns: 1fr 0.9fr;
     }
@@ -2031,38 +2018,6 @@
 
     .brand-link {
       width: 140px;
-    }
-
-    .menu-toggle {
-      display: block;
-    }
-
-    .primary-nav {
-      position: fixed;
-      inset: 68px 16px auto;
-      display: none;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 3px;
-      padding: 14px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(255, 253, 249, 0.99);
-      box-shadow: var(--shadow);
-    }
-
-    .primary-nav.is-open {
-      display: flex;
-    }
-
-    .nav-link {
-      padding: 12px 14px;
-      font-size: 0.82rem;
-    }
-
-    .nav-cta {
-      display: inline-flex;
-      margin: 7px 0 0;
     }
 
     .hero-grid {
@@ -3899,6 +3854,7 @@
 /* VietAPI model catalogue */
 @layer components {
   .api-hero {
+    scroll-margin-top: 92px;
     padding: clamp(78px, 9vw, 126px) 0 clamp(64px, 7vw, 96px);
     border-bottom: 1px solid var(--line);
     background:
@@ -3934,6 +3890,7 @@
   }
 
   .api-hero-panel {
+    min-width: 0;
     padding: clamp(26px, 4vw, 40px);
     border: 1px solid rgba(29, 25, 22, 0.16);
     border-radius: var(--radius-xl);
@@ -3941,6 +3898,51 @@
     box-shadow: 0 20px 50px rgba(58, 37, 28, 0.08);
     backdrop-filter: blur(12px);
   }
+
+  .api-hero-gallery {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+    margin: -8px -8px 24px;
+  }
+
+  .api-hero-gallery-tile {
+    min-width: 0;
+    position: relative;
+    aspect-ratio: 1 / 1.08;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--model-accent) 34%, var(--line));
+    border-radius: 12px;
+    background: var(--cream);
+  }
+
+  .api-hero-gallery-tile img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 220ms ease;
+  }
+
+  .api-hero-gallery-tile:hover img { transform: scale(1.06); }
+
+  .api-hero-gallery-tile figcaption {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    left: 6px;
+    padding: 4px 5px;
+    border-radius: 6px;
+    background: rgba(29, 25, 22, 0.78);
+    color: var(--white);
+    font-size: 0.59rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .api-hero-panel-copy { min-width: 0; }
 
   .api-card-kicker {
     display: block;
@@ -3952,7 +3954,7 @@
     text-transform: uppercase;
   }
 
-  .api-hero-panel > strong {
+  .api-hero-panel-copy > strong {
     display: block;
     font-family: var(--serif);
     font-size: clamp(1.8rem, 3vw, 2.55rem);
@@ -3960,25 +3962,25 @@
     line-height: 1.1;
   }
 
-  .api-hero-panel > p {
+  .api-hero-panel-copy > p {
     margin-top: 13px;
     font-size: 0.9rem;
   }
 
-  .api-hero-panel dl {
+  .api-hero-panel-copy dl {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
     margin-top: 28px;
   }
 
-  .api-hero-panel dl div {
+  .api-hero-panel-copy dl div {
     min-width: 0;
     padding-top: 11px;
     border-top: 1px solid var(--line);
   }
 
-  .api-hero-panel dt {
+  .api-hero-panel-copy dt {
     color: var(--muted);
     font-size: 0.64rem;
     font-weight: 750;
@@ -3986,7 +3988,7 @@
     text-transform: uppercase;
   }
 
-  .api-hero-panel dd {
+  .api-hero-panel-copy dd {
     margin: 5px 0 0;
     color: var(--ink);
     font-size: 0.84rem;
@@ -3994,7 +3996,10 @@
     overflow-wrap: anywhere;
   }
 
-  .api-catalogue-section { background: var(--paper); }
+  .api-catalogue-section {
+    scroll-margin-top: 92px;
+    background: var(--paper);
+  }
 
   .api-section-heading {
     display: grid;
@@ -4103,7 +4108,7 @@
   }
 
   .api-filters button {
-    min-height: 35px;
+    min-height: 44px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -4259,7 +4264,7 @@
 
   .api-model-card-footer button,
   .api-empty-state button {
-    min-height: 32px;
+    min-height: 38px;
     flex: 0 0 auto;
     padding: 5px 9px;
     border: 1px solid var(--line-strong);
@@ -4312,7 +4317,11 @@
   .api-base-url-card .button-light { flex: 0 0 auto; border-color: rgba(255, 255, 255, 0.58); color: var(--white); }
   .api-base-url-card .button-light:hover { border-color: var(--white); background: var(--white); color: var(--espresso); }
 
-  .api-integration-section { border-top: 1px solid var(--line); background: #f4eee8; }
+  .api-integration-section {
+    scroll-margin-top: 92px;
+    border-top: 1px solid var(--line);
+    background: #f4eee8;
+  }
   .api-integration-copy h2 { max-width: 670px; margin-bottom: 18px; }
   .api-integration-copy > p { max-width: 620px; }
 
@@ -4391,12 +4400,14 @@
   @media (max-width: 560px) {
     .api-hero { padding-top: 58px; }
     .api-hero-copy h1 { font-size: clamp(3rem, 13.4vw, 4.2rem); }
-    .api-hero-panel dl { grid-template-columns: 1fr; gap: 0; }
-    .api-hero-panel dl div { padding: 10px 0; }
-    .api-hero-panel dl div:last-child { padding-bottom: 0; }
+    .api-hero-panel-copy dl { grid-template-columns: 1fr; gap: 0; }
+    .api-hero-panel-copy dl div { padding: 10px 0; }
+    .api-hero-panel-copy dl div:last-child { padding-bottom: 0; }
     .api-model-grid { grid-template-columns: 1fr; }
     .api-model-card-art { height: 126px; }
     .api-model-card-body { min-height: 244px; }
+    .api-hero-gallery { gap: 5px; margin-inline: -2px; }
+    .api-hero-gallery-tile { border-radius: 9px; }
     .api-base-url-card { display: grid; padding: 20px; }
     .api-base-url-card .button { width: 100%; }
     .api-showcase-status time { width: 100%; margin-left: 19px; }

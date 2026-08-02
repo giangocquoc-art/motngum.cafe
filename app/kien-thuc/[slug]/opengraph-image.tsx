@@ -1,9 +1,14 @@
 import { ImageResponse } from "next/og";
-import { getSeoArticle } from "@/data/seo-content";
+import { getSeoArticle, SEO_ARTICLES } from "@/data/seo-content";
 
 export const alt = "Hướng dẫn thực tế từ Một Ngụm";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+export const dynamic = "force-static";
+
+export function generateStaticParams() {
+  return SEO_ARTICLES.map((article) => ({ slug: article.slug }));
+}
 
 type ImageProps = {
   params: Promise<{ slug: string }>;

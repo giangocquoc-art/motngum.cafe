@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import { BRAND } from "@/data/site";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://motngum.cafe";
@@ -152,13 +153,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="vi" className={lora.variable}>
       <head>
-        <script
-          id="structured-data"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationStructuredData),
-          }}
-        />
+        <JsonLd data={organizationStructuredData} />
       </head>
       <body>
         <Header />
