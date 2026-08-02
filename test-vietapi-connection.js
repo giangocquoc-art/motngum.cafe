@@ -1,5 +1,5 @@
 // Kiểm tra route nội bộ mà không ghi API key vào mã nguồn hoặc log.
-// Yêu cầu Node.js 20.9+ (cùng mức tối thiểu được khai báo trong package.json).
+// Yêu cầu Node.js 22+ (cùng mức tối thiểu được khai báo trong package.json).
 
 const apiKey = process.env.VIETAPI_API_KEY?.trim();
 const port = process.env.VIETAPI_TEST_PORT?.trim() || "3000";

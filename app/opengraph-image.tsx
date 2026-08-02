@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
 export const alt = "Một Ngụm — Một ly cà phê, một hướng giải quyết";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

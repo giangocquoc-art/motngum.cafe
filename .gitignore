@@ -9,6 +9,9 @@ npm-debug.log*
 *.tsbuildinfo
 node_modules/
 .next/
+.open-next/
+.wrangler/
+dist/
 .vercel/
 .env.*.local
 .npmrc
