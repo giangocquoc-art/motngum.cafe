@@ -12,11 +12,11 @@ export const metadata = createPageMetadata({
 });
 
 type Props = {
-  searchParams: Promise<{ service?: string }>;
+  searchParams: Promise<{ service?: string; model?: string }>;
 };
 
 export default async function ConsultationPage({ searchParams }: Props) {
-  const { service = "tu-van-marketing" } = await searchParams;
+  const { service = "tu-van-marketing", model = "" } = await searchParams;
   const consultation = getService("tu-van-marketing")!;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://motngum.cafe";
   const pageUrl = `${siteUrl}/tu-van-marketing`;
@@ -69,7 +69,7 @@ export default async function ConsultationPage({ searchParams }: Props) {
             </ul>
           </Reveal>
           <Reveal as="section" delay={0.08} aria-label="Form tư vấn marketing">
-            <LeadForm defaultService={service} />
+            <LeadForm defaultService={service} defaultModel={model} />
           </Reveal>
         </div>
       </section>

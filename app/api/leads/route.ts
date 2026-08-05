@@ -5,6 +5,7 @@ type LeadPayload = {
   phone?: string;
   email?: string;
   service?: string;
+  model?: string;
   problem?: string;
   budget?: string;
   contactTime?: string;
@@ -64,6 +65,7 @@ async function sendLeadEmail(lead: Record<string, string>) {
         `Điện thoại: ${lead.phone}`,
         `Email: ${lead.email}`,
         `Dịch vụ: ${lead.service}`,
+        `Model API: ${lead.model}`,
         `Vấn đề: ${lead.problem}`,
         `Ngân sách: ${lead.budget}`,
         `Thời gian liên hệ: ${lead.contactTime}`,
@@ -104,6 +106,7 @@ export async function POST(request: Request) {
     phone,
     email: clean(payload.email, 180),
     service: clean(payload.service, 100),
+    model: clean(payload.model, 160),
     problem,
     budget: clean(payload.budget, 100),
     contactTime: clean(payload.contactTime, 100),

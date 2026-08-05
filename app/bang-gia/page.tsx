@@ -1,13 +1,13 @@
-import Link from "next/link";
 import Reveal from "@/components/Reveal";
-import { getServiceHref, SERVICES } from "@/data/site";
+import PricingCatalog from "@/components/PricingCatalog";
+import { FALLBACK_MODELS } from "@/data/vietapi-models";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
-  title: "Bảng giá website, chatbot AI và marketing",
-  description: "Xem giá khởi điểm cho thiết kế website, chatbot AI, quảng cáo, đào tạo AI và tư vấn marketing dành cho cá nhân, chủ shop và doanh nghiệp nhỏ.",
+  title: "Bảng giá API và dịch vụ số",
+  description: "Chọn API model OpenAI-compatible hoặc dịch vụ website, xử lý dữ liệu, tự động hóa và marketing của Một Ngụm.",
   path: "/bang-gia",
-  keywords: ["bảng giá thiết kế website", "giá chatbot AI", "chi phí đào tạo AI", "giá dịch vụ digital"],
+  keywords: ["bảng giá API", "Claude Opus 5 API", "giá xử lý dữ liệu", "dịch vụ digital"],
 });
 
 export default function PricingPage() {
@@ -16,27 +16,17 @@ export default function PricingPage() {
       <section className="page-hero" aria-labelledby="pricing-title">
         <div className="container">
           <Reveal as="header">
-            <p className="eyebrow">Chi phí để bắt đầu</p>
-            <h1 id="pricing-title">Giá rõ từ đầu, báo theo đúng phạm vi.</h1>
-            <p>Dịch vụ tùy chỉnh được báo giá sau khi xem nhu cầu, dữ liệu và khối lượng công việc thực tế.</p>
+            <p className="eyebrow">Một bảng giá · hai hướng bắt đầu</p>
+            <h1 id="pricing-title">Chọn API hay chọn dịch vụ?</h1>
+            <p>Đi vào đúng gian hàng bạn cần: model AI có giá theo token, hoặc giải pháp số được báo theo phạm vi công việc.</p>
           </Reveal>
         </div>
       </section>
       <section className="section pricing-section" aria-labelledby="pricing-table-title">
-        <h2 id="pricing-table-title" className="visually-hidden">Bảng giá dịch vụ</h2>
-        <ul className="pricing-table" role="list">
-          {SERVICES.map((service) => (
-            <Reveal as="li" className="pricing-row" key={service.slug}>
-              <article>
-                <p className="pricing-eyebrow">{service.eyebrow}</p>
-                <h3>{service.title}</h3>
-                <p>{service.summary}</p>
-              </article>
-              <strong>{service.price}</strong>
-              <Link href={getServiceHref(service.slug)}>Chi tiết <span aria-hidden="true">→</span></Link>
-            </Reveal>
-          ))}
-        </ul>
+        <h2 id="pricing-table-title" className="visually-hidden">Bảng giá API và dịch vụ</h2>
+        <div className="container">
+          <PricingCatalog initialModels={FALLBACK_MODELS} />
+        </div>
       </section>
     </>
   );

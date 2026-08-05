@@ -11,6 +11,7 @@ const SERVICE_LABELS = {
   "quang-cao": "Chạy quảng cáo",
   "dao-tao-ai-co-ban": "Đào tạo AI",
   "tu-van-marketing": "Tư vấn marketing miễn phí",
+  "api-vietapi": "API VietAPI",
 };
 
 const HEADERS = [
@@ -20,6 +21,7 @@ const HEADERS = [
   "Số điện thoại",
   "Email",
   "Dịch vụ",
+  "Model API",
   "Vấn đề",
   "Ngân sách",
   "Thời gian liên hệ",
@@ -58,6 +60,12 @@ function doPost(e) {
       sheet.appendRow(HEADERS);
       sheet.setFrozenRows(1);
       sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight("bold");
+    } else {
+      const existingHeaders = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), 1)).getValues()[0];
+      if (existingHeaders.indexOf("Model API") === -1) {
+        sheet.insertColumnAfter(6);
+        sheet.getRange(1, 7).setValue("Model API").setFontWeight("bold");
+      }
     }
 
     sheet.appendRow([
@@ -67,6 +75,7 @@ function doPost(e) {
       safeCell(data.phone),
       safeCell(data.email),
       safeCell(SERVICE_LABELS[data.service] || data.service),
+      safeCell(data.model),
       safeCell(data.problem),
       safeCell(data.budget),
       safeCell(data.contactTime),

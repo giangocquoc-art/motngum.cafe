@@ -5,7 +5,7 @@ import { BRAND } from "@/data/site";
 
 type Status = "idle" | "sending" | "success" | "fallback" | "error";
 
-export default function LeadForm({ defaultService = "" }: { defaultService?: string }) {
+export default function LeadForm({ defaultService = "", defaultModel = "" }: { defaultService?: string; defaultModel?: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
   const baseId = useId();
@@ -74,6 +74,7 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
           <label htmlFor={`${baseId}-service`}>Bạn quan tâm dịch vụ nào?</label>
           <select id={`${baseId}-service`} name="service" defaultValue={defaultService}>
             <option value="">Chưa xác định</option>
+            <option value="api-vietapi">API VietAPI</option>
             <option value="thiet-ke-website">Thiết kế website</option>
             <option value="chatbot-ai">Chatbot AI</option>
             <option value="xu-ly-du-lieu">Xử lý dữ liệu</option>
@@ -85,6 +86,7 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
             <option value="tu-van-marketing">Tư vấn marketing miễn phí</option>
           </select>
         </p>
+        <input type="hidden" name="model" value={defaultModel} />
         <p className="form-field span-2">
           <label htmlFor={`${baseId}-problem`}>Bạn đang vướng gì? *</label>
           <textarea id={`${baseId}-problem`} name="problem" required rows={4} placeholder="Mô tả ngắn việc đang làm bạn mất thời gian hoặc khiến bạn khó có thêm khách..." />

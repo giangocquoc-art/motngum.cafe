@@ -8,7 +8,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     "",
     "/menu",
-    "/dich-vu",
     "/kien-thuc",
     "/chinh-sach-bao-mat",
     "/nguyen-tac-noi-dung",

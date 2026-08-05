@@ -85,7 +85,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             "@type": "ListItem",
             position: 2,
             name: "Dịch vụ",
-            item: `${siteUrl}/dich-vu`,
+            item: `${siteUrl}/bang-gia?category=services`,
           },
           {
             "@type": "ListItem",
@@ -118,7 +118,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             <Breadcrumbs
               items={[
                 { label: "Trang chủ", href: "/" },
-                { label: "Dịch vụ", href: "/dich-vu" },
+                { label: "Dịch vụ", href: "/bang-gia?category=services" },
                 { label: service.title },
               ]}
             />

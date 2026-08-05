@@ -53,6 +53,8 @@ code or commit them to the repository.
 
 ```env
 NEXT_PUBLIC_SITE_URL=https://motngum.cafe
+VIETAPI_BASE_URL=https://api.vietapi.tech/v1
+VIETAPI_API_KEY=
 NEXT_PUBLIC_CONTACT_EMAIL=cskh@motngum.cafe
 NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=
 LEAD_RECEIVER_EMAIL=cskh@motngum.cafe
@@ -61,14 +63,13 @@ GOOGLE_SHEETS_WEB_APP_URL=https://script.google.com/macros/s/DEPLOYMENT_ID/exec
 GOOGLE_SHEETS_WEB_APP_SECRET=thay-bang-chuoi-bi-mat-dai
 ```
 
-Google Sheets và Resend là hai kênh độc lập. Chỉ cần cấu hình một trong hai; nếu cấu hình cả hai, lead được lưu vào Sheet và đồng thời gửi email. Xem hướng dẫn Apps Script tại `integrations/google-sheets/README.md`.
+`VIETAPI_API_KEY` chỉ dùng ở server để đồng bộ model đang hoạt động; điền trong Environment Variables của hosting, không đặt trong mã frontend. Google Sheets và Resend là hai kênh độc lập. Chỉ cần cấu hình một trong hai; nếu cấu hình cả hai, lead được lưu vào Sheet và đồng thời gửi email. Xem hướng dẫn Apps Script tại `integrations/google-sheets/README.md`.
 
 ## Router chính
 
 - `/`
 - `/menu`
 - `/qr`
-- `/dich-vu`
 - `/dich-vu/[slug]`
 - `/kien-thuc`
 - `/kien-thuc/[slug]`

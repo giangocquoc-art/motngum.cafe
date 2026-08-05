@@ -73,8 +73,8 @@ export default function HomePage() {
           </Reveal>
           <ServicesGrid limit={6} />
           <div className="section-actions">
-            <Link href="/dich-vu" className="button button-light">
-              Xem tất cả dịch vụ
+            <Link href="/bang-gia?category=services" className="button button-light">
+              Xem bảng giá dịch vụ
             </Link>
           </div>
         </div>
