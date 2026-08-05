@@ -148,14 +148,13 @@ export default function PricingCatalog({ initialModels }: Props) {
                     <div className="api-store-body">
                       <div className="api-store-meta">
                         <span>{model.family}</span>
-                        {model.owner ? <small>{model.owner}</small> : null}
                       </div>
                       <h3>{model.label}</h3>
                       <code>{model.id}</code>
                       <p>{model.description}</p>
                       <div className="api-store-buy">
                         <strong>{model.price}</strong>
-                        <Link href={`/tu-van-marketing?service=api-vietapi&model=${encodeURIComponent(model.id)}`}>
+                        <Link href={`/tu-van-marketing?service=api-ai&model=${encodeURIComponent(model.id)}`}>
                           Lấy key <span aria-hidden="true">→</span>
                         </Link>
                       </div>
@@ -170,7 +169,7 @@ export default function PricingCatalog({ initialModels }: Props) {
                   <code>{MOTNGUM_BASE_URL}</code>
                   <p>Dùng URL này trong OpenAI SDK; key luôn để ở server hoặc biến môi trường.</p>
                 </div>
-                <Link className="button button-dark" href="/tu-van-marketing?service=api-vietapi">Đăng ký API</Link>
+                <Link className="button button-dark" href="/tu-van-marketing?service=api-ai">Đăng ký API</Link>
               </div>
             </div>
           ) : (

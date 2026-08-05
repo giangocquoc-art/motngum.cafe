@@ -74,7 +74,7 @@ export default function LeadForm({ defaultService = "", defaultModel = "" }: { d
           <label htmlFor={`${baseId}-service`}>Bạn quan tâm dịch vụ nào?</label>
           <select id={`${baseId}-service`} name="service" defaultValue={defaultService}>
             <option value="">Chưa xác định</option>
-            <option value="api-vietapi">API VietAPI</option>
+            <option value="api-ai">API AI</option>
             <option value="thiet-ke-website">Thiết kế website</option>
             <option value="chatbot-ai">Chatbot AI</option>
             <option value="xu-ly-du-lieu">Xử lý dữ liệu</option>

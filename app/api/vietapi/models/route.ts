@@ -22,7 +22,7 @@ function response(payload: { models: VietApiModel[]; live: boolean; syncedAt: st
 export async function GET() {
   const now = Date.now();
   if (cache && cache.expiresAt > now) {
-    return response({ ...cache, live: true, message: "Đã đồng bộ từ VietAPI." });
+    return response({ ...cache, live: true, message: "Đã cập nhật danh mục model." });
   }
 
   const apiKey = process.env.VIETAPI_API_KEY?.trim();
@@ -31,7 +31,7 @@ export async function GET() {
       models: FALLBACK_MODELS,
       live: false,
       syncedAt: new Date().toISOString(),
-      message: "Đang hiển thị danh sách đã kiểm tra. Cấu hình VIETAPI_API_KEY để tự đồng bộ.",
+      message: "Đang hiển thị danh sách model đã kiểm tra.",
     });
   }
 
@@ -45,10 +45,10 @@ export async function GET() {
     if (!upstream.ok) throw new Error(`VietAPI HTTP ${upstream.status}`);
 
     const models = normalizeModelRecords(await upstream.json());
-    if (!models.length) throw new Error("VietAPI không trả model OpenAI-compatible");
+    if (!models.length) throw new Error("Không có model OpenAI-compatible");
 
     cache = { models, expiresAt: now + CACHE_TTL_MS, syncedAt: new Date().toISOString() };
-    return response({ ...cache, live: true, message: "Đang hiển thị model còn hoạt động từ VietAPI." });
+    return response({ ...cache, live: true, message: "Đang hiển thị các model đang hoạt động." });
   } catch (error) {
     console.error("[vietapi/models] sync failed", {
       reason: error instanceof Error ? error.message : "unknown",
@@ -58,7 +58,7 @@ export async function GET() {
       models: cache?.models || FALLBACK_MODELS,
       live: false,
       syncedAt: cache?.syncedAt || new Date().toISOString(),
-      message: "VietAPI tạm thời chưa phản hồi; đang giữ danh sách gần nhất.",
+      message: "Nguồn model tạm thời chưa phản hồi; đang giữ danh sách gần nhất.",
     });
   }
 }

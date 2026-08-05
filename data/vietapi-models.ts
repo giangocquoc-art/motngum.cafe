@@ -56,7 +56,7 @@ const FAMILY_META: Record<
     iconAlt: "Minh họa tia sáng ý tưởng của Grok",
   },
   Khác: {
-    description: "Model mới được VietAPI bổ sung.",
+    description: "Model mới được bổ sung.",
     icon: "/assets/api/other.svg",
     iconAlt: "Minh họa khám phá model mới",
   },

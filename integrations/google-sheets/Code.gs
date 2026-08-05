@@ -11,7 +11,7 @@ const SERVICE_LABELS = {
   "quang-cao": "Chạy quảng cáo",
   "dao-tao-ai-co-ban": "Đào tạo AI",
   "tu-van-marketing": "Tư vấn marketing miễn phí",
-  "api-vietapi": "API VietAPI",
+  "api-ai": "API AI",
 };
 
 const HEADERS = [

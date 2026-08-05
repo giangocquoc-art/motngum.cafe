@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Lora } from "next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -12,12 +12,11 @@ const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 const siteDescription =
   "Một Ngụm là cà phê lưu động tại TP.HCM, kết nối bạn với website, chatbot AI, tự động hóa và tư vấn marketing vừa sức.";
 
-const lora = Lora({
+const beVietnamPro = Be_Vietnam_Pro({
   subsets: ["latin", "vietnamese"],
-  weight: "400",
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
-  variable: "--font-lora",
+  variable: "--font-be-vietnam-pro",
   preload: true,
 });
 
@@ -147,7 +146,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   };
 
   return (
-    <html lang="vi" className={lora.variable}>
+    <html lang="vi" className={beVietnamPro.variable}>
       <head>
         <script
           id="structured-data"

@@ -322,8 +322,8 @@
     --radius-lg: 22px;
     --radius-md: 14px;
     --container: min(1120px, calc(100% - 48px));
-    --serif: var(--font-lora), Georgia, "Times New Roman", serif;
-    --sans: "Segoe UI", Arial, Helvetica, sans-serif;
+    --serif: var(--font-be-vietnam-pro), "Be Vietnam Pro", Arial, sans-serif;
+    --sans: var(--font-be-vietnam-pro), "Be Vietnam Pro", Arial, sans-serif;
   }
 
   body {
@@ -361,7 +361,7 @@
   h3 {
     color: var(--ink);
     font-family: var(--serif);
-    font-weight: 400;
+    font-weight: 700;
     letter-spacing: -0.012em;
     line-height: 1.06;
     overflow-wrap: normal;
@@ -2803,8 +2803,8 @@
     --muted: #68615c;
     --line: #ded7d0;
     --line-strong: #c9bdb3;
-    --serif: var(--font-lora), Georgia, "Times New Roman", serif;
-    --sans: Arial, "Segoe UI", Helvetica, sans-serif;
+    --serif: var(--font-be-vietnam-pro), "Be Vietnam Pro", Arial, sans-serif;
+    --sans: var(--font-be-vietnam-pro), "Be Vietnam Pro", Arial, sans-serif;
     --container: min(1160px, calc(100% - 48px));
   }
 
