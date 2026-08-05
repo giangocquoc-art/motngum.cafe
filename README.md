@@ -32,6 +32,23 @@ npx vercel@latest login
 npx vercel@latest --prod
 ```
 
+## OpenAI-compatible API proxy
+
+The site exposes an OpenAI-compatible base URL at `https://motngum.cafe/v1`.
+Requests such as `/v1/models` and `/v1/chat/completions` are forwarded to
+`https://api.vietapi.tech/v1`, including the `Authorization` header, query
+parameters, request body and streaming response.
+
+In an OpenAI-compatible client, use:
+
+```env
+OPENAI_BASE_URL=https://motngum.cafe/v1
+```
+
+The upstream can be changed for a deployment with the server-side
+`VIETAPI_BASE_URL` environment variable. Do not put API keys in client-side
+code or commit them to the repository.
+
 ## Biến môi trường
 
 ```env
