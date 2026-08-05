@@ -1,5 +1,13 @@
 # Kết nối form Một Ngụm với Google Sheets
 
+## Sheet đang được cấu hình
+
+Mã nguồn hiện đang trỏ tới Sheet quản lý này:
+
+https://docs.google.com/spreadsheets/d/1aOr0a218u3k71RM0XMekenQoPmZuvqfkjSqc1LrTdTg/edit
+
+Nếu bạn có quyền với Sheet trên, chỉ cần mở link và tiếp tục phần Apps Script bên dưới. Mình không thể tự cấp quyền hoặc deploy thay tài khoản Google khi chưa có phiên Google được kết nối.
+
 ## 1. Chuẩn bị Google Sheet
 
 1. Tạo hoặc mở file Google Sheet nhận lead.
