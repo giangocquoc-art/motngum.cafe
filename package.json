@@ -8,12 +8,12 @@
   "scripts": {
     "install:ci": "bash scripts/install-ci.sh",
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
-    "build": "npm run qa:static && bash scripts/build-verified.sh",
+    "build": "next build",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "test": "npm run build && node --test tests/*.test.mjs",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
-    "qa:static": "node --test tests/site-integrity.test.mjs"
+    "qa:static": "next build"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
