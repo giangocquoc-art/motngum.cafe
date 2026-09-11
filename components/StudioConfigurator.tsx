@@ -6,10 +6,10 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 type Domain = { name: string; status: "registered" | "unregistered" | "unknown"; retailPrice: number; source: string; lookupUrl?: string };
 
 const defaultPackages = [
-  { id: "landing", name: "Landing Page", price: 1_888_000, mail: "1 Mail Pro · 200MB", description: "Một trang tập trung vào một sản phẩm, chiến dịch hoặc hành động.", features: ["Thiết kế responsive", "SEO nền tảng", "Form liên hệ", "Hỗ trợ triển khai"] },
-  { id: "business", name: "Website Doanh Nghiệp", price: 3_888_000, mail: "5 Mail Pro · 200MB/mail", description: "Bộ mặt chỉn chu để khách hiểu, tin và liên hệ với doanh nghiệp.", features: ["Website có CMS", "SEO on-page cơ bản", "Sitemap & Analytics", "Hỗ trợ triển khai"], featured: true },
-  { id: "commerce", name: "Website Bán Hàng", price: 9_888_000, mail: "5 Mail Pro · 200MB/mail", description: "Nền tảng giới thiệu sản phẩm, nhận đơn và quản lý bán hàng.", features: ["Danh mục sản phẩm", "Giỏ hàng", "Quản lý đơn", "Hướng dẫn vận hành"] },
-  { id: "custom", name: "Web App Custom", price: 10_000_000, mail: "Theo phạm vi", description: "Luồng nghiệp vụ riêng cần khảo sát và báo giá theo phạm vi.", features: ["Khảo sát nghiệp vụ", "Thiết kế riêng", "Tích hợp theo nhu cầu", "Lộ trình rõ ràng"] },
+  { id: "landing", name: "Landing Page", price: 1_888_000, mail: "1 Mail Pro · 200MB", description: "Một trang giới thiệu dịch vụ, sản phẩm hoặc chiến dịch.", features: ["Hiển thị tốt trên điện thoại", "SEO cơ bản", "Form liên hệ", "Hỗ trợ đưa website lên mạng"] },
+  { id: "business", name: "Website Doanh Nghiệp", price: 3_888_000, mail: "5 Mail Pro · 200MB/mail", description: "Website đầy đủ để giới thiệu doanh nghiệp và nhận liên hệ.", features: ["Tự cập nhật nội dung", "SEO cơ bản", "Sitemap và Analytics", "Hỗ trợ đưa website lên mạng"], featured: true },
+  { id: "commerce", name: "Website Bán Hàng", price: 9_888_000, mail: "5 Mail Pro · 200MB/mail", description: "Trưng bày sản phẩm, nhận đơn và quản lý bán hàng.", features: ["Danh mục sản phẩm", "Giỏ hàng", "Quản lý đơn", "Hướng dẫn sử dụng"] },
+  { id: "custom", name: "Web App Theo Yêu Cầu", price: 10_000_000, mail: "Tùy phạm vi", description: "Dành cho quy trình hoặc tính năng riêng ngoài website thông thường.", features: ["Phân tích yêu cầu", "Thiết kế riêng", "Tích hợp theo nhu cầu", "Báo giá theo phạm vi"] },
 ];
 
 const defaultTemplates = [
@@ -103,25 +103,25 @@ export default function StudioConfigurator() {
 
   return <>
     <section className="studio-domain" id="ten-mien">
-      <div className="studio-section-head"><span>Tìm một cái tên</span><h2>Tên miền là nơi câu chuyện bắt đầu.</h2><p>Nhập tên thương hiệu. Chúng tôi kiểm tra nhiều đuôi và cộng sẵn phí hỗ trợ cấu hình.</p></div>
+      <div className="studio-section-head"><span>Bước 1 · Tên miền</span><h2>Tên bạn muốn còn đăng ký được không?</h2><p>Nhập tên thương hiệu hoặc tên miền. Kết quả hiển thị kèm giá dự kiến một năm.</p></div>
       <form className="studio-search" onSubmit={search}>
         <label htmlFor="studio-domain-input">Tên thương hiệu hoặc tên miền</label>
-        <div><input id="studio-domain-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ví dụ: thuybeauty" autoComplete="off" /><button disabled={loading}>{loading ? "Đang rót…" : "Tìm ngay"}</button></div>
+        <div><input id="studio-domain-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Ví dụ: thuybeauty" autoComplete="off" /><button disabled={loading}>{loading ? "Đang kiểm tra…" : "Kiểm tra"}</button></div>
       </form>
       {error && <p className="studio-error" role="alert">{error}</p>}
       {domains.length > 0 && <div className="studio-domain-results" aria-live="polite">
         {domains.map((item) => <article key={item.name} className={domain?.name === item.name ? "is-selected" : ""}>
-          <div><strong>{item.name}</strong><span data-status={item.status}>{item.status === "registered" ? "Đã đăng ký" : item.status === "unregistered" ? "Chưa thấy đăng ký" : "Cần xác minh"}</span></div>
+          <div><strong>{item.name}</strong><span data-status={item.status}>{item.status === "registered" ? "Đã có người đăng ký" : item.status === "unregistered" ? "Có thể đăng ký" : "Chưa xác minh"}</span></div>
           <b>{money(item.retailPrice)}<small>/năm</small></b>
-          {item.status === "registered" ? <em>Thử một đuôi khác</em> : <button type="button" onClick={() => setDomain(item)}>{domain?.name === item.name ? "Đã chọn" : "Chọn tên này"}</button>}
+          {item.status === "registered" ? <em>Không thể chọn</em> : <button type="button" onClick={() => setDomain(item)}>{domain?.name === item.name ? "Đã chọn" : "Chọn tên này"}</button>}
         </article>)}
-        <p>Giá hiển thị đã gồm 100.000đ hỗ trợ cấu hình domain và kết nối Mail Pro. Kết quả “chưa thấy đăng ký” được xác nhận lại trước khi triển khai.</p>
+        <p>Giá đã gồm 100.000đ phí hỗ trợ cấu hình tên miền. Tình trạng tên miền sẽ được xác nhận lại trước khi đăng ký.</p>
         {suggestions.length > 0 && <div className="studio-suggestions"><strong>Tên thay thế</strong>{suggestions.map((item) => <button type="button" key={item.name} disabled={item.status === "registered"} onClick={() => setDomain(item)}>{item.name}<span>{item.status === "registered" ? "Đã đăng ký" : money(item.retailPrice)}</span></button>)}</div>}
       </div>}
     </section>
 
     <section className="studio-packages" id="goi-website">
-      <div className="studio-section-head"><span>Chọn độ lớn vừa đủ</span><h2>Bạn muốn làm website gì?</h2><p>Bắt đầu đúng nhu cầu hôm nay. Website vẫn có thể lớn lên cùng công việc ngày mai.</p></div>
+      <div className="studio-section-head"><span>Bước 2 · Gói website</span><h2>Chọn đúng loại website bạn cần.</h2><p>Mỗi gói có giá và hạng mục rõ ràng. Có thể bổ sung tính năng sau khi trao đổi.</p></div>
       <div className="studio-package-grid">
         {packages.map((item) => <article key={item.id} className={`${item.featured ? "is-featured" : ""} ${packageId === item.id ? "is-selected" : ""}`}>
           {item.featured && <span className="studio-pill">Một Ngụm đề xuất</span>}
@@ -133,7 +133,7 @@ export default function StudioConfigurator() {
     </section>
 
     <section className="studio-templates" id="mau-website">
-      <div className="studio-section-head"><span>Chọn một điểm bắt đầu</span><h2>Một mẫu hợp gu, rồi làm thành của riêng bạn.</h2><p>Màu sắc, hình ảnh và nội dung đều được tinh chỉnh theo thương hiệu thực tế.</p></div>
+      <div className="studio-section-head"><span>Bước 3 · Mẫu giao diện</span><h2>Chọn phong cách gần với thương hiệu.</h2><p>Mẫu là điểm khởi đầu. Màu sắc, hình ảnh và nội dung sẽ được chỉnh theo doanh nghiệp của bạn.</p></div>
       <div className="studio-filters" aria-label="Lọc mẫu website">{categories.map((item) => <button type="button" key={item} className={category === item ? "is-active" : ""} onClick={() => setCategory(item)}>{item}</button>)}</div>
       <div className="studio-template-grid">
         {shownTemplates.map((item) => <article key={item.id} className={templateId === item.id ? "is-selected" : ""}>
@@ -144,7 +144,7 @@ export default function StudioConfigurator() {
     </section>
 
     <section className="studio-quote" id="bao-gia">
-      <div className="studio-quote-copy"><span>Báo giá của bạn</span><h2>Đủ rõ để bắt đầu một cuộc trò chuyện.</h2><p>Đây là mức dự kiến. Một Ngụm sẽ xác nhận phạm vi và giá cuối cùng trực tiếp qua Zalo.</p></div>
+      <div className="studio-quote-copy"><span>Bước 4 · Báo giá dự kiến</span><h2>Xem tổng chi phí trước khi liên hệ.</h2><p>Sao chép báo giá và gửi qua Zalo. Một Ngụm sẽ xác nhận lại tên miền, phạm vi công việc và giá cuối cùng.</p></div>
       <div className="studio-receipt">
         <header><span>MỘT NGỤM / WEB STUDIO</span><b>{quoteId}</b></header>
         <dl><div><dt>Mẫu website</dt><dd>{selectedTemplate.name}</dd></div><div><dt>Gói</dt><dd>{selectedPackage.name}</dd></div><div><dt>Website</dt><dd>{money(selectedPackage.price)}</dd></div><div><dt>Tên miền</dt><dd>{domain?.name ?? "Chưa chọn"}</dd></div><div><dt>Domain + hỗ trợ</dt><dd>{domain ? money(domain.retailPrice) : "—"}</dd></div><div><dt>Mail Pro</dt><dd>{selectedPackage.mail}<small>Đã bao gồm</small></dd></div></dl>
