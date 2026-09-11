@@ -22,6 +22,52 @@ function mn_register_catalog_types() {
 }
 add_action('init', 'mn_register_catalog_types');
 
+function mn_add_catalog_meta_boxes() {
+    add_meta_box('mn_package_details', 'Chi tiết gói', 'mn_render_package_fields', 'mn_package', 'normal', 'high');
+    add_meta_box('mn_template_details', 'Chi tiết mẫu', 'mn_render_template_fields', 'mn_template', 'normal', 'high');
+}
+add_action('add_meta_boxes', 'mn_add_catalog_meta_boxes');
+
+function mn_field($post, $key, $label, $type = 'text') {
+    $value = get_post_meta($post->ID, $key, true);
+    if ($type === 'textarea') {
+        printf('<p><label for="mn_%1$s"><strong>%2$s</strong></label><br><textarea class="widefat" rows="6" id="mn_%1$s" name="mn_%1$s">%3$s</textarea></p>', esc_attr($key), esc_html($label), esc_textarea($value));
+        return;
+    }
+    printf(
+        '<p><label for="mn_%1$s"><strong>%2$s</strong></label><br><input class="widefat" id="mn_%1$s" name="mn_%1$s" type="%3$s" value="%4$s"></p>',
+        esc_attr($key), esc_html($label), esc_attr($type), esc_attr($value)
+    );
+}
+
+function mn_render_package_fields($post) {
+    wp_nonce_field('mn_save_catalog', 'mn_catalog_nonce');
+    mn_field($post, 'price', 'Giá website (VND)', 'number');
+    mn_field($post, 'mail', 'Mail Pro đi kèm');
+    mn_field($post, 'features', 'Tính năng (mỗi dòng một mục)', 'textarea');
+}
+
+function mn_render_template_fields($post) {
+    wp_nonce_field('mn_save_catalog', 'mn_catalog_nonce');
+    mn_field($post, 'category', 'Danh mục');
+    mn_field($post, 'demo_url', 'Đường dẫn demo', 'url');
+}
+
+function mn_save_catalog_fields($post_id) {
+    if (!isset($_POST['mn_catalog_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mn_catalog_nonce'])), 'mn_save_catalog')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    $text_fields = ['mail', 'features', 'category'];
+    foreach ($text_fields as $key) {
+        if (isset($_POST['mn_' . $key])) update_post_meta($post_id, $key, sanitize_textarea_field(wp_unslash($_POST['mn_' . $key])));
+    }
+    if (isset($_POST['mn_price'])) update_post_meta($post_id, 'price', absint($_POST['mn_price']));
+    if (isset($_POST['mn_demo_url'])) update_post_meta($post_id, 'demo_url', esc_url_raw(wp_unslash($_POST['mn_demo_url'])));
+}
+add_action('save_post_mn_package', 'mn_save_catalog_fields');
+add_action('save_post_mn_template', 'mn_save_catalog_fields');
+
 function mn_register_settings() {
     register_setting('mn_studio', 'mn_domain_markup', [
         'type' => 'integer', 'default' => 100000,
@@ -54,6 +100,7 @@ function mn_catalog_item($post) {
         'price' => absint(get_post_meta($post->ID, 'price', true)),
         'category' => sanitize_text_field(get_post_meta($post->ID, 'category', true)),
         'mail' => sanitize_text_field(get_post_meta($post->ID, 'mail', true)),
+        'features' => array_values(array_filter(array_map('sanitize_text_field', preg_split('/\R/', (string) get_post_meta($post->ID, 'features', true))))),
         'demoUrl' => esc_url_raw(get_post_meta($post->ID, 'demo_url', true)),
         'image' => esc_url_raw(get_the_post_thumbnail_url($post, 'large') ?: ''),
     ];

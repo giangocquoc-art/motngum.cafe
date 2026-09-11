@@ -10,9 +10,13 @@ export async function GET(request: Request) {
   if (baseName.length < 2) return NextResponse.json({ ok: false, message: "Nhập ít nhất 2 ký tự." }, { status: 400 });
   try {
     const live = process.env.INET_MODE === "live";
-    const domains = await getDomainProvider().search(baseName, TLDs);
+    const provider = getDomainProvider();
+    const domains = await provider.search(baseName, TLDs);
+    const suggestions = domains.some((domain) => domain.status === "registered")
+      ? await provider.search(`${baseName}studio`, [".vn", ".com"])
+      : [];
     return NextResponse.json(
-      { ok: true, live, provider: live ? "inet-reseller" : "public-rdap", domains },
+      { ok: true, live, provider: live ? "inet-reseller" : "public-rdap", domains, suggestions },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {

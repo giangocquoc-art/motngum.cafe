@@ -26,6 +26,7 @@ const money = (value: number) => `${value.toLocaleString("vi-VN")}đ`;
 export default function StudioConfigurator() {
   const [query, setQuery] = useState("");
   const [domains, setDomains] = useState<Domain[]>([]);
+  const [suggestions, setSuggestions] = useState<Domain[]>([]);
   const [domain, setDomain] = useState<Domain | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -62,8 +63,10 @@ export default function StudioConfigurator() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Không thể kiểm tra tên miền.");
       setDomains(data.domains);
+      setSuggestions(data.suggestions ?? []);
     } catch (reason) {
       setDomains([]);
+      setSuggestions([]);
       setError(reason instanceof Error ? reason.message : "Không thể kiểm tra tên miền.");
     } finally { setLoading(false); }
   }
@@ -89,6 +92,7 @@ export default function StudioConfigurator() {
           {item.status === "registered" ? <em>Thử một đuôi khác</em> : <button type="button" onClick={() => setDomain(item)}>{domain?.name === item.name ? "Đã chọn" : "Chọn tên này"}</button>}
         </article>)}
         <p>Giá hiển thị đã gồm 100.000đ hỗ trợ cấu hình domain và kết nối Mail Pro. Kết quả “chưa thấy đăng ký” được xác nhận lại trước khi triển khai.</p>
+        {suggestions.length > 0 && <div className="studio-suggestions"><strong>Tên thay thế</strong>{suggestions.map((item) => <button type="button" key={item.name} disabled={item.status === "registered"} onClick={() => setDomain(item)}>{item.name}<span>{item.status === "registered" ? "Đã đăng ký" : money(item.retailPrice)}</span></button>)}</div>}
       </div>}
     </section>
 
@@ -110,7 +114,7 @@ export default function StudioConfigurator() {
       <div className="studio-template-grid">
         {shownTemplates.map((item) => <article key={item.id} className={templateId === item.id ? "is-selected" : ""}>
           <div className="studio-browser"><span /><span /><span /><Image src={item.image} alt={`Xem trước mẫu ${item.name}`} width={1200} height={760} /></div>
-          <div><p>{item.category}</p><h3>{item.name}</h3><span>{item.note}</span><button type="button" onClick={() => setTemplateId(item.id)}>{templateId === item.id ? "Đã chọn mẫu" : "Chọn mẫu này"}</button></div>
+          <div><p>{item.category}</p><h3>{item.name}</h3><span>{item.note}</span><div className="studio-template-actions"><a href={item.image} target="_blank" rel="noopener noreferrer">Xem demo</a><button type="button" onClick={() => setTemplateId(item.id)}>{templateId === item.id ? "Đã chọn mẫu" : "Chọn mẫu này"}</button></div></div>
         </article>)}
       </div>
     </section>
