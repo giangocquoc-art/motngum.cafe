@@ -19,6 +19,8 @@
     "@base-ui/react": "^1.7.0",
     "@hookform/resolvers": "^5.7.1",
     "@shadcn/react": "^0.3.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "^1.1.1",
@@ -61,5 +63,5 @@
     "wrangler": "4.92.0"
   },
   "type": "module",
-  "displayName": "M\u1ed9t Ng\u1ee5m Cafe"
+  "displayName": "Một Ngụm Cafe"
 }
