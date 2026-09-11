@@ -12,6 +12,8 @@ const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 const siteDescription =
   "Một Ngụm là cà phê lưu động tại TP.HCM, kết nối bạn với website, chatbot AI, tự động hóa và tư vấn marketing vừa sức.";
 
+const productDescription = "Thiết kế website, tên miền và email doanh nghiệp trọn gói. Một Ngụm lo phần kỹ thuật để bạn tập trung vào việc kinh doanh.";
+
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ["latin", "vietnamese"],
   weight: ["400", "500", "600", "700", "800"],
@@ -26,7 +28,7 @@ export const metadata: Metadata = {
     default: "Một Ngụm | Cà phê, website, AI và marketing",
     template: "%s | Một Ngụm",
   },
-  description: siteDescription,
+  description: productDescription,
   alternates: { canonical: "/" },
   keywords: [
     "motngum.cafe",
