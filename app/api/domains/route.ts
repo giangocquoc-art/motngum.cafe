@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getDomainProvider } from "@/lib/domain-provider";
 
 export const runtime = "edge";
-const TLDs = [".vn", ".com", ".com.vn", ".co", ".shop"];
+const TLDs = [".vn", ".com", ".com.vn", ".net", ".org", ".shop"];
 
 export async function GET(request: Request) {
   const value = new URL(request.url).searchParams.get("name")?.trim().toLowerCase() ?? "";
@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const live = process.env.INET_MODE === "live";
     const domains = await getDomainProvider().search(baseName, TLDs);
     return NextResponse.json(
-      { ok: true, live, provider: live ? "inet-reseller" : "mock", domains },
+      { ok: true, live, provider: live ? "inet-reseller" : "public-rdap", domains },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
