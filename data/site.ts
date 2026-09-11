@@ -33,6 +33,7 @@ export const BRAND = {
 };
 
 export const NAV_LINKS = [
+  { href: "/mau-website", label: "Mẫu website" },
   { href: "/", label: "Trang chủ" },
   { href: "/menu", label: "Menu" },
   { href: "/kien-thuc", label: "Kiến thức" },
