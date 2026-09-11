@@ -1,14 +1,30 @@
-import Link from "next/link";
-import DomainSearch from "@/components/DomainSearch";
-import PackageCards from "@/components/PackageCards";
+import Image from "next/image";
+import StudioConfigurator from "@/components/StudioConfigurator";
 
 export default function HomePage() {
-  return <main className="product-home">
-    <section className="product-hero"><div className="product-hero-copy"><p className="eyebrow">MỘT NGỤM / DIGITAL STUDIO</p><h1>Website của bạn bắt đầu bằng một cái tên.</h1><p className="hero-lede">Tìm tên miền, chọn một website vừa đủ và để Một Ngụm lo phần kỹ thuật.</p><a className="hero-link" href="#domain-search">Bắt đầu với tên miền <span>↓</span></a></div><div className="hero-aside"><span>01</span><p>Không cần biết mình cần gì.<br />Chỉ cần biết mình muốn bắt đầu.</p></div></section>
-    <section className="product-section domain-section"><div className="section-label">01 / TÊN MIỀN</div><div className="section-intro"><h2>Một thương hiệu tốt nên có một địa chỉ rõ ràng.</h2><p>Nhập tên bạn đang nghĩ đến. Xem các đuôi phổ biến, giá tham khảo và chọn tên hợp với hướng đi của bạn.</p></div><DomainSearch /></section>
-    <section className="product-section offer-section"><div className="section-label">02 / WEBSITE</div><div className="section-intro"><h2>Chọn phần bạn cần. Phần còn lại để chúng tôi lo.</h2><p>Không có bảng giá rối. Mỗi gói là một điểm bắt đầu rõ ràng, có thể mở rộng khi công việc thay đổi.</p></div><div className="offer-list"><div><strong>01</strong><h3>Website bán hàng</h3><p>Biến lượt ghé thăm thành cuộc trò chuyện và đơn hàng.</p></div><div><strong>02</strong><h3>Website doanh nghiệp</h3><p>Giới thiệu thương hiệu bằng một diện mạo đáng tin.</p></div><div><strong>03</strong><h3>Landing page</h3><p>Tập trung một sản phẩm, một chiến dịch, một hành động.</p></div></div></section>
-    <section className="product-section packages-section" id="packages"><div className="section-label">03 / BÁO GIÁ WEBSITE</div><div className="section-intro"><h2>Rõ giá. Rõ phạm vi. Dễ lựa chọn.</h2><p>Chọn loại website để xem mức giá tham khảo. Một Ngụm sẽ xác nhận giá cuối cùng sau khi hiểu đúng nhu cầu của bạn.</p></div><PackageCards /></section>
-    <section className="product-section process-section"><div className="section-label">04 / CÁCH LÀM</div><div className="process-copy"><h2>Từ một ý tưởng đến một website có người chịu trách nhiệm.</h2><ol><li><b>Chia sẻ</b><span>Kể chúng tôi nghe bạn đang làm gì.</span></li><li><b>Chọn</b><span>Chọn tên, gói và hướng hình ảnh.</span></li><li><b>Nhận bàn giao</b><span>Website, domain, email — gọn trong một lần làm.</span></li></ol></div></section>
-    <section className="product-cta"><p className="eyebrow">Sẵn sàng bắt đầu?</p><h2>Một ngụm là đủ để mở lời.</h2><p>Hãy kể việc bạn muốn làm rõ. Chúng tôi sẽ trả lời bằng một hướng đi cụ thể.</p><Link href="/lien-he" className="button button-dark">Nhận tư vấn miễn phí →</Link></section>
+  return <main className="studio-home">
+    <section className="studio-hero">
+      <div className="studio-hero-copy">
+        <p className="studio-kicker"><span /> Digital studio · Website, domain & mail</p>
+        <h1>Website của bạn bắt đầu bằng <em>một cái tên.</em></h1>
+        <p>Tìm tên miền, chọn mẫu, xem giá. Phần kỹ thuật để Một Ngụm lo.</p>
+        <a href="#ten-mien">Bắt đầu tìm tên <span>↓</span></a>
+      </div>
+      <div className="studio-hero-art" aria-hidden="true">
+        <div className="studio-orbit"><span>DOMAIN</span><span>WEBSITE</span><span>MAIL PRO</span></div>
+        <span className="studio-script">motngum.cafe</span>
+        <Image src="/assets/hero-frames/cup-1.webp" alt="" width={860} height={860} priority />
+      </div>
+      <div className="studio-hero-note"><b>01</b><p>Chọn điều bạn muốn.<br />Chúng tôi nối phần còn lại.</p></div>
+    </section>
+
+    <StudioConfigurator />
+
+    <section className="studio-process">
+      <p>Nhẹ như một ngụm</p><h2>Bốn bước, một người chịu trách nhiệm.</h2>
+      <ol><li><span>01</span><b>Tìm tên</b><p>Kiểm tra tên miền và giá dự kiến.</p></li><li><span>02</span><b>Chọn mẫu</b><p>Chốt một hướng hình ảnh phù hợp.</p></li><li><span>03</span><b>Nhận báo giá</b><p>Website, domain và Mail Pro thật rõ.</p></li><li><span>04</span><b>Nhắn Zalo</b><p>Một Ngụm tiếp nhận và triển khai.</p></li></ol>
+    </section>
+
+    <a className="studio-floating-zalo" href="https://zalo.me/0583799593" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ Một Ngụm qua Zalo"><span>Z</span> Nhắn Một Ngụm</a>
   </main>;
 }

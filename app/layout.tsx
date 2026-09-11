@@ -9,10 +9,7 @@ import { BRAND } from "@/data/site";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://motngum.cafe";
 const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
-const siteDescription =
-  "Một Ngụm là cà phê lưu động tại TP.HCM, kết nối bạn với website, chatbot AI, tự động hóa và tư vấn marketing vừa sức.";
-
-const productDescription = "Thiết kế website, tên miền và email doanh nghiệp trọn gói. Một Ngụm lo phần kỹ thuật để bạn tập trung vào việc kinh doanh.";
+const siteDescription = "Một Ngụm thiết kế website, hỗ trợ chọn tên miền và Mail Pro cho doanh nghiệp nhỏ — gọn trong một lần làm.";
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ["latin", "vietnamese"],
@@ -25,18 +22,19 @@ const beVietnamPro = Be_Vietnam_Pro({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Một Ngụm | Cà phê, website, AI và marketing",
+    default: "Một Ngụm | Thiết kế website, tên miền và Mail Pro",
     template: "%s | Một Ngụm",
   },
-  description: productDescription,
+  description: siteDescription,
   alternates: { canonical: "/" },
   keywords: [
     "motngum.cafe",
-    "cà phê lưu động TP.HCM",
-    "thiết kế website từ 888k",
-    "chatbot AI từ 100k",
-    "tự động hóa công việc",
-    "tư vấn marketing miễn phí",
+    "thiết kế website",
+    "thiết kế website doanh nghiệp",
+    "website bán hàng",
+    "landing page",
+    "đăng ký tên miền",
+    "email doanh nghiệp",
   ],
   applicationName: BRAND.name,
   category: "business",
@@ -51,9 +49,8 @@ export const metadata: Metadata = {
     apple: "/favicon.png",
   },
   openGraph: {
-    title: "Một Ngụm — Một ly cà phê, một hướng giải quyết",
-    description:
-      "Cà phê 12K, tư vấn ban đầu 0đ và giải pháp số vừa sức cho cá nhân, cửa hàng và doanh nghiệp nhỏ.",
+    title: "Một Ngụm — Website bắt đầu bằng một cái tên",
+    description: siteDescription,
     url: siteUrl,
     siteName: BRAND.name,
     locale: "vi_VN",
@@ -63,13 +60,13 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Một Ngụm — Một ly cà phê, một hướng giải quyết",
+        alt: "Một Ngụm — Thiết kế website, tên miền và Mail Pro",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Một Ngụm — Một ly cà phê, một hướng giải quyết",
+    title: "Một Ngụm — Website bắt đầu bằng một cái tên",
     description: siteDescription,
     images: ["/opengraph-image"],
   },

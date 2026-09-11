@@ -1,8 +1,23 @@
 export type DomainStatus = "registered" | "unregistered" | "unknown";
-export type DomainResult = { name: string; status: DomainStatus; source: "rdap" | "inet" | "vnnic"; lookupUrl?: string };
+export type DomainResult = { name: string; status: DomainStatus; source: "rdap" | "inet" | "vnnic"; lookupUrl?: string; basePrice: number; retailPrice: number };
 export interface DomainProvider { search(baseName: string, tlds: string[]): Promise<DomainResult[]> }
 
 const VNNIC_LOOKUP = "https://www.vnnic.vn/whois-information/";
+const BASE_PRICES: Record<string, number> = {
+  ".vn": 350000,
+  ".com": 250000,
+  ".com.vn": 350000,
+  ".net": 320000,
+  ".org": 330000,
+  ".shop": 650000,
+};
+
+function priced(name: string, result: Omit<DomainResult, "basePrice" | "retailPrice">): DomainResult {
+  const tld = Object.keys(BASE_PRICES).sort((a, b) => b.length - a.length).find((suffix) => name.endsWith(suffix)) ?? ".com";
+  const basePrice = BASE_PRICES[tld] ?? 350000;
+  const markup = Math.max(0, Number(process.env.DOMAIN_MARKUP_VND ?? 100000) || 100000);
+  return { ...result, basePrice, retailPrice: basePrice + markup };
+}
 
 type Bootstrap = { services?: Array<[string[], string[]]> };
 let bootstrapPromise: Promise<Bootstrap> | undefined;
@@ -24,17 +39,17 @@ async function checkRdap(name: string): Promise<DomainResult> {
     const bootstrap = await getBootstrap();
     const service = bootstrap.services?.find(([tlds]) => Boolean(tld && tlds.includes(tld)));
     const baseUrl = service?.[1]?.[0];
-    if (!baseUrl) return { name, status: "unknown", source: "rdap" };
+    if (!baseUrl) return priced(name, { name, status: "unknown", source: "rdap" });
     const response = await fetch(`${baseUrl.replace(/\/$/, "")}/domain/${encodeURIComponent(name)}`, {
       redirect: "follow",
       cache: "no-store",
       signal: AbortSignal.timeout(8000),
       headers: { Accept: "application/rdap+json, application/json" },
     });
-    if (response.ok) return { name, status: "registered", source: "rdap" };
-    if (response.status === 404) return { name, status: "unregistered", source: "rdap" };
+    if (response.ok) return priced(name, { name, status: "registered", source: "rdap" });
+    if (response.status === 404) return priced(name, { name, status: "unregistered", source: "rdap" });
   } catch { /* An outage is not evidence that a domain is available. */ }
-  return { name, status: "unknown", source: "rdap" };
+  return priced(name, { name, status: "unknown", source: "rdap" });
 }
 
 const publicLookupProvider: DomainProvider = {
@@ -42,7 +57,7 @@ const publicLookupProvider: DomainProvider = {
     return Promise.all(tlds.map((tld) => {
       const name = `${baseName}${tld}`;
       if (tld.endsWith(".vn")) {
-        return Promise.resolve({ name, status: "unknown", source: "vnnic", lookupUrl: VNNIC_LOOKUP } as DomainResult);
+        return Promise.resolve(priced(name, { name, status: "unknown", source: "vnnic", lookupUrl: VNNIC_LOOKUP }));
       }
       return checkRdap(name);
     }));
@@ -82,9 +97,9 @@ const inetResellerProvider: DomainProvider = {
           signal: AbortSignal.timeout(8000),
         });
         if (!response.ok) throw new Error(`iNET HTTP ${response.status}.`);
-        return { name, status: readAvailability(await response.json()) ? "unregistered" : "registered", source: "inet" } as DomainResult;
+        return priced(name, { name, status: readAvailability(await response.json()) ? "unregistered" : "registered", source: "inet" });
       } catch {
-        return { name, status: "unknown", source: "inet" } as DomainResult;
+        return priced(name, { name, status: "unknown", source: "inet" });
       }
     }));
   },
