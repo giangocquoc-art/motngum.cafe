@@ -5,14 +5,14 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 
 type Domain = { name: string; status: "registered" | "unregistered" | "unknown"; retailPrice: number; source: string; lookupUrl?: string };
 
-const packages = [
+const defaultPackages = [
   { id: "landing", name: "Landing Page", price: 1_888_000, mail: "1 Mail Pro · 200MB", description: "Một trang tập trung vào một sản phẩm, chiến dịch hoặc hành động.", features: ["Thiết kế responsive", "SEO nền tảng", "Form liên hệ", "Hỗ trợ triển khai"] },
   { id: "business", name: "Website Doanh Nghiệp", price: 3_888_000, mail: "5 Mail Pro · 200MB/mail", description: "Bộ mặt chỉn chu để khách hiểu, tin và liên hệ với doanh nghiệp.", features: ["Website có CMS", "SEO on-page cơ bản", "Sitemap & Analytics", "Hỗ trợ triển khai"], featured: true },
   { id: "commerce", name: "Website Bán Hàng", price: 9_888_000, mail: "5 Mail Pro · 200MB/mail", description: "Nền tảng giới thiệu sản phẩm, nhận đơn và quản lý bán hàng.", features: ["Danh mục sản phẩm", "Giỏ hàng", "Quản lý đơn", "Hướng dẫn vận hành"] },
   { id: "custom", name: "Web App Custom", price: 10_000_000, mail: "Theo phạm vi", description: "Luồng nghiệp vụ riêng cần khảo sát và báo giá theo phạm vi.", features: ["Khảo sát nghiệp vụ", "Thiết kế riêng", "Tích hợp theo nhu cầu", "Lộ trình rõ ràng"] },
 ];
 
-const templates = [
+const defaultTemplates = [
   { id: "atelier", name: "Atelier Beauty", category: "Spa / Beauty", image: "/templates/atelier-beauty.svg", note: "Mềm mại, tinh tế, ưu tiên đặt lịch." },
   { id: "north", name: "North & Co.", category: "Doanh nghiệp", image: "/templates/north-corporate.svg", note: "Rõ ràng, đáng tin, dành cho dịch vụ chuyên môn." },
   { id: "harbor", name: "Harbor Stay", category: "Khách sạn", image: "/templates/harbor-stay.svg", note: "Giàu không khí, phù hợp lưu trú và trải nghiệm." },
@@ -35,8 +35,32 @@ export default function StudioConfigurator() {
   const [category, setCategory] = useState("Tất cả");
   const [quoteId, setQuoteId] = useState("MN-2026");
   const [copied, setCopied] = useState(false);
+  const [packages, setPackages] = useState(defaultPackages);
+  const [templates, setTemplates] = useState(defaultTemplates);
 
   useEffect(() => setQuoteId(`MN-${new Date().getFullYear()}-${String(Date.now()).slice(-5)}`), []);
+  useEffect(() => {
+    fetch("/api/catalog")
+      .then((response) => response.json())
+      .then((payload) => {
+        const remotePackages = payload.catalog?.packages;
+        const remoteTemplates = payload.catalog?.templates;
+        if (Array.isArray(remotePackages) && remotePackages.length > 0) {
+          setPackages(remotePackages.map((item: Record<string, unknown>) => ({
+            id: String(item.slug ?? item.id), name: String(item.name ?? ""), price: Number(item.price ?? 0),
+            mail: String(item.mail ?? "Theo phạm vi"), description: String(item.description ?? ""),
+            features: Array.isArray(item.features) ? item.features.map(String) : [],
+          })));
+        }
+        if (Array.isArray(remoteTemplates) && remoteTemplates.length > 0) {
+          setTemplates(remoteTemplates.map((item: Record<string, unknown>) => ({
+            id: String(item.slug ?? item.id), name: String(item.name ?? ""), category: String(item.category ?? "Khác"),
+            image: String(item.image ?? "/templates/north-corporate.svg"), note: String(item.description ?? ""),
+          })));
+        }
+      })
+      .catch(() => undefined);
+  }, []);
   const selectedPackage = packages.find((item) => item.id === packageId) ?? packages[1];
   const selectedTemplate = templates.find((item) => item.id === templateId) ?? templates[1];
   const categories = ["Tất cả", ...Array.from(new Set(templates.map((item) => item.category)))];
