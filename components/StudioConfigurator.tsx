@@ -9,7 +9,7 @@ const defaultPackages = [
   { id: "landing", name: "Landing Page", price: 1_888_000, mail: "1 Mail Pro · 200MB", description: "Một trang giới thiệu dịch vụ, sản phẩm hoặc chiến dịch.", features: ["Hiển thị tốt trên điện thoại", "SEO cơ bản", "Form liên hệ", "Hỗ trợ đưa website lên mạng"] },
   { id: "business", name: "Website Doanh Nghiệp", price: 3_888_000, mail: "5 Mail Pro · 200MB/mail", description: "Website đầy đủ để giới thiệu doanh nghiệp và nhận liên hệ.", features: ["Tự cập nhật nội dung", "SEO cơ bản", "Sitemap và Analytics", "Hỗ trợ đưa website lên mạng"], featured: true },
   { id: "commerce", name: "Website Bán Hàng", price: 9_888_000, mail: "5 Mail Pro · 200MB/mail", description: "Trưng bày sản phẩm, nhận đơn và quản lý bán hàng.", features: ["Danh mục sản phẩm", "Giỏ hàng", "Quản lý đơn", "Hướng dẫn sử dụng"] },
-  { id: "custom", name: "Web App Theo Yêu Cầu", price: 10_000_000, mail: "Tùy phạm vi", description: "Dành cho quy trình hoặc tính năng riêng ngoài website thông thường.", features: ["Phân tích yêu cầu", "Thiết kế riêng", "Tích hợp theo nhu cầu", "Báo giá theo phạm vi"] },
+  { id: "custom", name: "Web App Theo Yêu Cầu", price: 8_888_000, mail: "Tùy phạm vi", description: "Dành cho quy trình hoặc tính năng riêng ngoài website thông thường.", features: ["Phân tích yêu cầu", "Thiết kế riêng", "Tích hợp theo nhu cầu", "Báo giá theo phạm vi"] },
 ];
 
 const defaultTemplates = [
