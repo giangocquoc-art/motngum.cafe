@@ -30,5 +30,28 @@ body{font-family:system-ui;background:#143d30}
 <p>🎯 <b>Vòng săn chuột:</b> nhận nhiệm vụ → săn → giao thưởng → mua cá / nâng cấp → tiếp tục.</p>
 <p class="hint">🏡 Nói chuyện với Bà Chủ Mèo để nhận và xem tiến độ. Gặp Tiệm Cá để hồi phục.</p>
 <p class="hint">⚔️ Quái xuất hiện lại sau 6,5 giây. Hết HP: hồi sinh trong làng, mất tối đa 15 xu.</p></div>
+<p id="saved-status" class="hint" aria-live="polite">💾 Đang tải tiến độ...</p></div>
 <div id="help">WASD / phím mũi tên: di chuyển · Phím hành động: tấn công & tương tác · Shift: né</div>
-</body></html>
+<script>
+(function(){
+ const out=document.getElementById('saved-status');
+ function paint(){
+  if(!out)return;
+  try{
+   const slots=JSON.parse(localStorage.getItem('meo_gioi_s0_save')||'[]');
+   const record=slots[0];
+   if(!record?.snapshot){out.textContent='💾 Tiến độ chưa được lưu';return;}
+   const snap=JSON.parse(record.snapshot), vars=snap.variables||{};
+   const completed=Math.max(0,Number(vars.meo_quests_completed)||0);
+   const target=5+Math.min(5,Math.floor(completed/2));
+   const count=Math.min(target,Math.max(0,Number(vars.meo_rat_count)||0));
+   const gold=Math.max(0,Number(snap._gold)||0);
+   out.textContent=(vars.meo_quest_state==='active'
+     ?'📋 Đã lưu: '+count+'/'+target+' chuột'
+     :'📋 Gặp Bà Chủ Mèo để nhận chuyến săn '+(completed+1))
+     +' · 🪙 '+gold+' xu';
+  }catch(err){out.textContent='💾 Tiến độ chỉ được lưu trên thiết bị này';}
+ }
+ paint();setInterval(paint,1200);
+})();
+</script></body></html>
