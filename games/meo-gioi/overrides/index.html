@@ -8,4 +8,22 @@
 #heads-up{position:absolute;z-index:25;top:18px;left:18px;color:#fff;background:#102c25dc;border:1px solid #b2daa988;border-radius:18px;padding:12px 18px;box-shadow:0 10px 28px #061a1280;pointer-events:none}
 #heads-up h1{font-size:19px;color:#ffd491;margin:0 0 4px}#heads-up p{font-size:12px;margin:2px 0}#help{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);z-index:25;background:#102c25e6;color:#e6f5e8;border-radius:100px;padding:10px 18px;box-shadow:0 6px 20px #061b1650;white-space:nowrap;font-size:12px;pointer-events:none}
 @media(max-width:640px){#heads-up{top:10px;left:10px;padding:8px 12px}#heads-up h1{font-size:14px}#heads-up p{font-size:10px}#help{display:none}}
-</style></head><body><div id="rpg"></div><div id="heads-up"><h1>🐈 MIÊU GIỚI <small style="font-size:10px;color:#b7d9cb">S0 / RPGJS</small></h1><p>🎯 Gặp <b>Bà Chủ Mèo</b> → đánh bại 10 chuột → nhận thưởng.</p><p>🪙 Chiến đấu và lên cấp • Lưu tiến độ thử nghiệm</p></div><div id="help">WASD/←↑↓→ di chuyển · Phím hành động đánh/tương tác · Shift né</div></body></html>
+</style><script>
+(function(){
+ if(!('serviceWorker' in navigator))return;
+ navigator.serviceWorker.getRegistrations().then(async regs=>{
+   let wasControlled=!!navigator.serviceWorker.controller;
+   for(const reg of regs){
+     const url=reg.active?.scriptURL||reg.installing?.scriptURL||'';
+     if(url.includes('/sw.js'))await reg.unregister();
+   }
+   if('caches' in window){
+     const keys=await caches.keys();
+     await Promise.all(keys.filter(k=>k.startsWith('meowniverse-')).map(k=>caches.delete(k)));
+   }
+   if(wasControlled&&!sessionStorage.getItem('meo-gioi-sw-reset')){
+     sessionStorage.setItem('meo-gioi-sw-reset','1');location.reload();
+   }
+ }).catch(e=>console.warn('Old game cache cleanup:',e));
+})();
+</script></head><body><div id="rpg"></div><div id="heads-up"><h1>🐈 MIÊU GIỚI <small style="font-size:10px;color:#b7d9cb">S0 / RPGJS</small></h1><p>🎯 Gặp <b>Bà Chủ Mèo</b> → đánh bại 10 chuột → nhận thưởng.</p><p>🪙 Chiến đấu và lên cấp • Lưu tiến độ thử nghiệm</p></div><div id="help">WASD/←↑↓→ di chuyển · Phím hành động đánh/tương tác · Shift né</div></body></html>
