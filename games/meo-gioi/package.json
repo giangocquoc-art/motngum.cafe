@@ -1,0 +1,32 @@
+{
+  "name": "meo-gioi-s0",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/prepare.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/prepare.mjs",
+    "build": "vite build",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@canvasengine/presets": "2.4.1",
+    "@rpgjs/action-battle": "5.0.1",
+    "@rpgjs/client": "5.1.0",
+    "@rpgjs/common": "5.1.0",
+    "@rpgjs/server": "5.1.0",
+    "@rpgjs/tiledmap": "5.0.0",
+    "@rpgjs/ui-css": "5.1.0",
+    "@rpgjs/vite": "5.0.1",
+    "@signe/di": "^3.1.1",
+    "canvasengine": "2.4.1",
+    "pixi.js": "^8.22.0"
+  },
+  "devDependencies": {
+    "@canvasengine/compiler": "2.4.1",
+    "@vitejs/plugin-vue": "^6.0.10",
+    "path-browserify": "^1.0.1",
+    "vite": "^8.3.4"
+  }
+}
