@@ -1,44 +1,98 @@
 import { type EventDefinition, RpgPlayer, MAXHP, ATK, PDEF } from '@rpgjs/server';
 import { BattleAi, EnemyType } from '@rpgjs/action-battle/server';
+import { acceptQuest, recordRatDefeat, claimQuest, questSpec, shopPrices, buy, MAX_UPGRADE, RESPAWN_MS } from '../../gameplay/loop.mjs';
+import { notifyAndSave, readProgress, writeProgress } from './progress';
+
+// Single quest NPC. Every reward is computed once, prior to displaying the dialog.
 export function ChuMeo():EventDefinition {
  return {
   name:'Bà Chủ Mèo',
   onInit(){this.setGraphic('npc')},
   async onAction(player:RpgPlayer){
-   const state=String(player.getVariable('meo_quest_state')||'new');
-   const count=Number(player.getVariable('meo_rat_count')||0);
-   if(state==='new'){
-    player.setVariable('meo_quest_state','active');
-    player.setVariable('meo_rat_count',0);
-    await player.showText('Bà Chủ: Lũ chuột trộm gạo! Con hãy đánh bại 10 con rồi quay về gặp ta. Sẵn sàng chưa, mèo nhỏ?');
-   }else if(state==='active'&&count<10){
-    await player.showText('Bà Chủ: Đánh chuột bằng nút hành động. Con đã bắt được '+count+'/10 con. Cố lên nhé!');
-   }else if(state==='active'&&count>=10){
-    player.setVariable('meo_quest_state','done');
-    player.setVariable('meo_coin',Number(player.getVariable('meo_coin')||0)+120);
-    await player.showText('Giỏi quá! Đủ 10/10 chuột rồi! Ta thưởng con 120 xu mèo. Hãy đợi chương tiếp theo nha!');
-   }else{
-    await player.showText('Bà Chủ: Con là anh hùng của Làng Mèo! Phiêu lưu tiếp ở bản cập nhật sau nhé.');
+   const p=readProgress(player), spec=questSpec(p.completed);
+   if(p.state==='new'){
+    const choice=await player.showChoices(
+     'Bà Chủ: Chuột lại đến phá kho lúa! Nhiệm vụ chuyến '+(p.completed+1)+': đánh bại '+spec.target+' chuột. Thưởng '+spec.gold+' xu.',
+     [{text:'Nhận nhiệm vụ',value:'accept'},{text:'Để sau',value:'cancel'}]
+    );
+    if(choice?.value!=='accept')return;
+    writeProgress(player,acceptQuest(readProgress(player)));
+    await notifyAndSave(player,'Nhiệm vụ đã nhận: đánh bại '+spec.target+' chuột.');
+    return;
+   }
+   if(p.count<spec.target){
+    await player.showText('Bà Chủ: Tiến độ '+p.count+'/'+spec.target+' chuột. Đánh chuột phía ngoài làng, rồi quay về giao nhiệm vụ.');
+    return;
+   }
+   const result=claimQuest(p);
+   if(result.claimed){
+    // Persist new quest state before yielding to UI; repeated interaction cannot claim twice.
+    writeProgress(player,result.progress);
+    player.gold+=result.gold;
+    await notifyAndSave(player,'Hoàn thành nhiệm vụ! +'+result.gold+' xu. Tổng '+result.progress.completed+' chuyến săn.');
+    await player.showText('Giỏi lắm! Nhận '+result.gold+' xu rồi. Con có thể nhận chuyến săn mới ngay!');
    }
   }
  };
 }
-export function Rat():EventDefinition {
+export function TiemCa():EventDefinition {
+ return {
+  name:'Tiệm Cá & Móng Vuốt',
+  onInit(){this.setGraphic('npc')},
+  async onAction(player:RpgPlayer){
+   const level=Number(player.getVariable('meo_claw_upgrades')||0);
+   const prices=shopPrices(level);
+   const choice=await player.showChoices(
+    'Tiệm Cá: Bạn có '+player.gold+' xu | HP: '+player.hp+'/'+player.param[MAXHP]+' | Móng vuốt +'+level,
+    [
+     {text:'Cá nướng (+70 HP) — '+prices.fish+' xu',value:'fish'},
+     {text:'Nghỉ trọ (đầy HP) — '+prices.rest+' xu',value:'rest'},
+     {text:'Nâng móng vuốt +5 ATK — '+(level>=MAX_UPGRADE?'MAX':prices.upgrade+' xu'),value:'upgrade'},
+     {text:'Rời cửa hàng',value:'cancel'}
+    ]
+   );
+   if(!choice || choice.value==='cancel')return;
+   const result=buy(choice.value,{gold:player.gold,hp:player.hp,maxHp:player.param[MAXHP],upgrades:level});
+   if(!result.ok){await player.showText(result.reason);return;}
+   player.gold=result.gold;
+   player.hp=result.hp;
+   if(result.upgrades>level){
+    player.setVariable('meo_claw_upgrades',result.upgrades);
+    player.param[ATK]+=5;
+   }
+   await notifyAndSave(player,result.message+' Còn '+player.gold+' xu.');
+  }
+ };
+}
+// Position is captured at creation. Dead entities are removed by the engine and
+// re-spawned as NEW entities after a cooldown; no infinite duplicate rewards.
+export function Rat(spawnX:number,spawnY:number):EventDefinition {
  return {
   name:'Chuột Đồng',
   onInit(){
    this.setGraphic('rat');
-   this.param[MAXHP]=32;this.hp=32;this.param[ATK]=4;this.param[PDEF]=1;
+   this.param[MAXHP]=40;this.hp=40;this.param[ATK]=6;this.param[PDEF]=1;
    new BattleAi(this,{
-    enemyType:EnemyType.Aggressive,visionRange:125,attackRange:44,attackCooldown:1600,
-    rewards:{exp:8,gold:2,showNotification:true},
-    onDefeated:({attacker}:any)=>{
+    enemyType:EnemyType.Aggressive,
+    visionRange:110,attackRange:43,attackCooldown:1700,
+    rewards:{exp:8,gold:2,showNotification:false},
+    onDefeated:({event,attacker}:any)=>{
      const p=attacker as RpgPlayer|undefined;
+     const map=event?.getCurrentMap?.() ?? p?.getCurrentMap?.();
+     // Schedule one respawn for each actual defeat; RPGJS calls this once.
+     if(map?.createDynamicEvent){
+       setTimeout(()=>{void map.createDynamicEvent({
+         x:spawnX,y:spawnY,event:Rat(spawnX,spawnY)
+       }).catch((e:unknown)=>console.error('[Meo Gioi] Respawn failed',e));},RESPAWN_MS);
+     }
      if(!p||typeof p.getVariable!=='function')return;
-     if(p.getVariable('meo_quest_state')!=='active')return;
-     const count=Math.min(10,Number(p.getVariable('meo_rat_count')||0)+1);
-     p.setVariable('meo_rat_count',count);
-     if(count===10)p.showText('Đã bắt đủ 10 chuột! Hãy quay về gặp Bà Chủ Mèo để nhận thưởng.');
+     const result=recordRatDefeat(readProgress(p));
+     if(!result.added)return;
+     writeProgress(p,result.progress);
+     const target=questSpec(result.progress.completed).target;
+     void notifyAndSave(p,result.finished?
+      'Đã bắt đủ '+target+' chuột! Trở về gặp Bà Chủ Mèo.' :
+      'Săn chuột: '+result.progress.count+'/'+target);
     }
    });
   }

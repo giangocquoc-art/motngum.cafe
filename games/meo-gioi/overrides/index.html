@@ -1,29 +1,34 @@
-<!doctype html><html lang="vi"><head><meta charset="utf-8"/><meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,minimum-scale=1,width=device-width,height=device-height"/><title>Miêu Giới Phiêu Lưu • Bản S0</title>
-<meta name="theme-color" content="#173c33"/>
+<!doctype html><html lang="vi"><head>
+<meta charset="utf-8"/><meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,minimum-scale=1,width=device-width,height=device-height"/>
+<title>Miêu Giới Phiêu Lưu • S1: Vòng Săn Chuột</title><meta name="theme-color" content="#173c33"/>
 <link rel="stylesheet" href="./node_modules/@rpgjs/ui-css/src/reset.css">
 <link rel="stylesheet" href="./node_modules/@rpgjs/ui-css/src/index.css">
 <link rel="stylesheet" href="./node_modules/@rpgjs/ui-css/theme-default/theme.css">
 <style>
-*{box-sizing:border-box}html,body,#rpg{margin:0;width:100%;height:100%;overflow:hidden}body{font-family:system-ui;background:#153a30}
-#heads-up{position:absolute;z-index:25;top:18px;left:18px;color:#fff;background:#102c25dc;border:1px solid #b2daa988;border-radius:18px;padding:12px 18px;box-shadow:0 10px 28px #061a1280;pointer-events:none}
-#heads-up h1{font-size:19px;color:#ffd491;margin:0 0 4px}#heads-up p{font-size:12px;margin:2px 0}#help{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);z-index:25;background:#102c25e6;color:#e6f5e8;border-radius:100px;padding:10px 18px;box-shadow:0 6px 20px #061b1650;white-space:nowrap;font-size:12px;pointer-events:none}
-@media(max-width:640px){#heads-up{top:10px;left:10px;padding:8px 12px}#heads-up h1{font-size:14px}#heads-up p{font-size:10px}#help{display:none}}
-</style><script>
+*{box-sizing:border-box}html,body,#rpg{margin:0;width:100%;height:100%;overflow:hidden}
+body{font-family:system-ui;background:#143d30}
+#heads-up{position:absolute;z-index:25;top:12px;left:12px;color:#fff;background:#09291eec;border:1px solid #b2daa988;border-radius:16px;padding:12px 16px;max-width:min(380px,65vw);box-shadow:0 10px 30px #061a1280;pointer-events:none}
+#heads-up h1{font-size:19px;color:#ffd491;margin:0 0 6px;line-height:1.2}
+#heads-up p{font-size:12px;margin:5px 0;line-height:1.4}
+#heads-up .hint{color:#c7ead8}
+#help{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:25;background:#102c25de;color:#e6f5e8;border-radius:100px;padding:9px 18px;font-size:12px;white-space:nowrap;pointer-events:none}
+@media(max-width:760px){#heads-up{top:8px;left:8px;max-width:57vw;padding:7px 10px;border-radius:11px}#heads-up h1{font-size:13px}#heads-up p{font-size:10px;line-height:1.25;margin:3px 0}#help{display:none}}
+</style>
+<script>
 (function(){
  if(!('serviceWorker' in navigator))return;
  navigator.serviceWorker.getRegistrations().then(async regs=>{
-   let wasControlled=!!navigator.serviceWorker.controller;
-   for(const reg of regs){
-     const url=reg.active?.scriptURL||reg.installing?.scriptURL||'';
-     if(url.includes('/sw.js'))await reg.unregister();
-   }
-   if('caches' in window){
-     const keys=await caches.keys();
-     await Promise.all(keys.filter(k=>k.startsWith('meowniverse-')).map(k=>caches.delete(k)));
-   }
-   if(wasControlled&&!sessionStorage.getItem('meo-gioi-sw-reset')){
-     sessionStorage.setItem('meo-gioi-sw-reset','1');location.reload();
-   }
- }).catch(e=>console.warn('Old game cache cleanup:',e));
+   const wasControlled=!!navigator.serviceWorker.controller;
+   for(const reg of regs){const url=reg.active?.scriptURL||reg.installing?.scriptURL||'';if(url.includes('/sw.js'))await reg.unregister()}
+   if('caches' in window){const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('meowniverse-')).map(k=>caches.delete(k)))}
+   if(wasControlled&&!sessionStorage.getItem('meo-gioi-sw-reset')){sessionStorage.setItem('meo-gioi-sw-reset','1');location.reload()}
+ }).catch(e=>console.warn('Game cache migration:',e));
 })();
-</script></head><body><div id="rpg"></div><div id="heads-up"><h1>🐈 MIÊU GIỚI <small style="font-size:10px;color:#b7d9cb">S0 / RPGJS</small></h1><p>🎯 Gặp <b>Bà Chủ Mèo</b> → đánh bại 10 chuột → nhận thưởng.</p><p>🪙 Chiến đấu và lên cấp • Lưu tiến độ thử nghiệm</p></div><div id="help">WASD/←↑↓→ di chuyển · Phím hành động đánh/tương tác · Shift né</div></body></html>
+</script></head>
+<body><div id="rpg"></div>
+<div id="heads-up"><h1>🐱 MIÊU GIỚI <small style="font-size:10px;color:#b7d9cb">S1</small></h1>
+<p>🎯 <b>Vòng săn chuột:</b> nhận nhiệm vụ → săn → giao thưởng → mua cá / nâng cấp → tiếp tục.</p>
+<p class="hint">🏡 Nói chuyện với Bà Chủ Mèo để nhận và xem tiến độ. Gặp Tiệm Cá để hồi phục.</p>
+<p class="hint">⚔️ Quái xuất hiện lại sau 6,5 giây. Hết HP: hồi sinh trong làng, mất tối đa 15 xu.</p></div>
+<div id="help">WASD / phím mũi tên: di chuyển · Phím hành động: tấn công & tương tác · Shift: né</div>
+</body></html>
