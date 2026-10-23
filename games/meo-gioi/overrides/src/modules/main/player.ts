@@ -44,7 +44,8 @@ export const player: RpgPlayerHooks = {
     player.gold=Math.max(0,player.gold-lost);
     player.hp=Math.max(1,Math.ceil(player.param[MAXHP]/2));
     await player.changeMap(BASE_MAP,SPAWN);
-    await notifyAndSave(player,'Mèo bị hạ! Bạn đã hồi sinh ở làng với nửa HP. Mất '+lost+' xu, giữ nguyên nhiệm vụ.');
+    await notifyAndSave(player,'Hồi sinh');
+    await player.showText('Bạn đã hồi sinh ở làng với nửa HP, mất '+lost+' xu. Nhiệm vụ vẫn được giữ.');
   },
   onInput(player: RpgPlayer, {action}) {
     if(action==='escape')player.callMainMenu();
