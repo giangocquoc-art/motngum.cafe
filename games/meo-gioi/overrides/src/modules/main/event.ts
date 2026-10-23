@@ -17,7 +17,8 @@ export function ChuMeo():EventDefinition {
     );
     if(choice?.value!=='accept')return;
     writeProgress(player,acceptQuest(readProgress(player)));
-    await notifyAndSave(player,'Nhiệm vụ đã nhận: đánh bại '+spec.target+' chuột.');
+    await notifyAndSave(player,'Nhiệm vụ đã nhận');
+    await player.showText('Đã nhận nhiệm vụ: đánh bại '+spec.target+' chuột.');
     return;
    }
    if(p.count<spec.target){
@@ -60,7 +61,8 @@ export function TiemCa():EventDefinition {
     player.setVariable('meo_claw_upgrades',result.upgrades);
     player.param[ATK]+=5;
    }
-   await notifyAndSave(player,result.message+' Còn '+player.gold+' xu.');
+   await notifyAndSave(player,result.message);
+   await player.showText(result.message+' Còn '+player.gold+' xu.');
   }
  };
 }
@@ -90,9 +92,8 @@ export function Rat(spawnX:number,spawnY:number):EventDefinition {
      if(!result.added)return;
      writeProgress(p,result.progress);
      const target=questSpec(result.progress.completed).target;
-     void notifyAndSave(p,result.finished?
-      'Đã bắt đủ '+target+' chuột! Trở về gặp Bà Chủ Mèo.' :
-      'Săn chuột: '+result.progress.count+'/'+target);
+     void notifyAndSave(p,'Lưu tiến độ săn chuột');
+     if(result.finished)void p.showText('Đã đủ '+target+' chuột! Về gặp Bà Chủ Mèo nhận thưởng.');
     }
    });
   }
