@@ -7,8 +7,8 @@ const tests=[
 [3,["有三个学生","有三个人"],"有三个人",true],[3,["有三个学生"],"没有三个学生",false],
 [5,["谢谢"],"多少钱",false],[5,["谢谢"],"谢谢！",true],
 [7,["我叫安，我是学生"],"我叫小明。我是学生。",false],[7,["我叫安，我是学生"],"我是学生",false],
-[8,["星期二"],"星期二",true],[8,["星期二"],"星期三",false],
-[9,["我想喝水"],"我想喝茶",true],[9,["我想喝水"],"我不想喝水",false]];
+[8,["十块钱"],"十块钱",true],[8,["十块钱"],"星期二",false],
+[9,["我想吃面条"],"我想吃一碗面条",true],[9,["我想吃面条"],"我不想吃面条",false]];
 tests.forEach(([id,answers,input,expected],i)=>test("scoring fixture "+(i+1),()=>assert.equal(c.evaluate(scene(id,answers),input).ok,expected)));
 test("summary distinguishes assisted attempts and exam",()=>assert.equal(JSON.stringify(c.summarize([{status:"correct",attempts:0},{status:"assisted",attempts:0},{status:"correct",attempts:0}],3,1)),JSON.stringify({total:3,completed:3,independently:2,hinted:0,assisted:1,examCorrect:1,examTotal:2})));
 

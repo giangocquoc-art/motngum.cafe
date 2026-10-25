@@ -1,0 +1,32 @@
+name: HSK Story Regression
+on:
+  push:
+    branches: [main]
+    paths:
+      - "hsk-story/**"
+      - ".github/workflows/hsk-story-regression.yml"
+  pull_request:
+    paths:
+      - "hsk-story/**"
+      - ".github/workflows/hsk-story-regression.yml"
+permissions:
+  contents: read
+jobs:
+  test:
+    name: Unit and simulated story flow
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in hsk-story/*.js; do node --check "$script"; done
+      - name: Run HSK regression suite
+        run: node --test hsk-story/tests/*.test.cjs
