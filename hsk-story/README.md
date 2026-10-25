@@ -4,11 +4,14 @@ A narrative Chinese-learning RPG prototype, created for hsk.motngum.cafe.
 ## Scope of this prototype
 - Original vector storybook scenes, with warm muted colors, ink outlines, and simplified Chinese everyday environments; inspired by general visual characteristics, not a copy of the provided reference artwork.
 - Five HSK chapters in the roadmap.
-- Eight playable HSK 1 conversational story scenes and a small end-of-chapter test.
+- Seven narrative scenes plus three interactive end-of-episode checkpoint scenes.
 - Chinese text, optional Pinyin and Vietnamese translations, text-to-speech (browser voice), optional browser SpeechRecognition, typed answers, context hints, progress saved in localStorage.
 - Accessible responsive design for desktop and mobile.
 
 ## Important limitations
+- Character name is intentionally locked to Minh An to preserve narrative continuity.
+- V2 resets v1 episode progression because previous scoring was not reliable; original local saved data remains in a separate key.
+- Hints, self-corrected answers and revealed answers are counted separately in the recap.
 - This is an interactive prototype, NOT an AI conversation engine. It compares typed utterances with curated responses.
 - The voice input uses browser Web Speech API support and may not work in some browsers. Chinese speech synthesis voice availability depends on device.
 - Not an official HSK exam or validated Chinese curriculum; the five levels are a narrative roadmap, not a guarantee of proficiency or formal HSK pass.

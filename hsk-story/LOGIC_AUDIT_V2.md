@@ -36,3 +36,10 @@ Deployment: hsk.motngum.cafe. All changes scoped to \`hsk-story/\`. Parent motng
 4. Mandarin ASR/TTS and tone scoring with human-calibrated benchmarks, on-supported-browser fallbacks.
 5. Licensed/commissioned illustrated visual assets and consistent character sprites, rather than placeholder procedural SVG.
 6. Real end-to-end browser/device testing (not performed by this audit).
+
+## Additional consistency hardening
+
+- Locked protagonist name to Minh An: accepting arbitrary names while NPCs keep addressing the protagonist as An broke continuity.
+- Added hinted-correct classification (not independently solved) and exam scoring without hints.
+- Abort active speech recognition upon completing a scene; prevent late microphone results writing into another scene.
+- Reset v1 progress on v2 migration because old scoring could be fooled by negated phrases; keep original v1 key intact.

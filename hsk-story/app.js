@@ -10,7 +10,7 @@ var CHAPTERS=[
 ];
 var SCENES=[
 {id:0,place:"street",speaker:"Mẹ của An",tag:"NGÀY ĐẦU TỚI THÀNH ĐÔ",zh:"安，我们到了。你好吗？",py:"Ān, wǒmen dào le. Nǐ hǎo ma?",vi:"An, chúng ta đến nơi rồi. Con có khỏe không?",request:"Mẹ đang hỏi thăm bạn. Hãy trả lời rằng bạn rất khỏe.",answers:["我很好","很好","我很好，谢谢","我很好谢谢"],hint:"我很好。 (Wǒ hěn hǎo.) — Con rất khỏe."},
-{id:1,place:"school",speaker:"王老师 · Cô Vương",tag:"GẶP CÔ GIÁO",zh:"你好！你叫什么名字？",py:"Nǐ hǎo! Nǐ jiào shénme míngzi?",vi:"Xin chào! Em tên là gì?",request:"Giới thiệu tên của bạn với cô giáo (ví dụ: Minh An = 安).",answers:["我叫安","我叫明安","我叫minhan","我是安"],hint:"我叫安。 (Wǒ jiào Ān.) — Em tên là An."},
+{id:1,place:"school",speaker:"王老师 · Cô Vương",tag:"GẶP CÔ GIÁO",zh:"你好！你叫什么名字？",py:"Nǐ hǎo! Nǐ jiào shénme míngzi?",vi:"Xin chào! Em tên là gì?",request:"Bạn nhập vai Minh An. Hãy giới thiệu tên nhân vật với cô giáo (安 hoặc 明安).",answers:["我叫安","我叫明安","我是安"],hint:"我叫安。 (Wǒ jiào Ān.) — Em tên là An."},
 {id:2,place:"class",speaker:"小雨 · Tiểu Vũ",tag:"NGƯỜI BẠN MỚI",zh:"你好！我是小雨。你是学生吗？",py:"Nǐ hǎo! Wǒ shì Xiǎoyǔ. Nǐ shì xuésheng ma?",vi:"Xin chào! Mình là Tiểu Vũ. Bạn là học sinh phải không?",request:"Trả lời Tiểu Vũ: 'Đúng, mình là học sinh.'",answers:["是，我是学生","我是学生","对我是学生","对，我是学生"],hint:"我是学生。 (Wǒ shì xuésheng.) — Mình là học sinh."},
 {id:3,place:"class",speaker:"王老师 · Cô Vương",tag:"TRONG LỚP HỌC",zh:"一，二，三。这里有几个学生？",py:"Yī, èr, sān. Zhèlǐ yǒu jǐ ge xuésheng?",vi:"Một, hai, ba. Ở đây có mấy học sinh?",request:"Hãy trả lời rằng có ba học sinh.",answers:["三个学生","有三个学生","三个人","有三个人"],hint:"有三个学生。 (Yǒu sān ge xuésheng.)"},
 {id:4,place:"canteen",speaker:"刘奶奶 · Bà Lưu",tag:"LẦN ĐẦU Ở CĂNG TIN",zh:"你好！你想吃什么？",py:"Nǐ hǎo! Nǐ xiǎng chī shénme?",vi:"Cháu muốn ăn gì?",request:"Gọi một bát mì với bà Lưu.",answers:["我想吃面条","我要面条","一碗面条","我想要一碗面条"],hint:"我想吃面条。 (Wǒ xiǎng chī miàntiáo.)"},
@@ -50,7 +50,7 @@ function load(){
    state.pinyin=s.pinyin!==false;state.vi=s.vi!==false;
   }else{
    var old=JSON.parse(localStorage.getItem(OLD_KEY)||"null");
-   if(old&&Number.isInteger(old.step))state.step=Math.max(0,Math.min(6,old.step));
+   if(old&&Number.isInteger(old.step))state.step=0;
   }
  }catch(e){state.step=0;state.history=[];state.done=false}
 }
@@ -96,7 +96,7 @@ function showCompletion(){
  var summary=HSKCore.summarize(state.history,SCENE_TOTAL,EXAM_START);
  $("completionPane").hidden=false;$("answerForm").hidden=true;$("nextBtn").hidden=true;$("assistBtn").hidden=true;$("hintBtn").hidden=true;
  $("userInstruction").textContent="✳ Bạn đã đi hết tập truyện thử nghiệm: Ngày đầu xa nhà.";
- $("summaryStats").textContent=summary.independently+"/"+summary.total+" câu tự trả lời · "+summary.assisted+" câu có xem đáp án mẫu · "+summary.examCorrect+"/"+summary.examTotal+" câu đánh giá tự làm.";
+ $("summaryStats").textContent=summary.independently+"/"+summary.total+" câu tự giải không cần gợi ý · "+summary.hinted+" câu đúng sau gợi ý · "+summary.assisted+" câu xem đáp án mẫu · "+summary.examCorrect+"/"+summary.examTotal+" câu kiểm tra không cần trợ giúp.";
  $("summaryDescription").textContent=summary.examCorrect===summary.examTotal&&summary.assisted===0?"Rất tốt! Bạn đã tự xử lý tất cả câu hỏi trong tập thử nghiệm. Đây chưa phải kết quả thi HSK 1 chính thức.":"Bạn đã hoàn thành câu chuyện. Những câu cần xem mẫu là gợi ý để ôn lại — không được tính là trả lời đúng độc lập. Đây không phải chứng nhận trình độ HSK.";
  $("progressBar").style.width="100%";
  $("feedback").textContent="";$("feedback").className="feedback";
@@ -133,6 +133,7 @@ function speak(text){
  if(voice)utter.voice=voice;window.speechSynthesis.speak(utter);
 }
 function finishCurrent(status){
+ if(state.recognizer){try{state.recognizer.abort()}catch(e){}state.recognizer=null;$("micBtn").classList.remove("listening")}
  state.solved=true;state.history[state.step]={status:status,attempts:state.attempts,hint:state.hintUsed};
  state.busy=false;save();
  $("answerInput").disabled=true;$("sendAnswer").disabled=true;$("micBtn").disabled=true;$("assistBtn").hidden=true;$("hintBtn").hidden=true;
@@ -176,7 +177,7 @@ function microphone(){
  if(state.recognizer){try{state.recognizer.stop()}catch(e){}return}
  var r=new API();r.lang="zh-CN";r.interimResults=false;r.maxAlternatives=1;state.recognizer=r;
  var btn=$("micBtn");btn.classList.add("listening");btn.setAttribute("aria-label","Dừng micro");
- r.onresult=function(e){$("answerInput").value=e.results[0][0].transcript;notify("Đã nhận lời nói. Hãy kiểm tra và nhấn Gửi; đây chưa phải đánh giá phát âm.")};
+ r.onresult=function(e){if(state.solved||$("gameOverlay").hidden)return;$("answerInput").value=e.results[0][0].transcript;notify("Đã nhận lời nói. Hãy kiểm tra và nhấn Gửi; đây chưa phải đánh giá phát âm.")};
  r.onerror=function(e){notify(e.error==="not-allowed"?"Micro bị từ chối quyền truy cập.":"Không nhận diện được lời nói. Bạn có thể nhập chữ Hán.")};
  r.onend=function(){btn.classList.remove("listening");btn.setAttribute("aria-label","Sử dụng micro");state.recognizer=null};
  try{r.start()}catch(e){btn.classList.remove("listening");state.recognizer=null;notify("Không thể mở micro trên thiết bị này.")}
