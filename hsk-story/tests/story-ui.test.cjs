@@ -1,7 +1,7 @@
 const {test}=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 const folder=path.resolve(__dirname,"..");
 function loadModule(file,name){const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box,{filename:file});return box.module.exports}
-const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js");
+const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js");
 const html=fs.readFileSync(path.join(folder,"index.html"),"utf8"),source=fs.readFileSync(path.join(folder,"app.js"),"utf8");
 const ids=Array.from(html.matchAll(/id="([^"]+)"/g),x=>x[1]);
 function harness(sharedStorage={}){
@@ -12,13 +12,13 @@ function harness(sharedStorage={}){
   click(){(this.listeners.click||[]).forEach(f=>f({preventDefault(){}}))},fire(k,args={}){(this.listeners[k]||[]).forEach(f=>f({preventDefault(){},...args}))}
  }}
  ids.forEach(id=>dom[id]=element(id));
- ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn"].forEach(id=>dom[id].hidden=true);
+ ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat"].forEach(id=>dom[id].hidden=true);
  const nav=element("nav");
  document={body:{style:{}},activeElement:null,listeners:{},getElementById(id){if(!dom[id])throw Error("Missing DOM ID "+id);return dom[id]},querySelector(q){return q==="nav"?nav:null},createElement(tag){return element("new-"+tag)},querySelectorAll(){return []},addEventListener(k,f){(this.listeners[k]??=[]).push(f)}};
  const localStorage={getItem(k){return sharedStorage[k]||null},setItem(k,v){sharedStorage[k]=v}};
  const window={speechSynthesis:{cancel(){},getVoices(){return []},speak(u){spoken.push(u.text)}}};
  function SpeechSynthesisUtterance(text){this.text=text}
- vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,console},{filename:"app.js"});
+ vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,console},{filename:"app.js"});
  return {e:dom,document,sharedStorage,spoken}
 }
 test("story: sentence builder is helpful and notebook only shows past expressions",()=>{
@@ -50,6 +50,7 @@ test("story: exams hide notebook and builder, retain independent grading",()=>{
   assert.equal(e.stepText.textContent,String(i+1).padStart(2,"0")+" / 10");
   if(i===7){assert.equal(e.sentenceBuilder.hidden,true);e.notebookBtn.click();assert.equal(e.notebookPanel.hidden,true);}
   e.answerInput.value=correct[i];e.answerInput.fire("input");e.answerForm.fire("submit");
+  if(i===2||i===4){assert.equal(e.nextBtn.hidden,true);assert.equal(e.storyChoicePanel.hidden,false);e.storyChoiceOptions.children[0].click();}
   assert.equal(e.nextBtn.hidden,false,"should solve "+i);
   e.nextBtn.click();
  }
@@ -58,4 +59,19 @@ test("story: exams hide notebook and builder, retain independent grading",()=>{
  e.retakeExamBtn.click();
  assert.equal(e.stepText.textContent,"08 / 10");
  assert.equal(e.sentenceBuilder.hidden,true);
+});
+
+test('story memory survives browser refresh and changes the next scene',()=>{
+ const st={};let t=harness(st),e=t.e;e.startBtn.click();
+ const answers=['我很好','我叫安','我是学生','有三个学生','我想吃面条'];
+ for(let i=0;i<answers.length;i++){
+  e.answerInput.value=answers[i];e.answerInput.fire('input');e.answerForm.fire('submit');
+  if(i===2){assert.equal(e.nextBtn.hidden,true);e.storyChoiceOptions.children[1].click();}
+  if(i===4)e.storyChoiceOptions.children[0].click();
+  e.nextBtn.click();
+ }
+ assert.ok(e.storyBeat.textContent.includes('刘奶奶'));
+ assert.equal(JSON.parse(st['hai-que-huong-progress-v3']).storyChoices.friendship,'ask-teacher');
+ t=harness(st);e=t.e;e.resumeBtn.click();assert.ok(e.storyBeat.textContent.includes('刘奶奶'));
+ e.notebookBtn.click();assert.ok(e.storyMemory.textContent.includes('cô Vương'));
 });

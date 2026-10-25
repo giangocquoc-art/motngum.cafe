@@ -51,3 +51,8 @@ Use original 2D storybook illustration style: fine slightly irregular dark ink o
 
 ## Regression QA
 From the repository root, run `node --test hsk-story/tests/*.test.cjs`. The `tests/story-ui.test.cjs` suite exercises the browser app with mocked DOM and storage (not a real Chromium E2E run). See `RELEASE_QA_V4.md`.
+
+## V5 choices and memory
+- After scene 2, choose how Minh An finds a classroom seat (friend vs teacher). After scene 4, choose noodle taste (mild vs some chili). Each option has a short Chinese/translated flavor beat in the next scene, with all mandated learning scenes preserved.
+- Story choices are not graded Mandarin tasks. Options persist in the existing compatible v3 storage payload, survive reload and quiz retake, appear in An's journal, and reset only upon full replay.
+- Author in `story-director.js` and do not bypass its `validate`/`pending`/`select` checks. No LLM integration yet.
