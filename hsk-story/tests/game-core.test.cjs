@@ -1,4 +1,4 @@
-const {test}=require("node:test");const assert=require("node:assert/strict");const c=require("../game-core.js");
+const {test}=require("node:test");const assert=require("node:assert/strict");const {readFileSync}=require("node:fs");const {runInNewContext}=require("node:vm");const path=require("node:path");const box={module:{exports:{}}};runInNewContext(readFileSync(path.join(__dirname,"../game-core.js"),"utf8"),box);const c=box.module.exports;
 function scene(id,answers){return {id,answers};}
 test("normalizes punctuation and whitespace",()=>assert.equal(c.normalize("我 很好！"),"我很好"));
 const tests=[
