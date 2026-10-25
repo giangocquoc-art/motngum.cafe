@@ -53,3 +53,6 @@
 .builder-action{font-family:inherit;font-size:11px;background:#eee5d4}
 .completion-review{border-top:1px dashed #b39880;padding-top:9px!important;color:#7a513e!important}
 @media(max-width:690px){.notebook-panel{top:47px;right:7px;width:calc(100% - 14px);max-height:72dvh}.game-top-right{flex-wrap:wrap;justify-content:end}.builder-heading span{line-height:1.3}.sentence-tile{padding:6px 9px}.sentence-builder{margin:6px 0}}
+
+button.notebook-word{width:100%;background:transparent;border:0;border-bottom:1px solid #e4d6c3;cursor:pointer;text-align:left}
+button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7}

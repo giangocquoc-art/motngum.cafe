@@ -48,3 +48,6 @@ Use original 2D storybook illustration style: fine slightly irregular dark ink o
 - A tap-to-compose sentence builder supports new learners who cannot yet type Hanzi. It is clearly counted as scaffolding, never independent performance. Native typing and optional browser Mandarin speech recognition are preserved.
 - Corrected checkpoint NPC responses: the noodle-price question receives a price confirmation, while the food-order question receives a response about ordering noodles.
 - Production remains a deterministic, authored demo: not AI voice conversation or full official HSK preparation.
+
+## Regression QA
+From the repository root, run `node --test hsk-story/tests/*.test.cjs`. The `tests/story-ui.test.cjs` suite exercises the browser app with mocked DOM and storage (not a real Chromium E2E run). See `RELEASE_QA_V4.md`.

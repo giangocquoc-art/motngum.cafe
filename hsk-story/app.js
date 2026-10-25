@@ -103,7 +103,7 @@ function refreshNotebook(){
  $("notebookProgress").textContent=counts.finished+"/"+counts.total+" tình huống đã trải qua · "+counts.independent+" tự giải đúng ngay lần đầu · "+weak.length+" tình huống cần ôn";
  var list=$("notebookWords");list.replaceChildren();
  words.forEach(function(w){
-  var row=document.createElement("div");row.className="notebook-word";
+  var row=document.createElement("button");row.type="button";row.className="notebook-word";row.setAttribute("aria-label","Nghe từ tiếng Trung: "+w.hanzi);row.addEventListener("click",function(){speak(w.hanzi)});
   var left=document.createElement("span");left.className="notebook-hanzi";left.textContent=w.hanzi;
   var mid=document.createElement("span");mid.className="notebook-pinyin";mid.textContent=w.pinyin;
   var right=document.createElement("span");right.className="notebook-meaning";right.textContent=w.vietnamese;
