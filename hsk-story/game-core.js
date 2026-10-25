@@ -10,8 +10,8 @@ function evaluate(scene,input){
  if((scene.answers||[]).some(function(a){return normalize(a)===s}))return {ok:true};
  if(scene.id===1&&/^(?:你好)?(?:老师)?我叫(?:安|明安)(?:老师好|谢谢)?$/.test(s))return {ok:true};
  if(scene.id===7&&/^(?:大家好|老师好|你好)?(?:我叫(?:安|明安)|我是安)(?:我)?是学生(?:谢谢)?$/.test(s))return {ok:true};
- if(scene.id===8&&/^(?:明天是)?星期二$/.test(s))return {ok:true};
- if(scene.id===9&&/^(?:我想喝|我要|我想要)(?:一杯)?(?:水|茶)$/.test(s))return {ok:true};
+ if(scene.id===8&&/^(?:是)?(?:十块钱|十块|十元)$/.test(s))return {ok:true};
+ if(scene.id===9&&/^(?:我想吃|我要|我想要)(?:一碗)?面条$/.test(s))return {ok:true};
  return {ok:false,reason:scene.error||"Câu này chưa diễn đạt đúng mục tiêu. Thử diễn đạt lại hoặc xem gợi ý nhé."};
 }
 function summarize(history,total,examStart){

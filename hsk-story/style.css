@@ -21,3 +21,10 @@
 .completion-actions span{font-size:11px;color:#8b7b6b}
 #answerForm[hidden]{display:none!important}
 @media(max-width:690px){.completion-pane{padding:11px}.completion-pane h3{font-size:23px}.completion-actions{flex-wrap:wrap}.next-btn{padding:9px 11px;font-size:11px}.next-row{min-height:28px}.feedback{font-size:11px;min-height:24px}}
+
+/* v3 scene-specific learning loop */
+.scene-objective{font-size:10px;line-height:1.6;letter-spacing:.25px;color:#87614d;margin-bottom:5px;font-weight:700}
+.learning-strip{font-size:11px;line-height:1.65;color:#544f46;background:#f0e4d0;border-left:3px solid #aa7053;padding:9px 11px;margin:5px 0 11px}
+.completion-actions{justify-content:flex-start;flex-wrap:wrap}
+#retakeExamBtn{background:#a8553f;border-color:#a8553f}
+@media(max-width:690px){.learning-strip{font-size:10px;padding:7px;margin:3px 0 7px}.scene-objective{font-size:9px;margin-bottom:4px}.completion-actions{gap:8px}}

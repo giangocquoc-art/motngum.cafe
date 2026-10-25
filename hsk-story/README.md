@@ -32,3 +32,11 @@ Use original 2D storybook illustration style: fine slightly irregular dark ink o
 - Chinese conversation AI backend, secure rate limiting, cost controls and moderation.
 - Reliable Mandarin ASR/TTS, pronunciation/tone evaluation with validated language data.
 - Auth + database learning profiles; parent/guardian privacy considerations for minor users.
+
+## V3 improvements
+- Versioned five-act roadmap and educational scene metadata in curriculum-data.js (NOT a full HSK syllabus).
+- Three exam checkpoints now recall previously taught content: self-introduction, price of noodles, ordering noodles. No surprise weekday/drink test.
+- Checkpoints hide Pinyin and Vietnamese until explicitly requested; using them counts as help.
+- Draft, previous attempts, resolved state and results persist across refresh. V2 story steps migrate, obsolete V2 exam results do not.
+- Retake only 3 checkpoint scenes without resetting completed story.
+- See MASTER_PLAN_2026.md, STORY_BIBLE.md, CONTENT_CONTRACT.md.
