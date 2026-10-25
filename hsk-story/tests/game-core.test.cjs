@@ -10,9 +10,9 @@ const tests=[
 [8,["星期二"],"星期二",true],[8,["星期二"],"星期三",false],
 [9,["我想喝水"],"我想喝茶",true],[9,["我想喝水"],"我不想喝水",false]];
 tests.forEach(([id,answers,input,expected],i)=>test("scoring fixture "+(i+1),()=>assert.equal(c.evaluate(scene(id,answers),input).ok,expected)));
-test("summary distinguishes assisted attempts and exam",()=>assert.deepEqual(c.summarize([{status:"correct"},{status:"assisted"},{status:"correct"}],3,1),{total:3,completed:3,independently:2,hinted:0,assisted:1,examCorrect:1,examTotal:2}));
+test("summary distinguishes assisted attempts and exam",()=>assert.equal(JSON.stringify(c.summarize([{status:"correct",attempts:0},{status:"assisted",attempts:0},{status:"correct",attempts:0}],3,1)),JSON.stringify({total:3,completed:3,independently:2,hinted:0,assisted:1,examCorrect:1,examTotal:2})));
 
-test("hinted correct is not scored as independent",()=>assert.deepEqual(c.summarize([{status:"correct",hint:true},{status:"correct",hint:false}],2,1),{total:2,completed:2,independently:1,hinted:1,assisted:0,examCorrect:1,examTotal:1}));
+test("hinted correct is not scored as independent",()=>assert.equal(JSON.stringify(c.summarize([{status:"correct",hint:true,attempts:0},{status:"correct",hint:false,attempts:0}],2,1)),JSON.stringify({total:2,completed:2,independently:1,hinted:1,assisted:0,examCorrect:1,examTotal:1})));
 
 test("scene 8 tests previously taught noodle price, not weekdays",()=>{assert.equal(c.evaluate(scene(8,["十块钱"]),"十块钱").ok,true);assert.equal(c.evaluate(scene(8,["十块钱"]),"星期二").ok,false)});
 test("scene 9 tests already practiced noodle order, not new drinks",()=>{assert.equal(c.evaluate(scene(9,["我想吃面条"]),"我想吃面条").ok,true);assert.equal(c.evaluate(scene(9,["我想吃面条"]),"我想喝茶").ok,false)});
