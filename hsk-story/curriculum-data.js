@@ -14,7 +14,7 @@ var scenes=[
 {id:2,kind:"practice",objective:"Xác nhận mình là học sinh",topic:"Trường học · Bạn mới",words:[["学生","xuésheng","học sinh"],["我是","wǒ shì","mình là"]],reviewOf:[1]},
 {id:3,kind:"practice",objective:"Dùng số ba để đếm học sinh",topic:"Lớp học · Số đếm",words:[["一二三","yī èr sān","một hai ba"],["三个","sān ge","ba người/vật"]],reviewOf:[2]},
 {id:4,kind:"practice",objective:"Gọi món muốn ăn",topic:"Căng tin · Món ăn",words:[["我想吃","wǒ xiǎng chī","mình muốn ăn"],["面条","miàntiáo","mì"]],reviewOf:[0]},
-{id:5,kind:"practice",objective:"Hiểu giá tiền và cảm ơn",topic:"Căng tin · Giao tiếp",words:[["十块钱","shí kuài qián","mười tệ"],["谢谢","xièxie","cảm ơn"]],reviewOf:[4]},
+{id:5,kind:"practice",objective:"Hiểu giá tiền và cảm ơn",topic:"Căng tin · Giao tiếp",words:[["十块钱","shí kuài qián","mười tệ"],["多少钱","duōshao qián","bao nhiêu tiền"],["谢谢","xièxie","cảm ơn"]],reviewOf:[4]},
 {id:6,kind:"practice",objective:"Đồng ý lời mời và hẹn gặp",topic:"Đường về · Bạn bè",words:[["明天","míngtiān","ngày mai"],["好","hǎo","được"]],reviewOf:[0,2]},
 {id:7,kind:"checkpoint",objective:"Tự giới thiệu bằng tiếng Trung",topic:"Kiểm tra · Giới thiệu",words:[],reviewOf:[1,2]},
 {id:8,kind:"checkpoint",objective:"Nhớ giá bát mì ở căng tin",topic:"Kiểm tra · Nghe và nhớ",words:[],reviewOf:[5]},

@@ -40,3 +40,5 @@ Use original 2D storybook illustration style: fine slightly irregular dark ink o
 - Draft, previous attempts, resolved state and results persist across refresh. V2 story steps migrate, obsolete V2 exam results do not.
 - Retake only 3 checkpoint scenes without resetting completed story.
 - See MASTER_PLAN_2026.md, STORY_BIBLE.md, CONTENT_CONTRACT.md.
+
+- Checkpoint independent success specifically means correct on first attempt without hints. Micro uses a browser-vendor speech service when enabled and app does not store raw recorded audio.

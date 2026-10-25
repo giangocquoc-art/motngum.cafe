@@ -19,7 +19,7 @@ function summarize(history,total,examStart){
  var practiced=list.filter(function(x){return x&&["correct","assisted"].includes(x.status)});
  var own=practiced.filter(function(x){return x.status==="correct"&&!x.hint});
  var hinted=practiced.filter(function(x){return x.status==="correct"&&x.hint});
- return {total:total,completed:practiced.length,independently:own.length,hinted:hinted.length,assisted:practiced.filter(function(x){return x.status==="assisted"}).length,examCorrect:list.slice(examStart).filter(function(x){return x&&x.status==="correct"&&!x.hint}).length,examTotal:total-examStart};
+ return {total:total,completed:practiced.length,independently:own.length,hinted:hinted.length,assisted:practiced.filter(function(x){return x.status==="assisted"}).length,examCorrect:list.slice(examStart).filter(function(x){return x&&x.status==="correct"&&!x.hint&&x.attempts===0}).length,examTotal:total-examStart};
 }
 if(typeof module!=="undefined"&&module.exports)module.exports={normalize:normalize,evaluate:evaluate,summarize:summarize};
 return {normalize:normalize,evaluate:evaluate,summarize:summarize};

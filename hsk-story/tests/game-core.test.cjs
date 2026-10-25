@@ -16,3 +16,5 @@ test("hinted correct is not scored as independent",()=>assert.deepEqual(c.summar
 
 test("scene 8 tests previously taught noodle price, not weekdays",()=>{assert.equal(c.evaluate(scene(8,["十块钱"]),"十块钱").ok,true);assert.equal(c.evaluate(scene(8,["十块钱"]),"星期二").ok,false)});
 test("scene 9 tests already practiced noodle order, not new drinks",()=>{assert.equal(c.evaluate(scene(9,["我想吃面条"]),"我想吃面条").ok,true);assert.equal(c.evaluate(scene(9,["我想吃面条"]),"我想喝茶").ok,false)});
+
+test("exam requires first try without help",()=>{assert.equal(c.summarize([{status:"correct",attempts:1,hint:false}],1,0).examCorrect,0);assert.equal(c.summarize([{status:"correct",attempts:0,hint:false}],1,0).examCorrect,1)});
