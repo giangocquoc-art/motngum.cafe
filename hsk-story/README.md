@@ -42,3 +42,9 @@ Use original 2D storybook illustration style: fine slightly irregular dark ink o
 - See MASTER_PLAN_2026.md, STORY_BIBLE.md, CONTENT_CONTRACT.md.
 
 - Checkpoint independent success specifically means correct on first attempt without hints. Micro uses a browser-vendor speech service when enabled and app does not store raw recorded audio.
+
+## V4 — learner-driven immersion
+- In-world "Sổ tay của An" collects only vocabulary actually encountered and highlights scenes that required assistance or extra attempts. During an unresolved school checkpoint it is locked to avoid leaking answers.
+- A tap-to-compose sentence builder supports new learners who cannot yet type Hanzi. It is clearly counted as scaffolding, never independent performance. Native typing and optional browser Mandarin speech recognition are preserved.
+- Corrected checkpoint NPC responses: the noodle-price question receives a price confirmation, while the food-order question receives a response about ordering noodles.
+- Production remains a deterministic, authored demo: not AI voice conversation or full official HSK preparation.

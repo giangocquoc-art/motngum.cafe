@@ -28,3 +28,28 @@
 .completion-actions{justify-content:flex-start;flex-wrap:wrap}
 #retakeExamBtn{background:#a8553f;border-color:#a8553f}
 @media(max-width:690px){.learning-strip{font-size:10px;padding:7px;margin:3px 0 7px}.scene-objective{font-size:9px;margin-bottom:4px}.completion-actions{gap:8px}}
+
+/* V4 illustrated book and beginner sentence-building integrated into the one story UI */
+.game-shell{position:relative}
+.notebook-panel{position:absolute;z-index:9;top:51px;right:12px;width:min(410px,calc(100% - 24px));max-height:min(76vh,630px);overflow:auto;padding:18px 19px;border:2px solid #3d322d;background:#fff9e9;box-shadow:5px 6px 0 #493a2b80}
+.notebook-head{display:flex;align-items:start;justify-content:space-between;gap:15px;border-bottom:1px solid #d7c5ae;padding-bottom:10px}
+.notebook-head span{font-size:9px;font-weight:800;color:#a25a43;letter-spacing:1.8px}
+.notebook-head h3{font-family:"Noto Sans SC",serif;font-size:23px;margin:2px 0 0}
+.notebook-head button{border:1px solid #8b7360;background:transparent;padding:4px 9px}
+.notebook-panel p{font-size:11px;line-height:1.6;margin:12px 0}
+.notebook-caption{color:#847764}
+.notebook-words{display:grid;gap:0;border-top:1px solid #dcd1c0}
+.notebook-word{display:grid;grid-template-columns:1fr 1.1fr 1.2fr;align-items:center;gap:8px;border-bottom:1px solid #e4d6c3;padding:9px 0;font-size:11px}
+.notebook-hanzi{font-family:"Noto Sans SC",sans-serif;font-size:17px;font-weight:600;color:#704536}
+.notebook-pinyin{font-size:11px;color:#956f51}.notebook-meaning{font-size:11px}
+.notebook-review{border-left:3px solid #ab7155;background:#f2e7d3;padding:10px}
+.sentence-builder{border:1px solid #d9c5ad;background:#fff9ed;margin:12px 0;padding:8px 11px}
+.builder-heading{display:flex;flex-direction:column;gap:3px;font-weight:800;font-size:11px;color:#855743}
+.builder-heading span{font-weight:400;color:#887564;font-size:10px}
+.builder-tools{display:flex;align-items:center;gap:5px;margin-top:8px}
+.tile-list{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+.sentence-tile,.builder-action{border:1px solid #7a6151;background:#f7e3bc;padding:7px 11px;font-family:"Noto Sans SC",sans-serif;font-size:13px;min-height:35px}
+.sentence-tile:hover,.builder-action:hover{background:#ecd099}
+.builder-action{font-family:inherit;font-size:11px;background:#eee5d4}
+.completion-review{border-top:1px dashed #b39880;padding-top:9px!important;color:#7a513e!important}
+@media(max-width:690px){.notebook-panel{top:47px;right:7px;width:calc(100% - 14px);max-height:72dvh}.game-top-right{flex-wrap:wrap;justify-content:end}.builder-heading span{line-height:1.3}.sentence-tile{padding:6px 9px}.sentence-builder{margin:6px 0}}
