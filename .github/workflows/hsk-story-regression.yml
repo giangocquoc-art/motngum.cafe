@@ -30,3 +30,36 @@ jobs:
           for script in hsk-story/*.js; do node --check "$script"; done
       - name: Run HSK regression suite
         run: node --test hsk-story/tests/*.test.cjs
+
+  browser:
+    name: Real Chromium desktop and mobile
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install pinned Playwright and Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/hsk-browser" --no-save --no-audit --no-fund playwright@1.56.1
+          "$RUNNER_TEMP/hsk-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Run actual browser story smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory hsk-story >/tmp/hsk-browser-http.log 2>&1 &
+          for i in $(seq 1 25); do curl -fsS http://127.0.0.1:4173/ >/dev/null && break || sleep 1; done
+          NODE_PATH="$RUNNER_TEMP/hsk-browser/node_modules" HSK_URL="http://127.0.0.1:4173" node hsk-story/e2e/browser-smoke.cjs
+      - name: Keep browser screenshots when tests fail or pass
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk-browser-desktop-mobile
+          path: hsk-story/test-results/*.png
+          if-no-files-found: ignore
+          retention-days: 7
