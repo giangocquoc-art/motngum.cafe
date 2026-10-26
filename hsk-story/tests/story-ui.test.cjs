@@ -1,10 +1,10 @@
 const {test}=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 const folder=path.resolve(__dirname,"..");
 function loadModule(file,name){const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box,{filename:file});return box.module.exports}
-const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js"),Content=loadModule("content-manifest.js"),E=loadModule("active-encounter.js");
+const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js"),Content=loadModule("content-manifest.js"),E=loadModule("active-encounter.js"),Graph=loadModule("story-graph.js"),World=loadModule("scene-world.js"),Skills=loadModule("skill-sampler.js");
 const html=fs.readFileSync(path.join(folder,"index.html"),"utf8"),source=fs.readFileSync(path.join(folder,"app.js"),"utf8");
 const ids=Array.from(html.matchAll(/id="([^"]+)"/g),x=>x[1]);
-function dismissStory(e){if(!e.storyInterlude.hidden)e.interludeContinue.click()}
+function dismissStory(e){if(!e.skillPanel.hidden){e.skillSkip.click();e.skillSkip.click()}if(!e.storyInterlude.hidden)e.interludeContinue.click()}
 function finishEncounter(e,routeIndex=0){
  if(e.encounterPanel.hidden)return;
  e.encounterActions.children[0].click();e.encounterActions.children[1].click();
@@ -20,13 +20,13 @@ function harness(sharedStorage={}){
   click(){(this.listeners.click||[]).forEach(f=>f({preventDefault(){}}))},fire(k,args={}){(this.listeners[k]||[]).forEach(f=>f({preventDefault(){},...args}))}
  }}
  ids.forEach(id=>dom[id]=element(id));
- ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyInterlude","vocabRevealBtn","learningStrip","encounterPanel","encounterAnswerForm","encounterContinue","encounterHint","encounterSample"].forEach(id=>dom[id].hidden=true);
+ ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyInterlude","vocabRevealBtn","learningStrip","encounterPanel","encounterAnswerForm","encounterContinue","encounterHint","encounterSample","skillPanel","skillListen","worldPanel"].forEach(id=>dom[id].hidden=true);
  const nav=element("nav");
  document={body:{style:{}},activeElement:null,listeners:{},getElementById(id){if(!dom[id])throw Error("Missing DOM ID "+id);return dom[id]},querySelector(q){return q==="nav"?nav:null},createElement(tag){return element("new-"+tag)},querySelectorAll(){return []},addEventListener(k,f){(this.listeners[k]??=[]).push(f)}};
  const localStorage={getItem(k){return sharedStorage[k]||null},setItem(k,v){sharedStorage[k]=v}};
  const window={speechSynthesis:{cancel(){},getVoices(){return []},speak(u){spoken.push(u.text)}}};
  function SpeechSynthesisUtterance(text){this.text=text}
- vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,console},{filename:"app.js"});
+ vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,HSKStoryGraph:Graph,HSKSceneWorld:World,HSKSkillSampler:Skills,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,console},{filename:"app.js"});
  return {e:dom,document,sharedStorage,spoken}
 }
 test("story: sentence builder is helpful and notebook only shows past expressions",()=>{
@@ -114,7 +114,7 @@ test('V6 vocabulary opt-in is recorded as assisted',()=>{
 
 test('V6 reading a story page before exam does not create fake exam help',()=>{
  const st={};
- st['hai-que-huong-progress-v3']=JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:'correct',hint:false,attempts:0})),storyBeats:['arrival','gate','lunch','way-home']});
+ st['hai-que-huong-progress-v3']=JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:'correct',hint:false,attempts:0})),storyBeats:['arrival','gate','lunch','way-home'],skillSampler:{status:'legacy'}});
  const t=harness(st),e=t.e;e.startBtn.click();
  assert.equal(e.storyInterlude.hidden,false);
  e.toggleVietnamese.click();
@@ -228,4 +228,62 @@ test("V8 migrates V7 completed story without forcing new content replay",()=>{
  assert.equal(e.encounterPanel.hidden,true);
  assert.ok(e.encounterSummary.textContent.includes("bỏ qua"));
  e.retakeExamBtn.click();assert.equal(JSON.parse(store["hai-que-huong-progress-v3"]).encounter.stage,"legacy");
+});
+
+test("V9 stable scene reference is persisted and existing V8 save still resumes correctly",()=>{
+ const store={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:2,history:[{status:"correct",hint:false,attempts:0},{status:"correct",hint:false,attempts:0}],storyBeats:["arrival","gate"]})};
+ const t=harness(store),e=t.e;e.resumeBtn.click();
+ assert.equal(e.stepText.textContent,"03 / 10");
+ e.answerInput.value="我是学生";e.answerForm.fire("submit");
+ e.storyChoiceOptions.children[0].click();
+ const saved=JSON.parse(store["hai-que-huong-progress-v3"]);
+ assert.equal(saved.sceneRef,"hsk1.e01.xiaoyu-friendship");
+ assert.equal(saved.history.length,3);
+});
+test("V9 inspecting scene objects adds notebook atmosphere but no learner score",()=>{
+ const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
+ assert.equal(e.worldPanel.hidden,false);
+ assert.equal(e.worldActions.children.length,3);
+ e.worldActions.children[0].click();
+ const saved=JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]);
+ assert.equal(saved.worldSeen["hsk1.e01.arrival-greeting"].length,1);
+ assert.equal(saved.history.length,0);
+ e.worldActions.children[0].click();
+ assert.equal(JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]).worldSeen["hsk1.e01.arrival-greeting"].length,1);
+});
+test("V10 real reading and browser-synthesized listening practice remain separate from school scores",()=>{
+ const store={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
+ const t=harness(store),e=t.e;e.resumeBtn.click();
+ assert.equal(e.skillPanel.hidden,false);
+ assert.equal(e.answerForm.hidden,true);
+ assert.equal(e.skillOptions.children.length,3);
+ e.skillOptions.children[0].click();
+ assert.equal(e.skillPanel.hidden,false);
+ assert.ok(e.skillStep.textContent.includes("Nghe hiểu"));
+ e.skillListen.click();
+ e.skillOptions.children[1].click();
+ const saved=JSON.parse(store["hai-que-huong-progress-v3"]);
+ assert.equal(saved.skillSampler.status,"done");
+ assert.equal(saved.skillSampler.results[0].result,"correct");
+ assert.equal(saved.skillSampler.results[1].result,"correct");
+ assert.equal(saved.history.length,7);
+ assert.equal(e.storyInterlude.hidden,true);
+ assert.equal(e.answerForm.hidden,false);
+});
+test("V10 unsupported audio is explicitly unassessed; checkpoint retake retains skill evidence",()=>{
+ const store={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
+ const t=harness(store),e=t.e;e.resumeBtn.click();
+ e.skillSkip.click();
+ e.skillOptions.children[1].click();
+ let state=JSON.parse(store["hai-que-huong-progress-v3"]);
+ assert.equal(state.skillSampler.results[0].result,"unassessed");
+ assert.equal(state.skillSampler.results[1].result,"unassessed");
+ assert.equal(e.skillPanel.hidden,true);
+ for(const answer of ["我叫安我是学生","十块钱","我想吃面条"]){
+  e.answerInput.value=answer;e.answerForm.fire("submit");e.nextBtn.click();
+ }
+ assert.equal(e.completionPane.hidden,false);
+ assert.ok(e.skillSummary.textContent.includes("unassessed"));
+ e.retakeExamBtn.click();
+ assert.equal(JSON.parse(store["hai-que-huong-progress-v3"]).skillSampler.status,"done");
 });

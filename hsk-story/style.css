@@ -112,3 +112,28 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .encounter-summary{font-size:12px;line-height:1.5;color:#714e36;font-weight:600}
 .encounter-panel [hidden],.encounter-panel[hidden]{display:none!important}
 @media(max-width:690px){.encounter-panel{margin:2px 0 9px;padding:11px;max-height:49dvh;box-shadow:2px 2px 0 #c6a78a}.encounter-panel h3{font-size:17px}.encounter-body{font-size:11px;line-height:1.55}.encounter-actions{gap:6px}.encounter-action{font-size:10px;padding:7px}.encounter-input-row{flex-direction:column}.encounter-input-row button{width:100%}}
+
+/* V9 immersive safe optional hotspots; HSK results never depend on inspecting them. */
+.world-panel{background:#fbefdc;border:1px solid #bba28e;margin:8px 0 12px;padding:10px 12px;color:#604a3c}
+.world-top{display:flex;gap:10px;align-items:start;justify-content:space-between}
+.world-top strong{font-family:"Playfair Display","Noto Sans SC",serif;font-size:13px}
+.world-top span{font-size:10px;color:#816b5e}
+.world-actions{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}
+.world-action{border:1px solid #92715c;background:#fff8eb;padding:7px 9px;color:#654637;font-size:11px}
+.world-action:hover,.world-action:focus-visible{background:#f0d4b2}
+.world-description{font-size:11px;line-height:1.5;margin:7px 0 0;color:#755e50}
+.skill-panel{border:2px solid #8b6759;background:#fff5e4;padding:15px 17px;margin:6px 0 12px;max-height:53dvh;overflow-y:auto}
+.skill-panel h3{font-family:"Playfair Display","Noto Sans SC",serif;font-size:20px;margin:7px 0}
+.skill-panel p{font-size:11px;line-height:1.55;color:#68534a}
+.skill-header{font-size:9px;letter-spacing:1.2px;font-weight:800;color:#a04e38}
+.skill-step{font-size:10px;color:#8c644d;margin-top:10px;font-weight:800}
+.skill-question{font-weight:800!important;font-size:13px!important}
+.skill-listen{background:#5b726e;color:white;border:1px solid #465953;padding:8px 11px;font-size:11px}
+.skill-notice{font-size:10px!important}
+.skill-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}
+.skill-option{background:#fffaf0;border:1px solid #806456;padding:12px 8px;min-height:42px;font-size:12px}
+.skill-option:hover,.skill-option:focus-visible{background:#eed4b4}
+.skill-skip{background:transparent;border:0;border-bottom:1px dotted #9b725a;padding:8px 0;color:#7c533b;font-size:11px}
+.skill-summary{border-left:3px solid #9b8e78;background:#f5e9d4;padding:8px 10px;color:#684e40;font-size:11px;line-height:1.5}
+.skill-panel[hidden],.skill-listen[hidden],.world-panel[hidden]{display:none!important}
+@media(max-width:690px){.skill-panel{padding:10px;max-height:45dvh}.skill-options{grid-template-columns:1fr;gap:6px}.skill-option{padding:8px;min-height:35px}.world-panel{padding:8px}.world-action{font-size:10px}.world-top{flex-direction:column;gap:2px}}

@@ -12,3 +12,8 @@ Two non-assessed choices: after greeting Xiao Yu, An sits near her or asks teach
 
 ## V8: the lost notebook (story canon)
 After Wang Laoshi's counting lesson, Minh An notices the mother's notebook is missing. The learner must inspect two distinct clues, then either ask Xiao Yu to accompany An or seek teacher Wang's guidance. Staff at school ask An's name, which An can say in Mandarin using a previously learned expression, and the notebook is returned. This is formative transfer, not an official HSK score. At the walk-home scene the choice has a callback. The episode conclusion returns to mother's initial words. Both routes must reconverge before cafeteria; no optional decision skips a mandatory learning event.
+
+## V9 stable graph and scene objects
+Historic scene positions 0–9 are immutable. New canonical identifiers are hsk1.e01.arrival-greeting through hsk1.e01.exam-order in story-graph.js. Optional living-world observations in the arrival street and walk-home scene add emotional everyday details without awarding language mastery; callbacks to the mother's notebook remain canonical.
+## V10 and future acts
+New reading and browser-TTS listening sampler is strictly formative and does not alter the teacher's three internal checkpoint outcomes. Skills speaking and writing are not yet separately assessed. HSK2–5 are 16 episode drafts only in future-acts.js, with conflict, choices, language functions and resolution authored for later editorial development. The Chinese HSK3.0 mapping requires source-pinned native-teacher review before a level can be advertised as complete.

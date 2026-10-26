@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f9f3e6"><meta name="description" content="Hai quê hương — hành trình học tiếng Trung qua một câu chuyện tương tác từ HSK 1 đến HSK 5.">
-<title>两个故乡 · Hai quê hương | Interactive Story v8</title>
+<title>两个故乡 · Hai quê hương | Interactive Story v9 / Learning Foundation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
@@ -31,7 +31,7 @@
 <section class="how section-wrap" id="cach-choi"><div class="how-intro"><div class="eyebrow">HỌC BẰNG CÁCH SỐNG</div><h2>Không phải bài học.<br><em>Là một thế giới để bước vào.</em></h2></div><div class="how-items"><article><span class="how-number">01 /</span><h3>Nghe một câu chuyện</h3><p>Mỗi nhân vật có cuộc sống, cảm xúc và những câu chuyện riêng, không chỉ là người đưa ra bài tập.</p></article><article><span class="how-number">02 /</span><h3>Trả lời bằng tiếng Trung</h3><p>Nói hoặc gõ câu trả lời. Bạn có thể bật pinyin, nghe lại lời thoại và xin gợi ý.</p></article><article><span class="how-number">03 /</span><h3>Trưởng thành qua từng map</h3><p>Kiến thức xuất hiện tự nhiên trong cốt truyện, được sử dụng lại và kiểm tra tại các cột mốc.</p></article></div></section>
 <section class="ending section-wrap"><div class="ending-star">✳</div><div class="eyebrow">HAI QUÊ HƯƠNG</div><h2>“Mỗi ngày, chỉ cần<br><em>hiểu thêm một người.</em>”</h2><p>— Lời mẹ dặn Minh An, trước ngày đầu đến trường.</p><button class="primary-btn" id="endingBtn">Bắt đầu từ HSK 1 <span>↗</span></button></section>
 </main>
-<footer><div class="footer-brand"><span class="seal small">乡</span><strong>两个故乡 · Hai quê hương</strong></div><span>Một sản phẩm kể chuyện học tiếng Trung · Bản thử nghiệm tương tác</span><span>© 2026 MOTNGUM.CAFE · v8</span></footer>
+<footer><div class="footer-brand"><span class="seal small">乡</span><strong>两个故乡 · Hai quê hương</strong></div><span>Một sản phẩm kể chuyện học tiếng Trung · Bản thử nghiệm tương tác</span><span>© 2026 MOTNGUM.CAFE · v9</span></footer>
 <div class="game-overlay" id="gameOverlay" role="dialog" aria-modal="true" aria-label="Trò chơi HSK" hidden>
 <div class="game-shell"><div class="game-top"><button class="back-button" id="closeGame" aria-label="Trở về trang chủ">← <span>Trở về</span></button><div class="game-chapter"><span class="dot"></span><span>MAP 01 · NGÀY ĐẦU XA NHÀ</span></div><div class="game-top-right"><button type="button" class="option-button" id="notebookBtn" aria-expanded="false" aria-controls="notebookPanel">☷ Sổ tay</button><button id="togglePinyin" class="option-button" aria-pressed="true">Pinyin ✓</button><button id="toggleVietnamese" class="option-button" aria-pressed="true">Tiếng Việt ✓</button></div></div>
 <div id="notebookPanel" class="notebook-panel" role="region" aria-label="Sổ tay của Minh An" hidden>
@@ -57,13 +57,27 @@
  <button id="encounterContinue" class="encounter-continue" type="button" hidden>Giữ chặt quyển sổ, đi ăn cùng Tiểu Vũ ↗</button>
  <p class="encounter-disclaimer">Hoạt động vận dụng riêng · Không tính vào ba câu kiểm tra của cô Vương.</p>
 </section>
+<section id="skillPanel" class="skill-panel" aria-label="Luyện kỹ năng trước bài kiểm tra của cô giáo" hidden>
+ <div class="skill-header">✳ SỔ TAY CỦA AN · LUYỆN ĐỌC VÀ NGHE THỬ NGHIỆM</div>
+ <h3>Trước khi gặp cô Vương</h3><p>Ôn lại những gì bạn đã nghe và đọc. Đây không phải kỳ thi HSK hay bằng chứng đã thành thạo tiếng Trung.</p>
+ <div id="skillStep" class="skill-step"></div><p id="skillQuestion" class="skill-question"></p>
+ <button type="button" id="skillListen" class="skill-listen" hidden>◖)) Nghe câu tiếng Trung</button>
+ <p id="skillAudioNotice" class="skill-notice"></p>
+ <div id="skillOptions" class="skill-options"></div>
+ <button type="button" id="skillSkip" class="skill-skip">Bỏ qua câu này (chưa đánh giá) ↗</button>
+</section>
 <div id="storyInterlude" class="story-interlude" hidden>
  <div class="story-interlude-heading">✳ TRANG TRUYỆN · KHÔNG CHẤM ĐIỂM</div>
  <h3 id="interludeHeading"></h3><p id="interludeStory"></p>
  <p id="interludeTranslation" class="interlude-translation"></p>
  <button id="interludeContinue" class="interlude-continue" type="button">Đọc tiếp câu chuyện ↗</button>
 </div>
-<div id="storyBeat" class="story-beat" hidden></div><div id="sceneObjective" class="scene-objective"></div>
+<div id="storyBeat" class="story-beat" hidden></div>
+<section id="worldPanel" class="world-panel" aria-label="Quan sát những chi tiết của cảnh truyện" hidden>
+ <div class="world-top"><strong id="worldTitle"></strong><span id="worldProgress"></span></div>
+ <div id="worldActions" class="world-actions"></div><p id="worldDescription" class="world-description" role="status" aria-live="polite">Chạm vào một chi tiết để quan sát thế giới của An.</p>
+</section>
+<div id="sceneObjective" class="scene-objective"></div>
 <button id="vocabRevealBtn" type="button" class="vocab-reveal" hidden>✳ Cần giúp? Xem từ vựng trong cảnh</button>
 <div id="learningStrip" class="learning-strip" hidden></div><div class="user-instruction" id="userInstruction"></div><form id="answerForm" class="answer-row"><div class="input-wrap"><span class="type-icon">✎</span><input id="answerInput" maxlength="300" autocomplete="off" autocapitalize="off" spellcheck="false" lang="zh-CN" placeholder="Gõ câu trả lời bằng tiếng Trung..." aria-label="Câu trả lời tiếng Trung"></div><button id="micBtn" class="mic-btn" type="button" title="Nhận giọng nói (tùy trình duyệt, không chấm phát âm)" aria-label="Sử dụng micro" aria-describedby="micPrivacy">♩</button><button id="sendAnswer" class="send-btn" type="submit">Gửi câu trả lời ↗</button></form>
 <button id="openBuilderBtn" class="builder-reveal" type="button" hidden>✳ Chưa biết gõ? Mở bộ ghép câu (tính trợ giúp)</button>
@@ -75,8 +89,8 @@
 <div id="storyChoicePanel" class="story-choice-panel" hidden>
  <div class="story-choice-heading">✳ BẠN QUYẾT ĐỊNH · Không chấm điểm tiếng Trung</div><p id="storyChoiceTitle"></p>
  <div id="storyChoiceOptions" class="story-choice-options"></div></div>
-<p id="storyChoiceOutcome" class="story-choice-outcome" hidden></p><div class="next-row"><span id="attemptCounter">Lượt thử: 0</span><button type="button" id="nextBtn" class="next-btn" hidden>Tiếp tục câu chuyện ↗</button></div><div id="completionPane" class="completion-pane" hidden><div class="completion-head">✳ TẬP TRUYỆN 01 · HOÀN THÀNH</div><h3>Ngày đầu xa nhà</h3><p id="episodeEnding" class="episode-ending"></p><p id="summaryStats"></p><p id="summaryDescription"></p><p id="encounterSummary" class="encounter-summary"></p><p id="completionReview" class="completion-review"></p><div class="completion-actions"><button type="button" class="next-btn" id="retakeExamBtn" hidden>Thi lại 3 câu ↻</button><button type="button" class="next-btn" id="replayBtn">Chơi lại từ đầu</button><span>HSK 2–5: đang phát triển</span></div></div><div class="game-bottom"><span id="micPrivacy">✦ Demo không lưu ghi âm; khi dùng micro, trình duyệt có thể gửi âm thanh cho dịch vụ nhận diện của nhà cung cấp. Không chấm thanh điệu.</span><button id="resetGame" type="button">Chơi lại từ đầu ↻</button></div></div></div>
+<p id="storyChoiceOutcome" class="story-choice-outcome" hidden></p><div class="next-row"><span id="attemptCounter">Lượt thử: 0</span><button type="button" id="nextBtn" class="next-btn" hidden>Tiếp tục câu chuyện ↗</button></div><div id="completionPane" class="completion-pane" hidden><div class="completion-head">✳ TẬP TRUYỆN 01 · HOÀN THÀNH</div><h3>Ngày đầu xa nhà</h3><p id="episodeEnding" class="episode-ending"></p><p id="summaryStats"></p><p id="summaryDescription"></p><p id="encounterSummary" class="encounter-summary"></p><p id="skillSummary" class="skill-summary"></p><p id="completionReview" class="completion-review"></p><div class="completion-actions"><button type="button" class="next-btn" id="retakeExamBtn" hidden>Thi lại 3 câu ↻</button><button type="button" class="next-btn" id="replayBtn">Chơi lại từ đầu</button><span>HSK 2–5: đang phát triển</span></div></div><div class="game-bottom"><span id="micPrivacy">✦ Demo không lưu ghi âm; khi dùng micro, trình duyệt có thể gửi âm thanh cho dịch vụ nhận diện của nhà cung cấp. Không chấm thanh điệu.</span><button id="resetGame" type="button">Chơi lại từ đầu ↻</button></div></div></div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script src="/content-manifest.js" defer></script><script src="/game-core.js" defer></script><script src="/curriculum-data.js" defer></script><script src="/learning-kit.js" defer></script><script src="/story-director.js" defer></script><script src="/story-beats.js" defer></script><script src="/active-encounter.js" defer></script><script src="/app.js" defer></script>
+<script src="/content-manifest.js" defer></script><script src="/story-graph.js" defer></script><script src="/scene-world.js" defer></script><script src="/skill-sampler.js" defer></script><script src="/game-core.js" defer></script><script src="/curriculum-data.js" defer></script><script src="/learning-kit.js" defer></script><script src="/story-director.js" defer></script><script src="/story-beats.js" defer></script><script src="/active-encounter.js" defer></script><script src="/app.js" defer></script>
 </body></html>
