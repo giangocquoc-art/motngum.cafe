@@ -1,3 +1,5 @@
+> **Tài liệu dự án hiện hành:** [PRODUCT_SPEC.md](PRODUCT_SPEC.md) và [docs/INDEX.md](docs/INDEX.md). Các báo cáo V4–V9 trong repo là lịch sử, không đồng nghĩa tính năng đã có trên production.
+
 # 两个故乡 — Hai quê hương
 A narrative Chinese-learning RPG prototype, created for hsk.motngum.cafe.
 
@@ -84,3 +86,6 @@ A fully optional nine-page mini-story at `/nhap-mon.html` introduces Chinese cha
 
 ## Nhập môn v0.2
 Chữ đang chọn, Pinyin và giọng đọc đồng bộ; câu đoán chỉ ghi nhận lần chọn đầu; bỏ qua từng câu; có ôn lại bốn chữ không mất truyện. Trang chủ hiển thị tiếp tục Nhập môn, còn cuối chương mở trực tiếp HSK1 qua /?play=hsk1. Tiến độ lưu riêng, các kết quả HSK không thay đổi. Xem INTRO_LOGIC_AUDIT_V02.md.
+
+## Gate4 module extraction (staged, not production)
+Khối ảnh SVG giữ nguyên chuyển sang `scene-art.js`; serialization V3 và V4 shadow chuyển sang `save-io.js`; các thẻ HSK2–5 không còn là nút giả. Chi tiết: [GATE4_AUDIT.md](GATE4_AUDIT.md). **Không xóa file/bản lưu cũ; các tính năng chỉ chạy trên PR Preview cho tới khi được duyệt.**

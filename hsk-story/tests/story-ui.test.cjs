@@ -393,3 +393,16 @@ test("Gate3B scene observation never leaks a previous scene description into unr
  assert.equal(state.worldSeen["hsk1.e01.walk-home"].length,1);
  assert.equal(state.worldFocus["hsk1.e01.walk-home"],"tree");
 });
+
+test("Gate 4 roadmap HSK2–5 are non-interactive content; HSK1 remains keyboard-operable",()=>{
+ const t=harness(),nodes=t.e.chapterGrid.children;
+ assert.equal(nodes.length,5);
+ assert.equal(nodes[0].role,"button");
+ assert.equal(nodes[0].tabIndex,0);
+ for(const card of nodes.slice(1)){
+  assert.equal(card.attributes["aria-disabled"],"true");
+  assert.equal((card.listeners.click||[]).length,0);
+  assert.equal((card.listeners.keydown||[]).length,0);
+ }
+ nodes[0].click();assert.equal(t.e.gameOverlay.hidden,false);
+});

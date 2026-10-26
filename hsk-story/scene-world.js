@@ -42,7 +42,8 @@ function introSawGlyph(bridge,intro){
  if(seen.includes(bridge.zi))return true;
  if(bridge.zi==="妈")return intro.momRevealed===true;
  if(bridge.zi==="明")return Array.isArray(intro.lightParts)&&intro.lightParts.includes("日")&&intro.lightParts.includes("月");
- return Number.isInteger(intro.maxReached)&&intro.maxReached>=bridge.page;
+ /* Merely visiting an intro page is NOT evidence of inspecting or recognizing a glyph. */
+ return false;
 }
 function describe(sceneId,objectId,visited,intro){
  var s=site(sceneId),obj=s&&s.objects.find(o=>o.id===objectId);
