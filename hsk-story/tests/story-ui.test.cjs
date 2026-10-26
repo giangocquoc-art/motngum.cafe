@@ -1,10 +1,17 @@
 const {test}=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 const folder=path.resolve(__dirname,"..");
 function loadModule(file,name){const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box,{filename:file});return box.module.exports}
-const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js"),Content=loadModule("content-manifest.js");
+const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js"),Content=loadModule("content-manifest.js"),E=loadModule("active-encounter.js");
 const html=fs.readFileSync(path.join(folder,"index.html"),"utf8"),source=fs.readFileSync(path.join(folder,"app.js"),"utf8");
 const ids=Array.from(html.matchAll(/id="([^"]+)"/g),x=>x[1]);
 function dismissStory(e){if(!e.storyInterlude.hidden)e.interludeContinue.click()}
+function finishEncounter(e,routeIndex=0){
+ if(e.encounterPanel.hidden)return;
+ e.encounterActions.children[0].click();e.encounterActions.children[1].click();
+ e.encounterActions.children[routeIndex].click();
+ e.encounterInput.value="我叫安";e.encounterInput.fire("input");e.encounterAnswerForm.fire("submit");
+ e.encounterContinue.click();
+}
 function harness(sharedStorage={}){
  let dom={},document,spoken=[];function element(id){return {id,hidden:false,disabled:false,value:"",textContent:"",innerHTML:"",style:{},firstChild:{textContent:""},isConnected:true,children:[],attributes:{},listeners:{},
   classList:{s:new Set,add(k){this.s.add(k)},remove(k){this.s.delete(k)},contains(k){return this.s.has(k)},toggle(k){this.s.has(k)?this.s.delete(k):this.s.add(k)}},
@@ -13,13 +20,13 @@ function harness(sharedStorage={}){
   click(){(this.listeners.click||[]).forEach(f=>f({preventDefault(){}}))},fire(k,args={}){(this.listeners[k]||[]).forEach(f=>f({preventDefault(){},...args}))}
  }}
  ids.forEach(id=>dom[id]=element(id));
- ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyInterlude","vocabRevealBtn","learningStrip"].forEach(id=>dom[id].hidden=true);
+ ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyInterlude","vocabRevealBtn","learningStrip","encounterPanel","encounterAnswerForm","encounterContinue","encounterHint","encounterSample"].forEach(id=>dom[id].hidden=true);
  const nav=element("nav");
  document={body:{style:{}},activeElement:null,listeners:{},getElementById(id){if(!dom[id])throw Error("Missing DOM ID "+id);return dom[id]},querySelector(q){return q==="nav"?nav:null},createElement(tag){return element("new-"+tag)},querySelectorAll(){return []},addEventListener(k,f){(this.listeners[k]??=[]).push(f)}};
  const localStorage={getItem(k){return sharedStorage[k]||null},setItem(k,v){sharedStorage[k]=v}};
  const window={speechSynthesis:{cancel(){},getVoices(){return []},speak(u){spoken.push(u.text)}}};
  function SpeechSynthesisUtterance(text){this.text=text}
- vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,console},{filename:"app.js"});
+ vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,console},{filename:"app.js"});
  return {e:dom,document,sharedStorage,spoken}
 }
 test("story: sentence builder is helpful and notebook only shows past expressions",()=>{
@@ -52,7 +59,7 @@ test("story: exams hide notebook and builder, retain independent grading",()=>{
  const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
  const correct=["我很好","我叫安","我是学生","有三个学生","我想吃面条","谢谢","好","我叫安我是学生","十块钱","我想吃面条"];
  for(let i=0;i<correct.length;i++){
-  dismissStory(e);
+  finishEncounter(e);dismissStory(e);
   assert.equal(e.stepText.textContent,String(i+1).padStart(2,"0")+" / 10");
   if(i===7){assert.equal(e.sentenceBuilder.hidden,true);e.notebookBtn.click();assert.equal(e.notebookPanel.hidden,true);}
   e.answerInput.value=correct[i];e.answerInput.fire("input");e.answerForm.fire("submit");
@@ -71,7 +78,7 @@ test('story memory survives browser refresh and changes the next scene',()=>{
  const st={};let t=harness(st),e=t.e;e.startBtn.click();dismissStory(e);
  const answers=['我很好','我叫安','我是学生','有三个学生','我想吃面条'];
  for(let i=0;i<answers.length;i++){
-  dismissStory(e);
+  finishEncounter(e);dismissStory(e);
   e.answerInput.value=answers[i];e.answerInput.fire('input');e.answerForm.fire('submit');
   if(i===2){assert.equal(e.nextBtn.hidden,true);e.storyChoiceOptions.children[1].click();}
   if(i===4)e.storyChoiceOptions.children[0].click();
@@ -153,4 +160,72 @@ test("V7 checkpoint never exposes construction hints",()=>{
  assert.equal(e.sentenceBuilder.hidden,true);
  e.openBuilderBtn.click();
  assert.notEqual(JSON.parse(s["hai-que-huong-progress-v3"]).hintUsed,true);
+});
+
+test("V8 lost notebook episode requires observed clues and retrievable personal introduction",()=>{
+ const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
+ const learned=["我很好","我叫安","我是学生","有三个学生"];
+ for(let i=0;i<4;i++){
+  dismissStory(e);e.answerInput.value=learned[i];e.answerForm.fire("submit");
+  if(i===2)e.storyChoiceOptions.children[0].click();
+  e.nextBtn.click();
+ }
+ assert.equal(e.stepText.textContent,"05 / 10");assert.equal(e.encounterPanel.hidden,false);
+ assert.equal(e.answerForm.hidden,true);assert.equal(e.encounterActions.children.length,3);
+ e.answerInput.value="我想吃面条";e.answerForm.fire("submit");
+ assert.equal(e.encounterPanel.hidden,false);
+ e.encounterActions.children[0].click();
+ assert.equal(e.encounterActions.children.length,3);
+ e.encounterActions.children[1].click();
+ assert.equal(e.encounterActions.children.length,2);
+ e.encounterActions.children[1].click();
+ assert.equal(e.encounterAnswerForm.hidden,false);
+ assert.ok(e.encounterBody.textContent.includes("Vương"));
+ e.encounterInput.value="我叫安";e.encounterInput.fire("input");
+ let saved=JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]);
+ assert.equal(saved.encounterDraft,"我叫安");assert.equal(saved.encounter.stage,"respond");
+ e.encounterAnswerForm.fire("submit");saved=JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]);
+ assert.equal(saved.encounter.answer,"independent");
+ assert.equal(e.encounterContinue.hidden,false);
+ e.encounterContinue.click();
+ assert.equal(e.encounterPanel.hidden,true);
+ assert.equal(e.storyInterlude.hidden,false);
+ assert.equal(JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]).history.length,4);
+});
+test("V8 transfer encounter can resume a route and preserves distinction from classroom examination",()=>{
+ const storage={};
+ let t=harness(storage),e=t.e;e.startBtn.click();dismissStory(e);
+ for(const [i,answer] of ["我很好","我叫安","我是学生","有三个学生"].entries()){
+  dismissStory(e);e.answerInput.value=answer;e.answerForm.fire("submit");
+  if(i===2)e.storyChoiceOptions.children[0].click();
+  e.nextBtn.click();
+ }
+ e.encounterActions.children[0].click();e.encounterActions.children[1].click();
+ e.encounterActions.children[0].click();
+ e.encounterInput.value="我不叫安";e.encounterInput.fire("input");e.encounterAnswerForm.fire("submit");
+ assert.equal(JSON.parse(storage["hai-que-huong-progress-v3"]).encounter.attempts,1);
+ t=harness(storage);e=t.e;e.resumeBtn.click();
+ assert.equal(e.encounterAnswerForm.hidden,false);
+ assert.equal(e.encounterInput.value,"我不叫安");
+ e.encounterHint.click();e.encounterInput.value="我叫安";e.encounterAnswerForm.fire("submit");
+ assert.equal(JSON.parse(storage["hai-que-huong-progress-v3"]).encounter.answer,"helped");
+ e.encounterContinue.click();dismissStory(e);
+ const remaining=["我想吃面条","谢谢","好","我叫安我是学生","十块钱","我想吃面条"];
+ for(let i=0;i<remaining.length;i++){
+  dismissStory(e);e.answerInput.value=remaining[i];e.answerForm.fire("submit");
+  if(i===0)e.storyChoiceOptions.children[0].click();
+  e.nextBtn.click();
+ }
+ assert.equal(e.completionPane.hidden,false);
+ assert.ok(e.summaryStats.textContent.includes("3/3 câu kiểm tra không cần trợ giúp"));
+ assert.ok(e.encounterSummary.textContent.includes("đúng nhờ gợi ý"));
+ assert.ok(e.episodeEnding.textContent.includes("Mẹ")===false||e.episodeEnding.textContent.includes("An"));
+});
+test("V8 migrates V7 completed story without forcing new content replay",()=>{
+ const store={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:9,done:true,history:Array.from({length:10},()=>({status:"correct",attempts:0,hint:false})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
+ const t=harness(store),e=t.e;e.resumeBtn.click();
+ assert.equal(e.completionPane.hidden,false);
+ assert.equal(e.encounterPanel.hidden,true);
+ assert.ok(e.encounterSummary.textContent.includes("bỏ qua"));
+ e.retakeExamBtn.click();assert.equal(JSON.parse(store["hai-que-huong-progress-v3"]).encounter.stage,"legacy");
 });

@@ -9,3 +9,6 @@ Create original background, transparent character sprites, UI HTML dialogue and 
 
 ## V5 authored choice continuity
 Two non-assessed choices: after greeting Xiao Yu, An sits near her or asks teacher Wang for help; after ordering noodles, An chooses fewer chilies or tries a little Chengdu spice. The following scenes receive choice-sensitive narration, but all branches reconverge before the next mandatory language task. Persist these in storyChoices and include memories in An's notebook. Do not alter canon or imply these are HSK exam questions.
+
+## V8: the lost notebook (story canon)
+After Wang Laoshi's counting lesson, Minh An notices the mother's notebook is missing. The learner must inspect two distinct clues, then either ask Xiao Yu to accompany An or seek teacher Wang's guidance. Staff at school ask An's name, which An can say in Mandarin using a previously learned expression, and the notebook is returned. This is formative transfer, not an official HSK score. At the walk-home scene the choice has a callback. The episode conclusion returns to mother's initial words. Both routes must reconverge before cafeteria; no optional decision skips a mandatory learning event.

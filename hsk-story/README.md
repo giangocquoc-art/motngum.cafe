@@ -71,3 +71,7 @@ The original five chapter cards, ten scored scene dialogues, and ten NPC respons
 The phrase-tile construction board is not shown automatically. The player must explicitly press **Mở bộ ghép câu** to see it; this action immediately sets the assisted-learning flag, even if they later type the whole answer manually. Checkpoint scenes cannot use phrase tiles.
 
 Content authors should update the manifest and its localized reply together, run `node --test hsk-story/tests/*.test.cjs`, and review `MASTER_EXECUTION_PLAN_V7.md`. V7 is a correctness-focused foundation, still an HSK1 pilot rather than a completed HSK curriculum, AI voice tutor or finalized artwork.
+
+## V8 — diary recovery and transfer
+The first interactive story event occurs after counting in class and before cafeteria: explore two clues, choose friend or teacher, introduce An to a school staff member in a new setting and recover the notebook mother gave them. Dialogue choices change later callback and the ending. HSK school test scores are still independent from this formative retrieval result.
+Source: active-encounter.js; authored storyboard: EPISODE_01_STORYBOARD_V8.md; release plan and quality notes: MASTER_EXECUTION_PLAN_V8.md and RELEASE_QA_V8.md. Scene IDs 0-9 and pre-existing saved games remain compatible. Full HSK1, unrestricted AI conversation and final artwork are still not complete.
