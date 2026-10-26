@@ -29,4 +29,4 @@ Cloudflare setup reference: [Send emails](https://developers.cloudflare.com/emai
 
 ## Fillable file
 
-`hsk-story/.env` is the local, ignored file prepared for the owner. Its provider and email tokens are blank. `hsk-story/.env.example` is the safe template for sharing/version control.
+`hsk-story/.env` is the local, Git-ignored file. The provider key is configured locally; the Cloudflare Email Sending token is still blank. Never copy values from this file into source control or browser code. `hsk-story/.env.example` is the safe blank template for sharing/version control.
