@@ -56,3 +56,10 @@ From the repository root, run `node --test hsk-story/tests/*.test.cjs`. The `tes
 - After scene 2, choose how Minh An finds a classroom seat (friend vs teacher). After scene 4, choose noodle taste (mild vs some chili). Each option has a short Chinese/translated flavor beat in the next scene, with all mandated learning scenes preserved.
 - Story choices are not graded Mandarin tasks. Options persist in the existing compatible v3 storage payload, survive reload and quiz retake, appear in An's journal, and reset only upon full replay.
 - Author in `story-director.js` and do not bypass its `validate`/`pending`/`select` checks. No LLM integration yet.
+
+## V6 — Learning integrity and narrative pacing
+- Five authored, **unscored** bilingual story pages at important scene entrances. They provide context before action, do not unlock any learning objectives, and are persisted in existing v3 local storage with V5 migration.
+- Answer-bearing vocabulary is opt-in during practice; opening it marks the attempt as helped. It is available after resolving the scene for consolidation.
+- Minh An's notebook does not show expressions from the current scene before the player has attempted it or explicitly requested assistance.
+- Reading narrative captions before the in-world checkpoint does not affect the checkpoint score. Pinyin/translation used to solve an actual checkpoint still counts as assistance.
+- HSK1 content remains a **pilot episode only**; see MASTER_EXECUTION_PLAN_V6.md and RELEASE_QA_V6.md.

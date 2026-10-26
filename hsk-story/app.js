@@ -38,9 +38,9 @@ var REPLIES=[
 
 var $=function(id){return document.getElementById(id)};
 var KEY="hai-que-huong-progress-v3",PREVIOUS_KEY="hai-que-huong-progress-v2",OLD_KEY="hai-que-huong-progress-v1";
-var state={step:0,history:[],done:false,pinyin:true,vi:true,attempts:0,hintUsed:false,solved:false,busy:false,recognizer:null,draft:"",examHelp:false,storyChoices:{}};
+var state={step:0,history:[],done:false,pinyin:true,vi:true,attempts:0,hintUsed:false,solved:false,busy:false,recognizer:null,draft:"",examHelp:false,storyChoices:{},storyBeats:[],vocabSeen:[]};
 var toastTimer=null,returnFocus=null,SCENE_TOTAL=SCENES.length,EXAM_START=HSKCurriculum.scenes.findIndex(function(x){return x.kind==="checkpoint"});
-if(typeof HSKLearningKit==="undefined"||typeof HSKStoryDirector==="undefined"||HSKStoryDirector.validate(SCENE_TOTAL,EXAM_START).length||HSKCurriculum.validate().length||HSKCurriculum.scenes.length!==SCENE_TOTAL||REPLIES.length!==SCENE_TOTAL)throw Error("Story content contract invalid");
+if(typeof HSKLearningKit==="undefined"||typeof HSKStoryDirector==="undefined"||typeof HSKStoryBeats==="undefined"||HSKStoryBeats.validate(SCENE_TOTAL,EXAM_START).length||HSKStoryDirector.validate(SCENE_TOTAL,EXAM_START).length||HSKCurriculum.validate().length||HSKCurriculum.scenes.length!==SCENE_TOTAL||REPLIES.length!==SCENE_TOTAL)throw Error("Story content contract invalid");
 function readSafe(k){try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}}
 function load(){
  var s=readSafe(KEY);
@@ -48,7 +48,7 @@ function load(){
   state.history=s.history.slice(0,SCENE_TOTAL).map(function(x){return x&&["correct","assisted"].includes(x.status)?{status:x.status,attempts:Math.min(100,Math.max(0,Number(x.attempts)||0)),hint:!!x.hint}:null});
   state.step=Math.max(0,Math.min(SCENE_TOTAL-1,s.step));state.done=!!s.done&&state.history.filter(Boolean).length===SCENE_TOTAL;
   state.pinyin=s.pinyin!==false;state.vi=s.vi!==false;state.draft=typeof s.draft==="string"?s.draft.slice(0,300):"";
-  state.attempts=Math.min(100,Math.max(0,Number(s.attempts)||0));state.hintUsed=!!s.hintUsed;state.examHelp=!!s.examHelp;state.storyChoices=HSKStoryDirector.clean(s.storyChoices);
+  state.attempts=Math.min(100,Math.max(0,Number(s.attempts)||0));state.hintUsed=!!s.hintUsed;state.examHelp=!!s.examHelp;state.storyChoices=HSKStoryDirector.clean(s.storyChoices);state.storyBeats=HSKStoryBeats.migrate(s.storyBeats,state.step,state.history,state.done);state.vocabSeen=Array.isArray(s.vocabSeen)?s.vocabSeen.filter(x=>Number.isInteger(x)&&x>=0&&x<EXAM_START):[];
   return;
  }
  var old=readSafe(PREVIOUS_KEY);
@@ -60,10 +60,10 @@ function load(){
  }
  state.step=0;
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify({v:3,step:state.step,history:state.history,done:state.done,pinyin:state.pinyin,vi:state.vi,draft:state.draft,attempts:state.attempts,hintUsed:state.hintUsed,examHelp:state.examHelp,storyChoices:state.storyChoices}))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({v:3,step:state.step,history:state.history,done:state.done,pinyin:state.pinyin,vi:state.vi,draft:state.draft,attempts:state.attempts,hintUsed:state.hintUsed,examHelp:state.examHelp,storyChoices:state.storyChoices,storyBeats:state.storyBeats,vocabSeen:state.vocabSeen}))}catch(e){}}
 function notify(msg){var el=$("toast");el.textContent=msg;el.classList.add("visible");clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove("visible")},3300)}
 function updateToggles(){
- var canShow=state.step<EXAM_START||state.solved||state.examHelp;
+ var canShow=!!HSKStoryBeats.pending(state.step,state.storyBeats)||state.step<EXAM_START||state.solved||state.examHelp;
  $("pinyinText").hidden=!(state.pinyin&&canShow);
  $("vietText").hidden=!(state.vi&&canShow);
  $("togglePinyin").setAttribute("aria-pressed",String(state.pinyin&&canShow));
@@ -89,7 +89,7 @@ var svg='<svg viewBox="0 0 1200 620" preserveAspectRatio="xMidYMid slice" xmlns=
 
 
 /* Notebook is a story object, not a separate flashcard app. Exam access is disabled until resolved. */
-function notebookAllowed(){return state.step<EXAM_START||state.solved||state.done}
+function notebookAllowed(){return !HSKStoryBeats.pending(state.step,state.storyBeats)&&(state.step<EXAM_START||state.solved||state.done)}
 function setNotebook(open){
  if(open&&!notebookAllowed()){notify("Cô Vương đang kiểm tra. Sổ tay chỉ được mở sau khi trả lời xong.");return}
  $("notebookPanel").hidden=!open;
@@ -97,7 +97,7 @@ function setNotebook(open){
  if(open){refreshNotebook();$("notebookClose").focus()}else $("notebookBtn").focus();
 }
 function refreshNotebook(){
- var words=HSKLearningKit.notebook(HSKCurriculum.scenes,state.history,state.step,state.done);
+ var words=HSKLearningKit.notebook(HSKCurriculum.scenes,state.history,state.done||state.solved||state.hintUsed||state.vocabSeen.includes(state.step)?state.step:state.step-1,state.done);
  var weak=HSKLearningKit.needsReview(state.history,HSKCurriculum.scenes);
  var counts=HSKLearningKit.counts(state.history,HSKCurriculum.scenes);
  $("notebookProgress").textContent=counts.finished+"/"+counts.total+" tình huống đã trải qua · "+counts.independent+" tự giải đúng ngay lần đầu · "+weak.length+" tình huống cần ôn";
@@ -123,11 +123,37 @@ function renderTiles(){
  });
 }
 function useTile(token){
- if(state.solved||state.done||state.step>=EXAM_START)return;
+ if(state.solved||state.done||state.step>=EXAM_START||HSKStoryBeats.pending(state.step,state.storyBeats))return;
  state.draft=HSKLearningKit.compose($("answerInput").value,token);
  $("answerInput").value=state.draft;
  state.hintUsed=true;save();$("answerInput").focus();
  $("builderNotice").textContent="✳ Đã dùng ghép câu. Câu này sẽ được đánh dấu có hỗ trợ.";
+}
+
+
+function renderStoryInterlude(){
+ var b=HSKStoryBeats.pending(state.step,state.storyBeats);
+ $("storyInterlude").hidden=!b;
+ if(!b)return false;
+ $("interludeHeading").textContent=b.title;$("interludeStory").textContent=b.story;
+ $("interludeTranslation").textContent=b.vi;
+ $("speaker").textContent="旁白 · Người kể chuyện";$("sceneTag").textContent="TRANG TRUYỆN";
+ $("dialogueText").textContent=b.zh;$("pinyinText").textContent=b.py;$("vietText").textContent=b.vi;
+ $("userInstruction").hidden=true;$("sceneObjective").hidden=true;
+ $("answerForm").hidden=true;$("sentenceBuilder").hidden=true;$("learningStrip").hidden=true;
+ $("vocabRevealBtn").hidden=true;$("hintBtn").hidden=true;$("assistBtn").hidden=true;
+ $("storyBeat").hidden=true;$("storyChoicePanel").hidden=true;$("nextBtn").hidden=true;
+ updateToggles();return true;
+}
+function continueStoryInterlude(){
+ var b=HSKStoryBeats.pending(state.step,state.storyBeats);if(!b||$("gameOverlay").hidden)return;
+ state.storyBeats=HSKStoryBeats.mark(state.storyBeats,b.id);save();renderStep();$("answerInput").focus();
+}
+function revealWords(){
+ if(state.done||state.solved||state.step>=EXAM_START||HSKStoryBeats.pending(state.step,state.storyBeats))return;
+ state.hintUsed=true;if(!state.vocabSeen.includes(state.step))state.vocabSeen.push(state.step);
+ save();$("learningStrip").hidden=false;$("vocabRevealBtn").hidden=true;
+ $("feedback").className="feedback neutral";$("feedback").textContent="✳ Đã xem từ vựng. Câu này được ghi là hoàn thành với trợ giúp.";
 }
 
 function renderStoryChoice(){
@@ -175,7 +201,7 @@ function showCompletion(){
  $("userInstruction").textContent="✳ Bạn đã đi hết tập truyện thử nghiệm: Ngày đầu xa nhà.";
  $("summaryStats").textContent=summary.independently+"/"+summary.total+" câu tự giải không cần gợi ý · "+summary.hinted+" câu đúng sau gợi ý · "+summary.assisted+" câu xem đáp án mẫu · "+summary.examCorrect+"/"+summary.examTotal+" câu kiểm tra không cần trợ giúp.";
  $("summaryDescription").textContent=summary.examCorrect===summary.examTotal&&summary.assisted===0&&summary.hinted===0?"Rất tốt! Bạn đã tự xử lý tất cả câu hỏi trong tập thử nghiệm. Đây chưa phải kết quả thi HSK 1 chính thức.":"Bạn đã hoàn thành câu chuyện. Những câu cần xem mẫu là gợi ý để ôn lại — không được tính là trả lời đúng độc lập. Đây không phải chứng nhận trình độ HSK.";
- $("progressBar").style.width="100%";$("retakeExamBtn").hidden=false;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;
+ $("progressBar").style.width="100%";$("retakeExamBtn").hidden=false;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;$("storyInterlude").hidden=true;$("vocabRevealBtn").hidden=true;
  $("feedback").textContent="";$("feedback").className="feedback";
  $("completionReview").textContent=(function(){var weak=HSKLearningKit.needsReview(state.history,HSKCurriculum.scenes);return weak.length?"Sổ tay của An nhắc bạn luyện thêm: "+weak.map(function(w){return w.objective}).join("; ")+".":"Các câu luyện trong tập này chưa ghi nhận chỗ cần xem lại."})();
 }
@@ -193,17 +219,18 @@ function renderStep(){
  $("sendAnswer").disabled=false;$("micBtn").disabled=false;
  $("feedback").textContent="";$("feedback").className="feedback";
  $("answerForm").hidden=false;$("nextBtn").hidden=true;$("hintBtn").hidden=meta.kind==="checkpoint";$("assistBtn").hidden=state.attempts<2;
- $("completionPane").hidden=true;$("retakeExamBtn").hidden=true;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;
+ $("completionPane").hidden=true;$("retakeExamBtn").hidden=true;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;$("storyInterlude").hidden=true;$("userInstruction").hidden=false;$("sceneObjective").hidden=false;
  var beat=HSKStoryDirector.beat(state.step,state.storyChoices);$("storyBeat").hidden=!beat;$("storyBeat").textContent=beat?"✳ "+beat.zh+" — "+beat.vi:"";
  $("builderNotice").textContent="Chạm từ để ghép câu nếu chưa biết gõ chữ Hán. Dùng ghép câu được tính là trợ giúp.";renderTiles();
  if(!$("notebookPanel").hidden)setNotebook(false);
  $("attemptCounter").textContent="Lượt thử: "+state.attempts;
- $("learningStrip").hidden=meta.kind!=="practice";
+ $("learningStrip").hidden=meta.kind!=="practice"||!state.vocabSeen.includes(state.step);
+ $("vocabRevealBtn").hidden=meta.kind!=="practice"||state.vocabSeen.includes(state.step);
  $("learningStrip").textContent=meta.kind==="practice"?"✳ "+meta.topic+" · "+meta.words.map(function(w){return w[0]+" ("+w[1]+") — "+w[2]}).join("  ·  "):"";
  $("sceneObjective").textContent=meta.kind==="checkpoint"?"Kiểm tra nhớ lại · "+meta.objective+" · Phụ đề/gợi ý tính là có hỗ trợ.":"Mục tiêu hôm nay · "+meta.objective;
  updateToggles();
  if(state.done)showCompletion();
- else if(state.history[state.step])displayResolved();
+ else if(!renderStoryInterlude()&&state.history[state.step])displayResolved();
 }
 function displayResolved(){
  var saved=state.history[state.step];if(!saved)return;
@@ -214,7 +241,7 @@ function displayResolved(){
  $("sceneTag").textContent="PHẢN HỒI CỦA NHÂN VẬT";updateToggles();
  $("feedback").className="feedback "+(saved.status==="correct"?"good":"neutral");
  $("feedback").textContent=saved.status==="correct"?(saved.hint?"✓ Đã trả lời đúng sau hỗ trợ. Câu này nên ôn thêm.":"✓ Nhân vật đã hiểu bạn. Đọc phản hồi rồi nhấn Tiếp tục."):"✦ Bạn đã xem câu mẫu và đi tiếp; câu này không tính là tự làm đúng.";
- $("sentenceBuilder").hidden=true;
+ $("sentenceBuilder").hidden=true;$("learningStrip").hidden=state.step>=EXAM_START;$("vocabRevealBtn").hidden=true;
  $("nextBtn").hidden=renderStoryChoice();$("nextBtn").textContent=state.step===SCENE_TOTAL-1?"Xem tổng kết ↗":"Tiếp tục câu chuyện ↗";
 }
 function openGame(){
@@ -241,6 +268,7 @@ function finishCurrent(status){
 }
 function submitAnswer(e){
  e.preventDefault();if(state.busy||state.solved||state.done)return;
+ if(HSKStoryBeats.pending(state.step,state.storyBeats))return;
  var scene=SCENES[state.step],value=$("answerInput").value;
  var result=HSKCore.evaluate(scene,value),feed=$("feedback");
  if(result.ok){state.busy=true;finishCurrent("correct");return}
@@ -250,7 +278,7 @@ function submitAnswer(e){
  if(state.attempts>=2)$("assistBtn").hidden=false;
 }
 function nextScene(){
- if(!state.solved||HSKStoryDirector.pending(state.step,state.storyChoices))return;
+ if(!state.solved||HSKStoryBeats.pending(state.step,state.storyBeats)||HSKStoryDirector.pending(state.step,state.storyChoices))return;
  if(state.step===SCENE_TOTAL-1){state.done=true;save();showCompletion();chapters();notify("✳ Đã hoàn thành tập truyện đầu tiên!");return}
  state.step++;state.draft="";state.attempts=0;state.hintUsed=false;state.examHelp=false;save();renderStep();$("answerInput").focus();
 }
@@ -290,9 +318,11 @@ $("notebookBtn").addEventListener("click",function(){setNotebook($("notebookPane
 $("notebookClose").addEventListener("click",function(){setNotebook(false)});
 $("tileUndo").addEventListener("click",function(){useTile("__undo")});
 $("tileClear").addEventListener("click",function(){useTile("__clear")});
-$("togglePinyin").addEventListener("click",function(){if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.pinyin=true}else state.pinyin=!state.pinyin;updateToggles();save()});
-$("toggleVietnamese").addEventListener("click",function(){if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.vi=true}else state.vi=!state.vi;updateToggles();save()});
-function replay(){state.step=0;state.done=false;state.history=[];state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.storyChoices={};state.solved=false;save();chapters();renderStep();$("answerInput").focus();notify("Bắt đầu lại tập truyện. Thành tích cũ đã được đặt lại.")}
+$("interludeContinue").addEventListener("click",continueStoryInterlude);
+$("vocabRevealBtn").addEventListener("click",revealWords);
+$("togglePinyin").addEventListener("click",function(){if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.pinyin=!state.pinyin}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.pinyin=true}else state.pinyin=!state.pinyin;updateToggles();save()});
+$("toggleVietnamese").addEventListener("click",function(){if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.vi=!state.vi}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.vi=true}else state.vi=!state.vi;updateToggles();save()});
+function replay(){state.step=0;state.done=false;state.history=[];state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.storyChoices={};state.storyBeats=[];state.vocabSeen=[];state.solved=false;save();chapters();renderStep();$("answerInput").focus();notify("Bắt đầu lại tập truyện. Thành tích cũ đã được đặt lại.")}
 function retakeExam(){state.step=EXAM_START;state.done=false;state.history=state.history.slice(0,EXAM_START);state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.solved=false;save();chapters();renderStep();$("answerInput").focus();notify("Đã mở lại ba câu kiểm tra. Tiến độ câu chuyện vẫn được giữ.")}
 $("retakeExamBtn").addEventListener("click",retakeExam);
 $("resetGame").addEventListener("click",replay);$("replayBtn").addEventListener("click",replay);

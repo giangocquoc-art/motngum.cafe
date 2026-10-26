@@ -69,3 +69,15 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .story-choice-option:hover,.story-choice-option:focus-visible{background:#f3dbb8}
 .story-choice-outcome,.story-memory{font-size:11px;line-height:1.6;color:#785440;border-left:3px solid #b98954;background:#f9ecd4;padding:8px 11px}
 @media(max-width:690px){.story-choice-panel{padding:9px}.story-choice-options{gap:6px}.story-choice-option{padding:7px}.story-choice-option strong{font-size:12px}.story-choice-option span{font-size:10px}.story-beat{font-size:10px;padding:6px 8px}}
+
+/* V6 narrative pages and opt-in vocabulary */
+.story-interlude{border:1.5px solid #8d6b55;background:#f8e9d2;padding:14px 19px;margin:0 0 12px;max-height:41vh;overflow:auto}
+.story-interlude-heading{font-size:9px;font-weight:800;color:#994b37;letter-spacing:1.4px}
+.story-interlude h3{font-family:"Playfair Display","Noto Sans SC",serif;font-size:20px;margin:8px 0}
+.story-interlude p{font-size:12px;line-height:1.85;color:#584d41;margin:6px 0}
+.story-interlude .interlude-translation{font-size:11px;color:#887361;border-top:1px solid #cdb79f;padding-top:8px}
+.interlude-continue{margin-top:8px;background:#a74d36;color:white;border:1px solid #8d3f2c;font-size:12px;font-weight:700;padding:11px 16px}
+.interlude-continue:hover{background:#803923}
+.vocab-reveal{border:1px dashed #9c826b;background:#fbf4e6;color:#805037;font-size:11px;padding:8px 11px;margin:5px 0 9px;text-align:left}
+.vocab-reveal:hover{background:#f3e2c7}
+@media(max-width:690px){.story-interlude{padding:10px 11px;max-height:34dvh;margin:0 0 7px}.story-interlude h3{font-size:17px}.story-interlude p{font-size:11px;line-height:1.55}.interlude-continue{padding:8px 11px}.vocab-reveal{font-size:10px;padding:7px}}
