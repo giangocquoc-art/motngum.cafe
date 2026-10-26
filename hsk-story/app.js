@@ -128,7 +128,7 @@ function encounterDispatch(action){
 /* Optional tactile story objects. Never alter school exam scores. */
 function renderWorld(){
  var id=HSKStoryGraph.idAt(state.step),site=HSKSceneWorld.site(id);
- var blocked=state.done||HSKEncounter.pending(state.step,state.encounter)||HSKSkillSampler.pending(state.step,state.skillSampler)||HSKStoryBeats.pending(state.step,state.storyBeats);
+ var blocked=!!(state.done||HSKEncounter.pending(state.step,state.encounter)||HSKSkillSampler.pending(state.step,state.skillSampler)||HSKStoryBeats.pending(state.step,state.storyBeats));
  $("worldPanel").hidden=!site||blocked;$("worldActions").replaceChildren();if(!site||blocked)return;
  $("worldTitle").textContent=site.title;
  var visited=state.worldSeen[id]||[];
@@ -153,7 +153,7 @@ function renderSkillSampler(){
  if(!active)return false;
  var item=HSKSkillSampler.current(state.skillSampler);
  $("answerForm").hidden=true;$("sentenceBuilder").hidden=true;$("openBuilderBtn").hidden=true;
- $("storyInterlude").hidden=true;$("encounterPanel").hidden=true;$("skillPanel").hidden=true;$("worldPanel").hidden=true;$("storyChoicePanel").hidden=true;
+ $("storyInterlude").hidden=true;$("encounterPanel").hidden=true;$("storyChoicePanel").hidden=true;
  $("worldPanel").hidden=true;$("storyBeat").hidden=true;$("learningStrip").hidden=true;
  $("vocabRevealBtn").hidden=true;$("hintBtn").hidden=true;$("assistBtn").hidden=true;$("nextBtn").hidden=true;
  $("sceneDay").textContent="CHƯƠNG 01 · ÔN TẬP KỸ NĂNG";
@@ -329,7 +329,7 @@ function renderStep(){
  $("sendAnswer").disabled=false;$("micBtn").disabled=false;
  $("feedback").textContent="";$("feedback").className="feedback";
  $("answerForm").hidden=false;$("nextBtn").hidden=true;$("hintBtn").hidden=meta.kind==="checkpoint";$("assistBtn").hidden=state.attempts<2;
- $("completionPane").hidden=true;$("retakeExamBtn").hidden=true;$("encounterPanel").hidden=true;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;$("storyInterlude").hidden=true;$("userInstruction").hidden=false;$("sceneObjective").hidden=false;
+ $("completionPane").hidden=true;$("retakeExamBtn").hidden=true;$("encounterPanel").hidden=true;$("skillPanel").hidden=true;$("worldPanel").hidden=true;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;$("storyInterlude").hidden=true;$("userInstruction").hidden=false;$("sceneObjective").hidden=false;
  var beat=HSKStoryDirector.beat(state.step,state.storyChoices),callback=HSKEncounter.callback(state.step,state.encounter);$("storyBeat").hidden=!beat&&!callback;$("storyBeat").textContent=[beat,callback].filter(Boolean).map(x=>"✳ "+x.zh+" — "+x.vi).join("  ");
  $("builderNotice").textContent="Chạm từ để ghép câu nếu chưa biết gõ chữ Hán. Dùng ghép câu được tính là trợ giúp.";renderTiles();
  if(!$("notebookPanel").hidden)setNotebook(false);
