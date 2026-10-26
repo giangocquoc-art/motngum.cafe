@@ -417,7 +417,7 @@ test("Gate5 authored teacher greeting echo appears only after the prior mother g
  assert.equal(existing.history.length,1);
 });
 test("Gate5 friendship and noodle choices reappear in scene six, after actual earlier answers",()=>{
- const save={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:6,history:Array.from({length:6},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch"],storyChoices:{friendship:"ask-teacher","noodle-taste":"mild"},encounter:{stage:"done",answer:"independent"}})};
+ const save={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:6,history:Array.from({length:6},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch"],storyChoices:{friendship:"ask-teacher","noodle-taste":"mild"},encounter:{stage:"done",inspected:["desk","bag"],route:"friend",answer:"independent"}})};
  const t=harness(save),e=t.e;e.resumeBtn.click();dismissStory(e);
  assert.equal(e.storyEcho.hidden,false);
  assert.ok(e.storyEcho.textContent.includes("Tiểu Vũ"));
