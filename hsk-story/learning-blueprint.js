@@ -10,13 +10,13 @@ status:"source-linked, target-item validation PENDING qualified Mandarin editori
 notice:"Official ChineseTest says worldwide HSK 3.0 rollout date 2026-12-13. Published syllabus edition and current test scheduling must be rechecked before official claims."
 };
 var objectives=[
-{id:"greeting",label:"Chào hỏi và đáp lời",intro:[0],revisit:[6],formative:[],checkpoint:[],skillEvidence:["text-entry"],needsReview:true},
+{id:"greeting",label:"Chào hỏi và đáp lời",intro:[0],revisit:[1],formative:[],checkpoint:[],skillEvidence:["text-entry"],needsReview:true},
 {id:"introduce-self",label:"Tự giới thiệu tên Minh An",intro:[1],revisit:[2],formative:["lost-notebook"],checkpoint:[7],skillEvidence:["typed-transfer","typed-checkpoint"],needsReview:true},
 {id:"student-identity",label:"Xác nhận là học sinh",intro:[2],revisit:[3],formative:["reading-friend"],checkpoint:[7],skillEvidence:["formative-reading"],needsReview:true},
-{id:"numbers",label:"Đếm số người",intro:[3],revisit:[5],formative:[],checkpoint:[],skillEvidence:["text-entry"],needsReview:true},
+{id:"numbers",label:"Đếm số người",intro:[3],revisit:[],formative:[],checkpoint:[],skillEvidence:["text-entry"],needsReview:true},
 {id:"order-noodles",label:"Gọi một món ăn",intro:[4],revisit:[5],formative:[],checkpoint:[9],skillEvidence:["text-entry","typed-checkpoint"],needsReview:true},
-{id:"price",label:"Hiểu giá mười tệ",intro:[5],revisit:[6],formative:[],checkpoint:[8],skillEvidence:["typed-checkpoint"],needsReview:true},
-{id:"gratitude",label:"Nói lời cảm ơn",intro:[5],revisit:[6],formative:[],checkpoint:[],skillEvidence:["text-entry"],needsReview:true},
+{id:"price",label:"Hiểu giá mười tệ",intro:[5],revisit:[],formative:[],checkpoint:[8],skillEvidence:["typed-checkpoint"],needsReview:true},
+{id:"gratitude",label:"Nói lời cảm ơn",intro:[5],revisit:[],formative:[],checkpoint:[],skillEvidence:["text-entry"],needsReview:true},
 {id:"farewell",label:"Hẹn gặp ngày mai",intro:[6],revisit:[],formative:["listening-farewell"],checkpoint:[],skillEvidence:["formative-tts-listening"],needsReview:true}
 ];
 function validate(curriculum,content,skill,encounter){
