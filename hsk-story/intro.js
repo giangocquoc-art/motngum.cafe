@@ -23,6 +23,7 @@ function topGlyph(stage){
  var ch=stage.hanzi,py=stage.pinyin;
  if(stage.kind==="discover"&&state.focusGlyph){var d=Data.discovery.find(g=>g.zi===state.focusGlyph);if(d){ch=d.zi;py=d.py}}
  if(stage.kind==="guess"){var q=Data.quizzes[state.quizIndex];ch=q?q.zi:"好";py=q?q.py:"hǎo"}
+ if(stage.kind==="legend"&&state.curiosityOpen){ch="女 奻 姦";py="nǚ · nuán · jiān"}
  if(stage.kind==="strokes"&&state.stroke){ch=["","一","二","三"][state.stroke];py=["","yī","èr","sān"][state.stroke]}
  if(stage.kind==="forest"){ch=["","木","林","森"][state.forest];py=["","mù","lín","sēn"][state.forest]}
  if(stage.kind==="people"){ch=["","人","从","众"][state.people];py=["","rén","cóng","zhòng"][state.people]}
@@ -87,17 +88,26 @@ function renderMother(root){
  if(state.momRevealed)root.appendChild(showCard("妈","mā","mẹ — có bộ phận gợi âm và bộ phận gợi nghĩa"));
 }
 function renderLegend(root){
- root.appendChild(el("p","micro-note","Mẹo vui trên mạng: “Ghép hai hoặc ba chữ 女 sẽ thành cái chợ?”"));
- var row=el("div","option-row");
- row.appendChild(button("😄 Hồi đó mình cũng tin!",function(){change({...state,legendRead:true},"Một câu đùa khiến mình tò mò là điều tốt. Nhưng chữ 奻 và 姦 không có nghĩa là chợ.")},"number-button"));
- row.appendChild(button("📖 Xem chữ thật",function(){change({...state,legendRead:true},"Câu đùa không đúng nghĩa từ điển. Chữ 奻 là chữ cổ hiếm gặp; 姦 mang nghĩa tiêu cực và phản ánh định kiến giới lịch sử.")},"number-button"));
- root.appendChild(row);
- if(state.legendRead){
-  root.appendChild(showCard("女","nǚ","phụ nữ"));
-  root.appendChild(showCard("奻","nuán","chữ cổ: tranh cãi; gần như không dùng hiện đại"));
-  root.appendChild(showCard("姦","jiān","chữ cổ có nghĩa tiêu cực; không phải “chợ”"));
-  root.appendChild(el("p","micro-note","Một số cách cấu tạo chữ phản ánh định kiến trong xã hội cổ. Chúng ta tìm hiểu lịch sử để hiểu chữ, không dùng những nghĩa đó để đánh giá con người ngày nay."));
+ var d=Data.curiosity;
+ root.appendChild(el("p","micro-note","Mẹ hỏi An: “Một câu đùa về chữ Hán có phải lúc nào cũng đúng nghĩa từ điển?”"));
+ if(!state.curiosityOpen){
+  root.appendChild(button(state.legendRead?"Xem lại góc chữ Hán kỳ lạ ↗":"✳ Tò mò? Mở trang chữ Hán kỳ lạ ↗",
+   function(){change(Core.curiosity(state,true),"Mẹ mở một trang ghi chú nhỏ. Đây là chuyện đọc thêm, không tính điểm tiếng Trung.")},"number-button"));
+  root.appendChild(el("p","micro-note","Bạn có thể đọc tiếp câu chuyện mà không cần mở trang này."));
+  return;
  }
+ var panel=el("section","curiosity-details");panel.id="curiosityDetails";
+ panel.appendChild(el("h3","",d.title));panel.appendChild(el("p","",d.lead));
+ d.examples.forEach(function(item){
+  var row=el("div","curiosity-example");
+  var glyph=el("strong","",item.zi);glyph.lang="zh-CN";row.appendChild(glyph);
+  var info=el("span","");
+  info.appendChild(el("b","",item.py+" · "+item.vi));info.appendChild(el("small","",item.note));
+  row.appendChild(info);panel.appendChild(row);
+ });
+ panel.appendChild(el("p","",d.closing));
+ panel.appendChild(button("← Đóng trang đọc thêm, quay lại An và mẹ",function(){change(Core.curiosity(state,false),"Đã quay lại đúng trang truyện, không ảnh hưởng tiến độ.")},"secondary"));
+ root.appendChild(panel);
 }
 function renderQuiz(root){
  var qi=state.quizIndex;

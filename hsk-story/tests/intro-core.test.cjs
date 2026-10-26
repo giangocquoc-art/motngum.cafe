@@ -93,3 +93,24 @@ test("Existing Chapter 00 saved guesses are treated as legacy, not verified firs
  assert.equal(x.quizOutcomes.forest,"legacy");assert.equal(C.recap(x,D.quizzes).recognized,0);
  assert.equal(x.step,7);assert.equal(x.maxReached,7);
 });
+
+test("Gate3B: rare historical glyph sidepath is truly optional and does not reindex nine existing story pages",()=>{
+ let state=C.initial();
+ for(let i=0;i<6;i++)state=C.move(state,"next");
+ assert.equal(state.step,6);assert.equal(state.curiosityOpen,false);
+ assert.throws(()=>C.curiosity(C.initial(),true));
+ state=C.move(state,"next");
+ assert.equal(state.step,7);assert.equal(state.legendRead,false);
+});
+test("Gate3B: optional old-glyph explanation returns to same scene and cleans invalid persisted flags",()=>{
+ let s=C.initial();for(let i=0;i<6;i++)s=C.move(s,"next");
+ s=C.curiosity(s,true);
+ assert.equal(s.curiosityOpen,true);assert.equal(s.legendRead,true);
+ assert.equal(C.clean(JSON.parse(JSON.stringify(s))).curiosityOpen,true);
+ let closed=C.curiosity(s,false);
+ assert.equal(closed.curiosityOpen,false);
+ assert.equal(closed.legendRead,true);
+ assert.equal(C.clean({...s,step:7,maxReached:7,curiosityOpen:true}).curiosityOpen,false);
+ assert.equal(C.move(s,"next").curiosityOpen,false);
+ assert.equal(C.key,"hai-que-huong-intro-v1");
+});
