@@ -147,7 +147,7 @@ function renderStoryInterlude(){
 }
 function continueStoryInterlude(){
  var b=HSKStoryBeats.pending(state.step,state.storyBeats);if(!b||$("gameOverlay").hidden)return;
- state.storyBeats=HSKStoryBeats.mark(state.storyBeats,b.id);save();renderStep();$("answerInput").focus();
+ state.storyBeats=HSKStoryBeats.mark(state.storyBeats,b.id);save();renderStep();(state.solved?$("nextBtn"):$("answerInput")).focus();
 }
 function revealWords(){
  if(state.done||state.solved||state.step>=EXAM_START||HSKStoryBeats.pending(state.step,state.storyBeats))return;
@@ -246,7 +246,7 @@ function displayResolved(){
 }
 function openGame(){
  returnFocus=document.activeElement;document.body.style.overflow="hidden";$("gameOverlay").hidden=false;renderStep();$("notebookBtn").setAttribute("aria-expanded","false");
- if(state.done)$("replayBtn").focus();else $("answerInput").focus();
+ if(state.done)$("replayBtn").focus();else if(!$("storyInterlude").hidden)$("interludeContinue").focus();else if(state.solved)$("nextBtn").focus();else $("answerInput").focus();
 }
 function closeGame(){
  $("notebookPanel").hidden=true;$("notebookBtn").setAttribute("aria-expanded","false");
@@ -309,7 +309,7 @@ load();$("heroArt").innerHTML=sceneArt("street",false);chapters();
 ["startBtn","resumeBtn","endingBtn"].forEach(function(id){$(id).addEventListener("click",openGame)});
 $("closeGame").addEventListener("click",closeGame);
 $("answerForm").addEventListener("submit",submitAnswer);$("answerInput").addEventListener("input",function(){if(state.solved)return;state.draft=$("answerInput").value.slice(0,300);save()});
-$("listenBtn").addEventListener("click",function(){speak(state.solved?REPLIES[state.step].zh:SCENES[state.step].zh)});
+$("listenBtn").addEventListener("click",function(){var b=HSKStoryBeats.pending(state.step,state.storyBeats);speak(b?b.zh:state.solved?REPLIES[state.step].zh:SCENES[state.step].zh)});
 $("hintBtn").addEventListener("click",revealHint);
 $("assistBtn").addEventListener("click",showAnswerAndMove);
 $("nextBtn").addEventListener("click",nextScene);

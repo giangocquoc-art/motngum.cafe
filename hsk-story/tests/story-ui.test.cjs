@@ -115,3 +115,12 @@ test('V6 reading a story page before exam does not create fake exam help',()=>{
  assert.equal(e.pinyinText.hidden,true);
  assert.equal(e.vietText.hidden,true);
 });
+
+test('V6 story narration playback and keyboard focus follow the visible page',()=>{
+ const t=harness(),e=t.e;e.startBtn.click();
+ assert.equal(t.document.activeElement.id,'interludeContinue');
+ e.listenBtn.click();assert.equal(t.spoken[0],'妈妈说：“别着急。”');
+ e.interludeContinue.click();
+ assert.equal(t.document.activeElement.id,'answerInput');
+ e.listenBtn.click();assert.equal(t.spoken[1],'安，我们到了。你好吗？');
+});
