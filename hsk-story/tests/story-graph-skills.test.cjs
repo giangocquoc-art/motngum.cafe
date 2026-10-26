@@ -84,3 +84,35 @@ test("V13–V16 four drafted acts remain explicitly non-playable, with coherent 
  assert.ok(F.byLevel(5).episodes.some(e=>e.id==="graduation"));
  assert.ok(F.status.includes("NOT PLAYABLE"));
 });
+
+test("Gate3B world clues connect beginner Hanzi to already-visited real scenes without HSK points",()=>{
+ let intro={maxReached:5,discovered:["木","日"],momRevealed:true,lightParts:["日","月"]};
+ let a=W.describe(G.idAt(0),"window",{},intro);
+ assert.ok(a.bridgeText.includes("Bạn từng nhìn thấy")&&a.bridgeText.includes("日"));
+ assert.ok(a.bridgeText.includes("Không tính điểm"));
+ let b=W.describe(G.idAt(6),"tree",{},intro);
+ assert.ok(b.bridgeText.includes("木")&&b.bridgeText.includes("林")&&b.bridgeText.includes("森"));
+ let c=W.describe(G.idAt(6),"store",{},null);
+ assert.ok(c.bridgeText.includes("谢谢")&&c.bridgeText.includes("Trong truyện"));
+ let d=W.describe(G.idAt(0),"window",{},null);
+ assert.ok(d.bridgeText.includes("Một chữ/cụm chữ")&&!d.bridgeText.includes("Bạn từng"));
+});
+test("Gate3B past observations unlock small emotional callbacks, not story grades or future plot",()=>{
+ const past={[G.idAt(0)]:["window","diary"]};
+ const tree=W.describe(G.idAt(6),"tree",past,null);
+ const diary=W.describe(G.idAt(6),"diary",past,null);
+ assert.ok(tree.callbackText.includes("ô cửa xe"));
+ assert.ok(diary.callbackText.includes("trang đầu"));
+ assert.equal(W.describe(G.idAt(6),"tree",{},null).callbackText,"");
+ assert.equal(W.describe(G.idAt(0),"window",past,null).callbackText,"");
+});
+test("Gate3B focus cleans unknown or unobserved selection, preserving V9 observation IDs",()=>{
+ const one=G.idAt(0),two=G.idAt(6);
+ const all={[one]:["window","window","case"],[two]:["tree"]};
+ const cleaned=W.cleanFocus({[one]:"diary",[two]:"tree",fake:"hijack"},all);
+ assert.equal(cleaned[one],undefined);
+ assert.equal(cleaned[two],"tree");
+ assert.deepEqual(Array.from(W.clean(all)[one]),["window","case"]);
+ assert.throws(()=>W.describe(two,"forged",all,null));
+ assert.deepEqual(Array.from(W.validate(G)),[]);
+});
