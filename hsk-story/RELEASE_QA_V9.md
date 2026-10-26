@@ -22,3 +22,13 @@ Production outputs are not a substitute for physical-device end-to-end tests.
 
 ## Known risks
 Numeric old SCENES indices are still immutable; sceneRef only is a foundation for deliberate future migration. TTS may not play even if playback is requested: the listening result is pilot-level evidence only, no certified skill inference. Security/privacy review needed before AI microphone services, especially for minors. Shared monorepo may trigger unrelated Vercel builds.
+
+
+## Verified release evidence (2026-10-26)
+- Initial implementation commit: eca590585eff6db6a6822dcaa68513fdd01b0f98 (CI exposed a hidden-layer rendering bug; NOT final accepted build).
+- Corrective production code commit: 494cb91ec76714ba1bffa4969c95f2edda52c6b7.
+- GitHub Actions HSK Story Regression: https://github.com/giangocquoc-art/motngum.cafe/actions/runs/40260354062 — SUCCESS, 84 tests, 84 passed, 0 failed, 0 skipped.
+- Vercel project hsk-hai-que-huong reported corrective commit READY in production.
+- https://hsk.motngum.cafe/ plus app.js, story-graph.js, scene-world.js, skill-sampler.js and style.css were individually fetched over the custom domain: all HTTP 200 with correct V9 / script markers. (6 of 6)
+- Vercel runtime error query returned no runtime errors in the inspected one-hour window.
+- Remaining: real browser/device E2E and original art review, certified language curriculum mapping, audio audibility, privacy/security review for AI voice.
