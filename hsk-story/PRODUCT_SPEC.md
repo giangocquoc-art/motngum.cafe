@@ -27,7 +27,7 @@ A 2D illustrated, choice-based Chinese-learning story about 11-year-old Minh An 
 6. Mandarin educator: verifies historical character glosses, idiomatic Chinese, tone/pinyin, official HSK syllabus. Codex: new visuals and future AI integrations on feature branches. Engineering: golden tests, browser smoke, schema migrations.
 
 ## Architecture at Gate4
-`index.html` defer-chain: content-manifest, story-graph, story-runtime, **scene-art**, **save-io**, scene-world, skill-sampler, game-core, curriculum, learning-kit, story-director, story-beats, active-encounter, app.js, intro-landing.js. Code modules are global/static and deliberately do not need React/framework or network APIs.
+`index.html` defer-chain: content-manifest, story-graph, story-runtime, scene-world, skill-sampler, game-core, curriculum, learning-kit, story-director, story-beats, active-encounter, **scene-art**, **save-io**, app.js, intro-landing.js. Code modules are global/static and deliberately do not need React/framework or network APIs.
 
 App-shell `app.js` owns UI and state; `scene-art.js` owns **byte-identical SVG fallbacks**; `save-io.js` owns V3 serialization/storage and V4 shadow write. NO migration of numeric scene IDs, no user localStorage cleanup. Further extractions require parity proof, never wholesale rewrite.
 

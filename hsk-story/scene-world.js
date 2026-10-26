@@ -40,6 +40,7 @@ function introSawGlyph(bridge,intro){
  if(!bridge||bridge.from!=="intro"||!intro||typeof intro!=="object")return false;
  var seen=Array.isArray(intro.discovered)?intro.discovered:[];
  if(seen.includes(bridge.zi))return true;
+ if((bridge.zi==="日"||bridge.zi==="月")&&Array.isArray(intro.lightParts)&&intro.lightParts.includes(bridge.zi))return true;
  if(bridge.zi==="妈")return intro.momRevealed===true;
  if(bridge.zi==="明")return Array.isArray(intro.lightParts)&&intro.lightParts.includes("日")&&intro.lightParts.includes("月");
  /* Merely visiting an intro page is NOT evidence of inspecting or recognizing a glyph. */

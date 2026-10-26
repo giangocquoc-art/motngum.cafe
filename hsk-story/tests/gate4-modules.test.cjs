@@ -56,6 +56,8 @@ test("Gate 4 never treats merely reaching an intro page as confirmed glyph inter
  assert.equal(World.introSawGlyph({zi:"妈",from:"intro",page:5},unobserved),false);
  assert.equal(World.introSawGlyph({zi:"明",from:"intro",page:4},unobserved),false);
  assert.equal(World.introSawGlyph({zi:"木",from:"intro",page:2},{...unobserved,discovered:["木"]}),true);
+ assert.equal(World.introSawGlyph({zi:"日",from:"intro",page:4},{...unobserved,lightParts:["日"]}),true);
+ assert.equal(World.introSawGlyph({zi:"月",from:"intro",page:4},{...unobserved,lightParts:["月"]}),true);
  assert.equal(World.introSawGlyph({zi:"妈",from:"intro",page:5},{...unobserved,momRevealed:true}),true);
  assert.equal(World.introSawGlyph({zi:"明",from:"intro",page:4},{...unobserved,lightParts:["日","月"]}),true);
  const note=World.describe(Graph.idAt(6),"tree",{},unobserved);

@@ -47,6 +47,7 @@ async function goStory(page,label){
   viewport:window.innerWidth,scrollWidth:document.documentElement.scrollWidth
  }));
  assert.equal(features.sceneArt,true,"Separated scene-art module not loaded");
+ if(label==="mobile")assert.ok(features.scrollWidth<=features.viewport+5,"Homepage has horizontal overflow at 360px: "+features.scrollWidth);
  assert.equal(features.saveAdapter,true,"Separated save-io module not loaded");
  assert.equal(features.roadmap.length,4);
  assert.ok(features.roadmap.every(x=>x.role===null&&x.tabIndex===null&&x.disabled==="true"),"HSK2–5 roadmap should not be actionable controls");
