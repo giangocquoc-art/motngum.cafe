@@ -137,3 +137,24 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .skill-summary{border-left:3px solid #9b8e78;background:#f5e9d4;padding:8px 10px;color:#684e40;font-size:11px;line-height:1.5}
 .skill-panel[hidden],.skill-listen[hidden],.world-panel[hidden]{display:none!important}
 @media(max-width:690px){.skill-panel{padding:10px;max-height:45dvh}.skill-options{grid-template-columns:1fr;gap:6px}.skill-option{padding:8px;min-height:35px}.world-panel{padding:8px}.world-action{font-size:10px}.world-top{flex-direction:column;gap:2px}}
+
+/* Level 00 — friendly first contact with Chinese Hanzi, prior to HSK1. */
+.hero-actions{flex-wrap:wrap;gap:12px 16px}
+.prelude-hero-button{text-decoration:none;line-height:1.35;white-space:normal;justify-content:center;min-height:49px}
+.outline-hero-btn{font-family:inherit;font-size:12px;font-weight:800;color:#6b4737;padding:14px 16px;background:#fff9ed;border:1.5px solid #866452;min-height:49px;cursor:pointer}
+.outline-hero-btn:hover,.outline-hero-btn:focus-visible{background:#efddc2}
+.prelude-entry{padding-top:47px;padding-bottom:47px;background:#ece4d2;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(190px,.75fr);align-items:center;gap:45px;border-top:1px solid #cab9a2;border-bottom:1px solid #cab9a2}
+.prelude-eyebrow{font-size:10px;letter-spacing:1.6px;font-weight:800;color:#a1533e}
+.prelude-identity h2{font-family:"Playfair Display","Noto Sans SC",serif;font-size:clamp(28px,3vw,43px);line-height:1.21;margin:10px 0 12px}
+.prelude-identity h2 em{font-weight:500;color:#9c583e}
+.prelude-identity p{max-width:740px;color:#6b5a4c;font-size:13px;line-height:1.9}
+.prelude-start{display:inline-block;text-decoration:none;border:2px solid #77442f;background:#a2553a;padding:11px 17px;color:#fff;font-weight:800;font-size:12px;margin:6px 0 10px}
+.prelude-start:hover{background:#7d3d2b}
+.prelude-identity small{display:block;font-size:10px;color:#887363}
+.prelude-visual{height:235px;border:1.5px solid #5f5144;background:#f9efdc;position:relative;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:7px 7px 0 #d2bca3;transform:rotate(1deg)}
+.prelude-visual span{font-family:"Noto Sans SC",sans-serif;color:#764b3b;font-size:clamp(49px,5vw,79px)}
+.prelude-visual span:nth-child(2){transform:translateY(14px);color:#9e654b}
+.prelude-visual span:nth-child(3){transform:translateY(-6px);color:#385649}
+.prelude-visual small{position:absolute;bottom:17px;font-size:11px;color:#806653}
+@media(max-width:850px){.prelude-entry{grid-template-columns:minmax(0,1fr) minmax(150px,.5fr);gap:20px}.prelude-visual{height:180px}.prelude-visual span{font-size:49px}}
+@media(max-width:620px){.prelude-entry{grid-template-columns:1fr;padding-top:34px;padding-bottom:35px}.prelude-visual{height:150px;margin-right:8px}.prelude-visual span{font-size:55px}.prelude-identity p{font-size:12px}.prelude-hero-button{font-size:12px}.outline-hero-btn{font-size:11px}}
