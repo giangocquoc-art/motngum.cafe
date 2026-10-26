@@ -1,7 +1,7 @@
 const {test}=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 const folder=path.resolve(__dirname,"..");
 function loadModule(file,name){const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box,{filename:file});return box.module.exports}
-const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js"),Content=loadModule("content-manifest.js"),E=loadModule("active-encounter.js"),Graph=loadModule("story-graph.js"),Runtime=loadModule("story-runtime.js"),Art=loadModule("scene-art.js"),IO=loadModule("save-io.js"),World=loadModule("scene-world.js"),Skills=loadModule("skill-sampler.js");
+const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js"),Content=loadModule("content-manifest.js"),E=loadModule("active-encounter.js"),Graph=loadModule("story-graph.js"),Runtime=loadModule("story-runtime.js"),Art=loadModule("scene-art.js"),IO=loadModule("save-io.js"),World=loadModule("scene-world.js"),Skills=loadModule("skill-sampler.js"),Threads=loadModule("story-threads.js");
 const html=fs.readFileSync(path.join(folder,"index.html"),"utf8"),source=fs.readFileSync(path.join(folder,"app.js"),"utf8");
 const ids=Array.from(html.matchAll(/id="([^"]+)"/g),x=>x[1]);
 function dismissStory(e){if(!e.skillPanel.hidden){e.skillSkip.click();e.skillSkip.click()}if(!e.storyInterlude.hidden)e.interludeContinue.click()}
@@ -20,7 +20,7 @@ function harness(sharedStorage={},options={}){
   click(){(this.listeners.click||[]).forEach(f=>f({preventDefault(){}}))},fire(k,args={}){(this.listeners[k]||[]).forEach(f=>f({preventDefault(){},...args}))}
  }}
  ids.forEach(id=>dom[id]=element(id));
- ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyInterlude","vocabRevealBtn","learningStrip","encounterPanel","encounterAnswerForm","encounterContinue","encounterHint","encounterSample","skillPanel","skillListen","practiceOpenBtn","worldPanel"].forEach(id=>dom[id].hidden=true);
+ ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyEcho","storyInterlude","vocabRevealBtn","learningStrip","encounterPanel","encounterAnswerForm","encounterContinue","encounterHint","encounterSample","skillPanel","skillListen","practiceOpenBtn","worldPanel"].forEach(id=>dom[id].hidden=true);
  const nav=element("nav");
  document={body:{style:{}},activeElement:null,listeners:{},getElementById(id){if(!dom[id])throw Error("Missing DOM ID "+id);return dom[id]},querySelector(q){return q==="nav"?nav:null},createElement(tag){return element("new-"+tag)},querySelectorAll(){return []},addEventListener(k,f){(this.listeners[k]??=[]).push(f)}};
  const localStorage={getItem(k){return sharedStorage[k]||null},setItem(k,v){sharedStorage[k]=v}};
@@ -30,7 +30,7 @@ function harness(sharedStorage={},options={}){
   window.history={replaceState(_x,_title,path){window.lastReplacedPath=path}};
  }
  function SpeechSynthesisUtterance(text){this.text=text}
- vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,HSKStoryGraph:Graph,HSKStoryRuntime:Runtime,HSKSceneArt:Art,HSKSaveIO:IO,HSKSceneWorld:World,HSKSkillSampler:Skills,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,URLSearchParams,console},{filename:"app.js"});
+ vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,HSKStoryGraph:Graph,HSKStoryRuntime:Runtime,HSKSceneArt:Art,HSKSaveIO:IO,HSKSceneWorld:World,HSKSkillSampler:Skills,HSKStoryThreads:Threads,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,URLSearchParams,console},{filename:"app.js"});
  return {e:dom,document,sharedStorage,spoken,window}
 }
 test("story: sentence builder is helpful and notebook only shows past expressions",()=>{
@@ -405,4 +405,35 @@ test("Gate 4 roadmap HSK2–5 are non-interactive content; HSK1 remains keyboard
   assert.equal((card.listeners.keydown||[]).length,0);
  }
  nodes[0].click();assert.equal(t.e.gameOverlay.hidden,false);
+});
+
+test("Gate5 authored teacher greeting echo appears only after the prior mother greeting is resolved",()=>{
+ const save={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:1,history:[{status:"correct",attempts:0,hint:false}],storyBeats:["arrival"]})};
+ const t=harness(save),e=t.e;e.resumeBtn.click();dismissStory(e);
+ assert.equal(e.storyEcho.hidden,false);
+ assert.ok(e.storyEcho.textContent.includes("你好"));
+ assert.ok(e.storyEcho.textContent.includes("không chấm điểm"));
+ const existing=JSON.parse(save["hai-que-huong-progress-v3"]);
+ assert.equal(existing.history.length,1);
+});
+test("Gate5 friendship and noodle choices reappear in scene six, after actual earlier answers",()=>{
+ const save={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:6,history:Array.from({length:6},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch"],storyChoices:{friendship:"ask-teacher","noodle-taste":"mild"},encounter:{stage:"done",inspected:["desk","bag"],route:"friend",answer:"independent"}})};
+ const t=harness(save),e=t.e;e.resumeBtn.click();dismissStory(e);
+ assert.equal(e.storyEcho.hidden,false);
+ assert.ok(e.storyEcho.textContent.includes("Tiểu Vũ"));
+ assert.ok(e.storyEcho.textContent.includes("bà Lưu"));
+ assert.ok(e.storyEcho.textContent.includes("sổ"));
+ assert.ok(!e.storyEcho.textContent.includes("điểm thi HSK"));
+});
+test("Gate5 notebook language thread separates context exposure and independent assessment",()=>{
+ const save={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:9,history:[...Array.from({length:8},()=>({status:"correct",hint:false,attempts:0})),{status:"assisted",hint:true,attempts:2}],storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
+ const t=harness(save),e=t.e;e.resumeBtn.click();dismissStory(e);
+ e.notebookBtn.click();
+ // Exam blocks notebook until current test solved, so use completed prior test note without forcing exam.
+ assert.equal(e.notebookPanel.hidden,true);
+ const rows=Threads.trace(JSON.parse(save["hai-que-huong-progress-v3"]).history,{});
+ const price=Array.from(rows).find(x=>x.id==="price");
+ assert.equal(price.first,"seen-in-context");
+ assert.equal(price.checkpoint,"sample");
+ assert.equal(e.storyEcho.hidden,true);
 });

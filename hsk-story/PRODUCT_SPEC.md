@@ -48,3 +48,6 @@ Staged chain: PR #3 `refactor/hsk-runtime-graph-v4` → PR #4 `feature/hsk-pract
 - No original sprite/animation art; no verified audio listening/speaking score.
 - No performance improvement claim merely because `app.js` got shorter; separately test total script transfer bytes/network and mobile rendering.
 - No real learner pilot, accessibility audit by a human, penetration test or real Android/iOS device signoff.
+
+## Gate 5 — staged (PR #8)
+Author-controlled `story-threads.js` reuses prior Mandarin expressions through branch-aware reflections, adds an evidence-honest learning-thread section in An’s notebook and a choice-sensitive episode coda. Scene 0 is chronologically the morning after Chapter 00, with the notebook already in An’s possession. HSK1 remains 10-scene demo; this is narrative and pedagogical progress, **not full official syllabus alignment**. See [GATE5_AUDIT.md](GATE5_AUDIT.md).

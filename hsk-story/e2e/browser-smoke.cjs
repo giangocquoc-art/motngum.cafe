@@ -54,11 +54,17 @@ async function goStory(page,label){
  fs.writeFileSync(path.join(OUT,label+"-resource-timings.json"),JSON.stringify(features,null,2));
  await page.locator("#startBtn").click();
  assert.equal(await visible(page,"#gameOverlay"),true);
- let finished=false,steps=0,practiceUsed=false,arrivalObserved=false,returnedTree=false;
+ let finished=false,steps=0,practiceUsed=false,arrivalObserved=false,returnedTree=false,streetEchoObserved=false;
  for(;steps<100;steps++){
   if(await visible(page,"#completionPane")){finished=true;break}
   if(await visible(page,"#storyInterlude")){await page.locator("#interludeContinue").click();continue}
   const stepText=await page.locator("#stepText").innerText();
+  if(!streetEchoObserved&&stepText.trim()==="07 / 10"&&await visible(page,"#storyEcho")){
+   const echo=await page.locator("#storyEcho").innerText();
+   assert.ok(echo.includes("明天见"),"The walk-home scene did not reuse a known expression");
+   assert.ok(echo.includes("Tiểu Vũ")||echo.includes("An nhận ra"),"Missing continuity from earlier story choices");
+   streetEchoObserved=true;
+  }
   if(!arrivalObserved&&stepText.trim()==="01 / 10"&&await visible(page,"#worldPanel")){
    await page.locator("#worldActions button").first().click();
    assert.ok((await page.locator("#worldBridge").innerText()).includes("日"));
@@ -115,6 +121,9 @@ async function goStory(page,label){
  const v3=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v3")));
  const v4=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v4")));
  assert.equal(v3.done,true);assert.equal(v4.v,4);assert.equal(v4.storyId,"hsk1.e01");
+ assert.equal(streetEchoObserved,true,"Existing language thread not observed at the walk-home scene");
+ const ending=await page.locator("#episodeReflection").innerText();
+ assert.ok(ending.length>0&&ending.includes("An"),"Story ending does not reflect the player's choices");
  assert.equal(arrivalObserved,true,"Arrival observations must be accessible");
  assert.equal(returnedTree,true,"World callbacks must be accessible before final checkpoint");
  assert.equal(v3.worldFocus["hsk1.e01.arrival-greeting"],"diary");

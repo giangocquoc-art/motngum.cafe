@@ -1,7 +1,7 @@
 /* Authored, unscored story interludes for HSK Story V6. */
 var HSKStoryBeats=(function(){"use strict";
 var beats=[
-{id:"arrival",before:0,title:"Quyển sổ của Minh An",zh:"妈妈说：“别着急。”",py:"Māma shuō: Bié zháojí.",vi:"Mẹ nói: Đừng vội.",story:"Chiếc xe dừng giữa con phố xa lạ ở Thành Đô. Mọi âm thanh và biển hiệu đều mới. Mẹ trao An một quyển sổ nhỏ: “Con không cần hiểu cả thế giới ngay hôm nay. Mỗi ngày, chỉ cần hiểu thêm một người.”"},
+{id:"arrival",before:0,title:"Quyển sổ của Minh An",zh:"妈妈说：“别着急。”",py:"Māma shuō: Bié zháojí.",vi:"Mẹ nói: Đừng vội.",story:"Sáng hôm sau, chiếc xe dừng gần cổng trường mới ở Thành Đô. An ôm quyển sổ mẹ đã mở cùng mình tối qua. Mọi biển hiệu vẫn còn lạ. Mẹ chỉ vào dòng đã viết: “Con không cần hiểu cả thế giới ngay hôm nay. Mỗi ngày, chỉ cần hiểu thêm một người.”"},
 {id:"gate",before:1,title:"Cánh cổng trường",zh:"安站在学校门口。",py:"Ān zhàn zài xuéxiào ménkǒu.",vi:"An đứng trước cổng trường.",story:"An siết quai cặp trước cánh cổng đầy chữ Hán. Không biết mình có tìm đúng lớp hay không, An định quay sang hỏi mẹ. Nhưng một cô giáo đã bước tới và mỉm cười."},
 {id:"lunch",before:4,title:"Mùi hương trong ngõ",zh:"下课了。安有点饿。",py:"Xiàkè le. Ān yǒudiǎn è.",vi:"Tan học rồi. An hơi đói.",story:"Tiểu Vũ dẫn An đi ngang dãy hành lang đông vui. Từ quán nhỏ bốc lên mùi mì nóng và vị ớt đặc trưng Thành Đô. Bà Lưu đẩy tờ thực đơn lại gần hai đứa trẻ."},
 {id:"way-home",before:6,title:"Con đường quen hơn một chút",zh:"小雨说：“明天见！”",py:"Xiǎoyǔ shuō: Míngtiān jiàn!",vi:"Tiểu Vũ nói: Hẹn gặp ngày mai!",story:"Phố xá vẫn đông, nhưng An đã nhận ra cây trước cổng trường và quán mì nhỏ. Những lời chào không còn là âm thanh vô nghĩa: chúng gắn với những khuôn mặt An đã gặp."},

@@ -42,7 +42,7 @@
   <div class="notebook-head"><div><span>SỔ TAY CỦA AN</span><h3>我的小本子</h3></div><button type="button" id="notebookClose" aria-label="Đóng sổ tay">✕</button></div>
   <p id="notebookProgress"></p><p class="notebook-caption">Những từ bạn đã gặp trong câu chuyện. Đây không phải bảng xếp hạng HSK.</p>
   <div id="notebookWords" class="notebook-words"></div>
-  <p id="notebookReview" class="notebook-review"></p><p id="storyMemory" class="story-memory"></p>
+  <p id="notebookReview" class="notebook-review"></p><p id="notebookThreads" class="notebook-threads"></p><p id="storyMemory" class="story-memory"></p>
 </div>
 <div class="scene-progress"><div id="progressBar"></div></div>
 <div class="stage"><div class="stage-scene" id="stageIllustration"></div><div class="scene-day" id="sceneDay">CHƯƠNG 01 · THÀNH ĐÔ</div><div class="story-ui"><div class="speaker-label"><span class="speaker-dot">✳</span><span id="speaker"></span><span class="emote-tag" id="sceneTag"></span></div><div class="talk-content"><div class="talk-line" id="dialogueText" lang="zh-CN"></div><div class="pinyin-text" id="pinyinText"></div><div class="viet-text" id="vietText"></div></div><div class="scene-toolbelt"><button id="listenBtn" class="tool-btn">◖)) Nghe lại</button><button id="hintBtn" class="tool-btn">✳ Gợi ý</button><button id="assistBtn" class="tool-btn" type="button" hidden>↗ Xem mẫu và tiếp tục</button><div class="grow"></div><span id="stepText">01 / 10</span></div></div></div>
@@ -77,7 +77,7 @@
  <p id="interludeTranslation" class="interlude-translation"></p>
  <button id="interludeContinue" class="interlude-continue" type="button">Đọc tiếp câu chuyện ↗</button>
 </div>
-<div id="storyBeat" class="story-beat" hidden></div>
+<div id="storyBeat" class="story-beat" hidden></div><div id="storyEcho" class="story-echo" hidden></div>
 <section id="worldPanel" class="world-panel" aria-label="Quan sát những chi tiết của cảnh truyện" hidden>
  <div class="world-top"><strong id="worldTitle"></strong><span id="worldProgress"></span></div>
  <div id="worldActions" class="world-actions"></div><p id="worldDescription" class="world-description" role="status" aria-live="polite">Chọn một đồ vật để tìm hiểu câu chuyện.</p><p id="worldBridge" class="world-bridge" aria-live="polite"></p>
@@ -94,10 +94,11 @@
 <div id="storyChoicePanel" class="story-choice-panel" hidden>
  <div class="story-choice-heading">✳ BẠN QUYẾT ĐỊNH · Không chấm điểm tiếng Trung</div><p id="storyChoiceTitle"></p>
  <div id="storyChoiceOptions" class="story-choice-options"></div></div>
-<p id="storyChoiceOutcome" class="story-choice-outcome" hidden></p><div class="next-row"><span id="attemptCounter">Lượt thử: 0</span><button type="button" id="nextBtn" class="next-btn" hidden>Tiếp tục câu chuyện ↗</button></div><div id="completionPane" class="completion-pane" hidden><div class="completion-head">✳ TẬP TRUYỆN 01 · HOÀN THÀNH</div><h3>Ngày đầu xa nhà</h3><p id="episodeEnding" class="episode-ending"></p><p id="summaryStats"></p><p id="summaryDescription"></p><p id="encounterSummary" class="encounter-summary"></p><p id="skillSummary" class="skill-summary"></p><p id="completionReview" class="completion-review"></p><div class="completion-actions"><button type="button" class="next-btn" id="retakeExamBtn" hidden>Thi lại 3 câu ↻</button><button type="button" class="next-btn" id="replayBtn">Chơi lại từ đầu</button><span>HSK 2–5: đang phát triển</span></div></div><div class="game-bottom"><span id="micPrivacy">✦ Demo không lưu ghi âm; khi dùng micro, trình duyệt có thể gửi âm thanh cho dịch vụ nhận diện của nhà cung cấp. Không chấm thanh điệu.</span><button id="resetGame" type="button">Chơi lại từ đầu ↻</button></div></div></div>
+<p id="storyChoiceOutcome" class="story-choice-outcome" hidden></p><div class="next-row"><span id="attemptCounter">Lượt thử: 0</span><button type="button" id="nextBtn" class="next-btn" hidden>Tiếp tục câu chuyện ↗</button></div><div id="completionPane" class="completion-pane" hidden><div class="completion-head">✳ TẬP TRUYỆN 01 · HOÀN THÀNH</div><h3>Ngày đầu xa nhà</h3><p id="episodeEnding" class="episode-ending"></p><p id="episodeReflection" class="episode-reflection"></p><p id="summaryStats"></p><p id="summaryDescription"></p><p id="encounterSummary" class="encounter-summary"></p><p id="skillSummary" class="skill-summary"></p><p id="completionReview" class="completion-review"></p><div class="completion-actions"><button type="button" class="next-btn" id="retakeExamBtn" hidden>Thi lại 3 câu ↻</button><button type="button" class="next-btn" id="replayBtn">Chơi lại từ đầu</button><span>HSK 2–5: đang phát triển</span></div></div><div class="game-bottom"><span id="micPrivacy">✦ Demo không lưu ghi âm; khi dùng micro, trình duyệt có thể gửi âm thanh cho dịch vụ nhận diện của nhà cung cấp. Không chấm thanh điệu.</span><button id="resetGame" type="button">Chơi lại từ đầu ↻</button></div></div></div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="/content-manifest.js" defer></script><script src="/story-graph.js" defer></script><script src="/story-runtime.js" defer></script><script src="/scene-world.js" defer></script><script src="/skill-sampler.js" defer></script><script src="/game-core.js" defer></script><script src="/curriculum-data.js" defer></script><script src="/learning-kit.js" defer></script><script src="/story-director.js" defer></script><script src="/story-beats.js" defer></script><script src="/active-encounter.js" defer></script><script src="/scene-art.js" defer></script>
 <script src="/save-io.js" defer></script>
+<script src="/story-threads.js" defer></script>
 <script src="/app.js" defer></script><script src="/intro-landing.js" defer></script>
 </body></html>

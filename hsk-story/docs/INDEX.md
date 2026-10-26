@@ -6,6 +6,7 @@
 - [PRODUCT_SPEC](../PRODUCT_SPEC.md): mục tiêu sản phẩm và trạng thái THỰC TẾ của từng chức năng.
 - [STORY_BIBLE](../STORY_BIBLE.md): nhân vật, tình tiết và thế giới.
 - [CONTENT_CONTRACT](../CONTENT_CONTRACT.md): học liệu và định dạng bài tập.
+- [Gate5 audit](../GATE5_AUDIT.md): tiếng Trung quay lại trong truyện, bằng chứng học tập, timeline, giới hạn kiểm định.
 - [Gate4 audit](../GATE4_AUDIT.md): tách mã theo module, đối chiếu ảnh/svg, bản lưu, kiểm thử và giới hạn hiệu năng.
 
 ## Nhánh PR đang chờ duyệt (không phải production)

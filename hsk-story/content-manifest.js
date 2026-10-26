@@ -9,7 +9,7 @@ var CHAPTERS=[
 {lvl:5,cn:"两个故乡",title:"Hai quê hương",sub:"Câu chuyện của chính mình",desc:"Trưởng thành, lựa chọn, và lá thư tốt nghiệp viết bằng tiếng Trung.",place:"graduation",accent:"#d2d9c7"}
 ];
 var SCENES=[
-{id:0,place:"street",speaker:"Mẹ của An",tag:"NGÀY ĐẦU TỚI THÀNH ĐÔ",zh:"安，我们到了。你好吗？",py:"Ān, wǒmen dào le. Nǐ hǎo ma?",vi:"An, chúng ta đến nơi rồi. Con có khỏe không?",request:"Mẹ đang hỏi thăm bạn. Hãy trả lời rằng bạn rất khỏe.",answers:["我很好","很好","我很好，谢谢","我很好谢谢"],hint:"我很好。 (Wǒ hěn hǎo.) — Con rất khỏe."},
+{id:0,place:"street",speaker:"Mẹ của An",tag:"SÁNG ĐẦU TIÊN TỚI TRƯỜNG",zh:"安，我们到了。你好吗？",py:"Ān, wǒmen dào le. Nǐ hǎo ma?",vi:"An, tới trường rồi. Con có khỏe không?",request:"Mẹ đang hỏi thăm bạn. Hãy trả lời rằng bạn rất khỏe.",answers:["我很好","很好","我很好，谢谢","我很好谢谢"],hint:"我很好。 (Wǒ hěn hǎo.) — Con rất khỏe."},
 {id:1,place:"school",speaker:"王老师 · Cô Vương",tag:"GẶP CÔ GIÁO",zh:"你好！你叫什么名字？",py:"Nǐ hǎo! Nǐ jiào shénme míngzi?",vi:"Xin chào! Em tên là gì?",request:"Bạn nhập vai Minh An. Hãy giới thiệu tên nhân vật với cô giáo (安 hoặc 明安).",answers:["我叫安","我叫明安","我是安"],hint:"我叫安。 (Wǒ jiào Ān.) — Em tên là An."},
 {id:2,place:"class",speaker:"小雨 · Tiểu Vũ",tag:"NGƯỜI BẠN MỚI",zh:"你好！我是小雨。你是学生吗？",py:"Nǐ hǎo! Wǒ shì Xiǎoyǔ. Nǐ shì xuésheng ma?",vi:"Xin chào! Mình là Tiểu Vũ. Bạn là học sinh phải không?",request:"Trả lời Tiểu Vũ: 'Đúng, mình là học sinh.'",answers:["是，我是学生","我是学生","对我是学生","对，我是学生"],hint:"我是学生。 (Wǒ shì xuésheng.) — Mình là học sinh."},
 {id:3,place:"class",speaker:"王老师 · Cô Vương",tag:"TRONG LỚP HỌC",zh:"一，二，三。这里有几个学生？",py:"Yī, èr, sān. Zhèlǐ yǒu jǐ ge xuésheng?",vi:"Một, hai, ba. Ở đây có mấy học sinh?",request:"Hãy trả lời rằng có ba học sinh.",answers:["三个学生","有三个学生","三个人","有三个人"],hint:"有三个学生。 (Yǒu sān ge xuésheng.)"},
