@@ -15,7 +15,19 @@ var events=[
 function idAt(index){return Number.isInteger(index)&&index>=0&&index<sceneIds.length?sceneIds[index]:null}
 function indexOf(id){return typeof id==="string"?sceneIds.indexOf(id):-1}
 function resolve(sceneId,legacyIndex){var i=indexOf(sceneId);return i>=0?i:Number.isInteger(legacyIndex)?Math.max(0,Math.min(sceneIds.length-1,legacyIndex)):0}
-function next(id){var i=indexOf(id);return i>=0?idAt(i+1):null}
+var transitions={
+ "hsk1.e01.arrival-greeting":"hsk1.e01.school-introduction",
+ "hsk1.e01.school-introduction":"hsk1.e01.xiaoyu-friendship",
+ "hsk1.e01.xiaoyu-friendship":"hsk1.e01.class-counting",
+ "hsk1.e01.class-counting":"hsk1.e01.liu-noodle-order",
+ "hsk1.e01.liu-noodle-order":"hsk1.e01.liu-payment",
+ "hsk1.e01.liu-payment":"hsk1.e01.walk-home",
+ "hsk1.e01.walk-home":"hsk1.e01.exam-introduction",
+ "hsk1.e01.exam-introduction":"hsk1.e01.exam-price",
+ "hsk1.e01.exam-price":"hsk1.e01.exam-order",
+ "hsk1.e01.exam-order":null
+};
+function next(id){if(indexOf(id)<0)return null;return Object.prototype.hasOwnProperty.call(transitions,id)?transitions[id]:null}
 function path(){return sceneIds.slice()}
 function validate(content,curriculum,storyBeats,director,encounter){
  var problems=[];
@@ -31,9 +43,18 @@ function validate(content,curriculum,storyBeats,director,encounter){
   if(e.kind==="branch"&&(!director||!director.points.some(p=>p.id===e.sourceId)))problems.push("Missing branch "+e.id);
   if(e.kind==="encounter"&&(!encounter||encounter.content.id!==e.sourceId))problems.push("Missing encounter "+e.id);
  });
- if(next(sceneIds[9])!==null)problems.push("Last scene must terminate");
+ var targets=new Set(),walked=new Set(),current=sceneIds[0];
+ sceneIds.forEach(function(id){if(!Object.prototype.hasOwnProperty.call(transitions,id))problems.push("Missing required transition "+id);
+  var target=transitions[id];if(target!==null){if(indexOf(target)<0)problems.push("Invalid transition "+id+" -> "+target);else targets.add(target)}
+ });
+ for(var count=0;current!==null&&count<=sceneIds.length;count++){
+  if(walked.has(current)){problems.push("Cycle in mandatory HSK1 path at "+current);break}
+  walked.add(current);current=next(current);
+ }
+ if(walked.size!==sceneIds.length)problems.push("Required nodes not reachable from opening");
+ if(next(sceneIds[sceneIds.length-1])!==null)problems.push("Last scene must terminate");
  return problems;
 }
-var api={version:"9.0.0",sceneIds:sceneIds,events:events,idAt:idAt,indexOf:indexOf,resolve:resolve,next:next,path:path,validate:validate};
+var api={version:"9.0.0",sceneIds:sceneIds,events:events,transitions:transitions,idAt:idAt,indexOf:indexOf,resolve:resolve,next:next,path:path,validate:validate};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;return api;
 })();

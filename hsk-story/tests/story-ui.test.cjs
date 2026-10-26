@@ -1,7 +1,7 @@
 const {test}=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 const folder=path.resolve(__dirname,"..");
 function loadModule(file,name){const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box,{filename:file});return box.module.exports}
-const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js"),Content=loadModule("content-manifest.js"),E=loadModule("active-encounter.js"),Graph=loadModule("story-graph.js"),World=loadModule("scene-world.js"),Skills=loadModule("skill-sampler.js");
+const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js"),Content=loadModule("content-manifest.js"),E=loadModule("active-encounter.js"),Graph=loadModule("story-graph.js"),Runtime=loadModule("story-runtime.js"),World=loadModule("scene-world.js"),Skills=loadModule("skill-sampler.js");
 const html=fs.readFileSync(path.join(folder,"index.html"),"utf8"),source=fs.readFileSync(path.join(folder,"app.js"),"utf8");
 const ids=Array.from(html.matchAll(/id="([^"]+)"/g),x=>x[1]);
 function dismissStory(e){if(!e.skillPanel.hidden){e.skillSkip.click();e.skillSkip.click()}if(!e.storyInterlude.hidden)e.interludeContinue.click()}
@@ -24,13 +24,13 @@ function harness(sharedStorage={},options={}){
  const nav=element("nav");
  document={body:{style:{}},activeElement:null,listeners:{},getElementById(id){if(!dom[id])throw Error("Missing DOM ID "+id);return dom[id]},querySelector(q){return q==="nav"?nav:null},createElement(tag){return element("new-"+tag)},querySelectorAll(){return []},addEventListener(k,f){(this.listeners[k]??=[]).push(f)}};
  const localStorage={getItem(k){return sharedStorage[k]||null},setItem(k,v){sharedStorage[k]=v}};
- const window={speechSynthesis:{cancel(){},getVoices(){return []},speak(u){spoken.push(u.text)}}};
+ const window={speechSynthesis:{cancel(){},getVoices(){return []},speak(u){spoken.push(u.text);if(options.audioFailure){u.onerror?.({error:"synthesis-failed"})}else if(!options.audioNeverEnds){u.onend?.()}}}};
  if(options.autoStart){
   window.location={search:"?play=hsk1",pathname:"/",hash:""};
   window.history={replaceState(_x,_title,path){window.lastReplacedPath=path}};
  }
  function SpeechSynthesisUtterance(text){this.text=text}
- vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,HSKStoryGraph:Graph,HSKSceneWorld:World,HSKSkillSampler:Skills,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,URLSearchParams,console},{filename:"app.js"});
+ vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,HSKStoryGraph:Graph,HSKStoryRuntime:Runtime,HSKSceneWorld:World,HSKSkillSampler:Skills,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,URLSearchParams,console},{filename:"app.js"});
  return {e:dom,document,sharedStorage,spoken,window}
 }
 test("story: sentence builder is helpful and notebook only shows past expressions",()=>{
@@ -300,4 +300,31 @@ test("Chapter 00 direct handoff opens existing HSK1 episode without overwriting 
  assert.equal(t.e.stepText.textContent,"02 / 10");
  assert.equal(t.window.lastReplacedPath,"/");
  assert.equal(stored["hai-que-huong-intro-v1"],before);
+});
+
+test("V4 shadow has verified V3 source, but old save remains the actual source of truth",()=>{
+ const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
+ e.answerInput.value="我很好";e.answerForm.fire("submit");
+ const v3=t.sharedStorage["hai-que-huong-progress-v3"],v4=JSON.parse(t.sharedStorage["hai-que-huong-progress-v4"]);
+ assert.equal(v4.v,4);assert.equal(v4.sceneRef,"hsk1.e01.arrival-greeting");
+ assert.equal(Runtime.validateShadow(v4,v3,Graph),true);
+ assert.equal(JSON.parse(v3).history.length,1);
+ t.sharedStorage["hai-que-huong-progress-v4"]=JSON.stringify({...v4,sceneRef:"hsk5.graduation"});
+ assert.equal(Runtime.readShadow({getItem:k=>t.sharedStorage[k]},"hai-que-huong-progress-v3",Graph),null);
+ const resumed=harness(t.sharedStorage),e2=resumed.e;e2.resumeBtn.click();
+ assert.equal(e2.stepText.textContent,"01 / 10"); // V3 not poisoned by tampered shadow
+});
+test("Listening sample needs speech completion event; queued-only speech is unassessed",()=>{
+ const save={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
+ const t=harness(save,{audioNeverEnds:true}),e=t.e;e.resumeBtn.click();
+ e.skillOptions.children[0].click();e.skillListen.click();e.skillOptions.children[1].click();
+ const st=JSON.parse(save["hai-que-huong-progress-v3"]);
+ assert.equal(st.skillSampler.results[1].result,"unassessed");
+});
+test("Failed browser speech never grants listening credit",()=>{
+ const save={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
+ const t=harness(save,{audioFailure:true}),e=t.e;e.resumeBtn.click();
+ e.skillOptions.children[0].click();e.skillListen.click();e.skillOptions.children[1].click();
+ const st=JSON.parse(save["hai-que-huong-progress-v3"]);
+ assert.equal(st.skillSampler.results[1].result,"unassessed");
 });
