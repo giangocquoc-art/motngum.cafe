@@ -20,6 +20,8 @@ function render(){
  var due=C.queue(D,story,progress,day);
  var active= currentId?D.items.find(x=>x.id===currentId):null;
  if(!active||(!outcome&&!due.some(x=>x.id===currentId))){active=due[0]||null;currentId=active&&active.id||null}
+ $("emptyReview").hidden=!!active;
+ document.querySelector(".book").classList.toggle("is-empty",!active);
  $("exerciseCard").hidden=!active;
  $("nextBtn").hidden=!outcome;
  $("notice").className="notice"+(outcome&&outcome.result==="independent"?" success":outcome&&["assisted","sample"].includes(outcome.result)?" warning":"");

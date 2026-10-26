@@ -1,0 +1,7 @@
+# Editable source masters stay in the repository; the site serves optimized WebP assets.
+art/**/*.png
+
+# Private layout review scaffolding and QA captures are not part of the product.
+design-review/
+layout-review.html
+layout-review.css

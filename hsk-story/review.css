@@ -7,3 +7,72 @@
 .actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.actions button,.foot-actions button{border:1px solid #b69a7e;background:#fff5e7;padding:10px 14px;border-radius:5px;font-size:12px;font-weight:700}.actions .primary,.foot-actions .primary{background:var(--terra);color:white;border-color:var(--terra)}.actions button:hover:not(:disabled),.foot-actions button:hover{filter:brightness(.94)}.actions button:disabled{cursor:default;opacity:.55}.notice{white-space:pre-line;margin:15px 0;color:#674935;min-height:45px;font-size:12px;line-height:1.8}.notice.success{color:#305d42}.notice.warning{color:#86513c}.foot-actions{display:flex;align-items:center;gap:17px;flex-wrap:wrap}.foot-actions a{font-size:12px;text-decoration:underline}.bottom-note{margin:24px 0 10px;font-size:11px;color:var(--muted)}footer{font-size:11px;color:var(--muted);margin-top:32px}
 @media(max-width:600px){.head{padding:13px 15px}.logo{font-size:13px}.logo small{font-size:8px}.seal{width:34px;height:34px}.return{max-width:118px;line-height:1.4;text-align:right}.layout{padding:20px 13px 45px}.overview{grid-template-columns:repeat(2,1fr)}.overview>div:nth-child(2){border-right:0}.overview>div:nth-child(-n+2){border-bottom:1px solid var(--line)}.book{padding:17px 14px;box-shadow:3px 4px 0 #e5d4c4}.book h2{font-size:22px}.pill{font-size:9px}.options{grid-template-columns:1fr}.actions button{flex-grow:1}.zh{font-size:29px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* Approved one-screen review scene: story context above, one exercise sheet below. */
+html,body.chimse-review{width:100%;height:100%;min-height:0;margin:0;overflow:hidden;overscroll-behavior:none}
+.review-screen{height:var(--chimse-visible-height,100dvh);max-height:var(--chimse-visible-height,100dvh);min-height:0;display:flex;flex-direction:column;overflow:hidden;background:var(--paper)}
+.head{position:relative;z-index:5;width:100%;max-width:none;flex:0 0 56px;min-height:56px;margin:0;padding:5px clamp(12px,4vw,56px);background:#f9f1e3;border-bottom:1px solid var(--line)}
+.logo{font-size:15px;gap:7px}.logo small{font-size:7px;letter-spacing:1.5px}.seal{height:34px;width:34px;flex:none}
+.return{padding:6px 9px;border:1px solid #b9a995;background:#fffaf0;font-size:10px;white-space:nowrap}
+.review-overview{position:relative;margin-left:auto;font-size:9px;white-space:nowrap}
+.review-overview>summary{cursor:pointer;list-style:none;padding:7px 9px;border:1px solid #b9a995;background:#fffaf0;font-weight:700}
+.review-overview>summary::-webkit-details-marker{display:none}
+.review-overview[open] .overview{position:absolute;z-index:10;top:calc(100% + 5px);right:0;width:min(360px,88vw);margin:0;grid-template-columns:repeat(2,minmax(0,1fr));box-shadow:3px 4px 0 #5b514334}
+.review-overview .overview>div{padding:9px 6px}.review-overview .overview strong{font-size:18px}.review-overview .overview span{font-size:8px}
+.review-scene{position:relative;isolation:isolate;flex:1 1 0%;min-height:0;overflow:hidden;background:linear-gradient(150deg,#d8e1d2 0%,#cadbd4 52%,#e2e1cd 100%)}
+.review-scene:before{position:absolute;content:"";inset:14px 4vw 0;border:1px dashed #65776e45;pointer-events:none}
+.scene-layer{position:absolute;pointer-events:none}
+.review-backdrop{inset:0;background:linear-gradient(180deg,#d1ddd2 0 56%,#dfdfca 57% 100%)}
+.review-midground{left:9%;right:9%;bottom:9%;height:34%;border:1px dashed #6575695c;background:linear-gradient(90deg,transparent 0 14%,#f7efdf 14% 15%,transparent 15% 85%,#f7efdf 85% 86%,transparent 86%)}
+.review-foreground{left:0;right:0;bottom:0;height:8%;border-top:2px solid #747a69;background:#d4d5bf}
+.opening{position:absolute;z-index:2;left:clamp(12px,4vw,56px);top:clamp(14px,4vh,38px);width:min(560px,54vw);margin:0;padding:11px 14px;border:1px solid #625d52;background:#fbf5e8ed;box-shadow:3px 3px 0 #41372c35}
+.opening .eyebrow{font-size:8px;margin:0 0 4px}.opening h1{font-size:clamp(18px,2.5vw,28px);line-height:1.18;letter-spacing:0;margin:0 0 4px}
+.opening>p:not(.eyebrow){font-size:10px;line-height:1.45;margin:0;color:#675447}
+.review-scene-mark{position:absolute;left:70%;top:54%;width:110px;height:90px;display:grid;place-items:center;transform:rotate(-7deg);border:1px solid #847866;background:#f8f1e0d9;box-shadow:3px 3px 0 #51493a35}
+.review-scene-mark span{font:600 58px/1 "Noto Sans SC",serif;color:#594638}.review-scene-mark i{position:absolute;right:-16px;top:-8px;width:24px;height:19px;border:1px solid #58727a;border-radius:55%;background:#c1dce0}
+.book{position:relative;z-index:3;flex:0 0 clamp(285px,42dvh,390px);min-height:0;max-height:48dvh;display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain;width:100%;max-width:none;margin:0;padding:12px clamp(14px,5vw,70px) max(9px,env(safe-area-inset-bottom));border:0;border-top:2px solid #6f695d;box-shadow:none;background:#fffaf0}
+.book-header{flex:none;align-items:center}.book h2{font-size:19px;margin:2px 0}.book-header .eyebrow{font-size:8px;margin:0}.pill{font-size:8px;padding:4px 8px}
+.book-caption{flex:none;margin:3px 0 6px;font-size:10px;line-height:1.35;color:#6f6559}
+.card{min-height:0;overflow:auto;padding-top:6px;border-top:1px solid var(--line)}
+.zh{font-size:clamp(22px,4vw,34px);line-height:1.25;margin:3px 0 5px}.question{font-size:11px;line-height:1.4;margin:4px 0 7px}
+.options{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.options button{min-height:38px;padding:7px 9px;font-size:10px;border-radius:3px}
+.typed-label{font-size:9px;margin:5px 0}.book #typedAnswer{padding:8px;font-size:18px}
+.actions{gap:6px;margin-top:7px}.actions button,.foot-actions button{min-height:34px;padding:7px 10px;font-size:9px;border-radius:3px}
+.notice{flex:1 1 auto;min-height:0;overflow:auto;margin:5px 0;color:#674935;font-size:9px;line-height:1.4;white-space:pre-line}
+.foot-actions{flex:none;gap:10px}.foot-actions a{font-size:9px}
+.book .bottom-note{flex:none;margin:5px 0 0;font-size:8px;line-height:1.3}
+@media(min-width:900px){.book{flex-basis:clamp(280px,34dvh,340px);padding-left:max(8vw,80px);padding-right:max(8vw,80px)}.review-scene-mark{left:74%;top:53%}.opening{width:min(570px,42vw)}}
+@media(max-width:690px){
+ .head{flex-basis:51px;min-height:51px;padding:4px 8px;gap:6px}.logo{font-size:12px;gap:5px}.logo small{font-size:6px}.seal{height:30px;width:30px}
+ .review-overview>summary{padding:6px;font-size:8px}.return{max-width:92px;white-space:normal;text-align:center;line-height:1.15;padding:5px 6px;font-size:8px}
+ .review-scene:before{inset:9px 4% 0}.opening{top:11px;left:8px;width:calc(100% - 16px);padding:8px 10px}.opening .eyebrow{font-size:7px}.opening h1{font-size:18px}.opening>p:not(.eyebrow){font-size:9px;line-height:1.35}
+ .review-scene-mark{left:50%;top:60%;width:74px;height:65px;transform:translateX(-50%) rotate(-5deg)}.review-scene-mark span{font-size:43px}.review-scene-mark i{width:18px;height:15px}
+ .book{flex-basis:clamp(295px,45dvh,380px);max-height:48dvh;padding:8px 10px max(8px,env(safe-area-inset-bottom))}
+ .book h2{font-size:17px}.book-caption{font-size:9px}.zh{font-size:25px}.question{font-size:10px}.options{gap:5px}.options button{min-height:37px;padding:6px;font-size:9px}
+ .actions{margin-top:5px;gap:5px}.actions button,.foot-actions button{min-height:32px;padding:6px 8px;font-size:8px}.notice{font-size:8px;margin:3px 0}.book .bottom-note{display:none}
+}
+@media(max-height:620px){
+ .head{flex-basis:44px;min-height:44px;padding-top:max(3px,env(safe-area-inset-top))}
+ .book{flex-basis:190px;padding-top:5px;padding-bottom:max(5px,env(safe-area-inset-bottom))}
+ .opening{top:7px;padding:6px 8px}.opening .eyebrow{display:none}.opening h1{font-size:15px}.opening>p:not(.eyebrow){font-size:8px}
+ .book-header .eyebrow,.book-caption{display:none}.book h2{font-size:15px}.zh{font-size:21px;margin:1px 0}.question{margin:2px 0 4px}.options{gap:3px}.options button{min-height:30px;padding:4px;font-size:8px}
+ .actions{margin-top:3px}.actions button,.foot-actions button{min-height:28px;padding:4px 6px}.notice{font-size:8px;margin:2px 0}
+}
+@media(prefers-reduced-motion:reduce){.review-screen *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Winning art rules follow the legacy layout rules so the page uses real plates. */
+.sparrow-brand-mark{background:#b8dce3 url('/art/characters/sparrow-icon-v2.webp') center/contain no-repeat!important}
+.review-scene:before{content:none}
+.review-backdrop{inset:0;background-image:url('/art/backgrounds/classroom.webp');background-position:center 52%;background-size:cover;background-repeat:no-repeat}
+.review-characters{position:absolute;z-index:1;inset:0;overflow:hidden;pointer-events:none}
+.review-an{position:absolute;left:14%;bottom:-5%;width:clamp(145px,26vw,300px);height:auto;aspect-ratio:1;background:url('/art/characters/an-expressions-v3.webp') 50% 0%/300% 200% no-repeat;filter:drop-shadow(0 2px 2px #221a1635)}
+.review-sparrow{position:absolute;left:68%;top:51%;width:clamp(42px,5vw,60px);height:auto;aspect-ratio:1;background:url('/art/characters/sparrow-expressions-v2.webp') 50% 0%/300% 200% no-repeat;filter:drop-shadow(0 2px 1px #2225)}
+.review-scene-mark{display:none}
+.review-empty{display:flex;flex:1 1 auto;min-height:0;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:12px;background:#f4ebdc;border:1px dashed #baa48c}
+.review-empty[hidden]{display:none!important}
+.review-empty h3{margin:0;font:600 clamp(18px,2.3vw,24px)/1.2 Georgia,serif;color:#57463a}
+.review-empty p{max-width:380px;margin:0;color:#756555;font-size:11px;line-height:1.5}
+.review-empty a{margin-top:3px;padding:9px 13px;background:#a85642;color:#fff;font-size:10px;font-weight:700}
+.book.is-empty .foot-actions{display:none}
+.book.is-empty{flex-basis:clamp(250px,32dvh,300px);max-height:40dvh}
+@media(max-width:600px){.review-backdrop{background-image:url('/art/backgrounds/mobile/mobile-classroom.webp');background-position:center 52%}.review-an{left:2%;bottom:-2%;width:clamp(136px,40vw,170px)}.review-sparrow{left:77%;top:47%;width:42px}.review-empty{gap:6px;padding:8px}.review-empty p{font-size:9px}.review-empty a{padding:8px 10px}}

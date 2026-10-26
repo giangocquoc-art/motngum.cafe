@@ -16,6 +16,7 @@ node_modules/
 *.log
 .vercel
 .env*
+!hsk-story/.env.example
 .open-next/
 .wrangler/
 dist/

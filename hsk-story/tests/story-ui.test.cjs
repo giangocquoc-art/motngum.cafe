@@ -13,7 +13,7 @@ function finishEncounter(e,routeIndex=0){
  e.encounterContinue.click();
 }
 function harness(sharedStorage={},options={}){
- let dom={},document,spoken=[];function element(id){return {id,hidden:false,disabled:false,value:"",textContent:"",innerHTML:"",style:{},firstChild:{textContent:""},isConnected:true,children:[],attributes:{},listeners:{},
+ let dom={},document,spoken=[];function element(id){return {id,hidden:false,disabled:false,value:"",textContent:"",innerHTML:"",style:{},dataset:{},firstChild:{textContent:""},isConnected:true,children:[],attributes:{},listeners:{},
   classList:{s:new Set,add(k){this.s.add(k)},remove(k){this.s.delete(k)},contains(k){return this.s.has(k)},toggle(k){this.s.has(k)?this.s.delete(k):this.s.add(k)}},
   addEventListener(k,f){(this.listeners[k]??=[]).push(f)},appendChild(v){this.children.push(v)},replaceChildren(){this.children=[]},getClientRects(){return [1]},
   setAttribute(k,v){this.attributes[k]=v},getAttribute(k){return this.attributes[k]},focus(){document.activeElement=this},
@@ -40,7 +40,7 @@ test("story: sentence builder is helpful and notebook only shows past expression
  assert.equal(e.notebookWords.children.length,0); // current unexposed answer must not leak
  assert.ok(!e.notebookWords.children.some(r=>r.children[0].textContent==="面条"));
  e.notebookClose.click();
- e.vocabRevealBtn.click();e.notebookBtn.click();
+ e.hintBtn.click();e.notebookBtn.click();
  assert.ok(e.notebookWords.children.some(r=>r.children[0].textContent==="你好"));
  e.notebookWords.children[0].click();assert.equal(t.spoken[0],"你好");e.notebookClose.click();
  assert.equal(e.sentenceBuilder.hidden,true);assert.equal(e.openBuilderBtn.hidden,false);
@@ -105,12 +105,12 @@ test('V6 prologue blocks quiz until acknowledged and resumes after reload',()=>{
  assert.equal(e.storyInterlude.hidden,true);
  assert.equal(e.answerForm.hidden,false);
  assert.equal(e.learningStrip.hidden,true);
- assert.equal(e.vocabRevealBtn.hidden,false);
+ assert.equal(e.vocabRevealBtn.hidden,true);
 });
-test('V6 vocabulary opt-in is recorded as assisted',()=>{
+test('V6 scene help stays on demand and is recorded as assisted',()=>{
  const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
  e.notebookBtn.click();assert.equal(e.notebookWords.children.length,0);e.notebookClose.click();
- e.vocabRevealBtn.click();assert.equal(e.learningStrip.hidden,false);
+ assert.equal(e.vocabRevealBtn.hidden,true);e.hintBtn.click();assert.equal(e.feedback.textContent.startsWith("Gợi ý:"),true);
  assert.equal(JSON.parse(t.sharedStorage['hai-que-huong-progress-v3']).hintUsed,true);
  e.answerInput.value='我很好';e.answerForm.fire('submit');
  assert.ok(e.feedback.textContent.includes('sau hỗ trợ'));
@@ -246,7 +246,7 @@ test("V9 stable scene reference is persisted and existing V8 save still resumes 
 });
 test("V9 inspecting scene objects adds notebook atmosphere but no learner score",()=>{
  const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
- assert.equal(e.worldPanel.hidden,false);
+ assert.equal(e.worldPanel.hidden,true);e.worldOpenBtn.click();assert.equal(e.worldPanel.hidden,false);
  assert.equal(e.worldActions.children.length,3);
  e.worldActions.children[0].click();
  const saved=JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]);
@@ -365,7 +365,7 @@ test("Optional sampler in progress resumes only when learner actually opened it"
 test("Gate3B inspecting street object shows Hanzi bridge and preserves selected object on V3/V4 reload",()=>{
  const storage={"hai-que-huong-intro-v1":JSON.stringify({maxReached:5,discovered:["日","木"],momRevealed:true,lightParts:["日","月"]})};
  let t=harness(storage),e=t.e;e.startBtn.click();dismissStory(e);
- assert.equal(e.worldPanel.hidden,false);
+ assert.equal(e.worldPanel.hidden,true);e.worldOpenBtn.click();assert.equal(e.worldPanel.hidden,false);
  assert.equal(e.worldBridge.textContent,"");
  e.worldActions.children[0].click();
  assert.ok(e.worldBridge.textContent.includes("日"));
@@ -376,14 +376,14 @@ test("Gate3B inspecting street object shows Hanzi bridge and preserves selected 
  assert.equal(state.history.length,0);
  const shadow=JSON.parse(storage["hai-que-huong-progress-v4"]);
  assert.equal(shadow.memory.worldFocus["hsk1.e01.arrival-greeting"],"window");
- t=harness(storage);e=t.e;e.resumeBtn.click();dismissStory(e);
+ t=harness(storage);e=t.e;e.resumeBtn.click();dismissStory(e);e.worldOpenBtn.click();
  assert.ok(e.worldBridge.textContent.includes("日"));
  assert.ok(e.worldDescription.textContent.includes("Ngoài cửa xe"));
 });
 test("Gate3B scene observation never leaks a previous scene description into unrelated scene",()=>{
  const storage={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:6,history:Array.from({length:6},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home"],worldSeen:{"hsk1.e01.arrival-greeting":["window","diary"]},worldFocus:{"hsk1.e01.arrival-greeting":"window"}})};
  const t=harness(storage),e=t.e;e.resumeBtn.click();dismissStory(e);
- assert.equal(e.worldPanel.hidden,false);
+ assert.equal(e.worldPanel.hidden,true);e.worldOpenBtn.click();assert.equal(e.worldPanel.hidden,false);
  assert.equal(e.worldBridge.textContent,"");
  assert.ok(e.worldDescription.textContent.includes("Chọn một đồ vật"));
  e.worldActions.children[0].click();

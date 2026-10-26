@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5eedc">
+<title>Duyệt bố cục — Chim Sẻ</title>
+<link rel="stylesheet" href="/layout-review.css">
+</head>
+<body>
+<main class="review-screen" aria-label="Bản duyệt bố cục màn chơi Chim Sẻ">
+ <header class="topbar">
+  <button class="back" aria-label="Quay lại">←</button>
+  <div class="brand"><b>Chim Sẻ</b><span>TẬP 01 · NGÀY ĐẦU Ở THÀNH ĐÔ</span></div>
+  <button class="notebook">☷ <span>Sổ tay</span></button>
+ </header>
+ <section class="scene-area" aria-label="Vùng cảnh truyện">
+  <div class="scene-meta"><span>CẢNH 01</span><span>PHÒNG HỌC · BUỔI SÁNG</span></div>
+  <div class="dialogue-card">
+   <div class="speaker"><i></i><strong>Mẹ của An</strong><span>đang nói với An</span></div>
+   <p class="hanzi" lang="zh-CN">安，我们到了。你好吗？</p>
+   <p class="translation">An, tới trường rồi. Con có khỏe không?</p>
+  </div>
+  <div class="artboard">
+   <span class="art-label">VÙNG CẢNH MINH HỌA</span>
+   <span class="layer-label">Bối cảnh · nhân vật · tiền cảnh</span>
+   <span class="single-mascot">Chừa một vị trí cho Sẻ</span>
+  </div>
+ </section>
+ <section class="learning-area" aria-label="Khung học và thao tác">
+  <div id="practiceDraft">
+   <div class="learning-heading">
+    <div><span class="overline">MẸ ĐANG ĐỢI CÂU TRẢ LỜI</span><h1>Nói với mẹ nhé</h1></div>
+    <span class="step">01 <i>/</i> 10</span>
+   </div>
+   <p class="prompt">Mẹ hỏi thăm bạn. Hãy nói rằng An rất khỏe.</p>
+   <div class="answer-row"><div class="answer-box"><span>✎</span><b lang="zh-CN">我很好</b><small>Chạm để viết câu trả lời…</small></div><button class="submit">Nói với mẹ ↗</button></div>
+   <div class="learning-tools"><button class="tool">◖)) Nghe lại</button><button class="tool">Cần giúp một chút</button><span class="spacer"></span><button class="ask" id="showTutor">Hỏi Sẻ <span>✳</span></button></div>
+   <div class="safe-note">Cảnh ở trên · Luyện tập và trợ giúp ở khung này</div>
+  </div>
+  <div id="tutorDraft" hidden>
+   <div class="learning-heading"><div><span class="overline">BẠN CÓ THỂ HỎI</span><h1>Hỏi Sẻ</h1></div><button id="backToPractice" class="back-to-practice">← Quay lại câu hỏi</button></div>
+   <div class="tutor-messages"><p class="tutor-message">Cậu đang băn khoăn chỗ nào? Tớ thử nghĩ cùng nhé.</p><p class="tutor-note">Sẻ gợi ý cách nghĩ, không nói đáp án thay An.</p></div>
+   <div class="answer-row"><div class="answer-box"><span>✎</span><small>Hỏi về một từ hay câu trong cảnh…</small></div><button class="submit">Hỏi ↗</button></div>
+   <div class="safe-note">Sẻ chỉ ở lại trong lúc luyện tập</div>
+  </div>
+ </section>
+ <div class="draft-stamp">BẢN DUYỆT BỐ CỤC · CHƯA CÓ TRANH / HOẠT ẢNH</div>
+</main>
+<script>const screen=document.querySelector('.review-screen');document.getElementById('showTutor').addEventListener('click',()=>{document.getElementById('practiceDraft').hidden=true;document.getElementById('tutorDraft').hidden=false;screen.classList.add('tutor-mode')});document.getElementById('backToPractice').addEventListener('click',()=>{document.getElementById('tutorDraft').hidden=true;document.getElementById('practiceDraft').hidden=false;screen.classList.remove('tutor-mode')});</script>
+</body>
+</html>

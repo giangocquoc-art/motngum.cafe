@@ -5,7 +5,7 @@ var CHAPTERS=HSKContent.chapters,SCENES=HSKContent.scenes,REPLIES=HSKContent.rep
 
 var $=function(id){return document.getElementById(id)};
 var KEY="hai-que-huong-progress-v3",PREVIOUS_KEY="hai-que-huong-progress-v2",OLD_KEY="hai-que-huong-progress-v1";
-var state={step:0,history:[],done:false,pinyin:true,vi:true,attempts:0,hintUsed:false,solved:false,busy:false,recognizer:null,draft:"",examHelp:false,storyChoices:{},storyBeats:[],vocabSeen:[],encounter:HSKEncounter.initial(),encounterDraft:"",worldSeen:{},worldFocus:{},skillSampler:HSKSkillSampler.initial(),practiceOpen:false};
+var state={step:0,history:[],done:false,pinyin:true,vi:true,attempts:0,hintUsed:false,solved:false,busy:false,recognizer:null,draft:"",examHelp:false,storyChoices:{},storyBeats:[],vocabSeen:[],encounter:HSKEncounter.initial(),encounterDraft:"",worldSeen:{},worldFocus:{},worldOpen:false,skillSampler:HSKSkillSampler.initial(),practiceOpen:false};
 var toastTimer=null,returnFocus=null,SCENE_TOTAL=SCENES.length,EXAM_START=HSKCurriculum.scenes.findIndex(function(x){return x.kind==="checkpoint"});
 if(typeof HSKStoryThreads==="undefined"||HSKStoryThreads.validate(HSKCurriculum,HSKContent).length||typeof HSKSceneArt==="undefined"||typeof HSKSaveIO==="undefined"||typeof HSKStoryRuntime==="undefined"||HSKStoryRuntime.version!==4||typeof HSKStoryGraph==="undefined"||HSKStoryGraph.validate(HSKContent,HSKCurriculum,HSKStoryBeats,HSKStoryDirector,HSKEncounter).length||typeof HSKSceneWorld==="undefined"||HSKSceneWorld.validate(HSKStoryGraph).length||typeof HSKSkillSampler==="undefined"||HSKSkillSampler.validate(HSKStoryGraph,HSKCurriculum).length||typeof HSKEncounter==="undefined"||HSKEncounter.validate().length||typeof HSKContent==="undefined"||HSKContent.validate(HSKCurriculum).length||typeof HSKLearningKit==="undefined"||typeof HSKStoryDirector==="undefined"||typeof HSKStoryBeats==="undefined"||HSKStoryBeats.validate(SCENE_TOTAL,EXAM_START).length||HSKStoryDirector.validate(SCENE_TOTAL,EXAM_START).length||HSKCurriculum.validate().length||HSKCurriculum.scenes.length!==SCENE_TOTAL||REPLIES.length!==SCENE_TOTAL)throw Error("Story content contract invalid");
 function readSafe(k){return HSKSaveIO.readSafe(localStorage,k)}
@@ -133,10 +133,11 @@ function closePractice(){
 function renderWorld(){
  var id=HSKStoryGraph.idAt(state.step),site=HSKSceneWorld.site(id);
  var blocked=!!(state.done||HSKEncounter.pending(state.step,state.encounter)||practiceActive()||HSKStoryBeats.pending(state.step,state.storyBeats));
- $("worldPanel").hidden=!site||blocked;$("worldActions").replaceChildren();
+ var available=!!site&&!blocked;$("worldOpenBtn").hidden=!available;$("worldOpenBtn").setAttribute("aria-expanded",String(state.worldOpen));
+ $("worldPanel").hidden=!available||!state.worldOpen;$("worldActions").replaceChildren();
  $("worldDescription").textContent="Chọn một đồ vật để hiểu thêm cảnh này. Không tính điểm.";
  $("worldBridge").textContent="";
- if(!site||blocked)return;
+ if(!available||!state.worldOpen)return;
  $("worldTitle").textContent=site.title;
  var visited=state.worldSeen[id]||[];
  $("worldProgress").textContent="Quan sát theo ý thích · "+visited.length+"/"+site.objects.length+" chi tiết đã xem";
@@ -166,10 +167,10 @@ function renderSkillSampler(){
  var item=HSKSkillSampler.current(state.skillSampler);
  $("answerForm").hidden=true;$("sentenceBuilder").hidden=true;$("openBuilderBtn").hidden=true;
  $("storyInterlude").hidden=true;$("encounterPanel").hidden=true;$("storyChoicePanel").hidden=true;
- $("worldPanel").hidden=true;$("storyBeat").hidden=true;$("learningStrip").hidden=true;
+ $("worldPanel").hidden=true;$("worldOpenBtn").hidden=true;$("storyBeat").hidden=true;$("learningStrip").hidden=true;
  $("vocabRevealBtn").hidden=true;$("hintBtn").hidden=true;$("assistBtn").hidden=true;$("nextBtn").hidden=true;
- $("sceneDay").textContent="CHƯƠNG 01 · ÔN TẬP KỸ NĂNG";
- $("speaker").textContent="Sổ tay của An";$("sceneTag").textContent="LUYỆN KỸ NĂNG · KHÔNG PHẢI ĐỀ HSK";
+ $("sceneDay").textContent="MẤY TRANG AN MUỐN NHỚ";
+ $("speaker").textContent="Sổ tay của An";$("sceneTag").textContent="XEM LẠI CÂU ĐÃ GẶP";
  $("dialogueText").textContent=item.mode==="reading"?item.hanzi:"请听。";
  $("pinyinText").textContent="";$("vietText").textContent="";
  $("userInstruction").hidden=true;$("sceneObjective").hidden=true;
@@ -216,8 +217,8 @@ function renderEncounter(){
  var active=HSKEncounter.pending(state.step,state.encounter);
  $("encounterPanel").hidden=!active;if(!active)return false;
  var data=HSKEncounter.content,progress=state.encounter;
- $("stageIllustration").innerHTML=sceneArt("class",false);
- $("sceneDay").textContent="CHƯƠNG 01 · SỰ KIỆN";
+ paintScene("class","lost-notebook");
+ $("sceneDay").textContent="QUYỂN SỔ THẤT LẠC";
  $("speaker").textContent=progress.stage==="respond"?"Cô trực phòng hành chính":"安 · Minh An";
  $("sceneTag").textContent="QUYỂN SỔ BIẾN MẤT";
  $("dialogueText").textContent=progress.stage==="respond"?data.promptZh:data.startZh;
@@ -332,26 +333,51 @@ function showCompletion(){
  $("episodeReflection").textContent=HSKStoryThreads.ending(state.storyChoices,state.encounter);
  var skillSummary=HSKSkillSampler.summary(state.skillSampler);$("skillSummary").textContent="Luyện đọc: "+skillSummary.reading+" · Luyện nghe: "+skillSummary.listening+" · Nói/viết: chưa đánh giá riêng. Đây không phải điểm thi HSK.";
  $("summaryDescription").textContent=summary.examCorrect===summary.examTotal&&summary.assisted===0&&summary.hinted===0?"Rất tốt! Bạn đã tự xử lý tất cả câu hỏi trong tập thử nghiệm. Đây chưa phải kết quả thi HSK 1 chính thức.":"Bạn đã hoàn thành câu chuyện. Những câu cần xem mẫu là gợi ý để ôn lại — không được tính là trả lời đúng độc lập. Đây không phải chứng nhận trình độ HSK.";
- $("progressBar").style.width="100%";$("retakeExamBtn").hidden=false;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;$("storyInterlude").hidden=true;$("storyEcho").hidden=true;$("vocabRevealBtn").hidden=true;$("openBuilderBtn").hidden=true;$("encounterPanel").hidden=true;$("skillPanel").hidden=true;$("practiceOpenBtn").hidden=true;$("worldPanel").hidden=true;
+ $("progressBar").style.width="100%";$("retakeExamBtn").hidden=false;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;$("storyInterlude").hidden=true;$("storyEcho").hidden=true;$("vocabRevealBtn").hidden=true;$("openBuilderBtn").hidden=true;$("encounterPanel").hidden=true;$("skillPanel").hidden=true;$("practiceOpenBtn").hidden=true;$("worldPanel").hidden=true;$("worldOpenBtn").hidden=true;
  $("feedback").textContent="";$("feedback").className="feedback";
  $("encounterSummary").textContent=state.encounter.stage==="done"?"Quyển sổ đã được tìm lại · Vận dụng lời giới thiệu: "+(state.encounter.answer==="independent"?"tự trả lời ngay lần đầu":state.encounter.answer==="retried"?"đúng sau khi thử lại":state.encounter.answer==="helped"?"đúng nhờ gợi ý":"xem đáp án mẫu"): "Tình huống tìm lại sổ đã được bỏ qua theo tiến độ phiên bản cũ.";
  $("completionReview").textContent=(function(){var weak=HSKLearningKit.needsReview(state.history,HSKCurriculum.scenes);return weak.length?"Sổ tay của An nhắc bạn luyện thêm: "+weak.map(function(w){return w.objective}).join("; ")+".":"Các câu luyện trong tập này chưa ghi nhận chỗ cần xem lại."})();
 }
+function paintScene(place,sceneId){
+ var host=$("stageIllustration");
+ if(window.HSKSceneLayers){host.innerHTML=HSKSceneLayers.render(place,sceneId,state.storyChoices,state.encounter);return}
+ host.innerHTML=sceneArt(place,false);
+}
+function narrateSparrow(index){
+ var lines=[
+  "Tớ đang giả vờ biết đường. Cậu đừng hỏi nhé.",
+  "Cánh cổng này cao hơn tớ tưởng. Cậu có thấy vậy không?",
+  "Tiểu Vũ cười với cậu kìa. Tớ nghĩ cậu ấy cũng hơi ngại.",
+  "Tớ đếm nhầm mấy lần rồi. Cứ nhìn nét mặt của cô thôi.",
+  "Mùi thơm quá. Tớ xin ngồi cạnh cửa sổ thêm một chút.",
+  "Ôi, tớ tưởng cậu quên chiếc sổ. May mà nó vẫn ở đây.",
+  "Con đường này vẫn lạ, nhưng giờ đã có người đi cùng.",
+  "Tớ đợi ngoài cửa sổ nhé. Cậu cứ từ từ.",
+  "Tớ chẳng biết giá mì đâu. Hôm qua tớ mải nhìn cái bát.",
+  "Dù cậu nói thế nào, tớ vẫn sẽ chờ ở bậu cửa."
+ ];
+ var el=$("sparrowWhisper");if(!el)return;
+ el.hidden=false;$("sparrowWhisperText").textContent=lines[Math.max(0,Math.min(lines.length-1,index|0))];
+}
 function renderStep(){
+ state.worldOpen=false;
  var s=SCENES[state.step],meta=HSKCurriculum.scenes[state.step];state.busy=false;state.solved=false;
- $("stageIllustration").innerHTML=sceneArt(s.place,false);
- $("sceneDay").textContent=meta.kind==="checkpoint"?"CHƯƠNG 01 · KIỂM TRA THỬ":"CHƯƠNG 01 · "+(s.place==="canteen"?"CĂNG TIN":"THÀNH ĐÔ");
+ paintScene(s.place,HSKStoryGraph.idAt(state.step));
+ $("aiTutorPanel").dataset.sceneId=HSKStoryGraph.idAt(state.step);if(window.ChimSeTutor)window.ChimSeTutor.sync();
+ narrateSparrow(state.step);
+ $("sceneDay").textContent=meta.kind==="checkpoint"?"CÔ VƯƠNG HỎI AN":s.place==="canteen"?"BỮA MÌ ĐẦU TIÊN":"NGÀY ĐẦU Ở THÀNH ĐÔ";
  $("speaker").textContent=s.speaker;$("sceneTag").textContent=s.tag;
  $("dialogueText").textContent=s.zh;$("pinyinText").textContent=s.py;$("vietText").textContent=s.vi;
+ var speakerName=s.speaker||"";$("sendAnswer").textContent=(speakerName.indexOf("Mẹ")>=0?"Nói với mẹ":speakerName.indexOf("Tiểu Vũ")>=0?"Nói với bạn":speakerName.indexOf("Bà Lưu")>=0?"Nói với bà":speakerName.indexOf("Cô Vương")>=0?"Nói với cô":"Nói câu này")+" ↗";
  $("userInstruction").textContent=(meta.kind==="checkpoint"?"✎ ":"✦ ")+s.request;
  $("stepText").textContent=String(state.step+1).padStart(2,"0")+" / "+String(SCENE_TOTAL).padStart(2,"0");
  $("progressBar").style.width=(100*state.step/SCENE_TOTAL)+"%";
  $("answerInput").value=state.draft;$("answerInput").disabled=false;
- $("answerInput").placeholder=meta.kind==="checkpoint"?"Nhập câu trả lời bằng chữ Hán...":"Gõ câu trả lời bằng tiếng Trung...";
+ $("answerInput").placeholder=meta.kind==="checkpoint"?"Viết câu An sẽ nói…":"Viết câu An sẽ nói…";
  $("sendAnswer").disabled=false;$("micBtn").disabled=false;
  $("feedback").textContent="";$("feedback").className="feedback";
  $("answerForm").hidden=false;$("nextBtn").hidden=true;$("hintBtn").hidden=meta.kind==="checkpoint";$("assistBtn").hidden=state.attempts<2;
- $("completionPane").hidden=true;$("retakeExamBtn").hidden=true;$("practiceOpenBtn").hidden=true;$("encounterPanel").hidden=true;$("skillPanel").hidden=true;$("worldPanel").hidden=true;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;$("storyInterlude").hidden=true;$("userInstruction").hidden=false;$("sceneObjective").hidden=false;
+ $("completionPane").hidden=true;$("retakeExamBtn").hidden=true;$("practiceOpenBtn").hidden=true;$("encounterPanel").hidden=true;$("skillPanel").hidden=true;$("worldPanel").hidden=true;$("worldOpenBtn").hidden=true;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;$("storyInterlude").hidden=true;$("userInstruction").hidden=false;$("sceneObjective").hidden=meta.kind!=="checkpoint";
  var beat=HSKStoryDirector.beat(state.step,state.storyChoices),callback=HSKEncounter.callback(state.step,state.encounter);$("storyBeat").hidden=!beat&&!callback;$("storyBeat").textContent=[beat,callback].filter(Boolean).map(x=>"✳ "+x.zh+" — "+x.vi).join("  ");
  var echo=meta.kind==="practice"?HSKStoryThreads.echo(state.step,state.history,state.storyChoices,state.encounter):null;
  $("storyEcho").hidden=!echo;$("storyEcho").textContent=echo?"✳ "+echo.zh+" ("+echo.py+") — "+echo.vi+" · Gặp lại trong câu chuyện, không chấm điểm.":"";
@@ -359,7 +385,7 @@ function renderStep(){
  if(!$("notebookPanel").hidden)setNotebook(false);
  $("attemptCounter").textContent="Lượt thử: "+state.attempts;
  $("learningStrip").hidden=meta.kind!=="practice"||!state.vocabSeen.includes(state.step);
- $("vocabRevealBtn").hidden=meta.kind!=="practice"||state.vocabSeen.includes(state.step);
+ $("vocabRevealBtn").hidden=true;
  $("learningStrip").textContent=meta.kind==="practice"?"✳ "+meta.topic+" · "+meta.words.map(function(w){return w[0]+" ("+w[1]+") — "+w[2]}).join("  ·  "):"";
  $("sceneObjective").textContent=meta.kind==="checkpoint"?"Kiểm tra nhớ lại · "+meta.objective+" · Phụ đề/gợi ý tính là có hỗ trợ.":"Mục tiêu hôm nay · "+meta.objective;
  updateToggles();
@@ -385,7 +411,8 @@ function displayResolved(){
 }
 function openGame(){
  returnFocus=document.activeElement;document.body.style.overflow="hidden";$("gameOverlay").hidden=false;renderStep();$("notebookBtn").setAttribute("aria-expanded","false");
- if(state.done)$("replayBtn").focus();else if(!$("skillPanel").hidden)$("skillOptions").children[0]?.focus();else if(!$("encounterPanel").hidden)encounterFocus();else if(!$("storyInterlude").hidden)$("interludeContinue").focus();else if(state.solved)$("nextBtn").focus();else $("answerInput").focus();
+ var phone=window.matchMedia&&window.matchMedia("(max-width: 690px)").matches;
+ if(state.done)$("replayBtn").focus();else if(!$("skillPanel").hidden)$("skillOptions").children[0]?.focus();else if(!$("encounterPanel").hidden){if(phone&&state.encounter.stage==="respond")$("encounterActions").children[0]?.focus();else encounterFocus()}else if(!$("storyInterlude").hidden)$("interludeContinue").focus();else if(state.solved)$("nextBtn").focus();else if(phone)$("notebookBtn").focus();else $("answerInput").focus();
 }
 function closeGame(){
  $("notebookPanel").hidden=true;$("notebookBtn").setAttribute("aria-expanded","false");
@@ -465,7 +492,7 @@ function microphone(){
  r.onend=function(){btn.classList.remove("listening");btn.setAttribute("aria-label","Sử dụng micro");state.recognizer=null};
  try{r.start()}catch(e){btn.classList.remove("listening");state.recognizer=null;notify("Không thể mở micro trên thiết bị này.")}
 }
-load();$("heroArt").innerHTML=sceneArt("street",false);chapters();
+load();chapters();
 ["startBtn","resumeBtn","endingBtn"].forEach(function(id){$(id).addEventListener("click",openGame)});
 $("closeGame").addEventListener("click",closeGame);
 $("answerForm").addEventListener("submit",submitAnswer);$("answerInput").addEventListener("input",function(){if(state.solved)return;state.draft=$("answerInput").value.slice(0,300);save()});
@@ -490,18 +517,29 @@ $("encounterHint").addEventListener("click",function(){encounterDispatch({type:"
 $("encounterSample").addEventListener("click",function(){encounterDispatch({type:"sample"})});
 $("encounterContinue").addEventListener("click",function(){encounterDispatch({type:"continue"});renderStep();if(!$("storyInterlude").hidden)$("interludeContinue").focus();else $("answerInput").focus()});
 $("vocabRevealBtn").addEventListener("click",revealWords);
+$("worldOpenBtn").addEventListener("click",function(){state.worldOpen=!state.worldOpen;renderWorld();if(state.worldOpen)$("worldCloseBtn").focus()});
+$("worldCloseBtn").addEventListener("click",function(){state.worldOpen=false;renderWorld();$("worldOpenBtn").focus()});
 $("togglePinyin").addEventListener("click",function(){if(practiceActive())return;else if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.pinyin=!state.pinyin}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.pinyin=true}else state.pinyin=!state.pinyin;updateToggles();save()});
 $("toggleVietnamese").addEventListener("click",function(){if(practiceActive())return;else if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.vi=!state.vi}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.vi=true}else state.vi=!state.vi;updateToggles();save()});
 function replay(){state.step=0;state.done=false;state.history=[];state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.storyChoices={};state.storyBeats=[];state.vocabSeen=[];state.encounter=HSKEncounter.initial();state.encounterDraft="";state.worldSeen={};state.worldFocus={};state.skillSampler=HSKSkillSampler.initial();state.practiceOpen=false;state.solved=false;save();chapters();renderStep();$("answerInput").focus();notify("Bắt đầu lại tập truyện. Thành tích cũ đã được đặt lại.")}
 function retakeExam(){state.step=EXAM_START;state.done=false;state.history=state.history.slice(0,EXAM_START);state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.solved=false;state.practiceOpen=false;save();chapters();renderStep();$("answerInput").focus();notify("Đã mở lại ba câu kiểm tra. Tiến độ câu chuyện vẫn được giữ.")}
 $("retakeExamBtn").addEventListener("click",retakeExam);
 $("resetGame").addEventListener("click",replay);$("replayBtn").addEventListener("click",replay);
-$("mobileMenu").addEventListener("click",function(){var nav=document.querySelector("nav");nav.classList.toggle("open");$("mobileMenu").setAttribute("aria-expanded",String(nav.classList.contains("open")))});
 document.addEventListener("keydown",function(e){
  if($("gameOverlay").hidden)return;
  if(e.key==="Escape"){if(!$("notebookPanel").hidden){setNotebook(false);return}closeGame();return}
  if(e.key==="Tab"){var f=Array.from($("gameOverlay").querySelectorAll("button:not([hidden]):not([disabled]),input:not([disabled]):not([hidden])")).filter(function(el){return el.getClientRects().length>0});if(!f.length)return;var first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
 });
+function syncKeyboardLayout(target){
+ var input=target===$("answerInput")||target===$("encounterInput")||target===$("aiTutorInput");
+ var phone=window.matchMedia&&window.matchMedia("(max-width: 690px)").matches;
+ var shell=$("gameShell"),open=!!(phone&&input&&!$("gameOverlay").hidden);shell.classList.toggle("keyboard-open",open);
+ if(open){var visible=window.visualViewport?window.visualViewport.height:window.innerHeight;shell.style.setProperty("--chimse-visible-height",Math.max(240,Math.floor(visible))+"px")}
+ else shell.style.removeProperty("--chimse-visible-height");
+}
+document.addEventListener("focusin",function(e){syncKeyboardLayout(e.target)});
+document.addEventListener("focusout",function(){setTimeout(function(){syncKeyboardLayout(document.activeElement)},0)});
+if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){syncKeyboardLayout(document.activeElement)});
 /* Direct handoff from the optional Chapter 00; existing learner saves are untouched. */
 if(window.location&&typeof window.location.search==="string"&&window.location.search.indexOf("play=hsk1")>=0){
  try{

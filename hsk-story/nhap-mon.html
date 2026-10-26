@@ -1,45 +1,40 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#faf0da"><meta name="description" content="Nhập môn chữ Hán — một tập truyện nhẹ nhàng trước HSK 1 của Hai quê hương. Nhìn nét chữ, ghép chữ, hiểu mẹo nhớ và thử tự đoán.">
-<title>Nhập môn · Bí mật của chữ Hán | 两个故乡</title>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" content="#e9f2f2"><meta name="description" content="Tối trước ngày đầu đến trường, An mở cuốn sổ và gặp những chữ Hán đầu tiên cùng Sẻ.">
+<title>Cuốn sổ của An · Chim Sẻ</title>
+<link rel="icon" type="image/webp" href="/art/characters/sparrow-icon-v2.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/intro.css"></head>
-<body>
+<body class="chimse-intro">
 <div class="texture" aria-hidden="true"></div>
-<header class="topbar"><a class="brand" href="/" aria-label="Về trang chính Hai quê hương"><span class="brand-mark">乡</span><span><b>两个故乡</b><small>HAI QUÊ HƯƠNG</small></span></a><nav aria-label="Điều hướng"><a href="/">Trang chính</a><a href="/#hanh-trinh">Hành trình HSK 1–5 ↗</a></nav></header>
-<main class="page">
- <div class="intro-head">
-  <div><div class="eyebrow">✳ MỘT CHƯƠNG NHỎ TRƯỚC HSK 1</div><h1>Nhập môn.<br><em>Bí mật của chữ Hán.</em></h1><p>Chưa cần nhớ cách đọc, chưa phải làm bài thi. Cùng Minh An nhìn những chữ đầu tiên như những bức tranh nhỏ, nghe câu chuyện đằng sau chúng và tự thử ghép chữ.</p></div>
-  <div class="paper-stamp" aria-hidden="true"><span>初</span><small>从这里开始</small></div>
- </div>
- <div class="progress-band"><span id="position">TRANG 01 / 09</span><progress id="storyProgress" max="9" value="1" aria-label="Tiến độ tập nhập môn">1/9</progress><span id="saveStatus">Tiến độ được lưu trên thiết bị</span></div>
- <div class="book-layout" id="book" aria-live="off">
-  <section class="illustrated" aria-label="Trang minh họa chữ Hán">
-   <div class="paper-corner"><span id="chapterType">TRANG SỔ · 01</span><span>明安的本子</span></div>
-   <div class="ink-halo" aria-hidden="true"></div>
-   <div class="glyph-frame">
-    <span class="ink-label" id="inkLabel">LẦN ĐẦU NHÌN CHỮ</span>
-    <div class="main-glyph" id="mainGlyph" lang="zh-CN">字</div>
-    <div class="main-pinyin" id="mainPinyin">zì</div>
-    <button id="hearBtn" type="button" class="hear" aria-label="Nghe chữ tiếng Trung">◖)) Nghe chữ này</button>
-   </div>
-   <div class="paper-foot"><span>图 · NHẬP MÔN</span><span>Góc nhỏ trong sổ tay của An</span></div>
-  </section>
-  <section class="story">
-   <div class="story-location" id="scenePlace">Đêm trước ngày đến trường</div>
-   <h2 id="storyHeading">Lần đầu nhìn chữ</h2>
-   <p class="story-narrative" id="narrative"></p>
-   <div class="interaction-label">✳ KHÁM PHÁ</div>
-   <div class="interactive" id="interactive" aria-label="Tương tác với chữ Hán"></div>
-   <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
-   <div class="story-tip"><strong>Góc giải thích</strong><p id="storyTip"></p></div>
-   <div class="book-nav"><button type="button" class="secondary" id="backBtn">← Trang trước</button><button type="button" class="primary" id="nextBtn">Trang tiếp theo ↗</button></div>
-  </section>
- </div>
- <div class="bottom-note"><p>Nhập môn không phải HSK 0 chính thức và không chấm năng lực HSK. Các hình dung giúp nhớ chữ không phải lúc nào cũng là nguồn gốc lịch sử của chữ.</p><button type="button" id="resetBtn">↻ Đọc lại từ đầu</button></div>
- <details class="source-details"><summary>Nguồn tham khảo về cấu tạo chữ Hán và nét chữ</summary><p>Ví dụ ghép chữ được diễn giải cho người mới bắt đầu; chữ cổ và những câu đùa được chú thích để tránh hiểu sai. Phần nhập môn sử dụng chữ giản thể là chính.</p><ul id="sourceList"></ul></details>
+<main class="intro-screen" id="book" aria-live="off">
+ <header class="topbar">
+  <a class="brand" href="/" aria-label="Về câu chuyện Chim Sẻ"><span class="brand-mark sparrow-brand-mark">雀</span><span><b>Chim Sẻ</b><small>CHUYỆN CỦA AN</small></span></a>
+  <div class="progress-band" aria-label="Tiến độ tập nhập môn"><span id="position">TRANG 01 / 09</span><progress id="storyProgress" max="9" value="1">1/9</progress></div>
+  <details class="source-details"><summary>Ghi chú</summary><p>Nhập môn không phải HSK 0 chính thức và không chấm năng lực HSK. Các hình dung giúp nhớ chữ không phải lúc nào cũng là nguồn gốc lịch sử của chữ.</p><ul id="sourceList"></ul></details>
+  <button type="button" id="resetBtn" class="reset-book" aria-label="Đọc lại từ đầu">↻</button>
+ </header>
+ <section class="intro-scene" aria-label="Cảnh truyện và chữ An đang khám phá">
+  <div class="intro-backdrop scene-layer" data-asset="/art/backgrounds/bedroom-v2.webp" data-mobile-asset="/art/backgrounds/mobile/mobile-bedroom-v2.webp" aria-hidden="true"></div>
+  <div class="book-scene-figures scene-layer" aria-hidden="true"><span class="book-an"></span><span class="book-sparrow"></span></div>
+  <div class="intro-scene-meta"><span id="chapterType">TRANG SỔ · 01</span><span id="scenePlace">Đêm trước ngày đến trường</span></div>
+  <article class="intro-dialogue">
+   <p class="eyebrow">TỐI TRƯỚC NGÀY ĐẾN TRƯỜNG</p><h1 id="storyHeading">Lần đầu nhìn chữ</h1><p id="narrative"></p>
+  </article>
+  <div class="glyph-frame" aria-label="Chữ Hán đang khám phá">
+   <span class="ink-label" id="inkLabel">LẦN ĐẦU NHÌN CHỮ</span><div class="main-glyph" id="mainGlyph" lang="zh-CN">字</div>
+   <div class="main-pinyin" id="mainPinyin">zì</div><button id="hearBtn" type="button" class="hear" aria-label="Nghe chữ tiếng Trung">◖)) Nghe chữ này</button>
+  </div>
+  <div class="paper-foot"><span>图 · NHẬP MÔN</span><span>Góc nhỏ trong sổ tay của An</span></div>
+ </section>
+ <section class="intro-learning" aria-label="Khám phá chữ và tiếp tục câu chuyện">
+  <div class="learning-head"><div><span class="learning-kicker">MỘT TRANG TRONG CUỐN SỔ</span><h2>Khám phá cùng An</h2></div><span id="saveStatus" class="save-status">Tiến độ được lưu trên thiết bị</span></div>
+  <div class="interaction-label">✳ KHÁM PHÁ</div><div class="interactive" id="interactive" aria-label="Tương tác với chữ Hán"></div>
+  <p class="feedback" id="feedback" role="status" aria-live="polite"></p><details class="story-tip"><summary>Gợi ý nhỏ · mở khi cần</summary><p id="storyTip"></p></details>
+  <div class="book-nav"><button type="button" class="secondary" id="backBtn">← Trang trước</button><button type="button" class="primary" id="nextBtn">Trang tiếp theo ↗</button></div>
+ </section>
 </main>
-<footer>© 2026 Hai quê hương · Một khởi đầu nhỏ cho hành trình HSK 1–5</footer>
 <script src="/intro-data.js" defer></script><script src="/intro-core.js" defer></script><script src="/intro.js" defer></script>
+<script>(()=>{const v=window.visualViewport;const set=()=>document.documentElement.style.setProperty('--chimse-visible-height',Math.floor(v?v.height:window.innerHeight)+'px');set();window.addEventListener('resize',set,{passive:true});if(v)v.addEventListener('resize',set,{passive:true})})();</script>
 </body></html>

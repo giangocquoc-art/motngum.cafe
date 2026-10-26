@@ -1,0 +1,1464 @@
+{
+  "brand": "Chim Sẻ",
+  "version": "1.3.0",
+  "visualReference": "Owner-provided Minh An character and Chengdu world concept sheet in the project conversation; authoritative for identity, drawing and palette.",
+  "style": {
+    "line": "Slightly uneven, expressive dark ink with consistent recurring character contours",
+    "fill": "Muted flat watercolor on warm cream paper",
+    "palette": [
+      "cream paper",
+      "muted orange",
+      "pale sky blue",
+      "faded teal",
+      "dusty sage",
+      "warm tan",
+      "ink brown"
+    ],
+    "principles": [
+      "everyday Chengdu details",
+      "expressive imperfect characters",
+      "clear readable silhouettes",
+      "learning text remains HTML",
+      "transparent sprite layers"
+    ]
+  },
+  "layers": {
+    "background": {
+      "zIndex": 0,
+      "kind": "responsive-image",
+      "asset": "scene background desktop/mobile path"
+    },
+    "midground": {
+      "zIndex": 1,
+      "kind": "image-placeholder",
+      "assetTemplate": "layers/{sceneId}/midground.webp"
+    },
+    "characters": {
+      "zIndex": 2,
+      "kind": "transparent-sprite",
+      "asset": "characters/supporting-cast-v2.webp; characters/an-expressions-v3.webp"
+    },
+    "foreground": {
+      "zIndex": 3,
+      "kind": "image-placeholder",
+      "assetTemplate": "layers/{sceneId}/foreground.webp"
+    },
+    "sparrow": {
+      "zIndex": 4,
+      "kind": "transparent-sprite",
+      "asset": "characters/sparrow-expressions-v2.webp",
+      "countPerScene": 1
+    },
+    "dialogue": {
+      "zIndex": 5,
+      "kind": "html",
+      "asset": null
+    }
+  },
+  "characters": {
+    "an": {
+      "identity": "11-year-old boy; short tousled black hair; mustard yellow hoodie; faded blue-green backpack",
+      "sprite": "characters/an-expressions-v3.webp",
+      "poses": "characters/an-expressions-v3.webp",
+      "posesOrder": [
+        "shy-neutral",
+        "surprised",
+        "thinking",
+        "awkward",
+        "gentle smile",
+        "listening"
+      ],
+      "transparent": true,
+      "legacySprite": "characters/an.webp",
+      "legacyPoses": "characters/an-expressions.webp",
+      "sheet": {
+        "columns": 3,
+        "rows": 2,
+        "cellOrder": "row-major"
+      },
+      "metadata": {
+        "role": "An character expression sheet; scene sprites for the protagonist",
+        "dimensions": {
+          "width": 1536,
+          "height": 1024
+        },
+        "format": "WebP",
+        "alpha": true,
+        "prompt": "Create one transparent 3-column by 2-row character sheet of the same 11-year-old Minh An, an ordinary boy with slightly tousled short black hair, mustard yellow hoodie, faded blue-green backpack. Use the approved imperfect hand-inked storybook line with muted flat watercolor and paper grain. Keep identity consistent and expressions clear but understated. No text, no background, no extra characters.",
+        "master": "characters/an-expressions-v3.png",
+        "masterFormat": "PNG"
+      }
+    },
+    "sparrow": {
+      "identity": "small pale-blue sparrow; cream belly; dark ink contour; orange beak",
+      "sprite": "characters/sparrow-expressions-v2.webp",
+      "icon": "characters/sparrow-icon-v2.webp",
+      "transparent": true,
+      "legacySprite": "characters/sparrow.webp",
+      "poses": "characters/sparrow-expressions-v2.webp",
+      "posesOrder": [
+        "curious",
+        "listening",
+        "worried",
+        "happy",
+        "thinking",
+        "wave"
+      ],
+      "sheet": {
+        "columns": 3,
+        "rows": 2,
+        "cellOrder": "row-major"
+      },
+      "metadata": {
+        "role": "Single Sparrow mascot expression sheet; one cell per scene mood",
+        "dimensions": {
+          "width": 1536,
+          "height": 1024
+        },
+        "format": "WebP",
+        "alpha": true,
+        "prompt": "Create one transparent 3-column by 2-row sprite sheet for the single pale blue Chim Sẻ sparrow. Keep identical rounded silhouette, cream belly, dark ink contour and orange beak in all six cells; vary expression/gesture. No text, no background, no duplicate birds inside a cell.",
+        "master": "characters/sparrow-expressions-v2.png",
+        "masterFormat": "PNG"
+      }
+    },
+    "supportingCast": {
+      "spriteSheet": "characters/supporting-cast-v2.webp",
+      "transparent": true,
+      "panelsOrder": [
+        "mother",
+        "xiaoyu",
+        "wang",
+        "liu",
+        "receptionist"
+      ],
+      "legacySpriteSheet": "characters/supporting-cast.webp",
+      "sheet": {
+        "columns": 3,
+        "rows": 2,
+        "cellOrder": "row-major",
+        "unusedCells": [
+          5
+        ]
+      },
+      "metadata": {
+        "role": "Five transparent supporting character sprites, ordered by the cast panel map",
+        "dimensions": {
+          "width": 1536,
+          "height": 1024
+        },
+        "format": "WebP",
+        "alpha": true,
+        "prompt": "Create a transparent 3-column by 2-row sprite sheet in the established Chim Sẻ style. Cells 1-5 are Mother, Tiểu Vũ, cô Vương, bà Lưu and the school receptionist, respectively; cell 6 is empty. Keep each person distinct in age, hair, clothes, palette and expression; no labels or background.",
+        "master": "characters/supporting-cast-v2.png",
+        "masterFormat": "PNG"
+      }
+    }
+  },
+  "backgrounds": {
+    "arrival-street": {
+      "desktop": "backgrounds/arrival-street.webp",
+      "mobile": "backgrounds/mobile/mobile-arrival-street.webp"
+    },
+    "school-gate": {
+      "desktop": "backgrounds/school-gate-v2.webp",
+      "mobile": "backgrounds/mobile/mobile-school-gate-v2.webp",
+      "metadata": {
+        "desktop": {
+          "role": "Desktop school entrance environment plate",
+          "dimensions": {
+            "width": 1536,
+            "height": 1024
+          },
+          "format": "WebP",
+          "alpha": false,
+          "prompt": "Create a small Chengdu neighborhood primary-school gate as a background-only illustration in the approved imperfect hand-inked watercolor style. Slightly wobbly dark ink, muted color and paper grain. Show an open teal gate, plaster wall, bicycle, leafy trees and morning light. Lower foreground stays open for character sprites. No people, birds, writing or UI.",
+          "master": "backgrounds/school-gate-v2.png",
+          "masterFormat": "PNG"
+        },
+        "mobile": {
+          "role": "Portrait phone school entrance composition",
+          "dimensions": {
+            "width": 1024,
+            "height": 1536
+          },
+          "format": "WebP",
+          "alpha": false,
+          "prompt": "Recompose the same school gate as a true vertical 2:3 phone background. Keep gate, wall, tree canopy, bicycle, morning light, ink lines, watercolor and paper grain consistent. Keep the school front visible upper-middle and open ground in the lower third for sprites. No people, birds, text or UI.",
+          "master": "backgrounds/mobile/mobile-school-gate-v2.png",
+          "masterFormat": "PNG"
+        }
+      }
+    },
+    "classroom": {
+      "desktop": "backgrounds/classroom.webp",
+      "mobile": "backgrounds/mobile/mobile-classroom.webp"
+    },
+    "noodle-shop": {
+      "desktop": "backgrounds/noodle-shop-v2.webp",
+      "mobile": "backgrounds/mobile/mobile-noodle-shop-v3.webp",
+      "legacyDesktop": "backgrounds/noodle-shop.webp",
+      "legacyMobile": "backgrounds/mobile/mobile-noodle-shop-v2.webp",
+      "metadata": {
+        "desktop": {
+          "role": "Desktop environment plate for both noodle shop story scenes",
+          "dimensions": {
+            "width": 1536,
+            "height": 1024
+          },
+          "format": "WebP",
+          "alpha": false,
+          "prompt": "Illustrate a quiet lived-in Chengdu family noodle shop as a background-only plate in the approved hand-inked picture-book style. Keep the serving table and bowl readable, provide clear actor space, include small daily details, warm muted colors and paper texture. No people, birds, signs with legible text, or UI.",
+          "masterFormat": "PNG",
+          "master": "backgrounds/noodle-shop-v2.png"
+        },
+        "mobile": {
+          "role": "Portrait phone composition for both noodle-shop scenes",
+          "dimensions": {
+            "width": 1024,
+            "height": 1536
+          },
+          "format": "WebP",
+          "alpha": false,
+          "prompt": "Recompose the same Chengdu family noodle shop as a true tall phone portrait, vertical 2:3 composition. Preserve warm hand-inked everyday picture-book art, slightly uneven dark outlines, muted watercolor washes and paper grain. Show tiled service counter, wooden shelves, bowls, leafy window-side plant, and a small dining table in the lower foreground. Keep a clear middle/lower area for three independent character sprites; leave table space at bottom for the noodle-bowl cutout. Frame important counter and window details inside the central 70 percent for a narrow phone. No people, birds, text, UI, or foreground bowl cutout.",
+          "masterFormat": "PNG",
+          "master": "backgrounds/mobile/mobile-noodle-shop-v3.png"
+        }
+      },
+      "legacyMobileV1": "backgrounds/mobile/mobile-noodle-shop.webp"
+    },
+    "evening-street": {
+      "desktop": "backgrounds/evening-street-v2.webp",
+      "mobile": "backgrounds/mobile/mobile-evening-street-v2.webp",
+      "metadata": {
+        "desktop": {
+          "role": "Desktop dusk street environment plate",
+          "dimensions": {
+            "width": 1536,
+            "height": 1024
+          },
+          "format": "WebP",
+          "alpha": false,
+          "prompt": "Create a quiet Chengdu neighborhood lane at early dusk as a background-only illustration in the approved imperfect hand-inked watercolor style. Slightly wobbly dark ink, muted blue, sage and ochre color and paper grain. Show low shopfronts, bicycle, potted plants, warm street lamps and open pavement for child sprites. No people, birds, writing or UI.",
+          "master": "backgrounds/evening-street-v2.png",
+          "masterFormat": "PNG"
+        },
+        "mobile": {
+          "role": "Portrait phone dusk street composition",
+          "dimensions": {
+            "width": 1024,
+            "height": 1536
+          },
+          "format": "WebP",
+          "alpha": false,
+          "prompt": "Recompose the same calm Chengdu lane as a true vertical 2:3 phone background. Preserve its shopfronts, bicycle, plants, warm lamps, dusk sky, ink-watercolor lines and paper grain. Keep the noodle shop and one lamp upper-middle; reserve open pavement across the lower third for sprites. No people, birds, text or UI.",
+          "master": "backgrounds/mobile/mobile-evening-street-v2.png",
+          "masterFormat": "PNG"
+        }
+      }
+    },
+    "bedroom": {
+      "desktop": "backgrounds/bedroom-v2.webp",
+      "mobile": "backgrounds/mobile/mobile-bedroom-v2.webp",
+      "metadata": {
+        "desktop": {
+          "role": "Desktop background for the Nhập môn opening and notebook scenes",
+          "dimensions": {
+            "width": 1536,
+            "height": 1024
+          },
+          "format": "WebP",
+          "alpha": false,
+          "prompt": "Create a lived-in Chengdu bedroom at night, before An’s first school day, as background-only art in the established imperfect hand-inked watercolor style. Slightly wavering dark ink, muted watercolor, warm paper grain. Show blue city light at the window, a warm desk lamp, open notebook, pencils, school bag, everyday room details. Leave clear room for independent sprite and HTML dialogue layers. No people, birds, legible writing, or UI.",
+          "master": "backgrounds/bedroom-v2.png",
+          "masterFormat": "PNG"
+        },
+        "mobile": {
+          "role": "Portrait phone composition for the Nhập môn bedroom scene",
+          "dimensions": {
+            "width": 1024,
+            "height": 1536
+          },
+          "format": "WebP",
+          "alpha": false,
+          "prompt": "Recompose the same bedroom as a true vertical 2:3 phone scene. Keep the same window, nighttime city, desk lamp, open notebook, bag, palette and hand-inked watercolor/paper texture. Keep the central area open for HTML dialogue and lower floor clear for character sprites. No people, birds, text, or UI.",
+          "master": "backgrounds/mobile/mobile-bedroom-v2.png",
+          "masterFormat": "PNG"
+        }
+      }
+    }
+  },
+  "scenes": {
+    "hsk1.e01.arrival-greeting": {
+      "background": "arrival-street",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "shy",
+          "slot": "left",
+          "desktop": {
+            "left": 11,
+            "right": null,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "mother",
+          "expression": "gentle",
+          "slot": "mid",
+          "desktop": {
+            "left": 32,
+            "right": null,
+            "bottom": -4,
+            "height": 84
+          },
+          "mobile": {
+            "left": 25,
+            "right": null,
+            "bottom": -3,
+            "height": 68
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 69,
+          "top": 20
+        },
+        "mobile": {
+          "left": 72,
+          "top": 19
+        },
+        "expression": "curious"
+      },
+      "hotspots": [
+        "school-gate",
+        "old-bicycle"
+      ],
+      "desktop": {
+        "sparrow": {
+          "left": 69,
+          "top": 20
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 72,
+          "top": 19
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/arrival-street.webp",
+          "mobile": "backgrounds/mobile/mobile-arrival-street.webp"
+        },
+        "midground": "layers/hsk1.e01.arrival-greeting/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "placeholder",
+          "path": "layers/hsk1.e01.arrival-greeting/foreground.webp"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    },
+    "hsk1.e01.school-introduction": {
+      "background": "school-gate",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "nervous",
+          "slot": "left",
+          "desktop": {
+            "left": 11,
+            "right": null,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "wang",
+          "expression": "welcoming",
+          "slot": "right",
+          "desktop": {
+            "left": null,
+            "right": 10,
+            "bottom": -4,
+            "height": 88
+          },
+          "mobile": {
+            "left": null,
+            "right": 1,
+            "bottom": -3,
+            "height": 72
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 81,
+          "top": 27
+        },
+        "mobile": {
+          "left": 72,
+          "top": 19
+        },
+        "expression": "happy"
+      },
+      "hotspots": [
+        "school-sign",
+        "open-gate"
+      ],
+      "desktop": {
+        "sparrow": {
+          "left": 81,
+          "top": 27
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 72,
+          "top": 19
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/school-gate-v2.webp",
+          "mobile": "backgrounds/mobile/mobile-school-gate-v2.webp"
+        },
+        "midground": "layers/hsk1.e01.school-introduction/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "placeholder",
+          "path": "layers/hsk1.e01.school-introduction/foreground.webp"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    },
+    "hsk1.e01.xiaoyu-friendship": {
+      "background": "classroom",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "awkward",
+          "slot": "left",
+          "desktop": {
+            "left": 11,
+            "right": null,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "xiaoyu",
+          "expression": "smiling",
+          "slot": "right",
+          "desktop": {
+            "left": null,
+            "right": 10,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": null,
+            "right": 1,
+            "bottom": -3,
+            "height": 64
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 72,
+          "top": 16
+        },
+        "mobile": {
+          "left": 72,
+          "top": 19
+        },
+        "expression": "listening"
+      },
+      "hotspots": [
+        "empty-seat",
+        "notebook"
+      ],
+      "desktop": {
+        "sparrow": {
+          "left": 72,
+          "top": 16
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 72,
+          "top": 19
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/classroom.webp",
+          "mobile": "backgrounds/mobile/mobile-classroom.webp"
+        },
+        "midground": "layers/hsk1.e01.xiaoyu-friendship/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "placeholder",
+          "path": "layers/hsk1.e01.xiaoyu-friendship/foreground.webp"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    },
+    "hsk1.e01.class-counting": {
+      "background": "classroom",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "thinking",
+          "slot": "left",
+          "desktop": {
+            "left": 11,
+            "right": null,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "wang",
+          "expression": "teaching",
+          "slot": "right",
+          "desktop": {
+            "left": null,
+            "right": 10,
+            "bottom": -4,
+            "height": 88
+          },
+          "mobile": {
+            "left": null,
+            "right": 1,
+            "bottom": -3,
+            "height": 72
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 69,
+          "top": 20
+        },
+        "mobile": {
+          "left": 72,
+          "top": 19
+        },
+        "expression": "thinking"
+      },
+      "hotspots": [
+        "blackboard",
+        "desks"
+      ],
+      "desktop": {
+        "sparrow": {
+          "left": 69,
+          "top": 20
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 72,
+          "top": 19
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/classroom.webp",
+          "mobile": "backgrounds/mobile/mobile-classroom.webp"
+        },
+        "midground": "layers/hsk1.e01.class-counting/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "placeholder",
+          "path": "layers/hsk1.e01.class-counting/foreground.webp"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    },
+    "hsk1.e01.liu-noodle-order": {
+      "background": "noodle-shop",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "curious",
+          "slot": "left",
+          "desktop": {
+            "left": 8,
+            "right": null,
+            "bottom": -4,
+            "height": 70
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "xiaoyu",
+          "expression": "chatting",
+          "slot": "center",
+          "desktop": {
+            "left": 42,
+            "right": null,
+            "bottom": -4,
+            "height": 66
+          },
+          "mobile": {
+            "left": 38,
+            "right": null,
+            "bottom": 6,
+            "height": 64
+          }
+        },
+        {
+          "character": "liu",
+          "expression": "kind",
+          "slot": "right",
+          "desktop": {
+            "left": null,
+            "right": 7,
+            "bottom": -4,
+            "height": 88
+          },
+          "mobile": {
+            "left": null,
+            "right": 1,
+            "bottom": -3,
+            "height": 72
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 60,
+          "top": 30
+        },
+        "mobile": {
+          "left": 56,
+          "top": 28
+        },
+        "expression": "curious"
+      },
+      "hotspots": [
+        "noodle-bowl",
+        "menu-pictures"
+      ],
+      "desktop": {
+        "sparrow": {
+          "left": 60,
+          "top": 30
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 56,
+          "top": 28
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/noodle-shop-v2.webp",
+          "mobile": "backgrounds/mobile/mobile-noodle-shop-v3.webp",
+          "legacyDesktop": "backgrounds/noodle-shop.webp",
+          "legacyMobile": "backgrounds/mobile/mobile-noodle-shop.webp",
+          "metadata": {
+            "desktop": {
+              "role": "Desktop environment plate for both noodle shop story scenes",
+              "dimensions": {
+                "width": 1536,
+                "height": 1024
+              },
+              "format": "PNG",
+              "alpha": false,
+              "prompt": "Illustrate a quiet lived-in Chengdu family noodle shop as a background-only plate in the approved hand-inked picture-book style. Keep the serving table and bowl readable, provide clear actor space, include small daily details, warm muted colors and paper texture. No people, birds, signs with legible text, or UI."
+            },
+            "mobile": {
+              "role": "Alternate mobile composition plate for both noodle shop scenes",
+              "dimensions": {
+                "width": 1448,
+                "height": 1086
+              },
+              "format": "PNG",
+              "alpha": false,
+              "prompt": "Create a separate mobile composition of the same Chengdu family noodle shop as the desktop plate, using the same perspective language, furniture, palette and hand-inked style. Recompose the important counter, bowl/table area and window for a narrow viewport; do not crop or reuse the desktop image. No people, birds, legible text, or UI."
+            }
+          }
+        },
+        "midground": "layers/hsk1.e01.liu-noodle-order/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "image",
+          "asset": "layers/noodle-bowl-v2-clean.webp",
+          "metadata": {
+            "role": "Transparent noodle bowl foreground cutout shared by the ordering and payment scenes",
+            "dimensions": {
+              "width": 1254,
+              "height": 1254
+            },
+            "format": "WebP",
+            "alpha": true,
+            "prompt": "Create a single isolated bowl of noodles as a transparent Chim Sẻ scene foreground prop. Match the approved hand-inked, warm paper and muted watercolor style; preserve clean natural alpha edges with no colored fringe or halo. The bowl should read clearly at small size and overlap the foreground table naturally. No people, bird, text, shadow baked onto a background, or extra objects.",
+            "master": "layers/noodle-bowl-v2-clean.png",
+            "masterFormat": "PNG"
+          },
+          "master": "layers/noodle-bowl-v2-clean.png"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    },
+    "hsk1.e01.liu-payment": {
+      "background": "noodle-shop",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "careful",
+          "slot": "left",
+          "desktop": {
+            "left": 11,
+            "right": null,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "liu",
+          "expression": "laughing",
+          "slot": "right",
+          "desktop": {
+            "left": null,
+            "right": 10,
+            "bottom": -4,
+            "height": 88
+          },
+          "mobile": {
+            "left": null,
+            "right": 1,
+            "bottom": -3,
+            "height": 72
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 24,
+          "top": 57
+        },
+        "mobile": {
+          "left": 20,
+          "top": 19
+        },
+        "expression": "thinking"
+      },
+      "hotspots": [
+        "coins",
+        "noodle-bowl"
+      ],
+      "desktop": {
+        "sparrow": {
+          "left": 24,
+          "top": 57
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 20,
+          "top": 19
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/noodle-shop-v2.webp",
+          "mobile": "backgrounds/mobile/mobile-noodle-shop-v3.webp",
+          "legacyDesktop": "backgrounds/noodle-shop.webp",
+          "legacyMobile": "backgrounds/mobile/mobile-noodle-shop.webp",
+          "metadata": {
+            "desktop": {
+              "role": "Desktop environment plate for both noodle shop story scenes",
+              "dimensions": {
+                "width": 1536,
+                "height": 1024
+              },
+              "format": "PNG",
+              "alpha": false,
+              "prompt": "Illustrate a quiet lived-in Chengdu family noodle shop as a background-only plate in the approved hand-inked picture-book style. Keep the serving table and bowl readable, provide clear actor space, include small daily details, warm muted colors and paper texture. No people, birds, signs with legible text, or UI."
+            },
+            "mobile": {
+              "role": "Alternate mobile composition plate for both noodle shop scenes",
+              "dimensions": {
+                "width": 1448,
+                "height": 1086
+              },
+              "format": "PNG",
+              "alpha": false,
+              "prompt": "Create a separate mobile composition of the same Chengdu family noodle shop as the desktop plate, using the same perspective language, furniture, palette and hand-inked style. Recompose the important counter, bowl/table area and window for a narrow viewport; do not crop or reuse the desktop image. No people, birds, legible text, or UI."
+            }
+          }
+        },
+        "midground": "layers/hsk1.e01.liu-payment/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "image",
+          "asset": "layers/noodle-bowl-v2-clean.webp",
+          "metadata": {
+            "role": "Transparent noodle bowl foreground cutout shared by the ordering and payment scenes",
+            "dimensions": {
+              "width": 1254,
+              "height": 1254
+            },
+            "format": "WebP",
+            "alpha": true,
+            "prompt": "Create a single isolated bowl of noodles as a transparent Chim Sẻ scene foreground prop. Match the approved hand-inked, warm paper and muted watercolor style; preserve clean natural alpha edges with no colored fringe or halo. The bowl should read clearly at small size and overlap the foreground table naturally. No people, bird, text, shadow baked onto a background, or extra objects.",
+            "master": "layers/noodle-bowl-v2-clean.png",
+            "masterFormat": "PNG"
+          },
+          "master": "layers/noodle-bowl-v2-clean.png"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    },
+    "hsk1.e01.walk-home": {
+      "background": "evening-street",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "relieved",
+          "slot": "left",
+          "desktop": {
+            "left": 11,
+            "right": null,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "xiaoyu",
+          "expression": "wave",
+          "slot": "right",
+          "desktop": {
+            "left": null,
+            "right": 10,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": null,
+            "right": 1,
+            "bottom": -3,
+            "height": 64
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 56,
+          "top": 21
+        },
+        "mobile": {
+          "left": 65,
+          "top": 19
+        },
+        "expression": "happy"
+      },
+      "hotspots": [
+        "street-lantern",
+        "open-shop"
+      ],
+      "desktop": {
+        "sparrow": {
+          "left": 56,
+          "top": 21
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 65,
+          "top": 19
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/evening-street-v2.webp",
+          "mobile": "backgrounds/mobile/mobile-evening-street-v2.webp"
+        },
+        "midground": "layers/hsk1.e01.walk-home/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "placeholder",
+          "path": "layers/hsk1.e01.walk-home/foreground.webp"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    },
+    "lost-notebook": {
+      "background": "classroom",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "nervous",
+          "slot": "left",
+          "desktop": {
+            "left": 11,
+            "right": null,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "receptionist",
+          "expression": "welcoming",
+          "slot": "right",
+          "desktop": {
+            "left": null,
+            "right": 10,
+            "bottom": -4,
+            "height": 88
+          },
+          "mobile": {
+            "left": null,
+            "right": 1,
+            "bottom": -3,
+            "height": 72
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 69,
+          "top": 20
+        },
+        "mobile": {
+          "left": 72,
+          "top": 19
+        },
+        "expression": "curious"
+      },
+      "hotspots": [
+        "lost-and-found-desk",
+        "notebook"
+      ],
+      "desktop": {
+        "sparrow": {
+          "left": 69,
+          "top": 20
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 72,
+          "top": 19
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/classroom.webp",
+          "mobile": "backgrounds/mobile/mobile-classroom.webp"
+        },
+        "midground": "layers/lost-notebook/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "placeholder",
+          "path": "layers/lost-notebook/foreground.webp"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    },
+    "hsk1.e01.exam-introduction": {
+      "background": "classroom",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "unsure",
+          "slot": "left",
+          "desktop": {
+            "left": 11,
+            "right": null,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "wang",
+          "expression": "encouraging",
+          "slot": "right",
+          "desktop": {
+            "left": null,
+            "right": 10,
+            "bottom": -4,
+            "height": 88
+          },
+          "mobile": {
+            "left": null,
+            "right": 1,
+            "bottom": -3,
+            "height": 72
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 92,
+          "top": 10
+        },
+        "mobile": {
+          "left": 72,
+          "top": 19
+        },
+        "expression": "listening"
+      },
+      "hotspots": [],
+      "desktop": {
+        "sparrow": {
+          "left": 92,
+          "top": 10
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 72,
+          "top": 19
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/classroom.webp",
+          "mobile": "backgrounds/mobile/mobile-classroom.webp"
+        },
+        "midground": "layers/hsk1.e01.exam-introduction/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "placeholder",
+          "path": "layers/hsk1.e01.exam-introduction/foreground.webp"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    },
+    "hsk1.e01.exam-price": {
+      "background": "classroom",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "remembering",
+          "slot": "left",
+          "desktop": {
+            "left": 11,
+            "right": null,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "wang",
+          "expression": "listening",
+          "slot": "right",
+          "desktop": {
+            "left": null,
+            "right": 10,
+            "bottom": -4,
+            "height": 88
+          },
+          "mobile": {
+            "left": null,
+            "right": 1,
+            "bottom": -3,
+            "height": 72
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 92,
+          "top": 10
+        },
+        "mobile": {
+          "left": 72,
+          "top": 19
+        },
+        "expression": "thinking"
+      },
+      "hotspots": [],
+      "desktop": {
+        "sparrow": {
+          "left": 92,
+          "top": 10
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 72,
+          "top": 19
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/classroom.webp",
+          "mobile": "backgrounds/mobile/mobile-classroom.webp"
+        },
+        "midground": "layers/hsk1.e01.exam-price/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "placeholder",
+          "path": "layers/hsk1.e01.exam-price/foreground.webp"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    },
+    "hsk1.e01.exam-order": {
+      "background": "classroom",
+      "actors": [
+        {
+          "character": "an",
+          "expression": "steadier",
+          "slot": "left",
+          "desktop": {
+            "left": 11,
+            "right": null,
+            "bottom": -4,
+            "height": 79
+          },
+          "mobile": {
+            "left": 0,
+            "right": null,
+            "bottom": -3,
+            "height": 65
+          }
+        },
+        {
+          "character": "wang",
+          "expression": "proud",
+          "slot": "right",
+          "desktop": {
+            "left": null,
+            "right": 10,
+            "bottom": -4,
+            "height": 88
+          },
+          "mobile": {
+            "left": null,
+            "right": 1,
+            "bottom": -3,
+            "height": 72
+          }
+        }
+      ],
+      "sparrow": {
+        "asset": "characters/sparrow-expressions-v2.webp",
+        "desktop": {
+          "left": 92,
+          "top": 10
+        },
+        "mobile": {
+          "left": 72,
+          "top": 19
+        },
+        "expression": "happy"
+      },
+      "hotspots": [],
+      "desktop": {
+        "sparrow": {
+          "left": 92,
+          "top": 10
+        }
+      },
+      "mobile": {
+        "sparrow": {
+          "left": 72,
+          "top": 19
+        }
+      },
+      "layers": {
+        "background": {
+          "desktop": "backgrounds/classroom.webp",
+          "mobile": "backgrounds/mobile/mobile-classroom.webp"
+        },
+        "midground": "layers/hsk1.e01.exam-order/midground.webp",
+        "characters": [
+          "characters/an-expressions-v3.webp",
+          "characters/supporting-cast-v2.webp"
+        ],
+        "foreground": {
+          "kind": "placeholder",
+          "path": "layers/hsk1.e01.exam-order/foreground.webp"
+        },
+        "sparrow": "characters/sparrow-expressions-v2.webp"
+      }
+    }
+  },
+  "sceneRenderer": "../scene-layers.js",
+  "screenBreakpoints": {
+    "mobile": "max-width: 690px; each scene supplies desktop/mobile actor and Sparrow positions",
+    "wide": "landscape environment plate"
+  },
+  "assetCatalog": {
+    "characters/an-expressions-v3.webp": {
+      "role": "An character expression sheet; scene sprites for the protagonist",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": true,
+      "prompt": "Edit the earlier 3×2 Minh An sheet into the established 11-year-old boy: ordinary child proportions, short tousled black hair, mustard yellow hoodie, faded blue-green backpack. Match the owner reference with slightly wobbly dark ink, visible searching strokes, muted watercolor and warm paper grain. Preserve six clear but understated moods, one consistent character per cell, and true transparent background. No text, extra characters, or background.",
+      "master": "characters/an-expressions-v3.png",
+      "masterFormat": "PNG",
+      "bytes": 394906
+    },
+    "characters/sparrow-expressions-v2.webp": {
+      "role": "Single Sparrow mascot expression sheet; one cell per scene mood",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": true,
+      "prompt": "Create one transparent 3-column by 2-row sprite sheet for the single pale blue Chim Sẻ sparrow. Keep identical rounded silhouette, cream belly, dark ink contour and orange beak in all six cells; vary expression/gesture. No text, no background, no duplicate birds inside a cell.",
+      "master": "characters/sparrow-expressions-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 360316
+    },
+    "characters/supporting-cast-v2.webp": {
+      "role": "Five transparent supporting character sprites, ordered by the cast panel map",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": true,
+      "prompt": "Create a transparent 3-column by 2-row sprite sheet in the established Chim Sẻ style. Cells 1-5 are Mother, Tiểu Vũ, cô Vương, bà Lưu and the school receptionist, respectively; cell 6 is empty. Keep each person distinct in age, hair, clothes, palette and expression; no labels or background.",
+      "master": "characters/supporting-cast-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 313972
+    },
+    "backgrounds/noodle-shop-v2.webp": {
+      "role": "Desktop environment plate for both noodle shop story scenes",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Illustrate a quiet lived-in Chengdu family noodle shop as a background-only plate in the approved hand-inked picture-book style. Keep the serving table and bowl readable, provide clear actor space, include small daily details, warm muted colors and paper texture. No people, birds, signs with legible text, or UI.",
+      "master": "backgrounds/noodle-shop-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 420900
+    },
+    "backgrounds/mobile/mobile-noodle-shop-v2.webp": {
+      "role": "Alternate mobile composition plate for both noodle shop scenes",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Create a separate mobile composition of the same Chengdu family noodle shop as the desktop plate, using the same perspective language, furniture, palette and hand-inked style. Recompose the important counter, bowl/table area and window for a narrow viewport; do not crop or reuse the desktop image. No people, birds, legible text, or UI.",
+      "master": "backgrounds/mobile/mobile-noodle-shop-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 371190
+    },
+    "layers/noodle-bowl-v2-clean.webp": {
+      "role": "Transparent noodle bowl foreground cutout shared by the ordering and payment scenes",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "format": "WebP",
+      "alpha": true,
+      "prompt": "Create a single isolated bowl of noodles as a transparent Chim Sẻ scene foreground prop. Match the approved hand-inked, warm paper and muted watercolor style; preserve clean natural alpha edges with no colored fringe or halo. The bowl should read clearly at small size and overlap the foreground table naturally. No people, bird, text, shadow baked onto a background, or extra objects.",
+      "master": "layers/noodle-bowl-v2-clean.png",
+      "masterFormat": "PNG",
+      "bytes": 331804
+    },
+    "backgrounds/mobile/mobile-noodle-shop-v3.webp": {
+      "role": "Portrait phone composition for both noodle-shop scenes",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Recompose the same Chengdu family noodle shop as a true tall phone portrait, vertical 2:3 composition. Preserve warm hand-inked everyday picture-book art, slightly uneven dark outlines, muted watercolor washes and paper grain. Show tiled service counter, wooden shelves, bowls, leafy window-side plant, and a small dining table in the lower foreground. Keep a clear middle/lower area for three independent character sprites; leave table space at bottom for the noodle-bowl cutout. Frame important counter and window details inside the central 70 percent for a narrow phone. No people, birds, text, UI, or foreground bowl cutout.",
+      "masterFormat": "PNG",
+      "master": "backgrounds/mobile/mobile-noodle-shop-v3.png",
+      "bytes": 394690
+    },
+    "backgrounds/bedroom-v2.webp": {
+      "role": "Desktop bedroom environment plate",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Create a lived-in Chengdu bedroom at night, before An’s first school day, as background-only art in the established imperfect hand-inked watercolor style. Slightly wavering dark ink, muted watercolor, warm paper grain. Show blue city light at the window, a warm desk lamp, open notebook, pencils, school bag, everyday room details. Leave clear room for independent sprite and HTML dialogue layers. No people, birds, legible writing, or UI.",
+      "master": "backgrounds/bedroom-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 425458
+    },
+    "backgrounds/mobile/mobile-bedroom-v2.webp": {
+      "role": "Portrait bedroom phone composition",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Recompose the same bedroom as a true vertical 2:3 phone scene. Keep the same window, nighttime city, desk lamp, open notebook, bag, palette and hand-inked watercolor/paper texture. Keep the central area open for HTML dialogue and lower floor clear for character sprites. No people, birds, text, or UI.",
+      "master": "backgrounds/mobile/mobile-bedroom-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 409178
+    },
+    "backgrounds/school-gate-v2.webp": {
+      "role": "Desktop school gate background",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Create a small Chengdu neighborhood primary-school gate as a background-only illustration in the approved imperfect hand-inked watercolor style. Slightly wobbly dark ink, muted color and paper grain. Show an open teal gate, plaster wall, bicycle, leafy trees and morning light. Lower foreground stays open for character sprites. No people, birds, writing or UI.",
+      "master": "backgrounds/school-gate-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 494646
+    },
+    "backgrounds/mobile/mobile-school-gate-v2.webp": {
+      "role": "Portrait school gate phone background",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Recompose the same school gate as a true vertical 2:3 phone background. Keep gate, wall, tree canopy, bicycle, morning light, ink lines, watercolor and paper grain consistent. Keep the school front visible upper-middle and open ground in the lower third for sprites. No people, birds, text or UI.",
+      "master": "backgrounds/mobile/mobile-school-gate-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 512752
+    },
+    "backgrounds/evening-street-v2.webp": {
+      "role": "Desktop evening street background",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Create a quiet Chengdu neighborhood lane at early dusk as a background-only illustration in the approved imperfect hand-inked watercolor style. Slightly wobbly dark ink, muted blue, sage and ochre color and paper grain. Show low shopfronts, bicycle, potted plants, warm street lamps and open pavement for child sprites. No people, birds, writing or UI.",
+      "master": "backgrounds/evening-street-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 534380
+    },
+    "backgrounds/mobile/mobile-evening-street-v2.webp": {
+      "role": "Portrait evening street phone background",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Recompose the same calm Chengdu lane as a true vertical 2:3 phone background. Preserve its shopfronts, bicycle, plants, warm lamps, dusk sky, ink-watercolor lines and paper grain. Keep the noodle shop and one lamp upper-middle; reserve open pavement across the lower third for sprites. No people, birds, text or UI.",
+      "master": "backgrounds/mobile/mobile-evening-street-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 555106
+    }
+  }
+}
