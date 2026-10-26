@@ -20,7 +20,7 @@ function harness(sharedStorage={},options={}){
   click(){(this.listeners.click||[]).forEach(f=>f({preventDefault(){}}))},fire(k,args={}){(this.listeners[k]||[]).forEach(f=>f({preventDefault(){},...args}))}
  }}
  ids.forEach(id=>dom[id]=element(id));
- ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyInterlude","vocabRevealBtn","learningStrip","encounterPanel","encounterAnswerForm","encounterContinue","encounterHint","encounterSample","skillPanel","skillListen","worldPanel"].forEach(id=>dom[id].hidden=true);
+ ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyInterlude","vocabRevealBtn","learningStrip","encounterPanel","encounterAnswerForm","encounterContinue","encounterHint","encounterSample","skillPanel","skillListen","practiceOpenBtn","worldPanel"].forEach(id=>dom[id].hidden=true);
  const nav=element("nav");
  document={body:{style:{}},activeElement:null,listeners:{},getElementById(id){if(!dom[id])throw Error("Missing DOM ID "+id);return dom[id]},querySelector(q){return q==="nav"?nav:null},createElement(tag){return element("new-"+tag)},querySelectorAll(){return []},addEventListener(k,f){(this.listeners[k]??=[]).push(f)}};
  const localStorage={getItem(k){return sharedStorage[k]||null},setItem(k,v){sharedStorage[k]=v}};
@@ -258,6 +258,8 @@ test("V9 inspecting scene objects adds notebook atmosphere but no learner score"
 test("V10 real reading and browser-synthesized listening practice remain separate from school scores",()=>{
  const store={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
  const t=harness(store),e=t.e;e.resumeBtn.click();
+ assert.equal(e.practiceOpenBtn.hidden,false);
+ e.practiceOpenBtn.click();
  assert.equal(e.skillPanel.hidden,false);
  assert.equal(e.answerForm.hidden,true);
  assert.equal(e.skillOptions.children.length,3);
@@ -277,7 +279,7 @@ test("V10 real reading and browser-synthesized listening practice remain separat
 test("V10 unsupported audio is explicitly unassessed; checkpoint retake retains skill evidence",()=>{
  const store={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
  const t=harness(store),e=t.e;e.resumeBtn.click();
- e.skillSkip.click();
+ e.practiceOpenBtn.click();e.skillSkip.click();
  e.skillOptions.children[1].click();
  let state=JSON.parse(store["hai-que-huong-progress-v3"]);
  assert.equal(state.skillSampler.results[0].result,"unassessed");
@@ -317,14 +319,45 @@ test("V4 shadow has verified V3 source, but old save remains the actual source o
 test("Listening sample needs speech completion event; queued-only speech is unassessed",()=>{
  const save={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
  const t=harness(save,{audioNeverEnds:true}),e=t.e;e.resumeBtn.click();
- e.skillOptions.children[0].click();e.skillListen.click();e.skillOptions.children[1].click();
+ e.practiceOpenBtn.click();e.skillOptions.children[0].click();e.skillListen.click();e.skillOptions.children[1].click();
  const st=JSON.parse(save["hai-que-huong-progress-v3"]);
  assert.equal(st.skillSampler.results[1].result,"unassessed");
 });
 test("Failed browser speech never grants listening credit",()=>{
  const save={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
  const t=harness(save,{audioFailure:true}),e=t.e;e.resumeBtn.click();
- e.skillOptions.children[0].click();e.skillListen.click();e.skillOptions.children[1].click();
+ e.practiceOpenBtn.click();e.skillOptions.children[0].click();e.skillListen.click();e.skillOptions.children[1].click();
  const st=JSON.parse(save["hai-que-huong-progress-v3"]);
  assert.equal(st.skillSampler.results[1].result,"unassessed");
+});
+
+test("Optional practice never gates the teacher's actual checkpoint and can be closed preserving draft",()=>{
+ const stored={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
+ const t=harness(stored),e=t.e;e.resumeBtn.click();
+ assert.equal(e.skillPanel.hidden,true);
+ assert.equal(e.answerForm.hidden,false);
+ assert.equal(e.practiceOpenBtn.hidden,false);
+ e.answerInput.value="我叫";e.answerInput.fire("input");
+ e.practiceOpenBtn.click();
+ assert.equal(e.skillPanel.hidden,false);assert.equal(e.answerForm.hidden,true);
+ assert.equal(JSON.parse(stored["hai-que-huong-progress-v3"]).practiceOpen,true);
+ e.practiceCloseBtn.click();
+ assert.equal(e.skillPanel.hidden,true);assert.equal(e.answerInput.value,"我叫");
+ assert.equal(JSON.parse(stored["hai-que-huong-progress-v3"]).practiceOpen,false);
+ e.answerInput.value="我叫安我是学生";e.answerForm.fire("submit");
+ assert.equal(e.nextBtn.hidden,false);
+ e.nextBtn.click();
+ assert.equal(e.stepText.textContent,"09 / 10");
+ const state=JSON.parse(stored["hai-que-huong-progress-v3"]);
+ assert.equal(state.skillSampler.status,"pending");
+ assert.equal(state.history.length,8);
+});
+test("Optional sampler in progress resumes only when learner actually opened it",()=>{
+ const saved={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home","school-test"],practiceOpen:true})};
+ let t=harness(saved),e=t.e;e.resumeBtn.click();
+ assert.equal(e.skillPanel.hidden,false);
+ e.practiceCloseBtn.click();
+ t=harness(saved);e=t.e;e.resumeBtn.click();
+ assert.equal(e.skillPanel.hidden,true);
+ assert.equal(e.answerForm.hidden,false);
 });

@@ -158,3 +158,10 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .prelude-visual small{position:absolute;bottom:17px;font-size:11px;color:#806653}
 @media(max-width:850px){.prelude-entry{grid-template-columns:minmax(0,1fr) minmax(150px,.5fr);gap:20px}.prelude-visual{height:180px}.prelude-visual span{font-size:49px}}
 @media(max-width:620px){.prelude-entry{grid-template-columns:1fr;padding-top:34px;padding-bottom:35px}.prelude-visual{height:150px;margin-right:8px}.prelude-visual span{font-size:55px}.prelude-identity p{font-size:12px}.prelude-hero-button{font-size:12px}.outline-hero-btn{font-size:11px}}
+
+/* Gate3 optional practice branch, only visible after first story checkpoint unlock. */
+.practice-entry{width:100%;text-align:left;border:1px dashed #a87f5d;background:#f7e9d7;padding:11px 15px;margin:8px 0 13px;color:#774830;font-size:12px;font-weight:700;cursor:pointer}
+.practice-entry:hover,.practice-entry:focus-visible{background:#ead4bd}
+.practice-close{display:inline-block;border:0;background:transparent;color:#865037;font-size:12px;font-weight:700;padding:9px 0 10px;text-decoration:underline;cursor:pointer}
+.practice-entry[hidden]{display:none!important}
+@media(max-width:620px){.practice-entry{font-size:11px;padding:9px 12px}.practice-close{font-size:11px}}

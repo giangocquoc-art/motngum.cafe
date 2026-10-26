@@ -53,3 +53,11 @@ test("History, memory, draft and assisted state are preserved in shadow, indepen
  assert.equal(sh.memory.worldSeen["hsk1.e01.walk-home"][0],"tree");
  assert.equal(sh.progress.history.length,2);
 });
+
+test("V4 shadow retains optional practice's pending/closed flag without changing HSK history",()=>{
+ const payload={...base,step:7,sceneRef:Graph.idAt(7),practiceOpen:true,history:Array.from({length:7},()=>({status:"correct"}))};
+ const v4=Runtime.shadow(payload,bytes(payload),Graph);
+ assert.equal(v4.pending.practiceOpen,true);
+ assert.equal(v4.progress.history.length,7);
+ assert.equal(Runtime.validateShadow(v4,bytes(payload),Graph),true);
+});

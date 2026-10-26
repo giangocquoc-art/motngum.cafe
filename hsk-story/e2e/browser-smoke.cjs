@@ -31,7 +31,7 @@ async function goStory(page,label){
  await page.goto(ROOT+"/",{waitUntil:"networkidle"});
  await page.locator("#startBtn").click();
  assert.equal(await visible(page,"#gameOverlay"),true);
- let finished=false,steps=0;
+ let finished=false,steps=0,practiceUsed=false;
  for(;steps<100;steps++){
   if(await visible(page,"#completionPane")){finished=true;break}
   if(await visible(page,"#storyInterlude")){await page.locator("#interludeContinue").click();continue}
@@ -46,7 +46,16 @@ async function goStory(page,label){
    }
    continue;
   }
-  if(await visible(page,"#skillPanel")){await page.locator("#skillSkip").click();continue}
+  if(!practiceUsed&&label==="desktop"&&await visible(page,"#practiceOpenBtn")){
+   await page.locator("#answerInput").fill("我叫");
+   await page.locator("#practiceOpenBtn").click();
+   assert.equal(await visible(page,"#skillPanel"),true);
+   await page.locator("#skillSkip").click();
+   await page.locator("#practiceCloseBtn").click();
+   assert.equal(await page.locator("#answerInput").inputValue(),"我叫","Optional sidebranch lost learner draft");
+   practiceUsed=true;continue;
+  }
+  if(await visible(page,"#skillPanel"))throw Error("Practice forced into mandatory main storyline");
   if(await visible(page,"#storyChoicePanel")){
    await page.locator("#storyChoiceOptions button").first().click();continue;
   }
@@ -68,13 +77,15 @@ async function goStory(page,label){
  const v3=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v3")));
  const v4=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v4")));
  assert.equal(v3.done,true);assert.equal(v4.v,4);assert.equal(v4.storyId,"hsk1.e01");
+ if(label==="desktop"){assert.equal(practiceUsed,true);assert.equal(v3.skillSampler.results.length,1)}
+ else assert.equal(v3.skillSampler.status,"pending","Mobile player should be able to skip optional practice entirely");
  await page.screenshot({path:path.join(OUT,label+"-ending.png"),fullPage:true});
  await page.goto(ROOT+"/?play=hsk1",{waitUntil:"networkidle"});
  assert.equal(await visible(page,"#gameOverlay"),true,"Deep-link HSK1 did not open saved story");
  assert.equal(await visible(page,"#completionPane"),true,"Completed progress did not survive reload");
 }
 async function testBrowser(){
- const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
+ const browser=await chromium.launch({headless:true,executablePath:process.env.HSK_BROWSER_BIN||undefined,args:["--no-sandbox"]});
  try{
   for(const cfg of [{name:"desktop",viewport:{width:1280,height:800}},{name:"mobile",viewport:{width:360,height:800},isMobile:true,hasTouch:true}]){
    const ctx=await browser.newContext({viewport:cfg.viewport,isMobile:!!cfg.isMobile,hasTouch:!!cfg.hasTouch,locale:"vi-VN"});
