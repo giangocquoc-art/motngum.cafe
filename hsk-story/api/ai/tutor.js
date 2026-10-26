@@ -16,7 +16,7 @@ const RATE_LIMIT = 12;
 const rateWindows = new Map();
 let lastFailureAlertAt = 0;
 
-export const config = { maxDuration: 60 };
+const config = { maxDuration: 60 };
 
 function reply(res, status, body) {
   res.setHeader("Cache-Control", "no-store");
@@ -137,7 +137,7 @@ async function sendFailureAlert(env, eventId, attemptCount) {
   }
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") return reply(res, 405, { error: "METHOD_NOT_ALLOWED" });
   if (!sameOrigin(req)) return reply(res, 403, { error: "ORIGIN_NOT_ALLOWED" });
   if (Number(req.headers?.["content-length"] || 0) > 6000) return reply(res, 413, { error: "REQUEST_TOO_LARGE" });
@@ -223,3 +223,6 @@ export default async function handler(req, res) {
   console.error("[chimse-ai] provider attempts exhausted", JSON.stringify({ requestId, attemptCount: attempts.length, alertSent, statuses: attempts.map((item) => item.status) }));
   return reply(res, 503, { error: "AI_TEMPORARILY_UNAVAILABLE", message: "Sẻ chưa gọi được bạn bè ở đám mây. Mình cứ tiếp tục câu chuyện nhé.", requestId });
 }
+
+module.exports = handler;
+module.exports.config = config;
