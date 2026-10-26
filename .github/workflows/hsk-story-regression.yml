@@ -60,6 +60,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: hsk-browser-desktop-mobile
-          path: hsk-story/test-results/*.png
+          path: hsk-story/test-results/*
           if-no-files-found: ignore
           retention-days: 7

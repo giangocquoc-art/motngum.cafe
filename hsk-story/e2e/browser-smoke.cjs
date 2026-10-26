@@ -39,6 +39,19 @@ async function goIntro(page,label){
 }
 async function goStory(page,label){
  await page.goto(ROOT+"/",{waitUntil:"networkidle"});
+ const features=await page.evaluate(()=>({
+  sceneArt:typeof HSKSceneArt==="object"&&typeof HSKSceneArt.render==="function",
+  saveAdapter:typeof HSKSaveIO==="object"&&typeof HSKSaveIO.persist==="function",
+  roadmap:[...document.querySelectorAll(".chapter.locked")].map(x=>({role:x.getAttribute("role"),tabIndex:x.getAttribute("tabindex"),disabled:x.getAttribute("aria-disabled")})),
+  resources:performance.getEntriesByType("resource").filter(r=>new URL(r.name).origin===location.origin).map(r=>({name:new URL(r.name).pathname,transfer:r.transferSize,encoded:r.encodedBodySize,duration:Math.round(r.duration)})),
+  viewport:window.innerWidth,scrollWidth:document.documentElement.scrollWidth
+ }));
+ assert.equal(features.sceneArt,true,"Separated scene-art module not loaded");
+ if(label==="mobile")assert.ok(features.scrollWidth<=features.viewport+5,"Homepage has horizontal overflow at 360px: "+features.scrollWidth);
+ assert.equal(features.saveAdapter,true,"Separated save-io module not loaded");
+ assert.equal(features.roadmap.length,4);
+ assert.ok(features.roadmap.every(x=>x.role===null&&x.tabIndex===null&&x.disabled==="true"),"HSK2–5 roadmap should not be actionable controls");
+ fs.writeFileSync(path.join(OUT,label+"-resource-timings.json"),JSON.stringify(features,null,2));
  await page.locator("#startBtn").click();
  assert.equal(await visible(page,"#gameOverlay"),true);
  let finished=false,steps=0,practiceUsed=false,arrivalObserved=false,returnedTree=false;
