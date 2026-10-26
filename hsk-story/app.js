@@ -360,7 +360,7 @@ function displayResolved(){
 }
 function openGame(){
  returnFocus=document.activeElement;document.body.style.overflow="hidden";$("gameOverlay").hidden=false;renderStep();$("notebookBtn").setAttribute("aria-expanded","false");
- if(state.done)$("replayBtn").focus();else if(!$("skillPanel").hidden)$("skillOptions").children[0]?.focus();else if(!$("skillPanel").hidden)$("skillOptions").children[0]?.focus();else if(!$("encounterPanel").hidden)encounterFocus();else if(!$("storyInterlude").hidden)$("interludeContinue").focus();else if(state.solved)$("nextBtn").focus();else $("answerInput").focus();
+ if(state.done)$("replayBtn").focus();else if(!$("skillPanel").hidden)$("skillOptions").children[0]?.focus();else if(!$("encounterPanel").hidden)encounterFocus();else if(!$("storyInterlude").hidden)$("interludeContinue").focus();else if(state.solved)$("nextBtn").focus();else $("answerInput").focus();
 }
 function closeGame(){
  $("notebookPanel").hidden=true;$("notebookBtn").setAttribute("aria-expanded","false");
@@ -454,4 +454,14 @@ document.addEventListener("keydown",function(e){
  if(e.key==="Escape"){if(!$("notebookPanel").hidden){setNotebook(false);return}closeGame();return}
  if(e.key==="Tab"){var f=Array.from($("gameOverlay").querySelectorAll("button:not([hidden]):not([disabled]),input:not([disabled]):not([hidden])")).filter(function(el){return el.getClientRects().length>0});if(!f.length)return;var first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
 });
+/* Direct handoff from the optional Chapter 00; existing learner saves are untouched. */
+if(window.location&&typeof window.location.search==="string"&&window.location.search.indexOf("play=hsk1")>=0){
+ try{
+  var q=new URLSearchParams(window.location.search);
+  if(q.get("play")==="hsk1"){
+   if(window.history&&typeof window.history.replaceState==="function")window.history.replaceState(null,"",window.location.pathname+(window.location.hash||""));
+   openGame();
+  }
+ }catch(e){/* Browser without URLSearchParams still allows the normal start button. */}
+}
 })();

@@ -12,7 +12,7 @@ function finishEncounter(e,routeIndex=0){
  e.encounterInput.value="我叫安";e.encounterInput.fire("input");e.encounterAnswerForm.fire("submit");
  e.encounterContinue.click();
 }
-function harness(sharedStorage={}){
+function harness(sharedStorage={},options={}){
  let dom={},document,spoken=[];function element(id){return {id,hidden:false,disabled:false,value:"",textContent:"",innerHTML:"",style:{},firstChild:{textContent:""},isConnected:true,children:[],attributes:{},listeners:{},
   classList:{s:new Set,add(k){this.s.add(k)},remove(k){this.s.delete(k)},contains(k){return this.s.has(k)},toggle(k){this.s.has(k)?this.s.delete(k):this.s.add(k)}},
   addEventListener(k,f){(this.listeners[k]??=[]).push(f)},appendChild(v){this.children.push(v)},replaceChildren(){this.children=[]},getClientRects(){return [1]},
@@ -25,9 +25,13 @@ function harness(sharedStorage={}){
  document={body:{style:{}},activeElement:null,listeners:{},getElementById(id){if(!dom[id])throw Error("Missing DOM ID "+id);return dom[id]},querySelector(q){return q==="nav"?nav:null},createElement(tag){return element("new-"+tag)},querySelectorAll(){return []},addEventListener(k,f){(this.listeners[k]??=[]).push(f)}};
  const localStorage={getItem(k){return sharedStorage[k]||null},setItem(k,v){sharedStorage[k]=v}};
  const window={speechSynthesis:{cancel(){},getVoices(){return []},speak(u){spoken.push(u.text)}}};
+ if(options.autoStart){
+  window.location={search:"?play=hsk1",pathname:"/",hash:""};
+  window.history={replaceState(_x,_title,path){window.lastReplacedPath=path}};
+ }
  function SpeechSynthesisUtterance(text){this.text=text}
- vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,HSKStoryGraph:Graph,HSKSceneWorld:World,HSKSkillSampler:Skills,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,console},{filename:"app.js"});
- return {e:dom,document,sharedStorage,spoken}
+ vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,HSKStoryGraph:Graph,HSKSceneWorld:World,HSKSkillSampler:Skills,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,URLSearchParams,console},{filename:"app.js"});
+ return {e:dom,document,sharedStorage,spoken,window}
 }
 test("story: sentence builder is helpful and notebook only shows past expressions",()=>{
  const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
@@ -286,4 +290,14 @@ test("V10 unsupported audio is explicitly unassessed; checkpoint retake retains 
  assert.ok(e.skillSummary.textContent.includes("unassessed"));
  e.retakeExamBtn.click();
  assert.equal(JSON.parse(store["hai-que-huong-progress-v3"]).skillSampler.status,"done");
+});
+
+test("Chapter 00 direct handoff opens existing HSK1 episode without overwriting old progress",()=>{
+ const stored={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:1,history:[{status:"correct",attempts:0,hint:false}],storyBeats:["arrival"]}),
+  "hai-que-huong-intro-v1":JSON.stringify({step:8,maxReached:8,finished:true})};
+ const before=stored["hai-que-huong-intro-v1"],t=harness(stored,{autoStart:true});
+ assert.equal(t.e.gameOverlay.hidden,false);
+ assert.equal(t.e.stepText.textContent,"02 / 10");
+ assert.equal(t.window.lastReplacedPath,"/");
+ assert.equal(stored["hai-que-huong-intro-v1"],before);
 });

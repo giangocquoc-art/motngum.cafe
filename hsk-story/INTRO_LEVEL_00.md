@@ -42,3 +42,6 @@ Two-page mother/An indoor scene original ink-and-gouache, SVG-free approved laye
 - Main HSK1 start and resume retain their original DOM IDs and listeners.
 - Node unit/mock UI tests passed in CI, Vercel HSK production SHA READY, /nhap-mon.html and CSS/JS return HTTP 200.
 - Actual browser/phone screenshot UX and Chinese native-educator review remain separate release gates; passing CI is not proof of them.
+
+## Logic review v0.2
+Các lỗi về đồng bộ chữ-hiển thị-phát âm, đổi đáp án sau khi xem lời giải, bỏ qua toàn bộ câu hỏi thay vì một câu, ngắt nhịp khi chuyển HSK1 đã được sửa. Bổ sung vòng ôn lại bốn câu và lưu mặt chữ đang xem. Dữ liệu cũ vẫn tương thích và không được ghi là nhận diện đúng lần đầu khi không có bằng chứng. Xem INTRO_LOGIC_AUDIT_V02.md.

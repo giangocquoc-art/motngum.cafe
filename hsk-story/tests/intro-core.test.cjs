@@ -64,3 +64,32 @@ test("Dedicated introduction does not mutate existing HSK1 runtime",()=>{
  const app=fs.readFileSync(path.join(__dirname,"../app.js"),"utf8");
  assert.ok(!app.includes("HSKIntroContent"));assert.ok(!app.includes("hai-que-huong-intro-v1"));
 });
+
+test("A glyph selected on the first page is the current pronunciation target and survives reload",()=>{
+ let a=C.visit(C.initial(),"木");assert.equal(a.focusGlyph,"木");assert.equal(C.clean(JSON.parse(JSON.stringify(a))).focusGlyph,"木");
+ let forged=C.clean({...a,focusGlyph:"姦"});assert.equal(forged.focusGlyph,null);
+});
+test("Intro first answer remains locked after correction is visible, without false mastery",()=>{
+ let a=C.quiz(C.initial(),D.quizzes[0].id,0,D.quizzes);
+ a=C.quiz(a,D.quizzes[0].id,D.quizzes[0].answer,D.quizzes);
+ assert.equal(a.quizResults.forest,0);assert.equal(a.quizOutcomes.forest,"review");
+ assert.equal(C.recap(a,D.quizzes).recognized,0);
+});
+test("Skipping means skipping exactly the current question, not the entire mini quiz",()=>{
+ let a=C.skipQuiz(C.initial(),D.quizzes);assert.equal(a.quizResults.forest,-1);
+ a=C.nextQuiz(a,D.quizzes);assert.equal(a.quizIndex,1);
+ a=C.quiz(a,D.quizzes[1].id,D.quizzes[1].answer,D.quizzes);
+ assert.equal(a.quizOutcomes.crowd,"recognized");
+ const recap=C.recap(a,D.quizzes);assert.equal(recap.skipped,1);assert.equal(recap.recognized,1);
+});
+test("Revisiting four questions never destroys the learned story or independent HSK1 progress",()=>{
+ let a=C.move(C.initial(),"next");a=C.visit(a,"人");a=C.quiz(a,D.quizzes[0].id,1,D.quizzes);
+ const b=C.review(a);assert.equal(b.step,1);assert.deepEqual(plain(b.discovered),["人"]);assert.equal(b.quizIndex,0);
+ assert.deepEqual(plain(b.quizResults),{});assert.equal(b.finished,false);
+});
+test("Existing Chapter 00 saved guesses are treated as legacy, not verified first-try recall",()=>{
+ const old={step:7,maxReached:7,quizIndex:1,quizResults:{forest:1},discovered:["日"]};
+ const x=C.clean(old);
+ assert.equal(x.quizOutcomes.forest,"legacy");assert.equal(C.recap(x,D.quizzes).recognized,0);
+ assert.equal(x.step,7);assert.equal(x.maxReached,7);
+});

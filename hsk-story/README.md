@@ -81,3 +81,6 @@ Stable story-graph.js canonical scene IDs are layered over unchanged historic 0.
 
 ## Pre-HSK Level 00 / Nhập môn
 A fully optional nine-page mini-story at `/nhap-mon.html` introduces Chinese character shapes, strokes, association and phonetic components before HSK1. Includes character exploration, number strokes, 木/林/森, 人/从/众, 日/月/明, 女+马→妈, fact-checking the archaic 奻/姦 online joke, and four non-official guesses. Accessible self-paced input, optional browser speech, persistent **separate** `hai-que-huong-intro-v1` storage. HSK1 `app.js` and `hai-que-huong-progress-v3` are untouched. See `INTRO_LEVEL_00.md` for editorial sources, constraints and Codex-ready art backlog.
+
+## Nhập môn v0.2
+Chữ đang chọn, Pinyin và giọng đọc đồng bộ; câu đoán chỉ ghi nhận lần chọn đầu; bỏ qua từng câu; có ôn lại bốn chữ không mất truyện. Trang chủ hiển thị tiếp tục Nhập môn, còn cuối chương mở trực tiếp HSK1 qua /?play=hsk1. Tiến độ lưu riêng, các kết quả HSK không thay đổi. Xem INTRO_LOGIC_AUDIT_V02.md.

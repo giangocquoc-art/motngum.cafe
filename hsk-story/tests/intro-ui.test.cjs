@@ -27,6 +27,7 @@ test("Intro story is navigable and saves progress without touching HSK1 storage"
  assert.equal(e.interactive.children[0].children.length,4);
  e.interactive.children[0].children[0].click();
  assert.deepEqual(saved(t).discovered,["人"]);
+ assert.equal(e.mainGlyph.textContent,"人");assert.equal(e.mainPinyin.textContent,"rén");
  e.nextBtn.click();assert.equal(e.mainGlyph.textContent,"一 二 三");
  e.interactive.children[2].children[0].click();
  assert.equal(saved(t).stroke,1);assert.equal(e.mainGlyph.textContent,"一");
@@ -61,7 +62,7 @@ test("Intro four low-stakes visual guesses can be played through and revisited",
  assert.equal(saved(t).quizIndex,4);
  e.nextBtn.click();
  assert.equal(e.position.textContent,"TRANG 09 / 09");assert.equal(saved(t).finished,true);
- assert.ok(e.interactive.children[0].children.some(x=>x.href==="/#hanh-trinh"));
+ assert.ok(e.interactive.children[0].children.some(x=>x.href==="/?play=hsk1"));
  e.backBtn.click();assert.equal(e.position.textContent,"TRANG 08 / 09");
 });
 test("Intro reset affects only independent introduction key, never the HSK save",()=>{
@@ -74,4 +75,38 @@ test("Intro cannot auto-count speech or quiz answers as official HSK progress",(
  e.hearBtn.click();
  assert.equal(t.store["hai-que-huong-progress-v3"],undefined);
  assert.equal(t.store[C.key],undefined);
+});
+
+test("Intro visual question stays on first answer and shows correction without fabricated first-try success",()=>{
+ const t=boot(),e=t.e;for(let i=0;i<7;i++)e.nextBtn.click();
+ const q=D.quizzes[0];assert.equal(e.mainGlyph.textContent,q.zi);
+ e.interactive.children.find(x=>x.className==="quiz-choices").children[0].click();
+ assert.equal(saved(t).quizResults.forest,0);
+ assert.equal(saved(t).quizOutcomes.forest,"review");
+ const options=e.interactive.children.find(x=>x.className==="quiz-choices").children;
+ assert.equal(options.every(b=>b.disabled===true),true);
+ options[q.answer].click(); // replayed click event cannot overwrite original answer
+ assert.equal(saved(t).quizOutcomes.forest,"review");
+ assert.equal(saved(t).quizResults.forest,0);
+});
+test("Intro skipping one question retains the remaining three visual questions",()=>{
+ const t=boot(),e=t.e;for(let i=0;i<7;i++)e.nextBtn.click();
+ e.nextBtn.click();
+ assert.equal(saved(t).quizIndex,1);
+ assert.equal(saved(t).quizOutcomes.forest,"skipped");
+ assert.ok(e.storyHeading.textContent.includes("đoán"));
+ assert.equal(e.mainGlyph.textContent,"众");
+ e.interactive.children.find(x=>x.className==="quiz-choices").children[0].click();
+ assert.equal(saved(t).quizOutcomes.crowd,"recognized");
+});
+test("Intro review-only action restarts guesses without resetting story discoveries",()=>{
+ const t=boot(),e=t.e;e.interactive.children[0].children[0].click();
+ for(let i=0;i<7;i++)e.nextBtn.click();
+ for(let i=0;i<4;i++)e.nextBtn.click(); // skip one at a time
+ assert.equal(saved(t).quizIndex,4);
+ const review=e.interactive.children.find(x=>x.className==="secondary");
+ assert.ok(review);review.click();
+ assert.equal(saved(t).quizIndex,0);
+ assert.deepEqual(saved(t).discovered,["人"]);
+ assert.equal(saved(t).step,7);
 });

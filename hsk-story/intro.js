@@ -21,6 +21,8 @@ function showCard(char,pinyin,meaning){
 }
 function topGlyph(stage){
  var ch=stage.hanzi,py=stage.pinyin;
+ if(stage.kind==="discover"&&state.focusGlyph){var d=Data.discovery.find(g=>g.zi===state.focusGlyph);if(d){ch=d.zi;py=d.py}}
+ if(stage.kind==="guess"){var q=Data.quizzes[state.quizIndex];ch=q?q.zi:"好";py=q?q.py:"hǎo"}
  if(stage.kind==="strokes"&&state.stroke){ch=["","一","二","三"][state.stroke];py=["","yī","èr","sān"][state.stroke]}
  if(stage.kind==="forest"){ch=["","木","林","森"][state.forest];py=["","mù","lín","sēn"][state.forest]}
  if(stage.kind==="people"){ch=["","人","从","众"][state.people];py=["","rén","cóng","zhòng"][state.people]}
@@ -31,13 +33,12 @@ function topGlyph(stage){
 function renderDiscover(root){
  var grid=el("div","glyph-grid");
  Data.discovery.forEach(function(g){
-  var seen=state.discovered.includes(g.zi),b=button("",function(){}, "glyph-option");
+  var seen=state.discovered.includes(g.zi),b=button("",function(){change(Core.visit(state,g.zi),g.zi+" · "+g.py+" · "+g.meaning+". "+g.note)}, "glyph-option");
   b.replaceChildren();
   var glyph=el("strong","",g.zi);glyph.lang="zh-CN";b.appendChild(glyph);
   b.appendChild(el("span","",seen?g.meaning:"Chạm để khám phá"));
   b.appendChild(el("small","",seen?g.py:""));
-  b.classList.toggle("selected",seen);
-  b.addEventListener("click",function(){change(Core.visit(state,g.zi),g.zi+" · "+g.py+" · "+g.meaning+". "+g.note)});
+  b.classList.toggle("selected",state.focusGlyph===g.zi);
   grid.appendChild(b);
  });
  root.appendChild(grid);
@@ -101,31 +102,33 @@ function renderLegend(root){
 function renderQuiz(root){
  var qi=state.quizIndex;
  if(qi>=Data.quizzes.length){
-  var correct=Data.quizzes.filter(q=>state.quizResults[q.id]===q.answer).length;
-  root.appendChild(el("div","finish-card","Bạn nhận ra "+correct+" / "+Data.quizzes.length+" chữ qua những câu đố nhỏ. Không có điểm đậu hay rớt — đây chỉ là bước làm quen."));
+  var recap=Core.recap(state,Data.quizzes);
+  root.appendChild(el("div","finish-card","Bạn nhận ra ngay "+recap.recognized+" chữ · đã xem giải thích "+recap.practiced+" chữ · bỏ qua "+recap.skipped+" chữ"+(recap.older?" · "+recap.older+" câu từ bản lưu cũ":"")+". Không có đậu/rớt; quan trọng là muốn khám phá tiếp."));
+  root.appendChild(button("↻ Đoán lại bốn chữ (không xóa tiến độ truyện)",function(){change(Core.review(state),"Được rồi! Lần này bạn thử dựa vào hình chữ mà nhớ lại nhé.")},"secondary"));
   return;
  }
- var q=Data.quizzes[qi],picked=state.quizResults[q.id];
+ var q=Data.quizzes[qi],picked=state.quizResults[q.id],hasAnswer=Object.prototype.hasOwnProperty.call(state.quizResults,q.id);
  root.appendChild(el("p","micro-note","Câu "+(qi+1)+" / "+Data.quizzes.length+": "+q.question));
  var grid=el("div","quiz-choices");
- q.options.forEach(function(text,i){var b=button(text,function(){change(Core.quiz(state,q.id,i,Data.quizzes),i===q.answer?"Đúng rồi! "+q.explain:"Một dự đoán thú vị. "+q.explain)},"quiz-choice");b.classList.toggle("active",picked===i);grid.appendChild(b)});
+ q.options.forEach(function(text,i){var b=button(text,function(){if(hasAnswer)return;change(Core.quiz(state,q.id,i,Data.quizzes),i===q.answer?"Đúng rồi! "+q.explain:"Một dự đoán thú vị. "+q.explain)},"quiz-choice");b.classList.toggle("active",picked===i);b.disabled=hasAnswer;grid.appendChild(b)});
  root.appendChild(grid);
- if(Number.isInteger(picked)){var result=el("p",picked===q.answer?"good":"again",(picked===q.answer?"✳ Chính xác. ":"✳ Đáp án đúng: "+q.options[q.answer]+". ")+q.explain);root.appendChild(result)}
+ if(hasAnswer){var result=el("p",picked===q.answer?"good":"again",
+ (picked===-1?"✳ Đã bỏ qua câu này. ":picked===q.answer?"✳ Nhận ra đúng ngay lần chọn đầu tiên. ":"✳ Đây là chỗ mình vừa học thêm! Đáp án đúng: "+q.options[q.answer]+". ")+q.explain);root.appendChild(result)}
 }
 function renderEnding(root){
- var correct=Data.quizzes.filter(q=>state.quizResults[q.id]===q.answer).length;
+ var recap=Core.recap(state,Data.quizzes);
  var card=el("div","finish-card");
  card.appendChild(el("div","seal","好"));
- card.appendChild(el("p","", "An đã nhận ra nét chữ, bộ phận gợi nghĩa và cả bí mật gợi âm. "+(Object.keys(state.quizResults).length?"Bạn đã thử "+Object.keys(state.quizResults).length+" câu đoán chữ (đúng "+correct+"). ":"")+"Không cần học thuộc tất cả ngay hôm nay."));
- var link=el("a","","Bước sang HSK 1 — gặp cô Vương ↗");link.href="/#hanh-trinh";card.appendChild(link);
+ card.appendChild(el("p","", "An đã nhận ra nét chữ, bộ phận gợi nghĩa và cả bí mật gợi âm. "+(recap.seen?"Bạn nhận ra "+recap.recognized+" chữ ở lượt chọn đầu tiên, học thêm "+recap.practiced+" chữ nhờ lời giải"+(recap.skipped?", bỏ qua "+recap.skipped+" chữ":"")+". ":"")+"Không cần học thuộc tất cả ngay hôm nay."));
+ var link=el("a","","Bước sang HSK 1 — gặp cô Vương ↗");link.href="/?play=hsk1";card.appendChild(link);
  root.appendChild(card);
 }
 function updateNav(stage){
  $("backBtn").disabled=state.step===0;
  if(stage.kind==="guess"&&state.quizIndex<Data.quizzes.length){
   var q=Data.quizzes[state.quizIndex];
-  $("nextBtn").textContent=Number.isInteger(state.quizResults[q.id])?"Câu đoán tiếp theo ↗":"Bỏ qua câu đố này ↗";
- }else $("nextBtn").textContent=stage.kind==="ending"?"Về hành trình HSK 1 ↗":"Trang tiếp theo ↗";
+  $("nextBtn").textContent=Object.prototype.hasOwnProperty.call(state.quizResults,q.id)?"Câu đoán tiếp theo ↗":"Bỏ qua câu này ↗";
+ }else $("nextBtn").textContent=stage.kind==="ending"?"Bắt đầu HSK 1 ↗":"Trang tiếp theo ↗";
 }
 function render(){
  var stage=Data.stages[state.step];
@@ -150,17 +153,17 @@ function render(){
  $("feedback").textContent=feedback;updateNav(stage);
 }
 function next(){
- if(state.step===last){window.location.href="/#hanh-trinh";return}
+ if(state.step===last){window.location.href="/?play=hsk1";return}
  if(Data.stages[state.step].kind==="guess"&&state.quizIndex<Data.quizzes.length){
   var q=Data.quizzes[state.quizIndex];
-  if(Number.isInteger(state.quizResults[q.id]))change(Core.nextQuiz(state,Data.quizzes),"");
-  else change({...state,quizIndex:Data.quizzes.length},"Không sao: bạn có thể học lại lúc khác mà không ảnh hưởng tiến độ HSK.");
+  if(Object.prototype.hasOwnProperty.call(state.quizResults,q.id))change(Core.nextQuiz(state,Data.quizzes),"");
+  else change(Core.nextQuiz(Core.skipQuiz(state,Data.quizzes),Data.quizzes),"Đã bỏ qua đúng một câu. Câu tiếp theo vẫn ở đây nếu bạn muốn thử.");
   return;
  }
  change(Core.move(state,"next"),"");window.scrollTo?.({top:0,behavior:"auto"});
 }
 function previous(){change(Core.move(state,"back"),"");window.scrollTo?.({top:0,behavior:"auto"})}
-$("hearBtn").addEventListener("click",function(){var stage=Data.stages[state.step],str=topGlyph(stage);if(stage.kind==="legend")str="女";if(stage.kind==="guess")str="林";say(str)});
+$("hearBtn").addEventListener("click",function(){var stage=Data.stages[state.step],str=topGlyph(stage);if(stage.kind==="legend")str="女";say(str)});
 $("nextBtn").addEventListener("click",next);
 $("backBtn").addEventListener("click",previous);
 $("resetBtn").addEventListener("click",function(){if(window.confirm("Đọc lại toàn bộ tập nhập môn từ trang đầu? Tiến độ HSK 1–5 sẽ không bị ảnh hưởng.")){change(Core.restart(),"");window.scrollTo?.({top:0,behavior:"auto"})}});
