@@ -69,7 +69,8 @@ async function goStory(page,label){
  const v4=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v4")));
  assert.equal(v3.done,true);assert.equal(v4.v,4);assert.equal(v4.storyId,"hsk1.e01");
  await page.screenshot({path:path.join(OUT,label+"-ending.png"),fullPage:true});
- await page.reload();await page.locator("#resumeBtn").click();
+ await page.goto(ROOT+"/?play=hsk1",{waitUntil:"networkidle"});
+ assert.equal(await visible(page,"#gameOverlay"),true,"Deep-link HSK1 did not open saved story");
  assert.equal(await visible(page,"#completionPane"),true,"Completed progress did not survive reload");
 }
 async function testBrowser(){
