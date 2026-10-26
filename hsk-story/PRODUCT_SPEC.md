@@ -51,3 +51,6 @@ Staged chain: PR #3 `refactor/hsk-runtime-graph-v4` → PR #4 `feature/hsk-pract
 
 ## Gate 5 — staged (PR #8)
 Author-controlled `story-threads.js` reuses prior Mandarin expressions through branch-aware reflections, adds an evidence-honest learning-thread section in An’s notebook and a choice-sensitive episode coda. Scene 0 is chronologically the morning after Chapter 00, with the notebook already in An’s possession. HSK1 remains 10-scene demo; this is narrative and pedagogical progress, **not full official syllabus alignment**. See [GATE5_AUDIT.md](GATE5_AUDIT.md).
+
+## Staged in-world HSK1 review (Gate 6)
+See HSK1_COVERAGE_MATRIX.md and HSK1_REVIEW_GATE.md. Eighteen optional items at /ren-luyen.html; local independent storage, explicit evidence categories and schedule. Not yet full HSK1 syllabus, Mandarin educator-reviewed, listening/speaking/handwriting or certified examination.

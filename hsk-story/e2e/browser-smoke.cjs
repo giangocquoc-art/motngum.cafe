@@ -136,6 +136,48 @@ async function goStory(page,label){
  assert.equal(await visible(page,"#gameOverlay"),true,"Deep-link HSK1 did not open saved story");
  assert.equal(await visible(page,"#completionPane"),true,"Completed progress did not survive reload");
 }
+async function goReview(page,label,withStory){
+ await page.goto(ROOT+"/ren-luyen.html",{waitUntil:"networkidle"});
+ const locked=await page.locator("#unlockedCount").innerText();
+ if(!withStory){
+  assert.equal(locked,"0","New learner must not see future story answer prompts");
+  assert.equal(await page.locator("#exerciseCard").isVisible(),false);
+  assert.equal(await page.locator("#taskTitle").innerText(),"Mở trang đầu tiên của câu chuyện");
+  return;
+ }
+ assert.equal(locked,"18","Full demo should unlock all authored review items");
+ assert.equal(await page.locator("#dueCount").innerText(),"18");
+ const oldV3=await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v3"));
+ const oldV4=await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v4"));
+ const first=await page.evaluate(()=>HSKReviewData.items[0]);
+ const idx=first.options.findIndex(x=>x[0]===first.correct);
+ await page.locator("#choiceOptions button").nth(idx).click();
+ assert.equal(await page.locator("#independentCount").innerText(),"1");
+ assert.equal(await page.locator("#dueCount").innerText(),"17");
+ await page.locator("#nextBtn").click();
+ await page.locator("#hintBtn").click();
+ const second=await page.evaluate(()=>HSKReviewData.items[1]);
+ await page.locator("#choiceOptions button").nth(second.options.findIndex(x=>x[0]===second.correct)).click();
+ assert.equal(await page.locator("#assistedCount").innerText(),"1");
+ await page.locator("#nextBtn").click();
+ await page.locator("#skipBtn").click();
+ await page.locator("#nextBtn").click();
+ assert.equal(await page.locator("#taskKind").innerText(),"NHẬP CHỮ HÁN");
+ await page.locator("#typedAnswer").fill("我叫安");
+ await page.locator("#submitTyped").click();
+ assert.equal(await page.locator("#independentCount").innerText(),"2");
+ assert.equal(await page.locator("#dueCount").innerText(),"14");
+ const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-review-v1")));
+ assert.equal(saved.items["self-introduction"].status,"independent");
+ assert.equal(saved.items["arrived-city"].status,"assisted");
+ assert.equal(saved.items["name-character"].status,"skipped");
+ assert.equal(await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v3")),oldV3,"Optional review mutated canonical story V3 save");
+ assert.equal(await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v4")),oldV4,"Optional review mutated V4 shadow");
+ await page.screenshot({path:path.join(OUT,label+"-spaced-review.png"),fullPage:true});
+ await page.reload({waitUntil:"networkidle"});
+ assert.equal(await page.locator("#dueCount").innerText(),"14","Review schedule did not survive reload");
+ if(label==="mobile")assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+5),false,"Review page horizontal overflow at 360px");
+}
 async function testBrowser(){
  const browser=await chromium.launch({headless:true,executablePath:process.env.HSK_BROWSER_BIN||undefined,args:["--no-sandbox"]});
  try{
@@ -143,8 +185,10 @@ async function testBrowser(){
    const ctx=await browser.newContext({viewport:cfg.viewport,isMobile:!!cfg.isMobile,hasTouch:!!cfg.hasTouch,locale:"vi-VN"});
    const page=await ctx.newPage();watch(page,cfg.name);
    await goIntro(page,cfg.name);
+   await goReview(page,cfg.name,false);
    // Independent progress: HSK is accessible and not a required continuation of prologue.
    await goStory(page,cfg.name);
+   await goReview(page,cfg.name,true);
    if(cfg.name==="mobile"){
     await page.goto(ROOT+"/nhap-mon.html",{waitUntil:"domcontentloaded"});
     const bad=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+5);
@@ -153,7 +197,7 @@ async function testBrowser(){
    await ctx.close();
   }
   assert.deepEqual(errs,[]);
-  console.log("Browser E2E: desktop 1280px + mobile 360px intro/Hanzi + full 10-scene HSK1 story + 3/3 checkpoint + save V3/V4 + reload: PASS");
+  console.log("Browser E2E: desktop 1280px + mobile 360px intro/Hanzi + full 10-scene HSK1 story + 3/3 checkpoint + gated 18-item independent spaced review + save V3/V4 unchanged + reload: PASS");
  }finally{await browser.close()}
 }
 testBrowser().catch(e=>{console.error("Browser E2E failed:",e.stack||e);process.exitCode=1});

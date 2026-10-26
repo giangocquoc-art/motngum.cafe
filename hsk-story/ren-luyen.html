@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Góc ôn tập trong truyện · Hai quê hương</title>
+<meta name="description" content="Luyện nhận mặt chữ, đọc hiểu và gõ câu tiếng Trung đã gặp trong hành trình của Minh An.">
+<meta name="theme-color" content="#f9f3e6">
+<link rel="stylesheet" href="/review.css">
+<script src="/game-core.js" defer></script>
+<script src="/review-data.js" defer></script>
+<script src="/review-core.js" defer></script>
+<script src="/review.js" defer></script>
+</head>
+<body>
+<header class="head"><a class="logo" href="/"><span class="seal">乡</span><span>两个故乡 <small>HAI QUÊ HƯƠNG</small></span></a><a class="return" href="/?play=hsk1">← Quay lại câu chuyện của An</a></header>
+<main class="layout">
+<section class="opening"><p class="eyebrow">SỔ TAY CỦA AN · NHÁNH TỰ CHỌN</p><h1>Mỗi chữ nhớ được, <em>một điều thân quen.</em></h1><p>Bạn chỉ gặp câu hỏi lấy từ những cảnh <strong>đã hoàn thành</strong>. Có thể luyện đọc hiểu, nhận mặt chữ hoặc gõ lại câu. Không cần làm để qua chương truyện.</p><div class="note">Bài ôn do nhóm biên soạn dựa trên câu chuyện, <strong>chưa được xác nhận là đầy đủ đại cương HSK 1</strong>. Không chấm khả năng nghe thật, nói, viết tay hay cấp chứng chỉ.</div></section>
+<section class="overview" aria-label="Theo dõi bài ôn"><div><strong id="unlockedCount">0</strong><span>Bài đã mở</span></div><div><strong id="dueCount">0</strong><span>Cần luyện hôm nay</span></div><div><strong id="independentCount">0</strong><span>Lần gần nhất tự đúng</span></div><div><strong id="assistedCount">0</strong><span>Cần ôn thêm</span></div></section>
+<section class="book" aria-label="Bài ôn theo cảnh">
+<div class="book-header"><div><p class="eyebrow" id="chapterLabel">SỔ TAY · CẢNH ĐÃ GẶP</p><h2 id="taskTitle">Trang ôn của An</h2></div><span class="pill" id="taskKind">Tự chọn</span></div>
+<p class="book-caption" id="sceneContext">Đọc câu chữ trong ngữ cảnh Minh An từng trải qua.</p>
+<div class="card" id="exerciseCard" hidden>
+ <p class="zh" id="chineseExcerpt" lang="zh-CN"></p><p id="questionPrompt" class="question"></p>
+ <div id="choiceOptions" class="options"></div>
+ <label id="typedLabel" class="typed-label" for="typedAnswer" hidden>Gõ câu bằng chữ Hán (không đánh giá nói hoặc chữ viết tay)</label>
+ <input id="typedAnswer" type="text" maxlength="100" autocomplete="off" lang="zh-CN" spellcheck="false" hidden placeholder="Nhập chữ Hán ở đây">
+ <div class="actions">
+  <button id="submitTyped" type="button" class="primary" hidden>Kiểm tra câu đã gõ</button>
+  <button id="hintBtn" type="button">Cần gợi ý</button>
+  <button id="sampleBtn" type="button" hidden>Xem đáp án mẫu</button>
+  <button id="skipBtn" type="button">Bỏ qua hôm nay</button>
+ </div>
+</div>
+<div id="notice" role="status" aria-live="polite" class="notice"></div>
+<div class="foot-actions"><button id="nextBtn" type="button" class="primary" hidden>Ôn câu tiếp theo ↗</button><a href="/?play=hsk1">Về câu chuyện chính ↗</a></div>
+</section>
+<p class="bottom-note" id="storageNotice">Lịch ôn được giữ riêng trong trình duyệt. Xóa dữ liệu trình duyệt sẽ xóa lịch ôn; không có tài khoản hay đồng bộ đám mây.</p>
+<footer>✳ 我的两个故乡 · Câu chuyện là điểm bắt đầu, không phải bài thi chính thức.</footer>
+</main>
+</body></html>
