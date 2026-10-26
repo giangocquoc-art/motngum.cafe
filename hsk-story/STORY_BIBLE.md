@@ -1,4 +1,12 @@
 # Story and art bible
+Current product authority: [docs/CHIM_SE_DIRECTION.md](docs/CHIM_SE_DIRECTION.md). Historical chapter plans below do not expand the current playable scope.
+
+## Chim Sẻ character canon
+Minh An/安 is an 11-year-old Vietnamese boy with short tousled black hair, a mustard yellow hoodie and a faded blue-green backpack. He is curious, sometimes clumsy, embarrassed to ask and capable of misunderstanding. Growth happens through actions and relationships rather than a flawless personality.
+
+Sẻ is one pale-blue sparrow with a cream belly. Only An understands its words; everyone else hears birdsong. Sẻ is a character in the world, not an all-knowing answer key: it can hesitate, get curious and guess wrongly. It must not reveal checkpoint answers. Keep exactly one Sẻ in each composed scene.
+
+The evening prologue introduces the notebook and An's first encounter with Sẻ. The next day runs school arrival → friendship/seat choice → counting → lost notebook/recovery → noodle order/taste/payment → walk home. The classroom checkpoints happen the following morning. “Hai quê hương” remains a long-term theme; the product is Chim Sẻ. Some of these intended Sẻ moments still need to be authored in runtime content.
 ## Story
 Aged 11, Vietnamese Minh An arrives in Chengdu with mother. A small notebook holds the first Chinese words and the line "Mỗi ngày, chỉ cần hiểu thêm một người." Wang Laoshi is a supportive teacher, Xiao Yu is the first friend, Liu Nainai owns a familiar food stall. All recur across HSK1-HSK5. Chapters: newcomer, first friend, spring cultural fair, neighborhood restaurant crisis, two hometowns and graduation. The old notebook becomes the final Chinese essay. Character identities, relationships, ages and facts must stay coherent.
 ## Narrative law
@@ -8,7 +16,7 @@ Original hand-drawn editorial 2D slice-of-life aesthetic: thin irregular dark in
 Create original background, transparent character sprites, UI HTML dialogue and animation layers separately. Never copy the reference composition, likenesses or exact art. Content should remain accessible as text rather than Chinese characters baked into artwork. Production requires character model sheets, art asset rights/provenance and reviewed consistency.
 
 ## V5 authored choice continuity
-Two non-assessed choices: after greeting Xiao Yu, An sits near her or asks teacher Wang for help; after ordering noodles, An chooses fewer chilies or tries a little Chengdu spice. The following scenes receive choice-sensitive narration, but all branches reconverge before the next mandatory language task. Persist these in storyChoices and include memories in An's notebook. Do not alter canon or imply these are HSK exam questions.
+Two non-assessed choices: after greeting Xiao Yu, An sits near him or asks teacher Wang for help; after ordering noodles, An chooses fewer chilies or tries a little Chengdu spice. The following scenes receive choice-sensitive narration, but all branches reconverge before the next mandatory language task. Persist these in storyChoices and include memories in An's notebook. Do not alter canon or imply these are HSK exam questions.
 
 ## V8: the lost notebook (story canon)
 After Wang Laoshi's counting lesson, Minh An notices the mother's notebook is missing. The learner must inspect two distinct clues, then either ask Xiao Yu to accompany An or seek teacher Wang's guidance. Staff at school ask An's name, which An can say in Mandarin using a previously learned expression, and the notebook is returned. This is formative transfer, not an official HSK score. At the walk-home scene the choice has a callback. The episode conclusion returns to mother's initial words. Both routes must reconverge before cafeteria; no optional decision skips a mandatory learning event.

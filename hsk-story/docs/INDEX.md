@@ -1,4 +1,10 @@
-# Tài liệu Hai quê hương — hướng dẫn nguồn chuẩn (26/10/2026)
+# Tài liệu Chim Sẻ
+
+**Đọc trước:** [hướng hiện hành từ chat](CHIM_SE_DIRECTION.md) → [đối chiếu và thứ tự sửa](DIRECTION_AUDIT_20261027.md) → [story bible](../STORY_BIBLE.md) → [hợp đồng học liệu](../CONTENT_CONTRACT.md).
+
+Tranh: [ART_DIRECTION](../art/ART_DIRECTION.md), [COMPOSITION](../art/COMPOSITION.md), [manifest](../art/manifest.json), [GENERATION_LOG](../art/GENERATION_LOG.md). AI và email: [AI_SETUP](../AI_SETUP.md). Bố cục đã duyệt; tranh và hành vi còn phải được rà. Các mục Gate/PR dưới đây là hồ sơ tại thời điểm viết, không chứng minh deployment hiện tại.
+
+## Chỉ mục lịch sử (26/10/2026)
 
 **Đọc theo thứ tự:** [PRODUCT_SPEC.md](../PRODUCT_SPEC.md) → [STORY_BIBLE.md](../STORY_BIBLE.md) → [CONTENT_CONTRACT.md](../CONTENT_CONTRACT.md) → [GATE4_AUDIT.md](../GATE4_AUDIT.md).
 

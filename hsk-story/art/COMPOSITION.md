@@ -56,7 +56,7 @@ At 1440×900, reserve the full viewport for the game shell. The scene occupies a
 └─────────────────────┘
 ```
 
-Use a location-specific portrait background, not a centered crop of desktop art. Keep faces and the relevant gesture above the dialogue card. The answer remains below the picture and uses safe-area padding. On short viewports, allow only the answer panel to scroll while preserving a visible speaker and input. Each scene has separate mobile Sparrow and character positions under `mobile`; the renderer switches those rules at 690px.
+Use a location-specific portrait background, not a centered crop of desktop art. Keep faces and the relevant gesture above the dialogue card. The answer remains below the picture and uses safe-area padding. On short viewports, recompose and reduce simultaneous content; do not require scrolling or hide controls with overflow. Check both viewport bounds and clipping by ancestor elements. Each scene has separate mobile Sparrow and character positions under `mobile`; the renderer currently switches those rules at 690px.
 
 ## Composition checks before connecting new art
 

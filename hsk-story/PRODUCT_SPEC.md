@@ -1,4 +1,8 @@
-# PRODUCT_SPEC — Hai quê hương (current canonical product contract)
+# PRODUCT_SPEC — Chim Sẻ
+
+**Nguồn chuẩn hiện hành:** [docs/CHIM_SE_DIRECTION.md](docs/CHIM_SE_DIRECTION.md), chốt từ hội thoại ngày 27/10/2026. [Đợt đối chiếu và thực hiện](docs/DIRECTION_AUDIT_20261027.md) ghi bằng chứng/việc còn thiếu. Các phần bên dưới là snapshot trước đợt đại trùng tu; không ghi đè tên Chim Sẻ, canon An/Sẻ, yêu cầu một màn và phạm vi mới.
+
+## Snapshot lịch sử Gate4–6 (26/10/2026)
 **Baseline:** production `main` at `cba551bd7810d7bd86f70611f1bb8f46a289f23a`. The following gates remain staged in dependent Draft PR branches as of 2026-10-26, not automatically live on hsk.motngum.cafe.
 
 ## Non-negotiable user goal

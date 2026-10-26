@@ -1,7 +1,7 @@
 {
   "brand": "Chim Sẻ",
   "version": "1.3.0",
-  "visualReference": "Owner-provided Minh An character and Chengdu world concept sheet in the project conversation; authoritative for identity, drawing and palette.",
+  "visualReference": "Owner-provided Chengdu illustration and concept sheet control drawing and palette; docs/CHIM_SE_DIRECTION.md controls character identity. Layout is approved; integrated artwork remains subject to scene-by-scene visual review.",
   "style": {
     "line": "Slightly uneven, expressive dark ink with consistent recurring character contours",
     "fill": "Muted flat watercolor on warm cream paper",
