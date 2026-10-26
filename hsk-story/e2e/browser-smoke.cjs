@@ -41,10 +41,25 @@ async function goStory(page,label){
  await page.goto(ROOT+"/",{waitUntil:"networkidle"});
  await page.locator("#startBtn").click();
  assert.equal(await visible(page,"#gameOverlay"),true);
- let finished=false,steps=0,practiceUsed=false;
+ let finished=false,steps=0,practiceUsed=false,arrivalObserved=false,returnedTree=false;
  for(;steps<100;steps++){
   if(await visible(page,"#completionPane")){finished=true;break}
   if(await visible(page,"#storyInterlude")){await page.locator("#interludeContinue").click();continue}
+  const stepText=await page.locator("#stepText").innerText();
+  if(!arrivalObserved&&stepText.trim()==="01 / 10"&&await visible(page,"#worldPanel")){
+   await page.locator("#worldActions button").first().click();
+   assert.ok((await page.locator("#worldBridge").innerText()).includes("日"));
+   await page.locator("#worldActions button").last().click();
+   arrivalObserved=true;
+   continue;
+  }
+  if(!returnedTree&&stepText.trim()==="07 / 10"&&await visible(page,"#worldPanel")){
+   await page.locator("#worldActions button").first().click();
+   assert.ok((await page.locator("#worldBridge").innerText()).includes("木"));
+   assert.ok((await page.locator("#worldDescription").innerText()).includes("Sáng nay An"));
+   returnedTree=true;
+   continue;
+  }
   if(await visible(page,"#encounterPanel")){
    if(await visible(page,"#encounterAnswerForm")){
     await page.locator("#encounterInput").fill("我叫安");
@@ -87,6 +102,11 @@ async function goStory(page,label){
  const v3=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v3")));
  const v4=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v4")));
  assert.equal(v3.done,true);assert.equal(v4.v,4);assert.equal(v4.storyId,"hsk1.e01");
+ assert.equal(arrivalObserved,true,"Arrival observations must be accessible");
+ assert.equal(returnedTree,true,"World callbacks must be accessible before final checkpoint");
+ assert.equal(v3.worldFocus["hsk1.e01.arrival-greeting"],"diary");
+ assert.equal(v3.worldFocus["hsk1.e01.walk-home"],"tree");
+ assert.equal(v4.memory.worldFocus["hsk1.e01.walk-home"],"tree");
  if(label==="desktop"){assert.equal(practiceUsed,true);assert.equal(v3.skillSampler.results.length,1)}
  else assert.equal(v3.skillSampler.status,"pending","Mobile player should be able to skip optional practice entirely");
  await page.screenshot({path:path.join(OUT,label+"-ending.png"),fullPage:true});

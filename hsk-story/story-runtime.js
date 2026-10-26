@@ -24,7 +24,7 @@ var HSKStoryRuntime=(function(){"use strict";
     sourceSignature:hash(serialized),sourceLength:serialized.length,
     // v4 graph state is prepared but not yet the load authority.
     progress:{history:v3.history,done:v3.done===true},
-    memory:{storyChoices:v3.storyChoices||{},storyBeats:v3.storyBeats||[],encounter:v3.encounter||null,worldSeen:v3.worldSeen||{}},
+    memory:{storyChoices:v3.storyChoices||{},storyBeats:v3.storyBeats||[],encounter:v3.encounter||null,worldSeen:v3.worldSeen||{},worldFocus:v3.worldFocus||{}},
     evidence:{skillSampler:v3.skillSampler||null},
     pending:{draft:typeof v3.draft==="string"?v3.draft:"",encounterDraft:typeof v3.encounterDraft==="string"?v3.encounterDraft:"",practiceOpen:v3.practiceOpen===true}
   };

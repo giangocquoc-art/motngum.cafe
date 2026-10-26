@@ -361,3 +361,35 @@ test("Optional sampler in progress resumes only when learner actually opened it"
  assert.equal(e.skillPanel.hidden,true);
  assert.equal(e.answerForm.hidden,false);
 });
+
+test("Gate3B inspecting street object shows Hanzi bridge and preserves selected object on V3/V4 reload",()=>{
+ const storage={"hai-que-huong-intro-v1":JSON.stringify({maxReached:5,discovered:["日","木"],momRevealed:true,lightParts:["日","月"]})};
+ let t=harness(storage),e=t.e;e.startBtn.click();dismissStory(e);
+ assert.equal(e.worldPanel.hidden,false);
+ assert.equal(e.worldBridge.textContent,"");
+ e.worldActions.children[0].click();
+ assert.ok(e.worldBridge.textContent.includes("日"));
+ assert.ok(e.worldBridge.textContent.includes("Bạn từng nhìn thấy"));
+ assert.ok(e.worldBridge.textContent.includes("Không tính điểm"));
+ let state=JSON.parse(storage["hai-que-huong-progress-v3"]);
+ assert.equal(state.worldFocus["hsk1.e01.arrival-greeting"],"window");
+ assert.equal(state.history.length,0);
+ const shadow=JSON.parse(storage["hai-que-huong-progress-v4"]);
+ assert.equal(shadow.memory.worldFocus["hsk1.e01.arrival-greeting"],"window");
+ t=harness(storage);e=t.e;e.resumeBtn.click();dismissStory(e);
+ assert.ok(e.worldBridge.textContent.includes("日"));
+ assert.ok(e.worldDescription.textContent.includes("Ngoài cửa xe"));
+});
+test("Gate3B scene observation never leaks a previous scene description into unrelated scene",()=>{
+ const storage={"hai-que-huong-progress-v3":JSON.stringify({v:3,step:6,history:Array.from({length:6},()=>({status:"correct",hint:false,attempts:0})),storyBeats:["arrival","gate","lunch","way-home"],worldSeen:{"hsk1.e01.arrival-greeting":["window","diary"]},worldFocus:{"hsk1.e01.arrival-greeting":"window"}})};
+ const t=harness(storage),e=t.e;e.resumeBtn.click();dismissStory(e);
+ assert.equal(e.worldPanel.hidden,false);
+ assert.equal(e.worldBridge.textContent,"");
+ assert.ok(e.worldDescription.textContent.includes("Chọn một đồ vật"));
+ e.worldActions.children[0].click();
+ assert.ok(e.worldDescription.textContent.includes("Sáng nay An"));
+ const state=JSON.parse(storage["hai-que-huong-progress-v3"]);
+ assert.equal(state.history.length,6);
+ assert.equal(state.worldSeen["hsk1.e01.walk-home"].length,1);
+ assert.equal(state.worldFocus["hsk1.e01.walk-home"],"tree");
+});
