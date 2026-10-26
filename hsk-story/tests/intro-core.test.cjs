@@ -64,7 +64,7 @@ test("Source HTML contains accessible intro link and standalone module dependenc
 });
 test("Dedicated introduction does not mutate existing HSK1 runtime",()=>{
  const app=fs.readFileSync(path.join(__dirname,"../app.js"),"utf8");
- assert.ok(!app.includes("HSKIntroContent"));assert.ok(!app.includes("hai-que-huong-intro-v1"));
+ assert.ok(!app.includes("HSKIntroContent"));assert.ok(app.includes('readSafe("hai-que-huong-intro-v1")'));assert.ok(!app.includes('localStorage.setItem("hai-que-huong-intro-v1"'));
 });
 
 test("A glyph selected on the first page is the current pronunciation target and survives reload",()=>{

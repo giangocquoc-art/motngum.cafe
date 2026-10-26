@@ -91,7 +91,7 @@ test("Gate3B world clues connect beginner Hanzi to already-visited real scenes w
  assert.ok(a.bridgeText.includes("Bạn từng nhìn thấy")&&a.bridgeText.includes("日"));
  assert.ok(a.bridgeText.includes("Không tính điểm"));
  let b=W.describe(G.idAt(6),"tree",{},intro);
- assert.ok(b.bridgeText.includes("木")&&b.bridgeText.includes("quyển sổ"));
+ assert.ok(b.bridgeText.includes("木")&&b.bridgeText.includes("林")&&b.bridgeText.includes("森"));
  let c=W.describe(G.idAt(6),"store",{},null);
  assert.ok(c.bridgeText.includes("谢谢")&&c.bridgeText.includes("Trong truyện"));
  let d=W.describe(G.idAt(0),"window",{},null);
