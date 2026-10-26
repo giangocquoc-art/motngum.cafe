@@ -78,3 +78,18 @@ test("Gate5 chapter chronology: notebook was opened the previous evening, not ha
  assert.equal(C.scenes[0].tag,"SÁNG ĐẦU TIÊN TỚI TRƯỜNG");
  assert.equal(C.scenes[0].id,0);
 });
+
+test("Gate5 no pre-answer callback leaks any exact accepted Chinese answer for the current scene",()=>{
+ const all=done([0,1,2,3,4,5]);
+ const choices={friendship:"sit-with-friend","noodle-taste":"mild"};
+ for(const scene of [1,3,5,6]){
+  const echo=T.echo(scene,all,choices,{stage:"done"});
+  assert.ok(echo,"expected a contextual story echo at "+scene);
+  const question=C.scenes[scene];
+  for(const candidate of question.answers){
+   const normalized=candidate.replace(/[\s，。！？,.!?]/g,"");
+   assert.equal(echo.zh.replace(/[\s，。！？,.!?]/g,"").includes(normalized),false,
+    "Direct answer leaked in Chinese callback at scene "+scene+": "+candidate);
+  }
+ }
+});

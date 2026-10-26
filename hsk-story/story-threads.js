@@ -42,7 +42,7 @@ var HSKStoryThreads=(function(){"use strict";
   if(sceneIndex===5&&h[4]){
    var mild=mem["noodle-taste"]==="mild",hot=mem["noodle-taste"]==="try-spicy";
    if(!mild&&!hot)return null;
-   return {zh:"谢谢！",py:"Xièxie!",vi:mild?"Bà Lưu nhớ An mới tới Thành Đô nên để ớt riêng. An muốn nói lời cảm ơn, không chỉ trả tiền.":"Bà Lưu đã đưa thêm cốc nước khi An thử vị cay. An muốn nói lời cảm ơn, không chỉ trả tiền.",kind:"choice-callback"};
+   return {zh:"一碗面条。",py:"Yì wǎn miàntiáo.",vi:mild?"Bà Lưu nhớ An mới tới Thành Đô nên để ớt riêng. An muốn nói lời cảm ơn, không chỉ trả tiền.":"Bà Lưu đã đưa thêm cốc nước khi An thử vị cay. An muốn nói lời cảm ơn, không chỉ trả tiền.",kind:"choice-callback"};
   }
   if(sceneIndex===6&&h[5]){
    var friend=mem.friendship==="sit-with-friend"?"Tiểu Vũ đi cạnh An như một người bạn mới.":mem.friendship==="ask-teacher"?"Tiểu Vũ nhớ hôm An được cô Vương đưa tới chỗ ngồi.":"An nhận ra có những người đã nhớ tên mình.";
