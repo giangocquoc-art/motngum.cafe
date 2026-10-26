@@ -47,9 +47,15 @@ test("Intro explains semantic and phonetic parts, and distinguishes rare-charact
  e.nextBtn.click();
  assert.ok(e.storyTip.textContent.includes("gợi âm"));
  e.interactive.children[1].click();assert.equal(saved(t).momRevealed,true);
- e.nextBtn.click();e.interactive.children[1].children[1].click();
+ e.nextBtn.click();
+ assert.equal(saved(t).legendRead,false);
+ assert.equal(saved(t).curiosityOpen,false);
+ assert.ok(!e.interactive.children.some(x=>x.className==="curiosity-details"));
+ e.interactive.children[1].click();
  assert.equal(saved(t).legendRead,true);
- assert.ok(e.interactive.children.some(x=>x.children.some(c=>c.textContent==="奻")));
+ assert.equal(saved(t).curiosityOpen,true);
+ assert.ok(e.interactive.children.some(x=>x.className==="curiosity-details"));
+ assert.equal(e.mainGlyph.textContent,"女 奻 姦");
 });
 test("Intro four low-stakes visual guesses can be played through and revisited",()=>{
  const t=boot(),e=t.e;
@@ -109,4 +115,37 @@ test("Intro review-only action restarts guesses without resetting story discover
  assert.equal(saved(t).quizIndex,0);
  assert.deepEqual(saved(t).discovered,["人"]);
  assert.equal(saved(t).step,7);
+});
+
+test("Gate3B: optional Hanzi curiosity can be bypassed without loading archaic meanings or changing page count",()=>{
+ const t=boot(),e=t.e;for(let i=0;i<6;i++)e.nextBtn.click();
+ assert.equal(saved(t).step,6);assert.equal(saved(t).curiosityOpen,false);
+ assert.equal(e.mainGlyph.textContent,"女");
+ assert.equal(e.interactive.children.find(x=>x.className==="curiosity-details"),undefined);
+ e.nextBtn.click();
+ assert.equal(saved(t).step,7);assert.equal(saved(t).legendRead,false);
+ assert.equal(e.mainGlyph.textContent,"林");
+});
+test("Gate3B: curiosity opens/closes returning to the same page, retaining progress and HSK1 save",()=>{
+ const store={"hai-que-huong-progress-v3":"preserved-hsk1"};
+ const t=boot(store),e=t.e;
+ for(let i=0;i<6;i++)e.nextBtn.click();
+ e.interactive.children[1].click();
+ assert.equal(saved(t).step,6);assert.equal(saved(t).curiosityOpen,true);
+ assert.equal(saved(t).legendRead,true);
+ const panel=e.interactive.children.find(x=>x.className==="curiosity-details");
+ assert.ok(panel);
+ assert.ok(panel.children.some(x=>x.className==="curiosity-example"));
+ panel.children[panel.children.length-1].click();
+ assert.equal(saved(t).curiosityOpen,false);
+ assert.equal(saved(t).step,6);
+ assert.equal(e.mainGlyph.textContent,"女");
+ assert.equal(store["hai-que-huong-progress-v3"],"preserved-hsk1");
+ e.interactive.children[1].click();
+ const reopened=boot(store);
+ assert.equal(reopened.e.mainGlyph.textContent,"女 奻 姦");
+ assert.equal(saved(reopened).curiosityOpen,true);
+ reopened.e.nextBtn.click();
+ assert.equal(saved(reopened).curiosityOpen,false);
+ assert.equal(saved(reopened).step,7);
 });

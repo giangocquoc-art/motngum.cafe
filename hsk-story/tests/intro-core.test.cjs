@@ -48,7 +48,9 @@ test("Saved progress migration sanitizes forged steps, glyphs, and score keys",(
 });
 test("All factual claims and rare character caveats are explicit",()=>{
  const text=D.stages.find(x=>x.kind==="legend").tip;
- assert.ok(text.includes("奻")&&text.includes("姦")&&text.includes("không có nghĩa"));
+ assert.ok(!text.includes("奻")&&!text.includes("姦"),"Rare glyphs must not be forced into Chapter00 core");
+ assert.ok(D.curiosity.examples.some(x=>x.zi==="奻")&&D.curiosity.examples.some(x=>x.zi==="姦"));
+ assert.ok(D.curiosity.lead.includes("từ điển")&&D.curiosity.examples.find(x=>x.zi==="姦").note.includes("định kiến"));
  assert.ok(D.stages.find(x=>x.kind==="mother").tip.includes("gợi âm"));
  assert.ok(D.stages.find(x=>x.kind==="light").tip.includes("lịch sử"));
  assert.ok(D.sources.length>=3);
@@ -92,4 +94,25 @@ test("Existing Chapter 00 saved guesses are treated as legacy, not verified firs
  const x=C.clean(old);
  assert.equal(x.quizOutcomes.forest,"legacy");assert.equal(C.recap(x,D.quizzes).recognized,0);
  assert.equal(x.step,7);assert.equal(x.maxReached,7);
+});
+
+test("Gate3B: rare historical glyph sidepath is truly optional and does not reindex nine existing story pages",()=>{
+ let state=C.initial();
+ for(let i=0;i<6;i++)state=C.move(state,"next");
+ assert.equal(state.step,6);assert.equal(state.curiosityOpen,false);
+ assert.throws(()=>C.curiosity(C.initial(),true));
+ state=C.move(state,"next");
+ assert.equal(state.step,7);assert.equal(state.legendRead,false);
+});
+test("Gate3B: optional old-glyph explanation returns to same scene and cleans invalid persisted flags",()=>{
+ let s=C.initial();for(let i=0;i<6;i++)s=C.move(s,"next");
+ s=C.curiosity(s,true);
+ assert.equal(s.curiosityOpen,true);assert.equal(s.legendRead,true);
+ assert.equal(C.clean(JSON.parse(JSON.stringify(s))).curiosityOpen,true);
+ let closed=C.curiosity(s,false);
+ assert.equal(closed.curiosityOpen,false);
+ assert.equal(closed.legendRead,true);
+ assert.equal(C.clean({...s,step:7,maxReached:7,curiosityOpen:true}).curiosityOpen,false);
+ assert.equal(C.move(s,"next").curiosityOpen,false);
+ assert.equal(C.key,"hai-que-huong-intro-v1");
 });

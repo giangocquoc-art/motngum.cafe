@@ -68,3 +68,14 @@ footer{text-align:center;border-top:1px solid #d4bfa8;padding:20px;font-size:11p
 @media(max-width:820px){.intro-head{margin-bottom:24px}.paper-stamp{width:88px;height:98px}.paper-stamp span{font-size:48px}.paper-stamp small{font-size:7px}.book-layout{grid-template-columns:1fr}.illustrated{min-height:295px;border-right:0;border-bottom:2px solid #746353}.main-glyph{font-size:75px;min-height:105px}.main-glyph.smaller{font-size:55px}.glyph-frame{gap:3px;margin:12px auto}.ink-halo{inset:13% auto auto 50%;width:240px;height:200px}.story{min-height:405px;padding:25px}.progress-band{gap:9px}}
 @media(max-width:520px){.topbar{height:62px;padding:0 14px}.brand-mark{width:36px;height:36px;font-size:23px}.brand b{font-size:15px}.brand small{font-size:8px}.topbar nav{gap:10px;font-size:10px}.topbar nav a:first-child{display:none}.page{padding:26px 12px 48px}.intro-head{align-items:start}.intro-head h1{font-size:34px;letter-spacing:-.4px}.intro-head p{font-size:12px}.paper-stamp{display:none}.progress-band{font-size:9px;flex-wrap:wrap}.progress-band progress{order:3;flex-basis:100%}.book-layout{box-shadow:4px 5px 0 #dbc6ab}.illustrated{min-height:253px;padding:11px}.paper-corner,.paper-foot{font-size:8px}.main-glyph{font-size:69px;min-height:92px}.main-glyph.smaller{font-size:42px}.hear{min-height:37px;padding:7px 11px}.story{min-height:420px;padding:17px}.story-narrative{font-size:12px;margin-bottom:10px}.story h2{font-size:27px}.glyph-grid{gap:7px}.glyph-option{padding:9px}.glyph-option strong{font-size:25px}.option-row{gap:6px}.number-button{min-width:64px;padding:9px}.bottom-note{align-items:start;flex-direction:column;gap:4px}.story-tip p{font-size:11px}.source-details{margin:20px 2px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+
+/* Optional sidepath on original Chapter00 page seven. Never intercept normal navigation. */
+.curiosity-details{background:#f7ead7;border:1px solid #b9a087;padding:15px 16px;margin:4px 0 10px;display:flex;flex-direction:column;gap:10px}
+.curiosity-details h3{font:600 21px "Playfair Display","Noto Sans SC",serif;color:#6e3c2d;margin:0}
+.curiosity-details p{font-size:12px;line-height:1.65;color:#685142;margin:0}
+.curiosity-example{display:flex;gap:15px;padding:9px 0;border-top:1px solid #d9c6af;align-items:center}
+.curiosity-example strong{font-family:"Noto Sans SC",sans-serif;font-size:32px;color:#563e34;min-width:55px;font-weight:600}
+.curiosity-example span{display:flex;flex-direction:column;gap:3px;font-size:12px}
+.curiosity-example small{color:#715f51;font-size:11px;line-height:1.55}
+.curiosity-details .secondary{align-self:flex-start;font-size:11px}
+@media(max-width:520px){.curiosity-details{padding:12px}.curiosity-example strong{font-size:28px}.curiosity-details h3{font-size:19px}}

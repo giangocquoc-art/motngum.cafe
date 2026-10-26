@@ -18,7 +18,17 @@ async function goIntro(page,label){
  assert.equal(await page.locator("#mainPinyin").innerText(),"rén");
  await page.reload();
  assert.equal(await page.locator("#mainGlyph").innerText(),"人");
- for(let i=0;i<7;i++)await page.locator("#nextBtn").click();
+ for(let i=0;i<6;i++)await page.locator("#nextBtn").click();
+ assert.match(await page.locator("#position").innerText(),/07/);
+ assert.equal(await page.locator("#curiosityDetails").count(),0,"Historical page must be optional");
+ if(label==="desktop"){
+  await page.locator("#interactive .number-button").first().click();
+  assert.equal(await page.locator("#curiosityDetails").isVisible(),true);
+  await page.screenshot({path:path.join(OUT,label+"-curiosity.png"),fullPage:true});
+  await page.locator("#curiosityDetails .secondary").click();
+  assert.equal(await page.locator("#curiosityDetails").count(),0);
+ }
+ await page.locator("#nextBtn").click();
  assert.match(await page.locator("#position").innerText(),/08/);
  let first=page.locator(".quiz-choice").first();
  await first.click();
