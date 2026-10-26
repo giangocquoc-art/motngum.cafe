@@ -1,46 +1,13 @@
 
 (function(){
 "use strict";
-var CHAPTERS=[
-{lvl:1,cn:"新的开始",title:"Ngày đầu xa nhà",sub:"Một lời chào mới",desc:"Từ Việt Nam tới Thành Đô. Một lớp học lạ, một lời chào đầu tiên.",place:"school",accent:"#ddb493"},
-{lvl:2,cn:"第一个朋友",title:"Người bạn đầu tiên",sub:"Những con phố quen",desc:"Cùng Tiểu Vũ khám phá chợ, quán ăn và những góc phố thân thuộc.",place:"street",accent:"#bad2bb"},
-{lvl:3,cn:"春天的约定",title:"Hội chợ mùa xuân",sub:"Điều ta làm cùng nhau",desc:"Hội chợ giao lưu Việt–Trung, tình bạn và trách nhiệm.",place:"festival",accent:"#f1d2aa"},
-{lvl:4,cn:"改变的季节",title:"Khi mọi chuyện thay đổi",sub:"Học cách lắng nghe",desc:"Quán ăn của bà Lưu đứng trước thử thách. An phải lên tiếng.",place:"cafe",accent:"#d1c9c5"},
-{lvl:5,cn:"两个故乡",title:"Hai quê hương",sub:"Câu chuyện của chính mình",desc:"Trưởng thành, lựa chọn, và lá thư tốt nghiệp viết bằng tiếng Trung.",place:"graduation",accent:"#d2d9c7"}
-];
-var SCENES=[
-{id:0,place:"street",speaker:"Mẹ của An",tag:"NGÀY ĐẦU TỚI THÀNH ĐÔ",zh:"安，我们到了。你好吗？",py:"Ān, wǒmen dào le. Nǐ hǎo ma?",vi:"An, chúng ta đến nơi rồi. Con có khỏe không?",request:"Mẹ đang hỏi thăm bạn. Hãy trả lời rằng bạn rất khỏe.",answers:["我很好","很好","我很好，谢谢","我很好谢谢"],hint:"我很好。 (Wǒ hěn hǎo.) — Con rất khỏe."},
-{id:1,place:"school",speaker:"王老师 · Cô Vương",tag:"GẶP CÔ GIÁO",zh:"你好！你叫什么名字？",py:"Nǐ hǎo! Nǐ jiào shénme míngzi?",vi:"Xin chào! Em tên là gì?",request:"Bạn nhập vai Minh An. Hãy giới thiệu tên nhân vật với cô giáo (安 hoặc 明安).",answers:["我叫安","我叫明安","我是安"],hint:"我叫安。 (Wǒ jiào Ān.) — Em tên là An."},
-{id:2,place:"class",speaker:"小雨 · Tiểu Vũ",tag:"NGƯỜI BẠN MỚI",zh:"你好！我是小雨。你是学生吗？",py:"Nǐ hǎo! Wǒ shì Xiǎoyǔ. Nǐ shì xuésheng ma?",vi:"Xin chào! Mình là Tiểu Vũ. Bạn là học sinh phải không?",request:"Trả lời Tiểu Vũ: 'Đúng, mình là học sinh.'",answers:["是，我是学生","我是学生","对我是学生","对，我是学生"],hint:"我是学生。 (Wǒ shì xuésheng.) — Mình là học sinh."},
-{id:3,place:"class",speaker:"王老师 · Cô Vương",tag:"TRONG LỚP HỌC",zh:"一，二，三。这里有几个学生？",py:"Yī, èr, sān. Zhèlǐ yǒu jǐ ge xuésheng?",vi:"Một, hai, ba. Ở đây có mấy học sinh?",request:"Hãy trả lời rằng có ba học sinh.",answers:["三个学生","有三个学生","三个人","有三个人"],hint:"有三个学生。 (Yǒu sān ge xuésheng.)"},
-{id:4,place:"canteen",speaker:"刘奶奶 · Bà Lưu",tag:"LẦN ĐẦU Ở CĂNG TIN",zh:"你好！你想吃什么？",py:"Nǐ hǎo! Nǐ xiǎng chī shénme?",vi:"Cháu muốn ăn gì?",request:"Gọi một bát mì với bà Lưu.",answers:["我想吃面条","我要面条","一碗面条","我想要一碗面条"],hint:"我想吃面条。 (Wǒ xiǎng chī miàntiáo.)"},
-{id:5,place:"canteen",speaker:"刘奶奶 · Bà Lưu",tag:"TRẢ TIỀN",zh:"这碗面十块钱。",py:"Zhè wǎn miàn shí kuài qián.",vi:"Bát mì này mười tệ.",request:"Bà đã nói giá là mười tệ. Hãy cảm ơn bà bằng tiếng Trung.",answers:["谢谢","谢谢您","谢谢奶奶"],hint:"谢谢！(Xièxie!) — Cảm ơn bà!"},
-{id:6,place:"street",speaker:"小雨 · Tiểu Vũ",tag:"TRÊN ĐƯỜNG VỀ",zh:"明天我们去学校，好吗？",py:"Míngtiān wǒmen qù xuéxiào, hǎo ma?",vi:"Ngày mai chúng mình đến trường nhé?",request:"Hãy trả lời đồng ý với Tiểu Vũ.",answers:["好","好的","好啊","可以","好的明天见"],hint:"好！(Hǎo!) — Được đó!"},
-{id:7,place:"exam",speaker:"王老师 · Cô Vương",tag:"BÀI KIỂM TRA · 1/3",zh:"考试开始。请用中文介绍一下自己。",py:"Kǎoshì kāishǐ. Qǐng yòng Zhōngwén jièshào yíxià zìjǐ.",vi:"Bắt đầu kiểm tra. Hãy tự giới thiệu ngắn gọn bằng tiếng Trung.",request:"Thử thách 1/3: giới thiệu tên và nói rằng mình là học sinh (có thể viết 2 câu).",answers:["我叫安我是学生","我是安我是学生","我叫明安我是学生","我叫安，我是学生"],hint:"我叫安。我是学生。 (Wǒ jiào Ān. Wǒ shì xuésheng.)"}
-,
-{id:8,place:"exam",speaker:"王老师 · Cô Vương",tag:"BÀI KIỂM TRA · 2/3",zh:"一碗面多少钱？",py:"Yì wǎn miàn duōshao qián?",vi:"Một bát mì bao nhiêu tiền?",request:"Thử thách 2/3: nhớ giá bát mì ở quán bà Lưu. Trả lời bằng tiếng Trung.",answers:["十块钱","十块","十元"],hint:"Bà Lưu đã nói: 这碗面十块钱。"},
-{id:9,place:"exam",speaker:"王老师 · Cô Vương",tag:"BÀI KIỂM TRA · 3/3",zh:"你想吃什么？",py:"Nǐ xiǎng chī shénme?",vi:"Em muốn ăn gì?",request:"Thử thách 3/3: gọi một bát mì như khi An đến quán bà Lưu.",answers:["我想吃面条","我要面条","我想要一碗面条","我想吃一碗面条"],hint:"Câu đã luyện ở quán bà Lưu: 我想吃面条。"}
-];
-
-var REPLIES=[
-{zh:"好，我们一起去看看新学校吧！",py:"Hǎo, wǒmen yìqǐ qù kànkan xīn xuéxiào ba!",vi:"Tốt quá, chúng ta cùng đi xem trường mới nhé!"},
-{zh:"欢迎你，安！",py:"Huānyíng nǐ, Ān!",vi:"Chào mừng em, An!"},
-{zh:"太好了！我们是同学！",py:"Tài hǎo le! Wǒmen shì tóngxué!",vi:"Tuyệt quá! Chúng mình là bạn cùng lớp!"},
-{zh:"对！有三个学生。",py:"Duì! Yǒu sān ge xuésheng.",vi:"Đúng rồi! Có ba học sinh."},
-{zh:"好！我给你一碗面条。",py:"Hǎo! Wǒ gěi nǐ yì wǎn miàntiáo.",vi:"Được rồi! Bà lấy cho cháu một bát mì nhé."},
-{zh:"不客气！下次再来！",py:"Bú kèqi! Xià cì zài lái!",vi:"Không có gì! Lần sau lại ghé nhé!"},
-{zh:"太好了！明天见！",py:"Tài hǎo le! Míngtiān jiàn!",vi:"Tuyệt! Hẹn gặp ngày mai!"},
-{zh:"很好！你已经能介绍自己了。",py:"Hěn hǎo! Nǐ yǐjīng néng jièshào zìjǐ le.",vi:"Tốt lắm! Em đã biết tự giới thiệu bản thân."},
-{zh:"对！一碗面十块钱。",py:"Duì! Yì wǎn miàn shí kuài qián.",vi:"Đúng rồi! Một bát mì giá mười tệ."},
-{zh:"很好！你还记得怎么点面条。",py:"Hěn hǎo! Nǐ hái jìde zěnme diǎn miàntiáo.",vi:"Giỏi lắm! Em vẫn nhớ cách gọi món mì."}
-];
-
+var CHAPTERS=HSKContent.chapters,SCENES=HSKContent.scenes,REPLIES=HSKContent.replies;
 
 var $=function(id){return document.getElementById(id)};
 var KEY="hai-que-huong-progress-v3",PREVIOUS_KEY="hai-que-huong-progress-v2",OLD_KEY="hai-que-huong-progress-v1";
 var state={step:0,history:[],done:false,pinyin:true,vi:true,attempts:0,hintUsed:false,solved:false,busy:false,recognizer:null,draft:"",examHelp:false,storyChoices:{},storyBeats:[],vocabSeen:[]};
 var toastTimer=null,returnFocus=null,SCENE_TOTAL=SCENES.length,EXAM_START=HSKCurriculum.scenes.findIndex(function(x){return x.kind==="checkpoint"});
-if(typeof HSKLearningKit==="undefined"||typeof HSKStoryDirector==="undefined"||typeof HSKStoryBeats==="undefined"||HSKStoryBeats.validate(SCENE_TOTAL,EXAM_START).length||HSKStoryDirector.validate(SCENE_TOTAL,EXAM_START).length||HSKCurriculum.validate().length||HSKCurriculum.scenes.length!==SCENE_TOTAL||REPLIES.length!==SCENE_TOTAL)throw Error("Story content contract invalid");
+if(typeof HSKContent==="undefined"||HSKContent.validate(HSKCurriculum).length||typeof HSKLearningKit==="undefined"||typeof HSKStoryDirector==="undefined"||typeof HSKStoryBeats==="undefined"||HSKStoryBeats.validate(SCENE_TOTAL,EXAM_START).length||HSKStoryDirector.validate(SCENE_TOTAL,EXAM_START).length||HSKCurriculum.validate().length||HSKCurriculum.scenes.length!==SCENE_TOTAL||REPLIES.length!==SCENE_TOTAL)throw Error("Story content contract invalid");
 function readSafe(k){try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}}
 function load(){
  var s=readSafe(KEY);
@@ -114,13 +81,20 @@ function refreshNotebook(){
 }
 function renderTiles(){
  var allowed=state.step<EXAM_START&&!state.solved&&!state.done;
- $("sentenceBuilder").hidden=!allowed;if(!allowed)return;
+ $("sentenceBuilder").hidden=true;$("openBuilderBtn").hidden=!allowed;if(!allowed)return;
  $("tileList").replaceChildren();
  HSKLearningKit.tiles(state.step).forEach(function(token){
   var b=document.createElement("button");b.type="button";b.className="sentence-tile";
   b.textContent=token;b.addEventListener("click",function(){useTile(token)});
   $("tileList").appendChild(b);
  });
+}
+function openBuilder(){
+ if(state.done||state.solved||state.step>=EXAM_START||HSKStoryBeats.pending(state.step,state.storyBeats))return;
+ state.hintUsed=true;save();
+ $("sentenceBuilder").hidden=false;$("openBuilderBtn").hidden=true;
+ $("builderNotice").textContent="✳ Đã mở bộ từ. Câu này được tính là có trợ giúp dù bạn tự nhập lại.";
+ $("tileList").children[0]?.focus();
 }
 function useTile(token){
  if(state.solved||state.done||state.step>=EXAM_START||HSKStoryBeats.pending(state.step,state.storyBeats))return;
@@ -141,7 +115,7 @@ function renderStoryInterlude(){
  $("dialogueText").textContent=b.zh;$("pinyinText").textContent=b.py;$("vietText").textContent=b.vi;
  $("userInstruction").hidden=true;$("sceneObjective").hidden=true;
  $("answerForm").hidden=true;$("sentenceBuilder").hidden=true;$("learningStrip").hidden=true;
- $("vocabRevealBtn").hidden=true;$("hintBtn").hidden=true;$("assistBtn").hidden=true;
+ $("vocabRevealBtn").hidden=true;$("openBuilderBtn").hidden=true;$("hintBtn").hidden=true;$("assistBtn").hidden=true;
  $("storyBeat").hidden=true;$("storyChoicePanel").hidden=true;$("nextBtn").hidden=true;
  updateToggles();return true;
 }
@@ -201,7 +175,7 @@ function showCompletion(){
  $("userInstruction").textContent="✳ Bạn đã đi hết tập truyện thử nghiệm: Ngày đầu xa nhà.";
  $("summaryStats").textContent=summary.independently+"/"+summary.total+" câu tự giải không cần gợi ý · "+summary.hinted+" câu đúng sau gợi ý · "+summary.assisted+" câu xem đáp án mẫu · "+summary.examCorrect+"/"+summary.examTotal+" câu kiểm tra không cần trợ giúp.";
  $("summaryDescription").textContent=summary.examCorrect===summary.examTotal&&summary.assisted===0&&summary.hinted===0?"Rất tốt! Bạn đã tự xử lý tất cả câu hỏi trong tập thử nghiệm. Đây chưa phải kết quả thi HSK 1 chính thức.":"Bạn đã hoàn thành câu chuyện. Những câu cần xem mẫu là gợi ý để ôn lại — không được tính là trả lời đúng độc lập. Đây không phải chứng nhận trình độ HSK.";
- $("progressBar").style.width="100%";$("retakeExamBtn").hidden=false;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;$("storyInterlude").hidden=true;$("vocabRevealBtn").hidden=true;
+ $("progressBar").style.width="100%";$("retakeExamBtn").hidden=false;$("storyChoicePanel").hidden=true;$("storyChoiceOutcome").hidden=true;$("storyInterlude").hidden=true;$("vocabRevealBtn").hidden=true;$("openBuilderBtn").hidden=true;
  $("feedback").textContent="";$("feedback").className="feedback";
  $("completionReview").textContent=(function(){var weak=HSKLearningKit.needsReview(state.history,HSKCurriculum.scenes);return weak.length?"Sổ tay của An nhắc bạn luyện thêm: "+weak.map(function(w){return w.objective}).join("; ")+".":"Các câu luyện trong tập này chưa ghi nhận chỗ cần xem lại."})();
 }
@@ -241,7 +215,7 @@ function displayResolved(){
  $("sceneTag").textContent="PHẢN HỒI CỦA NHÂN VẬT";updateToggles();
  $("feedback").className="feedback "+(saved.status==="correct"?"good":"neutral");
  $("feedback").textContent=saved.status==="correct"?(saved.hint?"✓ Đã trả lời đúng sau hỗ trợ. Câu này nên ôn thêm.":"✓ Nhân vật đã hiểu bạn. Đọc phản hồi rồi nhấn Tiếp tục."):"✦ Bạn đã xem câu mẫu và đi tiếp; câu này không tính là tự làm đúng.";
- $("sentenceBuilder").hidden=true;$("learningStrip").hidden=state.step>=EXAM_START;$("vocabRevealBtn").hidden=true;
+ $("sentenceBuilder").hidden=true;$("openBuilderBtn").hidden=true;$("learningStrip").hidden=state.step>=EXAM_START;$("vocabRevealBtn").hidden=true;
  $("nextBtn").hidden=renderStoryChoice();$("nextBtn").textContent=state.step===SCENE_TOTAL-1?"Xem tổng kết ↗":"Tiếp tục câu chuyện ↗";
 }
 function openGame(){
@@ -318,6 +292,7 @@ $("notebookBtn").addEventListener("click",function(){setNotebook($("notebookPane
 $("notebookClose").addEventListener("click",function(){setNotebook(false)});
 $("tileUndo").addEventListener("click",function(){useTile("__undo")});
 $("tileClear").addEventListener("click",function(){useTile("__clear")});
+$("openBuilderBtn").addEventListener("click",openBuilder);
 $("interludeContinue").addEventListener("click",continueStoryInterlude);
 $("vocabRevealBtn").addEventListener("click",revealWords);
 $("togglePinyin").addEventListener("click",function(){if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.pinyin=!state.pinyin}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.pinyin=true}else state.pinyin=!state.pinyin;updateToggles();save()});

@@ -63,3 +63,11 @@ From the repository root, run `node --test hsk-story/tests/*.test.cjs`. The `tes
 - Minh An's notebook does not show expressions from the current scene before the player has attempted it or explicitly requested assistance.
 - Reading narrative captions before the in-world checkpoint does not affect the checkpoint score. Pinyin/translation used to solve an actual checkpoint still counts as assistance.
 - HSK1 content remains a **pilot episode only**; see MASTER_EXECUTION_PLAN_V6.md and RELEASE_QA_V6.md.
+
+## V7: authored content contract and honest phrase scaffolding
+
+The original five chapter cards, ten scored scene dialogues, and ten NPC responses are now in `content-manifest.js`. The renderer references `HSKContent` and validates correspondence with the curriculum before starting. Scene IDs 0–9 are retained for backwards compatibility with local `hai-que-huong-progress-v3` saves. Changing their order or meaning now requires an explicit migration and QA review.
+
+The phrase-tile construction board is not shown automatically. The player must explicitly press **Mở bộ ghép câu** to see it; this action immediately sets the assisted-learning flag, even if they later type the whole answer manually. Checkpoint scenes cannot use phrase tiles.
+
+Content authors should update the manifest and its localized reply together, run `node --test hsk-story/tests/*.test.cjs`, and review `MASTER_EXECUTION_PLAN_V7.md`. V7 is a correctness-focused foundation, still an HSK1 pilot rather than a completed HSK curriculum, AI voice tutor or finalized artwork.

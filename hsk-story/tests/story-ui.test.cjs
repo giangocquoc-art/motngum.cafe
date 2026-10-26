@@ -1,7 +1,7 @@
 const {test}=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 const folder=path.resolve(__dirname,"..");
 function loadModule(file,name){const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box,{filename:file});return box.module.exports}
-const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js");
+const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js"),Content=loadModule("content-manifest.js");
 const html=fs.readFileSync(path.join(folder,"index.html"),"utf8"),source=fs.readFileSync(path.join(folder,"app.js"),"utf8");
 const ids=Array.from(html.matchAll(/id="([^"]+)"/g),x=>x[1]);
 function dismissStory(e){if(!e.storyInterlude.hidden)e.interludeContinue.click()}
@@ -19,7 +19,7 @@ function harness(sharedStorage={}){
  const localStorage={getItem(k){return sharedStorage[k]||null},setItem(k,v){sharedStorage[k]=v}};
  const window={speechSynthesis:{cancel(){},getVoices(){return []},speak(u){spoken.push(u.text)}}};
  function SpeechSynthesisUtterance(text){this.text=text}
- vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,console},{filename:"app.js"});
+ vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,console},{filename:"app.js"});
  return {e:dom,document,sharedStorage,spoken}
 }
 test("story: sentence builder is helpful and notebook only shows past expressions",()=>{
@@ -32,6 +32,8 @@ test("story: sentence builder is helpful and notebook only shows past expression
  e.vocabRevealBtn.click();e.notebookBtn.click();
  assert.ok(e.notebookWords.children.some(r=>r.children[0].textContent==="你好"));
  e.notebookWords.children[0].click();assert.equal(t.spoken[0],"你好");e.notebookClose.click();
+ assert.equal(e.sentenceBuilder.hidden,true);assert.equal(e.openBuilderBtn.hidden,false);
+ e.openBuilderBtn.click();assert.equal(e.sentenceBuilder.hidden,false);
  ["我","很","好"].forEach(token=>e.tileList.children.find(b=>b.textContent===token).click());
  assert.equal(e.answerInput.value,"我很好");
  e.answerForm.fire("submit");assert.equal(e.nextBtn.hidden,false);
@@ -123,4 +125,32 @@ test('V6 story narration playback and keyboard focus follow the visible page',()
  e.interludeContinue.click();
  assert.equal(t.document.activeElement.id,'answerInput');
  e.listenBtn.click();assert.equal(t.spoken[1],'安，我们到了。你好吗？');
+});
+
+test("V7 phrase suggestions cannot leak before learner opts in",()=>{
+ const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
+ assert.equal(e.sentenceBuilder.hidden,true);
+ assert.equal(e.openBuilderBtn.hidden,false);
+ assert.equal(e.learningStrip.hidden,true);
+ e.answerInput.value="我很好";e.answerInput.fire("input");e.answerForm.fire("submit");
+ const saved=JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]);
+ assert.equal(saved.history[0].hint,false);
+});
+test("V7 opening phrase suggestions always counts as help before typing",()=>{
+ const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
+ e.openBuilderBtn.click();
+ assert.equal(e.sentenceBuilder.hidden,false);
+ assert.equal(e.openBuilderBtn.hidden,true);
+ const pre=JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]);
+ assert.equal(pre.hintUsed,true);
+ e.answerInput.value="我很好";e.answerForm.fire("submit");
+ assert.equal(JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]).history[0].hint,true);
+});
+test("V7 checkpoint never exposes construction hints",()=>{
+ const s={'hai-que-huong-progress-v3':JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:"correct",attempts:0,hint:false})),storyBeats:["arrival","gate","lunch","way-home","school-test"]})};
+ const t=harness(s),e=t.e;e.startBtn.click();
+ assert.equal(e.openBuilderBtn.hidden,true);
+ assert.equal(e.sentenceBuilder.hidden,true);
+ e.openBuilderBtn.click();
+ assert.equal(JSON.parse(s["hai-que-huong-progress-v3"]).hintUsed,false);
 });

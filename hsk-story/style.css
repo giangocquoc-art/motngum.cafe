@@ -81,3 +81,9 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .vocab-reveal{border:1px dashed #9c826b;background:#fbf4e6;color:#805037;font-size:11px;padding:8px 11px;margin:5px 0 9px;text-align:left}
 .vocab-reveal:hover{background:#f3e2c7}
 @media(max-width:690px){.story-interlude{padding:10px 11px;max-height:34dvh;margin:0 0 7px}.story-interlude h3{font-size:17px}.story-interlude p{font-size:11px;line-height:1.55}.interlude-continue{padding:8px 11px}.vocab-reveal{font-size:10px;padding:7px}}
+
+/* V7: opt-in construction ensures no unearned "independent" successes. */
+.builder-reveal{display:block;background:#fcf4e5;border:1px dashed #9c826b;color:#805037;text-align:left;font-size:11px;padding:9px 12px;margin:7px 0}
+.builder-reveal:hover,.builder-reveal:focus-visible{background:#f0dcc0;outline-offset:3px}
+.sentence-builder[hidden],.builder-reveal[hidden]{display:none!important}
+@media(max-width:690px){.builder-reveal{font-size:10px;padding:8px 9px}}
