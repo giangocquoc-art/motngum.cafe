@@ -89,3 +89,6 @@ Chữ đang chọn, Pinyin và giọng đọc đồng bộ; câu đoán chỉ gh
 
 ## Gate4 module extraction (staged, not production)
 Khối ảnh SVG giữ nguyên chuyển sang `scene-art.js`; serialization V3 và V4 shadow chuyển sang `save-io.js`; các thẻ HSK2–5 không còn là nút giả. Chi tiết: [GATE4_AUDIT.md](GATE4_AUDIT.md). **Không xóa file/bản lưu cũ; các tính năng chỉ chạy trên PR Preview cho tới khi được duyệt.**
+
+## Góc ôn HSK 1 demo — giai đoạn mở rộng học liệu (staged PR, không phải production)
+Trang `/ren-luyen.html` là một nhánh tự chọn có 18 bài gắn với **các cảnh đã hoàn thành** trong tập HSK 1. 7 bài đọc hiểu trên màn hình, 7 bài nhận diện Hán tự, 4 bài nhập chữ Hán bằng bàn phím. Trạng thái/lịch nhắc ôn lưu ở `hai-que-huong-review-v1`, không thay `hai-que-huong-progress-v3/v4` hay `hai-que-huong-intro-v1`. Lịch ôn độc lập 1–3–7–14 ngày, đúng không hỗ trợ và cần hỗ trợ ghi khác nhau. Đây là nội dung tác giả biên soạn, chưa được giáo viên Trung văn duyệt hoặc đối chiếu từng mục đại cương. Không đánh giá nghe thật, nói, viết tay, không cấp chứng chỉ. Xem `HSK1_LEARNING_AUDIT.md`.

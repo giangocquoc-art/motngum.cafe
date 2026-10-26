@@ -22,3 +22,7 @@ Các file kế hoạch `MASTER_*`, `PRODUCT_ROADMAP_V4.md`, `MASTER_ROADMAP_V5.m
 
 ## AI và mỹ thuật
 [CODEX_HANDOFF_V11_V12.md](../CODEX_HANDOFF_V11_V12.md): tài liệu bàn giao kỹ thuật, chưa phải chức năng đã triển khai. Quy tắc: AI không tự chỉnh canonical story state/grade; tác phẩm gốc phải có quyền sử dụng.
+
+## Tiếp tục Gate 6
+- [HSK1_COVERAGE_MATRIX](../HSK1_COVERAGE_MATRIX.md): trục đại cương, phần đã/chưa dạy, nguồn chưa xác minh tới từng mục.
+- [HSK1_REVIEW_GATE](../HSK1_REVIEW_GATE.md): bảo toàn dữ liệu, 18 bài ôn và kiểm thử.
