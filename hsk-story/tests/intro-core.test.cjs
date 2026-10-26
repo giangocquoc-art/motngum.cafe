@@ -48,7 +48,9 @@ test("Saved progress migration sanitizes forged steps, glyphs, and score keys",(
 });
 test("All factual claims and rare character caveats are explicit",()=>{
  const text=D.stages.find(x=>x.kind==="legend").tip;
- assert.ok(text.includes("奻")&&text.includes("姦")&&text.includes("không có nghĩa"));
+ assert.ok(!text.includes("奻")&&!text.includes("姦"),"Rare glyphs must not be forced into Chapter00 core");
+ assert.ok(D.curiosity.examples.some(x=>x.zi==="奻")&&D.curiosity.examples.some(x=>x.zi==="姦"));
+ assert.ok(D.curiosity.lead.includes("từ điển")&&D.curiosity.examples.find(x=>x.zi==="姦").note.includes("định kiến"));
  assert.ok(D.stages.find(x=>x.kind==="mother").tip.includes("gợi âm"));
  assert.ok(D.stages.find(x=>x.kind==="light").tip.includes("lịch sử"));
  assert.ok(D.sources.length>=3);
