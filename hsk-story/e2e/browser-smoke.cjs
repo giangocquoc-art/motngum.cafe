@@ -85,7 +85,7 @@ async function goStory(page,label){
  assert.equal(await visible(page,"#completionPane"),true,"Completed progress did not survive reload");
 }
 async function testBrowser(){
- const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
+ const browser=await chromium.launch({headless:true,executablePath:process.env.HSK_BROWSER_BIN||undefined,args:["--no-sandbox"]});
  try{
   for(const cfg of [{name:"desktop",viewport:{width:1280,height:800}},{name:"mobile",viewport:{width:360,height:800},isMobile:true,hasTouch:true}]){
    const ctx=await browser.newContext({viewport:cfg.viewport,isMobile:!!cfg.isMobile,hasTouch:!!cfg.hasTouch,locale:"vi-VN"});
