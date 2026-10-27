@@ -95,6 +95,17 @@ test("Sẻ speaks on request, returns to the same line and does not affect learn
  e.sparrowTalkClose.click();assert.equal(e.sparrowWhisper.hidden,true);assert.equal(e.dialogueText.textContent,line);
  assert.equal(JSON.stringify(t.sharedStorage),before);assert.equal(t.document.activeElement.id,'sparrowTalkBtn');
 });
+test("Sẻ listens, worries at a wrong answer, thinks for a hint, and is happy when An answers",()=>{
+ const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
+ const sparrow={style:{},dataset:{expression:'curious'}};const host={dataset:{artScene:'hsk1.e01.arrival-greeting'},querySelector(selector){return selector==='.cs-sparrow'?sparrow:null}};
+ // The UI harness shares the real renderer API but uses a tiny mount host for expression updates.
+ const oldGet=t.document.getElementById.bind(t.document);
+ t.document.getElementById=function(id){return id==='stageIllustration'?host:oldGet(id)};
+ e.sparrowTalkBtn.click();assert.equal(sparrow.dataset.expression,'listening');
+ e.answerInput.value='不对';e.answerForm.fire('submit');assert.equal(sparrow.dataset.expression,'worried');
+ e.hintBtn.click();assert.equal(sparrow.dataset.expression,'thinking');
+ e.answerInput.value='我很好';e.answerForm.fire('submit');assert.equal(sparrow.dataset.expression,'happy');
+});
 test("story: exams hide notebook and builder, retain independent grading",()=>{
  const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
  const correct=["我很好","我叫安","我是学生","有三个学生","我想吃面条","谢谢","好","我叫安我是学生","十块钱","我想吃面条"];

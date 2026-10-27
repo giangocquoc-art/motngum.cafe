@@ -10,6 +10,15 @@ function sprite(name,expression,extra,position){
  if(position){style+='--actor-left:'+position.desktop.left+'%;--actor-width:'+position.desktop.width+'%;--actor-bottom:'+position.desktop.bottom+'%;--actor-mobile-left:'+position.mobile.left+'%;--actor-mobile-width:'+position.mobile.width+'%;--actor-mobile-bottom:'+position.mobile.bottom+'%;';if(position.tablet)style+='--actor-tablet-left:'+position.tablet.left+'%;--actor-tablet-width:'+position.tablet.width+'%;--actor-tablet-bottom:'+position.tablet.bottom+'%;'}
  return '<div class="'+extra+'" data-character="'+name+'" data-expression="'+expression+'" data-face="'+s.face.join(',')+'" data-asset="'+s.asset+'" style="'+style+'" aria-hidden="true"></div>';
 }
+function setExpression(host,name,expression){
+ var spec=data.sprites[name];if(!spec)throw Error("Unknown sprite: "+name);
+ var frame=spec.frames[expression];if(frame===undefined)throw Error("Missing expression: "+name+"/"+expression);
+ if(!host||typeof host.querySelector!=="function")return false;
+ var target=name==='sparrow'?host.querySelector('.cs-sparrow'):host.querySelector('.cs-actor[data-character="'+name+'"]');
+ if(!target)return false;
+ var x=spec.columns===1?0:(frame%spec.columns)/(spec.columns-1)*100,y=spec.rows===1?0:Math.floor(frame/spec.columns)/(spec.rows-1)*100;
+ target.style.backgroundPosition=x+'% '+y+'%';target.dataset.expression=expression;return true;
+}
 function render(place,id,options){
  var scene=scenes[id];if(!scene)throw Error("Unknown art scene: "+id);
  var bg=data.backgrounds[scene.background],midground=scene.layers.midground,foreground=scene.layers.foreground,showForeground=!!foreground&&(!foreground.visibleWhen||options&&options.showForeground===true),actors=scene.actors.map(function(a){return sprite(a.character,options&&options.anExpression&&a.character==='an'?options.anExpression:a.expression,'cs-actor',a)}).join('');
@@ -76,5 +85,5 @@ function validate(expected){
   if(s.sparrow.asset!==data.sprites.sparrow.asset)errors.push('Invalid Sparrow '+id);
  });return errors;
 }
-return {version:data.version,sceneIds:data.sceneIds,scenes:scenes,sprites:data.sprites,backgrounds:data.backgrounds,render:render,mount:mount,preload:preload,validate:validate};
+return {version:data.version,sceneIds:data.sceneIds,scenes:scenes,sprites:data.sprites,backgrounds:data.backgrounds,render:render,mount:mount,setExpression:setExpression,preload:preload,validate:validate};
 })();

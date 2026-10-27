@@ -19,6 +19,10 @@ These are the exact IDs returned by the authenticated `GET /v1/models` catalog. 
 
 For Vercel, add `PSHAREHUB_MODEL_IDS` with these comma-separated IDs to the Preview and Production environments. Add the provider key using Vercel's encrypted environment-variable settings; the local `.env` file is not uploaded during deployment.
 
+### Current Preview status
+
+As of 2026-10-27, the Vercel project `hsk-hai-que-huong` has `PSHAREHUB_API_BASE_URL`, sensitive `PSHAREHUB_API_KEYS`, `PSHAREHUB_MODEL_IDS`, and `PSHAREHUB_REQUEST_TIMEOUT_MS` set only for Preview branch `codex/chimse-redesign-preview`. Production has not been configured. The latest Preview redeploy is READY, but an external POST smoke check is blocked by Vercel SSO (`401 Protected deployment`), so a successful AI response on the hosted Preview is not yet verified. Local provider response has been verified separately; see `docs/DIRECTION_AUDIT_20261027.md`.
+
 For local use, fill `hsk-story/.env` and run the project through Vercel local development so the serverless route and env file are both loaded. For the hosted project, add the same variable names under **Vercel → hsk-hai-que-huong → Settings → Environment Variables** for Preview/Production, then redeploy. Vercel deployments do not read an uploaded `.env` file.
 
 ## Failure email

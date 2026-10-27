@@ -35,6 +35,16 @@ test('expression selection uses actual sprite cells and rejects nonexistent pose
  assert.throws(()=>layers.render(null,'intro.bedroom',{anExpression:'unknown'}),/Missing expression/);
  assert.throws(()=>layers.render(null,'unknown'),/Unknown art scene/);
 });
+test('a mounted character can change expression in place without creating another sparrow',()=>{
+ const sparrow={style:{},dataset:{expression:'curious'}},an={style:{},dataset:{expression:'awkward'}};
+ const host={querySelector(selector){return selector==='.cs-sparrow'?sparrow:selector.includes('data-character="an"')?an:null}};
+ assert.equal(layers.setExpression(host,'sparrow','happy'),true);
+ assert.equal(sparrow.style.backgroundPosition,'0% 100%');assert.equal(sparrow.dataset.expression,'happy');
+ assert.equal(layers.setExpression(host,'an','smile'),true);
+ assert.equal(an.style.backgroundPosition,'50% 100%');assert.equal(an.dataset.expression,'smile');
+ assert.throws(()=>layers.setExpression(host,'sparrow','delighted'),/Missing expression/);
+ assert.equal(layers.render(null,'hsk1.e01.liu-noodle-order').match(/data-character="sparrow"/g)?.length,1);
+});
 test('scene art follows story actions: menu before order, meal at payment, office only after leaving class',()=>{
  const menu=layers.render(null,'hsk1.e01.liu-noodle-order');
  const served=layers.render(null,'hsk1.e01.liu-noodle-order',{showForeground:true});

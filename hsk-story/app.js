@@ -381,7 +381,8 @@ function paintScene(place,sceneId){
  HSKSceneLayers.mount(host,sceneId,{dialogue:$("storyDialogue"),header:true,showForeground:showForeground});
  HSKSceneLayers.preload(HSKStoryGraph.idAt(Math.min(state.step+1,SCENE_TOTAL-1)));
 }
-function showAnFeeling(expression){var host=$("stageIllustration");if(host.dataset.artScene)HSKSceneLayers.mount(host,host.dataset.artScene,{dialogue:$("storyDialogue"),header:true,anExpression:expression})}
+function showAnFeeling(expression){var host=$("stageIllustration");if(host.dataset.artScene)HSKSceneLayers.setExpression(host,"an",expression)}
+function showSparrowFeeling(expression){var host=$("stageIllustration");if(host.dataset.artScene)HSKSceneLayers.setExpression(host,"sparrow",expression)}
 function narrateSparrow(index){
  var lines=[
   "Tớ đang giả vờ biết đường. Cậu đừng hỏi nhé.",
@@ -488,7 +489,7 @@ function speak(text,onFinished,onError){
 function finishCurrent(status){
  if(state.recognizer){try{state.recognizer.abort()}catch(e){}state.recognizer=null;$("micBtn").classList.remove("listening")}
  state.history[state.step]={status:status,attempts:state.attempts,hint:state.hintUsed};state.draft="";state.busy=false;
- save();displayResolved();showAnFeeling(status==="correct"?"smile":"awkward");$("nextBtn").focus();
+ save();displayResolved();showAnFeeling(status==="correct"?"smile":"awkward");showSparrowFeeling(status==="correct"?"happy":"worried");$("nextBtn").focus();
 }
 function submitAnswer(e){
  e.preventDefault();if(state.busy||state.solved||state.done)return;
@@ -499,7 +500,7 @@ function submitAnswer(e){
  if(!value.trim()){feed.className="feedback bad";feed.textContent=result.reason;return}
  state.attempts++;save();$("attemptCounter").textContent="Lượt thử: "+state.attempts;
  feed.className="feedback bad";feed.textContent="Chưa đúng ý. "+result.reason;
- showAnFeeling("awkward");
+ showAnFeeling("awkward");showSparrowFeeling("worried");
  if(state.attempts>=2)$("assistBtn").hidden=false;
 }
 function nextScene(){
@@ -522,7 +523,7 @@ function revealHint(){
  var s=SCENES[state.step];state.hintUsed=true;save();
  $("feedback").className="feedback neutral";$("feedback").textContent="Gợi ý: "+s.hint;
  $("assistBtn").hidden=false;save();
- showAnFeeling("thinking");
+ showAnFeeling("thinking");showSparrowFeeling("thinking");
 }
 function showAnswerAndMove(){
  if(state.solved)return;
@@ -556,7 +557,7 @@ $("notebookBtn").addEventListener("click",function(){setNotebook($("notebookPane
 $("notebookClose").addEventListener("click",function(){setNotebook(false)});
 $("sparrowTalkBtn").addEventListener("click",function(){
  if($("sparrowTalkBtn").hidden)return;
- $("sparrowWhisper").hidden=false;$("storyDialogue").classList.add("sparrow-speaking");$("sparrowTalkBtn").setAttribute("aria-expanded","true");$("sparrowTalkClose").focus();
+ showSparrowFeeling("listening");$("sparrowWhisper").hidden=false;$("storyDialogue").classList.add("sparrow-speaking");$("sparrowTalkBtn").setAttribute("aria-expanded","true");$("sparrowTalkClose").focus();
 });
 $("sparrowTalkClose").addEventListener("click",function(){closeSparrow(true)});
 [["notebookWordsTab","words"],["notebookMemoryTab","memory"],["notebookLearningTab","learning"],["notebookSettingsTab","settings"]].forEach(function(tab){$(tab[0]).addEventListener("click",function(){notebookSection=tab[1];notebookPage=0;renderNotebookPage()})});
