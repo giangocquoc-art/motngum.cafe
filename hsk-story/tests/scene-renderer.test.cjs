@@ -2,6 +2,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const root=path.resolve(__dirname,'..'),manifest=require('../art/manifest.json');
 const box={};vm.runInNewContext(fs.readFileSync(path.join(root,'scene-manifest.js'),'utf8'),box);const runtime=JSON.parse(JSON.stringify(box.HSKSceneManifest));vm.runInNewContext(fs.readFileSync(path.join(root,'scene-renderer.js'),'utf8'),box);const layers=box.HSKSceneLayers;
 const graphBox={};vm.runInNewContext(fs.readFileSync(path.join(root,'story-graph.js'),'utf8'),graphBox);
+const contentBox={};vm.runInNewContext(fs.readFileSync(path.join(root,'content-manifest.js'),'utf8'),contentBox);const content=contentBox.HSKContent;
 const expected=[...graphBox.HSKStoryGraph.sceneIds.slice(0,7),'lost-notebook',...graphBox.HSKStoryGraph.sceneIds.slice(7)];
 test('compiled scene data is current and retains every canonical story/encounter ID',()=>{
  execFileSync(process.execPath,[path.join(root,'scripts/build-scene-manifest.cjs'),'--check']);
@@ -71,6 +72,14 @@ test('supporting-cast atlases expose six valid frames and every scene/companion 
 test('Liu speaks while asking An what he wants and stating the price',()=>{
  assert.equal(runtime.scenes['hsk1.e01.liu-noodle-order'].actors.find(a=>a.character==='liu').expression,'speaking');
  assert.equal(runtime.scenes['hsk1.e01.liu-payment'].actors.find(a=>a.character==='liu').expression,'speaking');
+});
+test('every authored HSK speaker maps to a visible role with a speaking frame',()=>{
+ for(const [index,scene] of content.scenes.entries()){
+  const id=graphBox.HSKStoryGraph.idAt(index),actor=runtime.scenes[id].actors.find(a=>a.character===scene.speakerCharacter);
+  assert.ok(actor,`${id} contains its declared speaker ${scene.speakerCharacter}`);
+  const sprite=runtime.sprites[actor.sprite||actor.character];
+  assert.ok(sprite&&sprite.frames.speaking!==undefined,`${id} has a speaking frame for ${scene.speakerCharacter}`);
+ }
 });
 test('a mounted character can change expression in place without creating another sparrow',()=>{
  const sparrow={style:{},dataset:{expression:'curious'}},an={style:{},dataset:{expression:'awkward'}};

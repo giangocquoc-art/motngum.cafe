@@ -147,6 +147,7 @@ async function goStory(page,label){
   }
   if(await visible(page,"#completionPane")){finished=true;break}
   if(await visible(page,"#storyInterlude")){
+   if(artId==='hsk1.e01.school-introduction')assert.equal(await page.locator('#stageIllustration [data-character="wang"]').getAttribute('data-expression'),'smile','Narrative beat keeps the teacher smile before her prompt');
    if((await page.locator('#interludeHeading').innerText())==='Mùi hương trong ngõ'){
     assert.equal((await page.locator('#dialogueText').innerText()).trim(),'安和小雨在面馆里。','Noodle-shop illustration must match the narrated place');
     assert.equal(await page.locator('#interludeTranslation').count(),0,'Story translation is already shown in the dialogue layer');
@@ -232,6 +233,10 @@ async function goStory(page,label){
   if(await visible(page,"#nextBtn")){await page.locator("#nextBtn").click();continue}
   if(await visible(page,"#answerForm")){
    const artId=await page.locator('#stageIllustration .cs-scene').getAttribute('data-scene');
+   const activeIndex=Number((await page.locator('#stepText').innerText()).split('/')[0].trim())-1;
+   const speakerCharacter=await page.evaluate(i=>HSKContent.scenes[i].speakerCharacter,activeIndex);
+   assert.ok(speakerCharacter,'Each active HSK question declares its visual speaker');
+   assert.equal(await page.locator('#stageIllustration [data-character="'+speakerCharacter+'"]').getAttribute('data-expression'),'speaking','The active HSK speaker should use the speaking frame');
    if(['hsk1.e01.liu-noodle-order','hsk1.e01.liu-payment'].includes(artId))assert.equal(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking','Liu should be speaking in both her order question and price line');
    if(!supportUsed){
     await page.waitForFunction(()=>performance.getEntriesByType('resource').some(x=>x.name.endsWith('/art/'+HSKSceneLayers.backgrounds['school-gate'][matchMedia('(max-width:900px) and (orientation:portrait)').matches?'mobile':'desktop'])));

@@ -442,6 +442,7 @@ function renderStep(){
  if(state.done)showCompletion();
  else {
   var blocked=renderEncounter()||renderSkillSampler()||renderStoryInterlude();
+  if(!blocked&&SCENES[state.step].speakerCharacter)HSKSceneLayers.setExpression($("stageIllustration"),SCENES[state.step].speakerCharacter,"speaking");
   if(!blocked&&state.history[state.step])displayResolved();
   $("practiceOpenBtn").hidden=blocked||state.done||state.step<EXAM_START||!HSKSkillSampler.current(state.skillSampler)||!!HSKStoryBeats.pending(state.step,state.storyBeats);
   renderWorld();
