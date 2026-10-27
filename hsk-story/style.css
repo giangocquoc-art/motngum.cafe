@@ -13,7 +13,7 @@ html,body{min-height:100%;overscroll-behavior:none}body{background:var(--sparrow
 .sparrow-brand-mark{background:#b6dce5 url('/art/characters/sparrow-icon-v2.webp') center/contain no-repeat!important;color:transparent!important;font-size:0!important}
 .sparrow-header .identity-copy b{font:700 21px/1.1 "DM Sans",sans-serif;letter-spacing:.03em}.sparrow-header .identity-copy small{font-size:9px;letter-spacing:1.8px;color:#5b615c}
 .sparrow-header .nav-progress{padding:12px 17px;background:#fff8e8;border:1.5px solid #3c3b35;color:#302f2b;box-shadow:3px 3px 0 #463b2d65;font-size:12px}
-.sparrow-home{height:100svh;min-height:590px;overflow:hidden}.sparrow-hero{height:100%;min-height:0;display:grid;grid-template-columns:1fr;position:relative;padding:0;gap:0;align-items:stretch}
+.sparrow-home{height:100dvh;min-height:0;overflow:hidden}.sparrow-hero{height:100%;min-height:0;display:grid;grid-template-columns:1fr;position:relative;padding:0;gap:0;align-items:stretch}
 .sparrow-hero .hero-visual{position:absolute;inset:0;margin:0;z-index:0;height:auto}.sparrow-hero .hero-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#f5eddbed 0%,#f5eddbd9 32%,#f5eddb40 66%,#f5eddb00 100%),linear-gradient(0deg,#f5eddb62,transparent 36%)}
 .sparrow-hero .hero-art{height:100%;width:100%;border:0;box-shadow:none}.sparrow-hero .hero-copy{position:relative;z-index:1;width:min(580px,55vw);padding:clamp(130px,19vh,205px) 0 7vh clamp(36px,9vw,142px);align-self:center}
 .sparrow-hero .hero-copy .eyebrow{font-size:10px;letter-spacing:2px}.sparrow-hero h1{font-size:clamp(42px,5.8vw,78px);line-height:1.08;white-space:normal;letter-spacing:-2.8px;margin:18px 0 20px}.sparrow-hero h1 em{color:#9a5843;font-weight:500}
@@ -325,13 +325,6 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
  .ai-tutor-open{right:8px;top:120px;padding:7px 11px;font-size:9px}
  .ai-tutor-panel{left:7px;right:7px;top:7px;bottom:7px;width:auto;height:auto;min-height:0;max-height:none}
  .ai-tutor-messages{padding:8px}.ai-tutor-welcome,.ai-tutor-message{font-size:10px}.ai-tutor-note{font-size:8px}
- .game-shell.ai-tutor-active .player-panel{display:none}
- .game-shell.ai-tutor-active .stage{flex:1 1 0%;min-height:0}
- .game-shell.ai-tutor-active .story-ui{bottom:calc(50% + 12px);top:auto}
- .game-shell.ai-tutor-active .ai-tutor-panel{top:auto;bottom:7px;height:min(40%,340px);min-height:0;max-height:340px}
- .game-shell.ai-tutor-active.keyboard-open .story-ui{top:105px;bottom:auto}
- .game-shell.ai-tutor-active.keyboard-open .ai-tutor-panel{height:min(52%,300px);max-height:300px}
- .game-shell.ai-tutor-active.keyboard-open .ai-tutor-note{display:none}
 }
 @media(max-width:690px){
  .game-shell.keyboard-open .stage{flex:0 0 112px;min-height:112px}
@@ -374,7 +367,7 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .stage .scene-background img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 52%}
 .stage .scene-stack{background:#e6e0ce}
 .story-ui{z-index:5;top:clamp(76px,10dvh,104px);bottom:auto;left:clamp(18px,4vw,56px);width:min(610px,46vw);max-height:calc(100% - 92px);overflow:auto}
-.player-panel{position:relative;display:flex;flex:0 0 clamp(245px,30dvh,320px);flex-direction:column;justify-content:center;min-height:0;max-height:48dvh;overflow:auto;overscroll-behavior:contain;padding:12px clamp(16px,5vw,72px) max(12px,env(safe-area-inset-bottom));background:var(--sparrow-paper);border-top:2px solid #665a4960}
+.player-panel{position:relative;display:flex;flex:0 0 clamp(245px,30dvh,320px);flex-direction:column;justify-content:safe center;min-height:0;max-height:48dvh;overflow:auto;overscroll-behavior:contain;padding:12px clamp(16px,5vw,72px) max(12px,env(safe-area-inset-bottom));background:var(--sparrow-paper);border-top:2px solid #665a4960}
 .player-panel>*{flex-shrink:0}
 .player-panel>.ai-tutor-open{position:static;z-index:auto;align-self:flex-end;order:2;margin:2px 0 0;padding:6px 11px;box-shadow:none}
 .ai-tutor-panel{position:relative;inset:auto;width:100%;height:auto;min-height:0;max-height:none;flex:1 1 auto;box-shadow:none}
@@ -448,3 +441,94 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
  .game-shell.ai-tutor-active.keyboard-open .ai-tutor-note{display:none}
 }
 @media(prefers-reduced-motion:reduce){.game-shell *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Optional practice occupies the same learning sheet as the answer it replaces. */
+.player-panel:has(#skillPanel:not([hidden])){justify-content:flex-start;overflow:hidden}
+.player-panel:has(#skillPanel:not([hidden]))>:not(#skillPanel){display:none!important}
+.player-panel #skillPanel{position:relative;display:flex;flex-direction:column;width:min(100%,920px);min-height:0;max-height:none;margin:0 auto;padding:0;border:0;background:transparent;overflow:visible;gap:3px}
+#skillPanel[hidden]{display:none!important}
+#skillPanel .skill-header,#skillPanel h3,#skillPanel>p:not(#skillQuestion):not(#skillAudioNotice){display:none}
+#skillPanel .practice-close{align-self:flex-start;min-height:26px;padding:2px 0;font-size:10px}
+#skillPanel .skill-step{position:absolute;top:6px;right:0;margin:0;font-size:9px}
+#skillPanel .skill-question{margin:3px 0;font-size:12px!important;line-height:1.3}
+#skillPanel .skill-notice{margin:2px 0;font-size:9px!important;line-height:1.25}
+#skillPanel .skill-listen{align-self:flex-start;min-height:30px;padding:5px 8px}
+#skillPanel .skill-options{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:3px 0}
+#skillPanel .skill-option{min-height:34px;padding:5px 7px;font-size:10px}
+#skillPanel .skill-skip{align-self:flex-start;min-height:26px;padding:3px 0;font-size:10px}
+@media(max-height:620px){#skillPanel{gap:1px}#skillPanel .skill-question{font-size:10px!important;margin:1px 0}#skillPanel .skill-notice{font-size:8px!important}#skillPanel .skill-option{min-height:28px;padding:3px;font-size:9px}#skillPanel .practice-close,#skillPanel .skill-skip{min-height:23px;font-size:9px}}
+
+/* One authored interaction at a time; detailed evidence stays in An's notebook. */
+.game-shell[data-mode="interlude"] .player-panel>:not(#storyInterlude),
+.game-shell[data-mode="encounter"] .player-panel>:not(#encounterPanel),
+.game-shell[data-mode="practice"] .player-panel>:not(#skillPanel),
+.game-shell[data-mode="choice"] .player-panel>:not(#storyChoicePanel),
+.game-shell[data-mode="completed"] .player-panel>:not(#completionPane),
+.game-shell[data-mode="answer"] .player-panel>:not(#aiTutorBtn,#aiTutorPanel,#userInstruction,#answerForm,#openBuilderBtn,#sentenceBuilder,#feedback,#practiceOpenBtn),
+.game-shell[data-mode="resolved"] .player-panel>:not(#storyBeat,#storyEcho,#feedback,.next-row,#storyChoiceOutcome){display:none!important}
+.game-shell[data-mode] .player-panel{justify-content:flex-start}
+.game-shell[data-mode="interlude"] .player-panel{flex-basis:clamp(265px,36dvh,340px)}
+.game-shell[data-mode="encounter"] .player-panel{flex-basis:clamp(300px,40dvh,380px);max-height:52dvh}
+.game-shell[data-mode="completed"] .player-panel{flex-basis:clamp(300px,40dvh,380px);max-height:52dvh}
+.game-shell[data-mode="choice"] .player-panel{flex-basis:clamp(240px,32dvh,310px)}
+.game-shell[data-mode="choice"] #storyChoicePanel{width:min(100%,920px);margin:0 auto;padding:6px 0;border:0;background:transparent}
+.story-choice-heading,.story-interlude-heading,.encounter-eyebrow,.encounter-disclaimer{display:none}
+.game-shell[data-mode] #storyInterlude{margin:0 auto;padding:3px 0;border:0;background:transparent}
+#storyInterlude h3{font-size:19px;margin:3px 0 6px}
+#storyInterlude>p{font-size:12px;line-height:1.5;margin:5px 0}
+#storyInterlude .interlude-continue{min-height:34px;padding:7px 12px;margin-top:5px}
+.game-shell[data-mode] #encounterPanel{width:min(100%,920px);margin:0 auto;padding:0;border:0;box-shadow:none;background:transparent;max-height:none;overflow:visible}
+#encounterPanel h3{font-size:18px;margin:3px 0}
+#encounterPanel .encounter-body{font-size:12px;line-height:1.4;margin:5px 0}
+#encounterPanel .encounter-actions{gap:6px;margin:5px 0}
+#encounterPanel .encounter-action{min-height:36px;padding:6px 9px;font-size:11px}
+#encounterPanel .encounter-feedback{margin:5px 0;font-size:10px;line-height:1.3}
+#encounterPanel .encounter-input-row{display:grid;grid-template-columns:minmax(0,1fr) auto}
+#encounterPanel .encounter-input-row button{width:auto;font-size:10px;padding:7px 9px}
+.game-shell[data-mode] #completionPane{width:min(100%,920px);margin:0 auto;padding:0 4px;border:0;background:transparent}
+#completionPane .completion-head,#completionPane #summaryStats,#completionPane #summaryDescription,#completionPane #encounterSummary,#completionPane #skillSummary,#completionPane #completionReview,#completionPane .completion-actions>span{display:none}
+#completionPane h3{font-size:21px;margin:3px 0 7px}
+#completionPane #episodeEnding,#completionPane #episodeReflection{font-size:12px;line-height:1.45;margin:7px 0;padding:0;border:0;background:transparent}
+#completionPane .completion-actions{margin-top:10px}
+.notebook-results{white-space:pre-line;font-size:12px;line-height:1.5;margin:10px 0;border-top:1px solid #cbbba5;padding-top:10px}
+.game-shell[data-mode="resolved"] #storyBeat,.game-shell[data-mode="resolved"] #storyEcho{margin:3px auto;padding:4px 8px;font-size:11px;line-height:1.4}
+@media(max-height:620px){
+ .game-shell[data-mode] .player-panel{flex-basis:190px;max-height:55dvh}
+ #encounterPanel .encounter-answer>label{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%)}
+ #storyInterlude h3,#completionPane h3,#encounterPanel h3{font-size:15px;margin:1px 0 3px}
+ #storyInterlude>p,#completionPane #episodeEnding,#completionPane #episodeReflection,#encounterPanel .encounter-body{font-size:10px;line-height:1.3;margin:3px 0}
+ #encounterPanel .encounter-action{min-height:28px;padding:4px 6px;font-size:9px}
+ .game-shell[data-mode="resolved"] #storyBeat,.game-shell[data-mode="resolved"] #storyEcho{font-size:9px;line-height:1.25;padding:2px 5px}
+}
+@media(max-height:620px){
+ .sparrow-header{padding:8px 14px}
+ .sparrow-header .seal{width:32px;height:32px}
+ .sparrow-header .identity-copy b{font-size:16px}.sparrow-header .identity-copy small{font-size:7px}
+ .sparrow-header .nav-progress{padding:8px 10px;font-size:10px}
+ .sparrow-hero .hero-copy{width:58vw;padding:64px 20px 16px 5vw;align-self:start;margin:0}
+ .sparrow-hero .hero-copy .eyebrow{font-size:8px;letter-spacing:1px}
+ .sparrow-hero h1{font-size:clamp(28px,4vw,42px);line-height:1.05;letter-spacing:-1px;margin:8px 0}
+ .sparrow-hero .lead{font-size:11px;line-height:1.4;margin:0}
+ .sparrow-hero .hero-actions{margin-top:11px;gap:10px}
+ .sparrow-hero .primary-btn{min-height:36px;padding:8px 11px;font-size:11px;gap:15px}
+ .sparrow-hero .text-link{font-size:10px}
+ .sparrow-hero .hero-note,.sparrow-footer{display:none}
+ .sparrow-hero .review-entry-button{font-size:9px;margin-top:7px;padding:4px 0}
+}
+@media(max-width:690px){
+ .game-shell.keyboard-open[data-mode] .player-panel{flex:1 1 auto;max-height:none}
+ .game-shell.keyboard-open #encounterBody,.game-shell.keyboard-open #encounterHeading{display:none}
+}
+.game-shell.keyboard-open{height:var(--chimse-visible-height,100dvh);max-height:var(--chimse-visible-height,100dvh)}
+.game-shell.keyboard-open .stage{flex:0 0 clamp(64px,28%,138px);min-height:64px}
+.game-shell.ai-tutor-active.keyboard-open .stage{flex:0 0 clamp(64px,26%,126px);min-height:64px}
+.game-shell.keyboard-open .game-top,.game-shell.keyboard-open .scene-progress,.game-shell.keyboard-open .scene-day,.game-shell.keyboard-open .sparrow-whisper{display:none}
+.game-shell.keyboard-open .story-ui{top:4px;bottom:auto;left:8px;right:auto;width:calc(100% - 16px);max-height:calc(100% - 8px);padding:4px 8px}
+.game-shell.keyboard-open .talk-content{padding:0;min-height:0}
+.game-shell.keyboard-open .talk-line{font-size:16px;line-height:1.25}
+.game-shell.keyboard-open .speaker-label{font-size:9px}
+.game-shell.keyboard-open .pinyin-text,.game-shell.keyboard-open .viet-text,.game-shell.keyboard-open .scene-toolbelt{display:none}
+.game-shell.keyboard-open .player-panel{flex:1 1 auto;max-height:none;overflow:hidden;justify-content:flex-start;padding-top:5px;padding-bottom:max(5px,env(safe-area-inset-bottom))}
+.game-shell.keyboard-open .user-instruction{font-size:10px;line-height:1.2;margin-bottom:3px}
+.game-shell.keyboard-open #encounterBody,.game-shell.keyboard-open #encounterHeading,.game-shell.keyboard-open .ai-tutor-note{display:none}
+.game-shell.keyboard-open #openBuilderBtn{min-height:28px;padding:4px 8px;font-size:9px}

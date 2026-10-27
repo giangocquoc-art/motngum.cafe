@@ -8,7 +8,7 @@
  function sync(){
   var panel=$("aiTutorPanel"),button=$("aiTutorBtn"),overlay=$("gameOverlay");if(!panel||!button)return;
   var step=panel.dataset.sceneId||"";
-  var available=allowed.has(step)&&overlay&&!overlay.hidden;
+  var available=allowed.has(step)&&overlay&&!overlay.hidden&&$("gameShell").dataset.mode==="answer";
   button.hidden=!available;
   if(!available)close();
   panel.dataset.sceneId=step||"";

@@ -8,57 +8,95 @@ const ROOT=process.env.HSK_URL||"http://127.0.0.1:4173";
 const OUT=path.join(__dirname,"../test-results");
 fs.mkdirSync(OUT,{recursive:true});
 const errs=[];
+const layoutFindings=[];
+let layoutChecks=0;
+async function auditLayout(page,label,state){
+ layoutChecks++;
+ const result=await page.evaluate(()=>{
+  const shell=document.querySelector('#gameOverlay:not([hidden])')||document.querySelector('.intro-screen')||document.querySelector('.review-screen')||document.body;
+  const issues=[];
+  if(document.documentElement.scrollWidth>innerWidth+2||document.documentElement.scrollHeight>innerHeight+2)issues.push({kind:'viewport-scroll',size:[document.documentElement.scrollWidth,document.documentElement.scrollHeight],viewport:[innerWidth,innerHeight]});
+  for(const el of shell.querySelectorAll('.player-panel,.story-ui,.interactive,.intro-learning,.book,.card,.notice,.curiosity-details')){
+   const r=el.getBoundingClientRect();if(!r.width||!r.height||el.closest('[hidden]'))continue;
+   if(el.scrollHeight>el.clientHeight+2)issues.push({kind:'panel-overflow',node:el.id||el.className,size:[el.clientHeight,el.scrollHeight]});
+  }
+  for(const el of shell.querySelectorAll('button,input,textarea,a,#interludeStory,#encounterBody,#dialogueText,#episodeReflection')){
+   const r=el.getBoundingClientRect(),cs=getComputedStyle(el),closedDetails=el.closest('details:not([open])');if(!r.width||!r.height||el.closest('[hidden]')||closedDetails&&!closedDetails.querySelector('summary')?.contains(el)||cs.visibility==='hidden'||cs.display==='none')continue;
+   let clip={left:0,top:0,right:innerWidth,bottom:innerHeight},ancestor=el.parentElement;
+   while(ancestor){const style=getComputedStyle(ancestor),a=ancestor.getBoundingClientRect();if(/hidden|clip|auto|scroll/.test(style.overflowY)){clip.top=Math.max(clip.top,a.top);clip.bottom=Math.min(clip.bottom,a.bottom)}if(/hidden|clip|auto|scroll/.test(style.overflowX)){clip.left=Math.max(clip.left,a.left);clip.right=Math.min(clip.right,a.right)}ancestor=ancestor.parentElement}
+   if(r.top<clip.top-2||r.bottom>clip.bottom+2||r.left<clip.left-2||r.right>clip.right+2)issues.push({kind:'clipped-control-or-story',node:el.id||el.className,text:(el.textContent||'').trim().slice(0,55),rect:[Math.round(r.left),Math.round(r.top),Math.round(r.right),Math.round(r.bottom)],clip});
+  }
+  return issues;
+ });
+ if(result.length){layoutFindings.push({label,state,issues:result});fs.writeFileSync(path.join(OUT,'layout-findings.json'),JSON.stringify(layoutFindings,null,2));}
+}
 function watch(page,label){page.on("pageerror",e=>errs.push(label+": "+e.message));}
 async function visible(page,sel){return page.locator(sel).isVisible()}
 async function goIntro(page,label){
  await page.goto(ROOT+"/nhap-mon.html",{waitUntil:"networkidle"});
- assert.match(await page.title(),/Nhập môn/);
+ assert.match(await page.title(),/Chim Sẻ/);
+ await auditLayout(page,label,'intro-start');
  await page.locator('.glyph-option').first().click();
  assert.equal(await page.locator("#mainGlyph").innerText(),"人");
  assert.equal(await page.locator("#mainPinyin").innerText(),"rén");
  await page.reload();
  assert.equal(await page.locator("#mainGlyph").innerText(),"人");
- for(let i=0;i<6;i++)await page.locator("#nextBtn").click();
+ for(let i=1;i<4;i++)await page.locator('.glyph-option').nth(i).click();
+ await auditLayout(page,label,'intro-discovered');await page.locator('#nextBtn').click();
+ for(let i=0;i<3;i++)await page.locator('#interactive .primary').click();
+ await auditLayout(page,label,'intro-strokes-complete');await page.locator('#nextBtn').click();
+ for(const kind of ['forest','people']){await page.locator('#interactive .number-button').last().click();await auditLayout(page,label,'intro-'+kind);await page.locator('#nextBtn').click()}
+ await page.locator('#interactive .parts button').first().click();await page.locator('#interactive .parts button').last().click();
+ await auditLayout(page,label,'intro-light');await page.locator('#nextBtn').click();
+ await page.locator('#interactive>.primary').click();await auditLayout(page,label,'intro-mother');await page.locator('#nextBtn').click();
  assert.match(await page.locator("#position").innerText(),/07/);
  assert.equal(await page.locator("#curiosityDetails").count(),0,"Historical page must be optional");
- if(label==="desktop"){
+ {
   await page.locator("#interactive .number-button").first().click();
   assert.equal(await page.locator("#curiosityDetails").isVisible(),true);
+  await auditLayout(page,label,'intro-curiosity');
+  for(let i=1;i<3;i++){await page.locator('.curiosity-pages button').last().click();await auditLayout(page,label,'intro-curiosity-'+i)}
   await page.screenshot({path:path.join(OUT,label+"-curiosity.png"),fullPage:true});
-  await page.locator("#curiosityDetails .secondary").click();
+  await page.locator("#curiosityDetails>.secondary").click();
   assert.equal(await page.locator("#curiosityDetails").count(),0);
  }
  await page.locator("#nextBtn").click();
  assert.match(await page.locator("#position").innerText(),/08/);
- let first=page.locator(".quiz-choice").first();
- await first.click();
- assert.equal(await page.locator(".quiz-choice:not([disabled])").count(),0);
- await page.locator("#nextBtn").click();
- assert.equal(await page.locator("#mainGlyph").innerText(),"众");
+ for(let i=0;i<4;i++){
+  if(i!==1){const answer=await page.evaluate(i=>HSKIntroContent.quizzes[i].answer,i);await page.locator('.quiz-choice').nth(i===0?(answer+1)%3:answer).click();assert.equal(await page.locator('.quiz-choice:not([disabled])').count(),0)}
+  await auditLayout(page,label,'intro-quiz-'+i);await page.locator('#nextBtn').click();
+ }
+ await auditLayout(page,label,'intro-recap');await page.locator('#nextBtn').click();await auditLayout(page,label,'intro-ending');
  await page.screenshot({path:path.join(OUT,label+"-intro.png"),fullPage:true});
+ await page.locator('#interactive .finish-card a').click();
+ await page.locator('#gameOverlay').waitFor({state:'visible'});
+ assert.equal(await visible(page,'#gameOverlay'),true,'Intro ending must open the story directly');
 }
 async function goStory(page,label){
  await page.goto(ROOT+"/",{waitUntil:"networkidle"});
+ await auditLayout(page,label,'opening-scene');
  const features=await page.evaluate(()=>({
   sceneArt:typeof HSKSceneArt==="object"&&typeof HSKSceneArt.render==="function",
   saveAdapter:typeof HSKSaveIO==="object"&&typeof HSKSaveIO.persist==="function",
-  roadmap:[...document.querySelectorAll(".chapter.locked")].map(x=>({role:x.getAttribute("role"),tabIndex:x.getAttribute("tabindex"),disabled:x.getAttribute("aria-disabled")})),
+  roadmap:[...document.querySelectorAll(".chapter.locked")].map(x=>({role:x.getAttribute("role"),tabIndex:x.getAttribute("tabindex"),disabled:x.getAttribute("aria-disabled"),visible:!!x.getClientRects().length})),
   resources:performance.getEntriesByType("resource").filter(r=>new URL(r.name).origin===location.origin).map(r=>({name:new URL(r.name).pathname,transfer:r.transferSize,encoded:r.encodedBodySize,duration:Math.round(r.duration)})),
   viewport:window.innerWidth,scrollWidth:document.documentElement.scrollWidth
  }));
  assert.equal(features.sceneArt,true,"Separated scene-art module not loaded");
  if(label==="mobile")assert.ok(features.scrollWidth<=features.viewport+5,"Homepage has horizontal overflow at 360px: "+features.scrollWidth);
  assert.equal(features.saveAdapter,true,"Separated save-io module not loaded");
- assert.equal(features.roadmap.length,4);
+ assert.ok(features.roadmap.every(x=>!x.visible),'Unplayable roadmap cards should be absent from the opening scene');
  assert.ok(features.roadmap.every(x=>x.role===null&&x.tabIndex===null&&x.disabled==="true"),"HSK2–5 roadmap should not be actionable controls");
  fs.writeFileSync(path.join(OUT,label+"-resource-timings.json"),JSON.stringify(features,null,2));
  await page.locator("#startBtn").click();
  assert.equal(await visible(page,"#gameOverlay"),true);
  let finished=false,steps=0,practiceUsed=false,arrivalObserved=false,returnedTree=false,streetEchoObserved=false;
  for(;steps<100;steps++){
+  await auditLayout(page,label,'story-'+steps+'-'+(await page.locator('#stepText').innerText()));
   if(await visible(page,"#completionPane")){finished=true;break}
   if(await visible(page,"#storyInterlude")){await page.locator("#interludeContinue").click();continue}
   const stepText=await page.locator("#stepText").innerText();
+  if((!arrivalObserved&&stepText.trim()==='01 / 10'||!returnedTree&&stepText.trim()==='07 / 10')&&!await visible(page,'#worldPanel')&&await visible(page,'#worldOpenBtn'))await page.locator('#worldOpenBtn').click();
   if(!streetEchoObserved&&stepText.trim()==="07 / 10"&&await visible(page,"#storyEcho")){
    const echo=await page.locator("#storyEcho").innerText();
    assert.ok(echo.includes("明天见"),"The walk-home scene did not reuse a known expression");
@@ -85,7 +123,8 @@ async function goStory(page,label){
     await page.locator('#encounterAnswerForm button[type="submit"]').click();
    }else if(await visible(page,"#encounterContinue"))await page.locator("#encounterContinue").click();
    else{
-    const action=page.locator("#encounterActions .encounter-action:not([disabled])").first();
+    const route=await page.evaluate(()=>JSON.parse(localStorage.getItem('hai-que-huong-progress-v3')||'{}').encounter?.stage);
+    const actions=page.locator("#encounterActions .encounter-action:not([disabled])"),action=route==='decide'&&label==='mobile'?actions.last():actions.first();
     if(await action.count())await action.click();else throw Error("Encounter has no available action");
    }
    continue;
@@ -94,14 +133,17 @@ async function goStory(page,label){
    await page.locator("#answerInput").fill("我叫");
    await page.locator("#practiceOpenBtn").click();
    assert.equal(await visible(page,"#skillPanel"),true);
+   await auditLayout(page,label,'optional-practice-open');
    await page.locator("#skillSkip").click();
+   await auditLayout(page,label,'optional-practice-after-skip');
+   await page.screenshot({path:path.join(OUT,label+'-practice-current.png')});
    await page.locator("#practiceCloseBtn").click();
    assert.equal(await page.locator("#answerInput").inputValue(),"我叫","Optional sidebranch lost learner draft");
    practiceUsed=true;continue;
   }
   if(await visible(page,"#skillPanel"))throw Error("Practice forced into mandatory main storyline");
   if(await visible(page,"#storyChoicePanel")){
-   await page.locator("#storyChoiceOptions button").first().click();continue;
+   const choices=page.locator("#storyChoiceOptions button");await (label==='mobile'?choices.last():choices.first()).click();continue;
   }
   if(await visible(page,"#nextBtn")){await page.locator("#nextBtn").click();continue}
   if(await visible(page,"#answerForm")){
@@ -115,8 +157,9 @@ async function goStory(page,label){
   }
   throw Error("No valid next action at "+(await page.locator("#stepText").textContent()));
  }
+ if(!finished){await page.screenshot({path:path.join(OUT,label+'-stuck.png')});console.error(await page.evaluate(()=>({step:document.querySelector('#stepText').textContent,feedback:document.querySelector('#feedback').textContent,answer:document.querySelector('#answerInput').value,panels:['storyInterlude','encounterPanel','skillPanel','storyChoicePanel','nextBtn','answerForm'].map(id=>[id,!document.getElementById(id).hidden])})))}
  assert.equal(finished,true,"End-to-end story not finished after "+steps+" steps");
- const stats=await page.locator("#summaryStats").innerText();
+ const stats=await page.locator("#summaryStats").textContent();
  assert.match(stats,/3\/3 câu kiểm tra/);
  const v3=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v3")));
  const v4=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v4")));
@@ -138,7 +181,8 @@ async function goStory(page,label){
 }
 async function goReview(page,label,withStory){
  await page.goto(ROOT+"/ren-luyen.html",{waitUntil:"networkidle"});
- const locked=await page.locator("#unlockedCount").innerText();
+ await auditLayout(page,label,withStory?'review-unlocked':'review-empty');
+ const locked=await page.locator("#unlockedCount").textContent();
  if(!withStory){
   assert.equal(locked,"0","New learner must not see future story answer prompts");
   assert.equal(await page.locator("#exerciseCard").isVisible(),false);
@@ -146,27 +190,28 @@ async function goReview(page,label,withStory){
   return;
  }
  assert.equal(locked,"18","Full demo should unlock all authored review items");
- assert.equal(await page.locator("#dueCount").innerText(),"18");
+ assert.equal(await page.locator("#dueCount").textContent(),"18");
  const oldV3=await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v3"));
  const oldV4=await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v4"));
  const first=await page.evaluate(()=>HSKReviewData.items[0]);
  const idx=first.options.findIndex(x=>x[0]===first.correct);
  await page.locator("#choiceOptions button").nth(idx).click();
- assert.equal(await page.locator("#independentCount").innerText(),"1");
- assert.equal(await page.locator("#dueCount").innerText(),"17");
+ await auditLayout(page,label,'review-first-feedback');
+ assert.equal(await page.locator("#independentCount").textContent(),"1");
+ assert.equal(await page.locator("#dueCount").textContent(),"17");
  await page.locator("#nextBtn").click();
  await page.locator("#hintBtn").click();
  const second=await page.evaluate(()=>HSKReviewData.items[1]);
  await page.locator("#choiceOptions button").nth(second.options.findIndex(x=>x[0]===second.correct)).click();
- assert.equal(await page.locator("#assistedCount").innerText(),"1");
+ assert.equal(await page.locator("#assistedCount").textContent(),"1");
  await page.locator("#nextBtn").click();
  await page.locator("#skipBtn").click();
  await page.locator("#nextBtn").click();
  assert.equal(await page.locator("#taskKind").innerText(),"NHẬP CHỮ HÁN");
  await page.locator("#typedAnswer").fill("我叫安");
  await page.locator("#submitTyped").click();
- assert.equal(await page.locator("#independentCount").innerText(),"2");
- assert.equal(await page.locator("#dueCount").innerText(),"14");
+ assert.equal(await page.locator("#independentCount").textContent(),"2");
+ assert.equal(await page.locator("#dueCount").textContent(),"14");
  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-review-v1")));
  assert.equal(saved.items["self-introduction"].status,"independent");
  assert.equal(saved.items["arrived-city"].status,"assisted");
@@ -175,15 +220,28 @@ async function goReview(page,label,withStory){
  assert.equal(await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v4")),oldV4,"Optional review mutated V4 shadow");
  await page.screenshot({path:path.join(OUT,label+"-spaced-review.png"),fullPage:true});
  await page.reload({waitUntil:"networkidle"});
- assert.equal(await page.locator("#dueCount").innerText(),"14","Review schedule did not survive reload");
+ assert.equal(await page.locator("#dueCount").textContent(),"14","Review schedule did not survive reload");
+ for(let n=0;n<14;n++){
+  await auditLayout(page,label,'review-item-'+(n+5));
+  const item=await page.evaluate(()=>HSKReviewData.items.find(x=>x.question===document.querySelector('#questionPrompt').textContent));
+  assert.ok(item,'Active review item must be authored');
+  if(item.kind==='typed'){await page.locator('#typedAnswer').fill(item.answers[0]);await page.locator('#submitTyped').click()}
+  else await page.locator('#choiceOptions button').nth(item.options.findIndex(x=>x[0]===item.correct)).click();
+  await auditLayout(page,label,'review-feedback-'+(n+5));await page.locator('#nextBtn').click();
+ }
+ assert.equal(await page.locator('#dueCount').textContent(),'0');await auditLayout(page,label,'review-finished');
+ assert.equal(await page.evaluate(()=>localStorage.getItem('hai-que-huong-progress-v3')),oldV3,'Complete review mutated story progress');
  if(label==="mobile")assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+5),false,"Review page horizontal overflow at 360px");
 }
 async function testBrowser(){
  const browser=await chromium.launch({headless:true,executablePath:process.env.HSK_BROWSER_BIN||undefined,args:["--no-sandbox"]});
  try{
-  for(const cfg of [{name:"desktop",viewport:{width:1280,height:800}},{name:"mobile",viewport:{width:360,height:800},isMobile:true,hasTouch:true}]){
+  const devices=[{name:"desktop",viewport:{width:1280,height:800}},{name:"mobile",viewport:{width:360,height:800},isMobile:true,hasTouch:true},{name:'phone-landscape',viewport:{width:844,height:390},isMobile:true,hasTouch:true},{name:'tablet',viewport:{width:768,height:1024},hasTouch:true},{name:'tablet-landscape',viewport:{width:1024,height:768},hasTouch:true}];
+  const selected=process.env.HSK_QA_DEVICES?.split(',');
+  for(const cfg of devices.filter(x=>!selected||selected.includes(x.name))){
    const ctx=await browser.newContext({viewport:cfg.viewport,isMobile:!!cfg.isMobile,hasTouch:!!cfg.hasTouch,locale:"vi-VN"});
    const page=await ctx.newPage();watch(page,cfg.name);
+   page.setDefaultTimeout(8000);
    await goIntro(page,cfg.name);
    await goReview(page,cfg.name,false);
    // Independent progress: HSK is accessible and not a required continuation of prologue.
@@ -195,9 +253,40 @@ async function testBrowser(){
     assert.equal(bad,false,"Horizontal overflow in 360px pre-HSK introduction");
    }
    await ctx.close();
+   console.log('Browser flow '+cfg.name+': completed');
+  }
+  if(!selected||selected.includes('mobile')||selected.includes('keyboard')){
+   for(const device of [{name:'phone',width:390,height:844,visible:500},{name:'phone-landscape',width:844,height:390,visible:240},{name:'tablet',width:768,height:1024,visible:500}])await verifyKeyboard(browser,device);
   }
   assert.deepEqual(errs,[]);
-  console.log("Browser E2E: desktop 1280px + mobile 360px intro/Hanzi + full 10-scene HSK1 story + 3/3 checkpoint + gated 18-item independent spaced review + save V3/V4 unchanged + reload: PASS");
+  fs.writeFileSync(path.join(OUT,'layout-findings.json'),JSON.stringify(layoutFindings,null,2));
+  assert.equal(layoutFindings.length,0,'Layout violations in '+layoutFindings.length+' states; see test-results/layout-findings.json');
+  fs.writeFileSync(path.join(OUT,'qa-summary.json'),JSON.stringify({generatedAt:new Date().toISOString(),scenarios:selected||devices.map(x=>x.name),layoutChecks,result:'PASS',limits:['No physical-device keyboard tested','Artwork fidelity and sibling occlusion are separate checks','Notebook and settings pagination not yet audited']},null,2));
+  console.log("Browser E2E: requested scenarios completed, "+layoutChecks+' measured layout states: PASS');
  }finally{await browser.close()}
+}
+async function verifyKeyboard(browser,device){
+ const full={width:device.width,height:device.height},contracted={width:device.width,height:device.visible};
+ const ctx=await browser.newContext({viewport:full,isMobile:true,hasTouch:true,locale:'vi-VN'});
+ await ctx.addInitScript(()=>{window.SpeechRecognition=undefined;window.webkitSpeechRecognition=undefined});
+ const page=await ctx.newPage();watch(page,'keyboard');page.setDefaultTimeout(8000);
+ try{
+  await page.goto(ROOT+'/?play=hsk1',{waitUntil:'networkidle'});
+  await page.locator('#interludeContinue').click();
+  await page.locator('#micBtn').click();assert.match(await page.locator('#toast').textContent(),/không có chức năng/);
+  await page.route('**/api/ai/tutor',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({reply:'你好 là lời chào.'})}));
+  await page.locator('#aiTutorBtn').click();await page.locator('#aiTutorInput').fill('你好 nghĩa là gì?');
+  await page.setViewportSize(contracted);await page.waitForFunction(()=>document.querySelector('#gameShell').classList.contains('keyboard-open'));
+  await auditLayout(page,device.name,'keyboard-ai');await page.locator('#aiTutorSend').click();
+  await page.waitForFunction(()=>[...document.querySelectorAll('.ai-tutor-assistant')].some(x=>x.textContent==='你好 là lời chào.'));
+  await page.locator('#aiTutorClose').click();await page.setViewportSize(full);
+  await page.locator('#answerInput').fill('我很好');
+  assert.equal(await page.locator('#gameShell').evaluate(x=>x.classList.contains('keyboard-open')),false,'Focus alone should not move submit controls');
+  await page.setViewportSize(contracted);await page.waitForFunction(()=>document.querySelector('#gameShell').classList.contains('keyboard-open'));
+  await auditLayout(page,device.name,'keyboard-answer');await page.locator('#sendAnswer').click();
+  assert.equal(await visible(page,'#nextBtn'),true,'Focus moving to Send must preserve the pointer click');
+  await page.setViewportSize(full);await page.waitForFunction(()=>!document.querySelector('#gameShell').classList.contains('keyboard-open'));
+  console.log('Keyboard '+device.name+': sent AI question and story answer');
+ }finally{await ctx.close()}
 }
 testBrowser().catch(e=>{console.error("Browser E2E failed:",e.stack||e);process.exitCode=1});

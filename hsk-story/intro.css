@@ -250,3 +250,38 @@ html,body.chimse-intro{width:100%;height:100%;min-height:0;margin:0;overflow:hid
  .intro-learning .curiosity-details .secondary{min-height:28px;padding:4px 6px;font-size:8px}
 }
 @media(prefers-reduced-motion:reduce){.intro-screen *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+.intro-learning .quiz-choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.intro-learning .quiz-choices[hidden]{display:none!important}
+.intro-learning:has(.curiosity-details)>:not(.interactive){display:none}
+.intro-learning:has(.curiosity-details) .interactive{padding:0;border:0;overflow:hidden}
+.intro-learning .curiosity-details{flex:0 0 auto;padding:9px 12px;gap:7px}
+.intro-learning .curiosity-details h3{font-size:16px;line-height:1.2}
+.intro-learning .curiosity-details>p:last-of-type{display:block}
+.intro-learning .curiosity-details p,.intro-learning .curiosity-example span{font-size:11px;line-height:1.35}
+.intro-learning .curiosity-example small{display:block;font-size:10px;line-height:1.35}
+.intro-learning .curiosity-pages{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px}
+.intro-learning .curiosity-details .secondary{min-height:32px;padding:5px 8px;font-size:10px;line-height:1.2}
+@media(max-height:620px){.intro-learning .curiosity-details{padding:6px 9px;gap:3px}.intro-learning .curiosity-details h3{font-size:13px}.intro-learning .curiosity-details p,.intro-learning .curiosity-example span{font-size:9px;line-height:1.2}.intro-learning .curiosity-example small{font-size:9px;line-height:1.2}.intro-learning .curiosity-details .secondary{min-height:26px;padding:3px 6px;font-size:9px}}
+@media(min-width:691px) and (min-height:621px){
+ .intro-learning{flex-basis:clamp(350px,42dvh,400px)}
+ .intro-learning .interactive .micro-note{font-size:10px;line-height:1.3;margin:2px 0}
+ .intro-learning .glyph-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+ .intro-learning .glyph-option{min-height:44px;padding:5px;text-align:center}
+ .intro-learning .glyph-option strong{display:block;width:auto;font-size:26px;line-height:1}
+ .intro-learning .glyph-option small{font-size:10px;line-height:1.2}
+ .intro-learning .stroke-drawing{height:90px}
+ .intro-learning .option-row button,.intro-learning .interactive>.primary{min-height:32px;padding:5px 9px;font-size:10px}
+ .intro-learning .parts{padding:4px;gap:8px;line-height:1}
+ .intro-learning .part-button{min-width:44px;min-height:40px;padding:4px;font-size:28px}
+ .intro-learning .math-symbol{font-size:23px}
+ .intro-learning .character-result{padding:5px;font-size:10px}
+ .intro-learning .character-result b{font-size:32px;line-height:1}
+ .intro-learning .character-result span{font-size:10px;line-height:1.2}
+}
+@media(max-height:620px){
+ .intro-screen .brand,.intro-screen .brand b,.intro-screen .brand small{line-height:1.1}
+ .intro-learning .finish-card{padding:4px 8px;font-size:10px;line-height:1.3}
+ .intro-learning .finish-card .seal{font-size:24px;line-height:1}
+ .intro-learning .finish-card p{font-size:9px;line-height:1.3;margin:3px 0}
+ .intro-learning .finish-card a{padding:5px 7px;font-size:9px}
+}

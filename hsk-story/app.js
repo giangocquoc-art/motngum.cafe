@@ -50,6 +50,8 @@ function setNotebook(open){
  if(open){refreshNotebook();$("notebookClose").focus()}else $("notebookBtn").focus();
 }
 function refreshNotebook(){
+ $("notebookResults").hidden=!state.done;
+ if(state.done)$("notebookResults").textContent="Những gì An đã thử\n\n"+["summaryStats","summaryDescription","encounterSummary","skillSummary","completionReview"].map(function(id){return $(id).textContent}).join("\n\n");
  var words=HSKLearningKit.notebook(HSKCurriculum.scenes,state.history,state.done||state.solved||state.hintUsed||state.vocabSeen.includes(state.step)?state.step:state.step-1,state.done);
  var weak=HSKLearningKit.needsReview(state.history,HSKCurriculum.scenes);
  var counts=HSKLearningKit.counts(state.history,HSKCurriculum.scenes);
@@ -305,7 +307,7 @@ function renderStoryChoice(){
   btn.addEventListener("click",function(){
    if(!state.solved||state.done)return;
    state.storyChoices=HSKStoryDirector.select(state.storyChoices,p.id,o.id);
-   save();renderStoryChoice();$("nextBtn").hidden=false;$("nextBtn").focus();
+   save();renderStoryChoice();$("nextBtn").hidden=false;syncPlayLayout();$("nextBtn").focus();
   });
   $("storyChoiceOptions").appendChild(btn);
  });
@@ -337,6 +339,12 @@ function showCompletion(){
  $("feedback").textContent="";$("feedback").className="feedback";
  $("encounterSummary").textContent=state.encounter.stage==="done"?"Quyển sổ đã được tìm lại · Vận dụng lời giới thiệu: "+(state.encounter.answer==="independent"?"tự trả lời ngay lần đầu":state.encounter.answer==="retried"?"đúng sau khi thử lại":state.encounter.answer==="helped"?"đúng nhờ gợi ý":"xem đáp án mẫu"): "Tình huống tìm lại sổ đã được bỏ qua theo tiến độ phiên bản cũ.";
  $("completionReview").textContent=(function(){var weak=HSKLearningKit.needsReview(state.history,HSKCurriculum.scenes);return weak.length?"Sổ tay của An nhắc bạn luyện thêm: "+weak.map(function(w){return w.objective}).join("; ")+".":"Các câu luyện trong tập này chưa ghi nhận chỗ cần xem lại."})();
+ syncPlayLayout();
+}
+function syncPlayLayout(){
+ var mode=state.done?"completed":!$("encounterPanel").hidden?"encounter":!$("skillPanel").hidden?"practice":!$("storyInterlude").hidden?"interlude":!$("storyChoicePanel").hidden?"choice":state.solved?"resolved":"answer";
+ $("gameShell").dataset.mode=mode;
+ if(window.ChimSeTutor)window.ChimSeTutor.sync();
 }
 function paintScene(place,sceneId){
  var host=$("stageIllustration");
@@ -396,6 +404,7 @@ function renderStep(){
   $("practiceOpenBtn").hidden=blocked||state.done||state.step<EXAM_START||!HSKSkillSampler.current(state.skillSampler)||!!HSKStoryBeats.pending(state.step,state.storyBeats);
   renderWorld();
  }
+ syncPlayLayout();
 }
 function displayResolved(){
  var saved=state.history[state.step];if(!saved)return;
@@ -408,6 +417,7 @@ function displayResolved(){
  $("feedback").textContent=saved.status==="correct"?(saved.hint?"✓ Đã trả lời đúng sau hỗ trợ. Câu này nên ôn thêm.":"✓ Nhân vật đã hiểu bạn. Đọc phản hồi rồi nhấn Tiếp tục."):"✦ Bạn đã xem câu mẫu và đi tiếp; câu này không tính là tự làm đúng.";
  $("sentenceBuilder").hidden=true;$("openBuilderBtn").hidden=true;$("learningStrip").hidden=state.step>=EXAM_START;$("vocabRevealBtn").hidden=true;
  $("nextBtn").hidden=renderStoryChoice();$("nextBtn").textContent=state.step===SCENE_TOTAL-1?"Xem tổng kết ↗":"Tiếp tục câu chuyện ↗";
+ syncPlayLayout();
 }
 function openGame(){
  returnFocus=document.activeElement;document.body.style.overflow="hidden";$("gameOverlay").hidden=false;renderStep();$("notebookBtn").setAttribute("aria-expanded","false");
@@ -415,6 +425,7 @@ function openGame(){
  if(state.done)$("replayBtn").focus();else if(!$("skillPanel").hidden)$("skillOptions").children[0]?.focus();else if(!$("encounterPanel").hidden){if(phone&&state.encounter.stage==="respond")$("encounterActions").children[0]?.focus();else encounterFocus()}else if(!$("storyInterlude").hidden)$("interludeContinue").focus();else if(state.solved)$("nextBtn").focus();else if(phone)$("notebookBtn").focus();else $("answerInput").focus();
 }
 function closeGame(){
+ if(window.ChimSeTutor)window.ChimSeTutor.close();
  $("notebookPanel").hidden=true;$("notebookBtn").setAttribute("aria-expanded","false");
  if("speechSynthesis" in window)window.speechSynthesis.cancel();
  if(state.recognizer){try{state.recognizer.abort()}catch(e){}state.recognizer=null}
@@ -530,16 +541,23 @@ document.addEventListener("keydown",function(e){
  if(e.key==="Escape"){if(!$("notebookPanel").hidden){setNotebook(false);return}closeGame();return}
  if(e.key==="Tab"){var f=Array.from($("gameOverlay").querySelectorAll("button:not([hidden]):not([disabled]),input:not([disabled]):not([hidden])")).filter(function(el){return el.getClientRects().length>0});if(!f.length)return;var first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
 });
+var keyboardFullHeight=window.innerHeight||0,keyboardViewportWidth=window.innerWidth||0;
 function syncKeyboardLayout(target){
  var input=target===$("answerInput")||target===$("encounterInput")||target===$("aiTutorInput");
- var phone=window.matchMedia&&window.matchMedia("(max-width: 690px)").matches;
- var shell=$("gameShell"),open=!!(phone&&input&&!$("gameOverlay").hidden);shell.classList.toggle("keyboard-open",open);
- if(open){var visible=window.visualViewport?window.visualViewport.height:window.innerHeight;shell.style.setProperty("--chimse-visible-height",Math.max(240,Math.floor(visible))+"px")}
+ var compactInput=window.matchMedia&&window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
+ var shell=$("gameShell"),visible=window.visualViewport?window.visualViewport.height:window.innerHeight;
+ if(keyboardViewportWidth!==window.innerWidth){keyboardViewportWidth=window.innerWidth;keyboardFullHeight=window.innerHeight||visible}
+ if(!compactInput||!input&&!shell.classList.contains("keyboard-open"))keyboardFullHeight=visible;
+ keyboardFullHeight=Math.max(keyboardFullHeight||0,visible||0);
+ // Keep the contracted layout through input → button focus; a pointer click must not move its target.
+ var open=!!(compactInput&&visible<keyboardFullHeight-100&&!$("gameOverlay").hidden);shell.classList.toggle("keyboard-open",open);
+ if(open){shell.style.setProperty("--chimse-visible-height",Math.max(160,Math.floor(visible))+"px")}
  else shell.style.removeProperty("--chimse-visible-height");
 }
 document.addEventListener("focusin",function(e){syncKeyboardLayout(e.target)});
 document.addEventListener("focusout",function(){setTimeout(function(){syncKeyboardLayout(document.activeElement)},0)});
 if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){syncKeyboardLayout(document.activeElement)});
+window.addEventListener?.("resize",function(){syncKeyboardLayout(document.activeElement)});
 /* Direct handoff from the optional Chapter 00; existing learner saves are untouched. */
 if(window.location&&typeof window.location.search==="string"&&window.location.search.indexOf("play=hsk1")>=0){
  try{

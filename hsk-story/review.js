@@ -12,6 +12,7 @@ function persist(){if(!C.write(localStorage,D,progress))$("storageNotice").textC
 function actionLabel(item){return item.kind==="reading"?"ĐỌC HIỂU":item.kind==="hanzi"?"NHẬN MẶT CHỮ":"NHẬP CHỮ HÁN"}
 function clearChildren(el){el.replaceChildren()}
 function render(){
+ document.querySelector(".book").dataset.state=outcome?"feedback":"question";
  var stats=C.report(D,story,progress,day);
  $("unlockedCount").textContent=stats.unlocked;
  $("dueCount").textContent=stats.due;

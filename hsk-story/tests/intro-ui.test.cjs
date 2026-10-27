@@ -9,6 +9,7 @@ function boot(store={}){
  function e(id){return {id,className:"",textContent:"",innerHTML:"",value:"",disabled:false,style:{},children:[],listeners:{},
   classList:{set:new Set(),add(k){this.set.add(k)},remove(k){this.set.delete(k)},toggle(k,v){if(v===true)this.set.add(k);else if(v===false)this.set.delete(k);else if(this.set.has(k))this.set.delete(k);else this.set.add(k)},contains(k){return this.set.has(k)}},
   appendChild(c){this.children.push(c)},replaceChildren(){this.children=[]},
+  setAttribute(k,v){(this.attributes??={})[k]=String(v)},
   addEventListener(k,fn){if(typeof fn!=="function")throw Error("Non-function listener "+id+" "+k);(this.listeners[k]??=[]).push(fn)},
   click(){for(const fn of this.listeners.click||[])fn({preventDefault(){}})},
   focus(){doc.activeElement=this}
@@ -55,7 +56,15 @@ test("Intro explains semantic and phonetic parts, and distinguishes rare-charact
  assert.equal(saved(t).legendRead,true);
  assert.equal(saved(t).curiosityOpen,true);
  assert.ok(e.interactive.children.some(x=>x.className==="curiosity-details"));
- assert.equal(e.mainGlyph.textContent,"女 奻 姦");
+ assert.equal(e.mainGlyph.textContent,"女");
+ for(let i=1;i<3;i++){
+  const panel=e.interactive.children.find(x=>x.className==='curiosity-details');
+  panel.children.find(x=>x.className==='curiosity-pages').children[2].click();
+  assert.equal(e.mainGlyph.textContent,D.curiosity.examples[i].zi);
+  const current=e.interactive.children.find(x=>x.className==='curiosity-details');
+  assert.equal(current.children.find(x=>x.className==='curiosity-example').children[1].children[1].textContent,D.curiosity.examples[i].note);
+  assert.equal(saved(t).step,6);
+ }
 });
 test("Intro four low-stakes visual guesses can be played through and revisited",()=>{
  const t=boot(),e=t.e;
@@ -143,7 +152,7 @@ test("Gate3B: curiosity opens/closes returning to the same page, retaining progr
  assert.equal(store["hai-que-huong-progress-v3"],"preserved-hsk1");
  e.interactive.children[1].click();
  const reopened=boot(store);
- assert.equal(reopened.e.mainGlyph.textContent,"女 奻 姦");
+ assert.equal(reopened.e.mainGlyph.textContent,"女");
  assert.equal(saved(reopened).curiosityOpen,true);
  reopened.e.nextBtn.click();
  assert.equal(saved(reopened).curiosityOpen,false);

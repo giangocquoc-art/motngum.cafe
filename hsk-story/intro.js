@@ -2,7 +2,7 @@
 (function(){"use strict";
 if(typeof HSKIntroContent==="undefined"||typeof HSKIntroCore==="undefined"||HSKIntroContent.validate().length){document.body.textContent="Không tải được dữ liệu tập nhập môn.";return;}
 var Data=HSKIntroContent,Core=HSKIntroCore,$=function(id){return document.getElementById(id)};
-var state=read(),last=Data.stages.length-1,feedback="";
+var state=read(),last=Data.stages.length-1,feedback="",curiosityIndex=0;
 function read(){try{return Core.clean(JSON.parse(localStorage.getItem(Core.key)||"null"))}catch(e){return Core.initial()}}
 function save(){try{localStorage.setItem(Core.key,JSON.stringify(state));$("saveStatus").textContent="Đã lưu tiến độ trên thiết bị"}catch(e){$("saveStatus").textContent="Trình duyệt không lưu được — vẫn có thể tiếp tục"}}
 function el(tag,cls,text){var node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node}
@@ -15,7 +15,7 @@ function say(text){if(!text)return;try{
  }catch(e){feedback="Thiết bị này không hỗ trợ giọng đọc. Bạn vẫn có thể học bằng chữ và Pinyin.";$("feedback").textContent=feedback}
 }
 function showCard(char,pinyin,meaning){
- var result=el("div","character-result");
+ var result=el("div","character-result");result.setAttribute("role","status");
  var han=el("b","",char);han.lang="zh-CN";
  result.appendChild(han);result.appendChild(el("span","",pinyin+" · "+meaning));return result;
 }
@@ -23,7 +23,7 @@ function topGlyph(stage){
  var ch=stage.hanzi,py=stage.pinyin;
  if(stage.kind==="discover"&&state.focusGlyph){var d=Data.discovery.find(g=>g.zi===state.focusGlyph);if(d){ch=d.zi;py=d.py}}
  if(stage.kind==="guess"){var q=Data.quizzes[state.quizIndex];ch=q?q.zi:"好";py=q?q.py:"hǎo"}
- if(stage.kind==="legend"&&state.curiosityOpen){ch="女 奻 姦";py="nǚ · nuán · jiān"}
+ if(stage.kind==="legend"&&state.curiosityOpen){ch=Data.curiosity.examples[curiosityIndex].zi;py=Data.curiosity.examples[curiosityIndex].py}
  if(stage.kind==="strokes"&&state.stroke){ch=["","一","二","三"][state.stroke];py=["","yī","èr","sān"][state.stroke]}
  if(stage.kind==="forest"){ch=["","木","林","森"][state.forest];py=["","mù","lín","sēn"][state.forest]}
  if(stage.kind==="people"){ch=["","人","从","众"][state.people];py=["","rén","cóng","zhòng"][state.people]}
@@ -54,22 +54,21 @@ function renderStrokes(root){
  var holder=el("div","");holder.innerHTML=strokeSvg(state.stroke);root.appendChild(holder);
  root.appendChild(el("p","micro-note",state.stroke?("Đã có "+state.stroke+" nét. Chữ "+["","一","二","三"][state.stroke]+" nghĩa là "+["","một","hai","ba"][state.stroke]+"."):"Trang giấy đang trống. Thêm nét đầu tiên nhé."));
  var row=el("div","option-row");
- row.appendChild(button(state.stroke>=3?"Đã đủ 3 nét ✓":"+ Thêm một nét ngang →",function(){if(state.stroke<3)change(Core.stroke(state),"Viết từ trên xuống, nét ngang kéo từ trái sang phải.")},"primary"));
- row.appendChild(button("Viết lại",function(){change({...state,stroke:0},"Bắt đầu lại từ một trang giấy trống.")},"secondary"));root.appendChild(row);
+ row.appendChild(button(state.stroke>=3?"Đã đủ 3 nét ✓":"+ Thêm một nét ngang →",function(){if(state.stroke<3)change(Core.stroke(state),"")},"primary"));
+ row.appendChild(button("Viết lại",function(){change({...state,stroke:0},"")},"secondary"));root.appendChild(row);
 }
 function renderCount(root,kind){
  var options=kind==="forest"?[
  ["木","mù","Một cây: cây/gỗ"],["林","lín","Hai cây: rừng nhỏ/lùm cây"],["森","sēn","Ba cây: rừng rậm"]
  ]:[["人","rén","Một người"],["从","cóng","Hai người: đi theo"],["众","zhòng","Nhiều người: đám đông"]];
  var n=state[kind],row=el("div","option-row");
- options.forEach(function(o,i){var b=button((i+1)+(kind==="forest"?" cây":" người"),function(){change(Core.setCount(state,kind,i+1),o[0]+" · "+o[1]+": "+o[2]+".")},"number-button");b.classList.toggle("active",n===i+1);row.appendChild(b)});
+ options.forEach(function(o,i){var b=button((i+1)+(kind==="forest"?" cây":" người"),function(){change(Core.setCount(state,kind,i+1),"")},"number-button");b.classList.toggle("active",n===i+1);row.appendChild(b)});
  root.appendChild(row);root.appendChild(showCard(options[n-1][0],options[n-1][1],options[n-1][2]));
- root.appendChild(el("p","micro-note",kind==="people"?"Đây là cách liên tưởng giúp nhớ các dạng chữ hiện nay; không phải mọi chữ Hán đều ghép nghĩa bằng cách cộng số người.":"Một số chữ Hán gợi nghĩa bằng những bộ phận lặp lại. Các chữ khác có thể được cấu tạo để gợi âm."));
 }
 function renderLight(root){
  var row=el("div","parts");
  ["日","月"].forEach(function(zi,i){
-  var b=button(zi,function(){change(Core.light(state,zi),"Đã nhận ra "+zi+(i===0?" — mặt trời/ngày.":" — mặt trăng/tháng."))},"part-button");
+  var b=button(zi,function(){change(Core.light(state,zi),"")},"part-button");
   b.lang="zh-CN";b.classList.toggle("active",state.lightParts.includes(zi));row.appendChild(b);
   if(i===0)row.appendChild(el("span","math-symbol","+"));
  });
@@ -84,29 +83,34 @@ function renderMother(root){
  var first=el("span","part-button","女"),second=el("span","part-button","马");
  first.lang="zh-CN";second.lang="zh-CN";row.appendChild(first);row.appendChild(el("span","math-symbol","+"));row.appendChild(second);
  row.appendChild(el("span","math-symbol","="));row.appendChild(el("span","math-symbol",state.momRevealed?"妈":"?"));root.appendChild(row);
- root.appendChild(button(state.momRevealed?"Đã phát hiện bí mật ✓":"Hóa ra chữ này đọc thế nào?",function(){change({...state,momRevealed:true},"女 (nǚ) gợi nghĩa, 马 (mǎ) gợi âm. 妈 đọc mā — âm ma, thanh 1.")},"primary"));
+ root.appendChild(button(state.momRevealed?"Đã phát hiện bí mật ✓":"Hóa ra chữ này đọc thế nào?",function(){change({...state,momRevealed:true},"")},"primary"));
  if(state.momRevealed)root.appendChild(showCard("妈","mā","mẹ — có bộ phận gợi âm và bộ phận gợi nghĩa"));
 }
 function renderLegend(root){
  var d=Data.curiosity;
- root.appendChild(el("p","micro-note","Mẹ hỏi An: “Một câu đùa về chữ Hán có phải lúc nào cũng đúng nghĩa từ điển?”"));
  if(!state.curiosityOpen){
+  root.appendChild(el("p","micro-note","Mẹ hỏi An: “Một câu đùa về chữ Hán có phải lúc nào cũng đúng nghĩa từ điển?”"));
   root.appendChild(button(state.legendRead?"Xem lại góc chữ Hán kỳ lạ ↗":"✳ Tò mò? Mở trang chữ Hán kỳ lạ ↗",
-   function(){change(Core.curiosity(state,true),"Mẹ mở một trang ghi chú nhỏ. Đây là chuyện đọc thêm, không tính điểm tiếng Trung.")},"number-button"));
+   function(){curiosityIndex=0;change(Core.curiosity(state,true),"")},"number-button"));
   root.appendChild(el("p","micro-note","Bạn có thể đọc tiếp câu chuyện mà không cần mở trang này."));
   return;
  }
  var panel=el("section","curiosity-details");panel.id="curiosityDetails";
- panel.appendChild(el("h3","",d.title));panel.appendChild(el("p","",d.lead));
- d.examples.forEach(function(item){
+ panel.appendChild(el("h3","",d.title));
+ if(curiosityIndex===0)panel.appendChild(el("p","",d.lead));
+ [d.examples[curiosityIndex]].forEach(function(item){
   var row=el("div","curiosity-example");
   var glyph=el("strong","",item.zi);glyph.lang="zh-CN";row.appendChild(glyph);
   var info=el("span","");
   info.appendChild(el("b","",item.py+" · "+item.vi));info.appendChild(el("small","",item.note));
   row.appendChild(info);panel.appendChild(row);
  });
- panel.appendChild(el("p","",d.closing));
- panel.appendChild(button("← Đóng trang đọc thêm, quay lại An và mẹ",function(){change(Core.curiosity(state,false),"Đã quay lại đúng trang truyện, không ảnh hưởng tiến độ.")},"secondary"));
+ if(curiosityIndex===d.examples.length-1)panel.appendChild(el("p","",d.closing));
+ var nav=el("div","curiosity-pages");
+ var back=button("← Chữ trước",function(){curiosityIndex--;render()},"secondary");back.disabled=curiosityIndex===0;
+ var next=button("Chữ tiếp →",function(){curiosityIndex++;render()},"secondary");next.disabled=curiosityIndex===d.examples.length-1;
+ nav.appendChild(back);nav.appendChild(el("span","",(curiosityIndex+1)+" / "+d.examples.length));nav.appendChild(next);panel.appendChild(nav);
+ panel.appendChild(button("← Đóng trang đọc thêm, quay lại An và mẹ",function(){change(Core.curiosity(state,false),"")},"secondary"));
  root.appendChild(panel);
 }
 function renderQuiz(root){
@@ -119,11 +123,11 @@ function renderQuiz(root){
  }
  var q=Data.quizzes[qi],picked=state.quizResults[q.id],hasAnswer=Object.prototype.hasOwnProperty.call(state.quizResults,q.id);
  root.appendChild(el("p","micro-note","Câu "+(qi+1)+" / "+Data.quizzes.length+": "+q.question));
- var grid=el("div","quiz-choices");
- q.options.forEach(function(text,i){var b=button(text,function(){if(hasAnswer)return;change(Core.quiz(state,q.id,i,Data.quizzes),i===q.answer?"Đúng rồi! "+q.explain:"Một dự đoán thú vị. "+q.explain)},"quiz-choice");b.classList.toggle("active",picked===i);b.disabled=hasAnswer;grid.appendChild(b)});
+ var grid=el("div","quiz-choices");grid.hidden=hasAnswer;
+ q.options.forEach(function(text,i){var b=button(text,function(){if(hasAnswer)return;change(Core.quiz(state,q.id,i,Data.quizzes),"")},"quiz-choice");b.classList.toggle("active",picked===i);b.disabled=hasAnswer;grid.appendChild(b)});
  root.appendChild(grid);
  if(hasAnswer){var result=el("p",picked===q.answer?"good":"again",
- (picked===-1?"✳ Đã bỏ qua câu này. ":picked===q.answer?"✳ Nhận ra đúng ngay lần chọn đầu tiên. ":"✳ Đây là chỗ mình vừa học thêm! Đáp án đúng: "+q.options[q.answer]+". ")+q.explain);root.appendChild(result)}
+ (picked===-1?"✳ Đã bỏ qua câu này. ":picked===q.answer?"✳ Nhận ra đúng ngay lần chọn đầu tiên. ":"✳ Đây là chỗ mình vừa học thêm! Đáp án đúng: "+q.options[q.answer]+". ")+q.explain);result.setAttribute("role","status");root.appendChild(result)}
 }
 function renderEnding(root){
  var recap=Core.recap(state,Data.quizzes);
