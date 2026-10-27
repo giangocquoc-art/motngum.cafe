@@ -12,21 +12,23 @@ test('compiled scene data is current and retains every canonical story/encounter
 test('every declared art layer exists; intentionally empty layers never invent asset paths',()=>{
  for(const [id,scene] of Object.entries(runtime.scenes)){
   const markup=layers.render(null,id),background=runtime.backgrounds[scene.background];
-  for(const asset of [background.desktop,background.mobile,...scene.actors.map(a=>runtime.sprites[a.character].asset),scene.sparrow.asset,scene.layers.midground?.asset,scene.layers.foreground?.asset].filter(Boolean))assert.ok(fs.existsSync(path.join(root,'art',asset)),id+'/'+asset);
-  if(['hsk1.e01.liu-noodle-order','hsk1.e01.liu-payment'].includes(id)){assert.ok(scene.layers.midground);assert.equal(scene.layers.midground.asset,'layers/menu-panels-v1.webp');assert.ok(scene.layers.midground.mobile.width>0);assert.ok(scene.layers.midground.desktop.width>0)}else assert.equal(scene.layers.midground,null);
-  if(scene.layers.foreground){
-   const layer=scene.layers.foreground;
-   for(const device of ['desktop','mobile',...(layer.tablet?['tablet']:[])])assert.ok(['x','y','width'].every(key=>Number.isFinite(layer[device]?.[key])&&layer[device][key]>0),id+'/foreground '+device+' background anchor');
-   if(layer.compact)assert.ok(['x','y','width'].every(key=>Number.isFinite(layer.compact[key])&&layer.compact[key]>0),id+'/foreground compact background anchor');
+  const midground=scene.layers.midground?(Array.isArray(scene.layers.midground)?scene.layers.midground:[scene.layers.midground]):[],foreground=scene.layers.foreground?(Array.isArray(scene.layers.foreground)?scene.layers.foreground:[scene.layers.foreground]):[];
+  for(const asset of [background.desktop,background.mobile,...scene.actors.map(a=>runtime.sprites[a.sprite||a.character].asset),scene.sparrow.asset,...midground.map(x=>x.asset),...foreground.map(x=>x.asset)].filter(Boolean))assert.ok(fs.existsSync(path.join(root,'art',asset)),id+'/'+asset);
+  if(['hsk1.e01.liu-noodle-order','hsk1.e01.liu-payment'].includes(id)){assert.ok(midground.some(layer=>layer.asset==='layers/menu-panels-v1.webp'));assert.ok(midground.some(layer=>layer.asset==='layers/noodle-table-top-v1.webp'));for(const layer of midground)assert.ok(layer.mobile.width>0&&layer.desktop.width>0);assert.ok(midground.find(layer=>layer.asset==='layers/menu-panels-v1.webp').compact.width>0,'menu remains on short landscape screens')}else assert.equal(midground.length,0);
+  if(foreground.length){
+   for(const layer of foreground){
+    for(const device of ['desktop','mobile',...(layer.tablet?['tablet']:[])])assert.ok(['x','y','width'].every(key=>Number.isFinite(layer[device]?.[key])&&layer[device][key]>0),id+'/foreground '+device+' background anchor');
+    if(layer.compact)assert.ok(['x','y','width'].every(key=>Number.isFinite(layer.compact[key])&&layer.compact[key]>0),id+'/foreground compact background anchor');
+   }
    assert.ok(markup.indexOf('data-layer="foreground"')>markup.indexOf('data-layer="characters"'),id+' foreground overlays character sprites');
   }
   assert.equal((markup.match(/data-character="sparrow"/g)||[]).length,1,id+' one sparrow');
   assert.equal((markup.match(/class="cs-actor"/g)||[]).length,scene.actors.length,id+' actors');
   for(const layer of ['background','midground','characters','foreground'])assert.ok(markup.includes('data-layer="'+layer+'"'),id+'/'+layer);
   assert.doesNotMatch(markup,/placeholder|<svg/);
-  const foregroundVisibleByDefault=scene.layers.foreground&&!scene.layers.foreground.visibleWhen;
-  assert.equal((markup.match(/<img /g)||[]).length,1+(scene.layers.midground?1:0)+(foregroundVisibleByDefault?1:0));
-  for(const actor of scene.actors){const s=runtime.sprites[actor.character];assert.ok(s.frames[actor.expression]!==undefined);assert.ok(s.face.every(x=>x>=0&&x<=1));}
+  const foregroundVisible=foreground.filter(layer=>!layer.visibleWhen).length;
+  assert.equal((markup.match(/<img /g)||[]).length,1+midground.filter(layer=>!layer.visibleWhen).length+foregroundVisible);
+  for(const actor of scene.actors){const s=runtime.sprites[actor.sprite||actor.character];assert.ok(s.frames[actor.expression]!==undefined);assert.ok(s.face.every(x=>x>=0&&x<=1));}
  }
 });
 test('expression selection uses actual sprite cells and rejects nonexistent poses',()=>{
@@ -52,11 +54,15 @@ test('scene art follows story actions: menu before order, meal at payment, offic
  const office=layers.render(null,'lost-notebook-office');
  assert.equal((menu.match(/noodle-bowl-v3\.webp/g)||[]).length,0,'Food must not appear before An orders');
  assert.equal((menu.match(/data-asset="layers\/menu-panels-v1\.webp"/g)||[]).length,1,'Each noodle scene has one menu row layer');
+ assert.equal((menu.match(/data-asset="layers\/noodle-table-top-v1\.webp"/g)||[]).length,1,'Empty tabletop stays behind hands and actors');
+ assert.equal((menu.match(/data-asset="layers\/noodle-table-apron-v1\.webp"/g)||[]).length,1,'Apron occludes the lower torso in front of actors');
  assert.match(layers.render(null,'hsk1.e01.liu-payment'),/data-asset="layers\/menu-panels-v1\.webp"/,'Wall menu remains present during the payment scene');
  assert.doesNotMatch(served,/noodle-bowl-v3\.webp/,'Do not display the bowl until the meal is served');
  assert.match(layers.render(null,'hsk1.e01.liu-payment'),/noodle-bowl-v3\.webp/,'The bowl appears for the price dialogue');
- assert.deepEqual(runtime.scenes['hsk1.e01.liu-payment'].actors[0].tablet,{left:14,bottom:0,width:35},'Tablet portrait shifts and scales An to reveal the foreground table and menu');
- assert.deepEqual(runtime.scenes['hsk1.e01.liu-payment'].layers.foreground.tablet,{x:160,y:1140,width:150},'Tablet portrait places the served bowl on the foreground table below An’s face');
+ const payment=runtime.scenes['hsk1.e01.liu-payment'],paymentActors=Object.fromEntries(payment.actors.map(a=>[a.character,a]));
+ assert.ok(paymentActors.an&&paymentActors.xiaoyu&&paymentActors.liu,'The same two children remain at the shared table while bà Lưu stays behind the counter');
+ assert.deepEqual(paymentActors.an.tablet,{left:12,bottom:8,width:42},'Tablet portrait keeps An at the left side of the shared table');
+ assert.deepEqual(payment.layers.foreground[1].tablet,{x:512,y:1085,width:175},'Tablet portrait places the one served bowl on the foreground table');
  assert.equal((inspect.match(/data-character="receptionist"/g)||[]).length,0,'Receptionist is not in the classroom search scene');
  assert.equal((office.match(/data-character="receptionist"/g)||[]).length,1,'Receptionist appears at the school office');
  assert.equal(office.includes('school-office-v2.webp'),true);

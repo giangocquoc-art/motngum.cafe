@@ -3,15 +3,16 @@
 .cs-scene,.cs-background,.cs-midground{position:absolute;inset:0}
 .cs-background{z-index:0;display:block}.cs-background img{width:100%;height:100%;object-fit:cover;object-position:center 52%;display:block}
 .cs-midground{z-index:1;pointer-events:none}.cs-midground img{position:absolute;transform:translate(-50%,-50%);width:0;height:auto;max-width:none}
-.cs-actors{position:absolute;z-index:2;top:var(--actors-top);left:var(--actors-left);right:3%;bottom:var(--actors-bottom,0);container-type:size}
+.cs-actors{position:absolute;z-index:2;top:var(--actors-top);left:var(--actors-left);right:var(--actors-right,3%);bottom:var(--actors-bottom,0);container-type:size}
 .cs-actor{position:absolute;left:var(--actor-left);bottom:var(--actor-bottom);width:min(var(--actor-width),100cqh);height:auto;aspect-ratio:1;background-repeat:no-repeat;animation:cs-arrive .25s ease-out both}
 .cs-sparrow{position:absolute;z-index:4;left:var(--sparrow-left);top:var(--sparrow-top);width:min(14cqw,48cqh,60px);aspect-ratio:1;background-repeat:no-repeat;animation:cs-breathe 3.7s ease-in-out infinite;transform-origin:50% 80%}
-.cs-foreground{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,-50%)}
-.cs-foreground img{display:block;width:0;height:auto;max-width:none;object-fit:contain}
+.cs-foreground{position:absolute;z-index:3;inset:0;pointer-events:none}
+.cs-foreground img{position:absolute;transform:translate(-50%,-50%);display:block;width:0;height:auto;max-width:none;object-fit:contain}
 .chimse-art[data-composition="portrait"] .cs-actor{left:var(--actor-mobile-left);bottom:var(--actor-mobile-bottom);width:min(var(--actor-mobile-width),100cqh)}
 .chimse-art[data-composition="portrait"][data-tablet-portrait="true"] .cs-actor{left:var(--actor-tablet-left,var(--actor-mobile-left));bottom:var(--actor-tablet-bottom,var(--actor-mobile-bottom));width:min(var(--actor-tablet-width,var(--actor-mobile-width)),100cqh)}
 .chimse-art[data-composition="portrait"] .cs-sparrow{left:var(--sparrow-mobile-left);top:var(--sparrow-mobile-top)}
-.chimse-art[data-composition="short-landscape"] .cs-sparrow{width:min(8vw,34px)}
+.chimse-art[data-composition="short-landscape"] .cs-actor{left:var(--actor-compact-left,var(--actor-left));bottom:var(--actor-compact-bottom,var(--actor-bottom));width:min(var(--actor-compact-width,var(--actor-width)),100cqh)}
+.chimse-art[data-composition="short-landscape"] .cs-sparrow{left:var(--sparrow-compact-left,var(--sparrow-left));top:var(--sparrow-compact-top,var(--sparrow-top));width:min(8vw,34px)}
 #storyStage .story-ui{top:calc(var(--scene-header,56px) + 8px);bottom:auto;left:12px;right:auto;width:calc(50% - 24px);max-width:none;max-height:none;overflow:visible}
 #storyStage:has(.chimse-art[data-composition="portrait"]) .story-ui{width:calc(100% - 24px)}
 #storyStage .scene-day{display:none}
