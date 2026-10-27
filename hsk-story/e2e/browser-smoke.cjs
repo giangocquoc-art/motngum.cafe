@@ -231,6 +231,8 @@ async function goStory(page,label){
   }
   if(await visible(page,"#nextBtn")){await page.locator("#nextBtn").click();continue}
   if(await visible(page,"#answerForm")){
+   const artId=await page.locator('#stageIllustration .cs-scene').getAttribute('data-scene');
+   if(['hsk1.e01.liu-noodle-order','hsk1.e01.liu-payment'].includes(artId))assert.equal(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking','Liu should be speaking in both her order question and price line');
    if(!supportUsed){
     await page.waitForFunction(()=>performance.getEntriesByType('resource').some(x=>x.name.endsWith('/art/'+HSKSceneLayers.backgrounds['school-gate'][matchMedia('(max-width:900px) and (orientation:portrait)').matches?'mobile':'desktop'])));
     if(await visible(page,'#worldPanel'))await page.locator('#worldCloseBtn').click();
@@ -393,7 +395,7 @@ async function verifyKeyboard(browser,device){
  await ctx.addInitScript(()=>{window.SpeechRecognition=undefined;window.webkitSpeechRecognition=undefined});
  const page=await ctx.newPage();watch(page,'keyboard');page.setDefaultTimeout(8000);
  try{
-  await page.goto(ROOT+'/?play=hsk1',{waitUntil:'networkidle'});
+  await page.goto(ROOT+'/?play=hsk1',{waitUntil:'domcontentloaded'});
   await page.locator('#interludeContinue').click();
   if(device.name==='phone'){
    const insetStyle=await page.addStyleTag({content:'.game-top{padding-top:42px!important}'});

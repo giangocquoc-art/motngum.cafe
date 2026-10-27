@@ -747,7 +747,7 @@
       "actors": [
         {
           "character": "liu",
-          "expression": "smile",
+          "expression": "speaking",
           "slot": "behind-counter",
           "desktop": {
             "left": 52,

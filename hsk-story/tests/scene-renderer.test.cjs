@@ -68,6 +68,10 @@ test('supporting-cast atlases expose six valid frames and every scene/companion 
  const payment=runtime.scenes['hsk1.e01.liu-payment'].actors.find(a=>a.sprite==='xiaoyuNoodle');
  assert.equal(order.expression,'friendly');assert.equal(payment.expression,'thoughtful','Seated Xiaoyu changes expression between ordering and payment');
 });
+test('Liu speaks while asking An what he wants and stating the price',()=>{
+ assert.equal(runtime.scenes['hsk1.e01.liu-noodle-order'].actors.find(a=>a.character==='liu').expression,'speaking');
+ assert.equal(runtime.scenes['hsk1.e01.liu-payment'].actors.find(a=>a.character==='liu').expression,'speaking');
+});
 test('a mounted character can change expression in place without creating another sparrow',()=>{
  const sparrow={style:{},dataset:{expression:'curious'}},an={style:{},dataset:{expression:'awkward'}};
  const host={querySelector(selector){return selector==='.cs-sparrow'?sparrow:selector.includes('data-character="an"')?an:null}};
