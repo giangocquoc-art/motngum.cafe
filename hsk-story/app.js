@@ -463,7 +463,7 @@ function displayResolved(){
  syncPlayLayout();
 }
 function openGame(){
- returnFocus=document.activeElement;document.body.style.overflow="hidden";$("gameOverlay").hidden=false;renderStep();$("notebookBtn").setAttribute("aria-expanded","false");
+ returnFocus=document.activeElement;document.body.classList.add("game-active");document.body.style.overflow="hidden";$("gameOverlay").hidden=false;renderStep();$("notebookBtn").setAttribute("aria-expanded","false");
  var phone=window.matchMedia&&window.matchMedia("(max-width: 690px)").matches;
  if(state.done)$("replayBtn").focus();else if(!$("skillPanel").hidden)$("skillOptions").children[0]?.focus();else if(!$("encounterPanel").hidden){if(phone&&state.encounter.stage==="respond")$("encounterActions").children[0]?.focus();else encounterFocus()}else if(!$("storyInterlude").hidden)$("interludeContinue").focus();else if(state.solved)$("nextBtn").focus();else if(phone)$("notebookBtn").focus();else $("answerInput").focus();
 }
@@ -473,7 +473,7 @@ function closeGame(){
  $("gameShell").classList.remove("notebook-open");$("storyStage").inert=false;
  if("speechSynthesis" in window)window.speechSynthesis.cancel();
  if(state.recognizer){try{state.recognizer.abort()}catch(e){}state.recognizer=null}
- $("micBtn").classList.remove("listening");$("gameOverlay").hidden=true;document.body.style.overflow="";updateResumeLabel();
+ $("micBtn").classList.remove("listening");$("gameOverlay").hidden=true;document.body.classList.remove("game-active");document.body.style.overflow="";updateResumeLabel();
  if(returnFocus&&returnFocus.isConnected)returnFocus.focus();
 }
 function speak(text,onFinished,onError){

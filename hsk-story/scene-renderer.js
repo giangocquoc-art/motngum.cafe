@@ -38,7 +38,7 @@ function mount(host,id,options){
   host.innerHTML=render(null,id,options);host.dataset.artScene=id;host.dataset.artExpression=options.anExpression||'';host.dataset.artForeground=foregroundMode;host.dataset.artCompanion=companionMode;
  }
  if(!host.parentElement||typeof window==='undefined'||!window.ResizeObserver)return;
- var current=observers.get(host);if(current){current.fit();return}
+ var current=observers.get(host);if(current){var currentBackground=host.querySelector('.cs-background img');if(currentBackground){currentBackground.addEventListener('load',current.fit,{once:true});if(currentBackground.complete&&currentBackground.naturalWidth)current.fit()}else current.fit();return}
  var stage=host.parentElement,dialogue=options.dialogue,glyph=options.glyph,bottomAvoid=options.bottomAvoid;
  var headerElement=options.header&&(stage.closest('.game-shell')?.querySelector('.game-top')||document.querySelector('.site-header'));
  function fit(){

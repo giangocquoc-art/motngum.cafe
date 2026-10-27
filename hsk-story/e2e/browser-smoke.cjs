@@ -18,6 +18,7 @@ async function auditLayout(page,label,state){
   const shell=document.querySelector('#gameOverlay:not([hidden])')||document.querySelector('.intro-screen')||document.querySelector('.review-screen')||document.body;
   const issues=[];
   if(document.documentElement.scrollWidth>innerWidth+2||document.documentElement.scrollHeight>innerHeight+2)issues.push({kind:'viewport-scroll',size:[document.documentElement.scrollWidth,document.documentElement.scrollHeight],viewport:[innerWidth,innerHeight]});
+  const activeGame=document.querySelector('#gameOverlay:not([hidden])');if(activeGame){const home=document.querySelector('#heroArt');if(home&&getComputedStyle(home).visibility!=='hidden')issues.push({kind:'home-scene-visible-during-game'});const birds=[...document.querySelectorAll('.cs-sparrow')].filter(el=>getComputedStyle(el).visibility!=='hidden'&&getComputedStyle(el).display!=='none'&&el.getBoundingClientRect().width>0);if(birds.length!==1)issues.push({kind:'visible-sparrow-count',count:birds.length})}
   const interlude=shell.querySelector('#storyInterlude:not([hidden])'),player=shell.querySelector('.player-panel'),continueButton=shell.querySelector('#interludeContinue');
   if(interlude&&player&&continueButton){const panel=player.getBoundingClientRect(),button=continueButton.getBoundingClientRect(),bottomPadding=parseFloat(getComputedStyle(player).paddingBottom)||0;const unused=Math.round(panel.bottom-button.bottom-bottomPadding);if(unused>52)issues.push({kind:'unused-interlude-space',pixels:unused,viewport:[innerWidth,innerHeight]})}
   for(const el of shell.querySelectorAll('.player-panel,.story-ui,.interactive,.intro-learning,.book,.card,.notice,.curiosity-details,.notebook-panel,.world-panel')){
@@ -122,6 +123,9 @@ async function goStory(page,label){
  fs.writeFileSync(path.join(OUT,label+"-resource-timings.json"),JSON.stringify(features,null,2));
  await page.locator("#startBtn").click();
  assert.equal(await visible(page,"#gameOverlay"),true);
+ assert.equal(await page.locator("body").evaluate(el=>el.classList.contains("game-active")),true,"Opening the story should switch to the single-scene game view");
+ assert.equal(await page.locator("#heroArt").evaluate(el=>getComputedStyle(el).visibility),"hidden","The home illustration must not render a second Sẻ behind the active story");
+ assert.equal(await page.locator("#gameOverlay .cs-sparrow:visible").count(),1,"The active game view should show one Sẻ");
  let finished=false,steps=0,practiceUsed=false,supportUsed=false,arrivalObserved=false,returnedTree=false,streetEchoObserved=false;
  const capturedScenes=new Set();
  for(;steps<100;steps++){

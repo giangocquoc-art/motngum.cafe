@@ -27,7 +27,7 @@ function harness(sharedStorage={},options={}){
  ids.forEach(id=>dom[id]=element(id));
  ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyEcho","storyInterlude","vocabRevealBtn","learningStrip","encounterPanel","encounterAnswerForm","encounterContinue","encounterHint","encounterSample","skillPanel","skillListen","practiceOpenBtn","worldPanel"].forEach(id=>dom[id].hidden=true);
  const nav=element("nav");
- document={body:{style:{}},activeElement:null,listeners:{},getElementById(id){if(!dom[id])throw Error("Missing DOM ID "+id);return dom[id]},querySelector(q){return q==="nav"?nav:null},createElement(tag){return element("new-"+tag)},querySelectorAll(){return []},addEventListener(k,f){(this.listeners[k]??=[]).push(f)}};
+ document={body:{style:{},classList:{s:new Set,add(k){this.s.add(k)},remove(k){this.s.delete(k)},contains(k){return this.s.has(k)}}},activeElement:null,listeners:{},getElementById(id){if(!dom[id])throw Error("Missing DOM ID "+id);return dom[id]},querySelector(q){return q==="nav"?nav:null},createElement(tag){return element("new-"+tag)},querySelectorAll(){return []},addEventListener(k,f){(this.listeners[k]??=[]).push(f)}};
  const localStorage={getItem(k){return sharedStorage[k]||null},setItem(k,v){sharedStorage[k]=v}};
  const window={speechSynthesis:{cancel(){},getVoices(){return []},speak(u){spoken.push(u.text);if(options.audioFailure){u.onerror?.({error:"synthesis-failed"})}else if(!options.audioNeverEnds){u.onend?.()}}}};
  if(options.autoStart){
@@ -54,6 +54,12 @@ test("story: sentence builder is helpful and notebook only shows past expression
  assert.equal(e.answerInput.value,"我很好");
  e.answerForm.fire("submit");assert.equal(e.nextBtn.hidden,false);
  assert.equal(JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]).history[0].hint,true);
+});
+test("game view hides the landing illustration and restores it on exit",()=>{
+ const t=harness(),e=t.e;e.startBtn.click();
+ assert.equal(t.document.body.classList.contains("game-active"),true);
+ e.closeGame.click();
+ assert.equal(t.document.body.classList.contains("game-active"),false);
 });
 test("story: save/resume preserves answer status and typed draft",()=>{
  const state={};let t=harness(state),e=t.e;e.startBtn.click();

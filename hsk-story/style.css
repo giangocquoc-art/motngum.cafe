@@ -273,6 +273,7 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 /* One viewport composition: controls and the answer never push the story off-screen. */
 .game-overlay{position:fixed;inset:0;width:100%;height:100dvh;overflow:hidden;overscroll-behavior:none}
 .game-shell{box-sizing:border-box;min-height:0;height:100dvh;max-height:100dvh;overflow:hidden}
+body.game-active>.site-header,body.game-active>.sparrow-home,body.game-active>.sparrow-footer{visibility:hidden}
 .stage{flex:1 1 0%;min-height:0;overflow:hidden}
 .player-panel{flex:0 1 auto;min-height:0;max-height:39dvh;overflow:hidden;overscroll-behavior:none}
 .story-actor{bottom:0%;max-height:100%;}
