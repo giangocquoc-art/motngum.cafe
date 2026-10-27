@@ -59,6 +59,37 @@ test("story: save/resume preserves answer status and typed draft",()=>{
  assert.equal(e.answerInput.disabled,true);assert.equal(e.nextBtn.hidden,false);
  assert.equal(e.dialogueText.textContent,"好，我们一起去看看新学校吧！");
 });
+
+test("notebook pages keep learned words and memories accessible without changing saved results",()=>{
+ const saved={'hai-que-huong-progress-v3':JSON.stringify({v:3,step:9,done:true,history:Array.from({length:10},()=>({status:'correct',attempts:0,hint:false})),storyChoices:{friendship:'ask-teacher','noodle-taste':'mild'},storyBeats:['arrival','gate','lunch','way-home','school-test'],encounter:{stage:'done',inspected:['desk','bag'],route:'friend',answer:'independent'}})};
+ const t=harness(saved),e=t.e;e.resumeBtn.click();const before=JSON.stringify(saved);
+ e.notebookBtn.click();assert.equal(e.storyStage.inert,true);
+ const words=[];do{words.push(...e.notebookWords.children.filter(x=>!x.hidden).map(x=>x.children[0].textContent));if(e.notebookNext.disabled)break;e.notebookNext.click()}while(true);
+ assert.deepEqual(words,e.notebookWords.children.map(x=>x.children[0].textContent));
+ e.notebookMemoryTab.click();const memories=[];do{memories.push(e.storyMemory.textContent);if(e.notebookNext.disabled)break;e.notebookNext.click()}while(true);
+ assert.ok(memories.some(x=>x.includes('cô Vương')));assert.ok(memories.some(x=>x.includes('sổ mẹ tặng')));
+ e.notebookLearningTab.click();let pages=0;do{pages++;if(e.notebookNext.disabled)break;e.notebookNext.click()}while(pages<30);
+ assert.ok(pages>4&&pages<30);assert.equal(JSON.stringify(saved),before);
+ e.notebookClose.click();assert.equal(e.storyStage.inert,false);assert.equal(t.document.activeElement.id,'notebookBtn');
+});
+
+test("closing the sentence builder preserves its assistance flag and typed draft",()=>{
+ const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);e.openBuilderBtn.click();
+ e.tileList.children.find(x=>x.textContent==='我').click();e.builderClose.click();
+ assert.equal(e.answerInput.value,'我');assert.equal(e.sentenceBuilder.hidden,true);
+ assert.equal(JSON.parse(t.sharedStorage['hai-que-huong-progress-v3']).hintUsed,true);
+ e.answerInput.value='我很好';e.answerForm.fire('submit');
+ assert.equal(JSON.parse(t.sharedStorage['hai-que-huong-progress-v3']).history[0].hint,true);
+});
+
+test("Sẻ speaks on request, returns to the same line and does not affect learning credit",()=>{
+ const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
+ const before=JSON.stringify(t.sharedStorage),line=e.dialogueText.textContent;
+ assert.equal(e.sparrowWhisper.hidden,true);assert.equal(e.sparrowTalkBtn.hidden,false);
+ e.sparrowTalkBtn.click();assert.equal(e.sparrowWhisper.hidden,false);assert.equal(t.document.activeElement.id,'sparrowTalkClose');
+ e.sparrowTalkClose.click();assert.equal(e.sparrowWhisper.hidden,true);assert.equal(e.dialogueText.textContent,line);
+ assert.equal(JSON.stringify(t.sharedStorage),before);assert.equal(t.document.activeElement.id,'sparrowTalkBtn');
+});
 test("story: exams hide notebook and builder, retain independent grading",()=>{
  const t=harness(),e=t.e;e.startBtn.click();dismissStory(e);
  const correct=["我很好","我叫安","我是学生","有三个学生","我想吃面条","谢谢","好","我叫安我是学生","十块钱","我想吃面条"];
@@ -91,7 +122,7 @@ test('story memory survives browser refresh and changes the next scene',()=>{
  assert.ok(e.storyBeat.textContent.includes('刘奶奶'));
  assert.equal(JSON.parse(st['hai-que-huong-progress-v3']).storyChoices.friendship,'ask-teacher');
  t=harness(st);e=t.e;e.resumeBtn.click();assert.ok(e.storyBeat.textContent.includes('刘奶奶'));
- e.notebookBtn.click();assert.ok(e.storyMemory.textContent.includes('cô Vương'));
+ e.notebookBtn.click();e.notebookMemoryTab.click();assert.ok(e.storyMemory.textContent.includes('cô Vương'));
 });
 
 test('V6 prologue blocks quiz until acknowledged and resumes after reload',()=>{
@@ -371,6 +402,9 @@ test("Gate3B inspecting street object shows Hanzi bridge and preserves selected 
  assert.ok(e.worldBridge.textContent.includes("日"));
  assert.ok(e.worldBridge.textContent.includes("Bạn từng nhìn thấy"));
  assert.ok(e.worldBridge.textContent.includes("Không tính điểm"));
+ assert.equal(e.gameShell.dataset.mode,'world');assert.equal(e.worldBridge.hidden,true);
+ const beforePaging=JSON.stringify(storage);e.worldNext.click();assert.equal(e.worldBridge.hidden,false);assert.equal(e.worldDescription.hidden,true);
+ e.worldPrev.click();assert.equal(e.worldDescription.hidden,false);assert.equal(JSON.stringify(storage),beforePaging);
  let state=JSON.parse(storage["hai-que-huong-progress-v3"]);
  assert.equal(state.worldFocus["hsk1.e01.arrival-greeting"],"window");
  assert.equal(state.history.length,0);

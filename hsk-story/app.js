@@ -42,16 +42,22 @@ function updateToggles(){
 /* Keep view callers stable during Gate 4 extraction. */
 var sceneArt=HSKSceneArt.render;
 
+var notebookSection="words",notebookPage=0,notebookData={memory:[],learning:[]};
 function notebookAllowed(){return !practiceActive()&&!HSKEncounter.pending(state.step,state.encounter)&&!HSKStoryBeats.pending(state.step,state.storyBeats)&&(state.step<EXAM_START||state.solved||state.done)}
 function setNotebook(open){
  if(open&&!notebookAllowed()){notify("Cô Vương đang kiểm tra. Sổ tay chỉ được mở sau khi trả lời xong.");return}
  $("notebookPanel").hidden=!open;
  $("notebookBtn").setAttribute("aria-expanded",String(open));
- if(open){refreshNotebook();$("notebookClose").focus()}else $("notebookBtn").focus();
+ if(open){
+  if(window.ChimSeTutor)window.ChimSeTutor.close();
+  state.worldOpen=false;renderWorld();
+  closeSparrow(false);
+  notebookSection="words";notebookPage=0;refreshNotebook();$("notebookClose").focus();
+ }else $("notebookBtn").focus();
+ $("gameShell").classList[open?"add":"remove"]("notebook-open");
+ $("storyStage").inert=open;
 }
 function refreshNotebook(){
- $("notebookResults").hidden=!state.done;
- if(state.done)$("notebookResults").textContent="Những gì An đã thử\n\n"+["summaryStats","summaryDescription","encounterSummary","skillSummary","completionReview"].map(function(id){return $(id).textContent}).join("\n\n");
  var words=HSKLearningKit.notebook(HSKCurriculum.scenes,state.history,state.done||state.solved||state.hintUsed||state.vocabSeen.includes(state.step)?state.step:state.step-1,state.done);
  var weak=HSKLearningKit.needsReview(state.history,HSKCurriculum.scenes);
  var counts=HSKLearningKit.counts(state.history,HSKCurriculum.scenes);
@@ -64,22 +70,45 @@ function refreshNotebook(){
   var right=document.createElement("span");right.className="notebook-meaning";right.textContent=w.vietnamese;
   row.appendChild(left);row.appendChild(mid);row.appendChild(right);list.appendChild(row);
  });
- $("notebookReview").textContent=weak.length?("Nên luyện lại: "+weak.map(function(w){return w.topic}).join(" · ")):"Những tình huống đã hoàn thành chưa ghi nhận nhu cầu ôn thêm.";
  var threads=HSKStoryThreads.trace(state.history,state.worldSeen);
- $("notebookThreads").textContent=threads.length?"Các câu An đã dùng trong đời sống:\n"+threads.map(function(t){
+ notebookData.learning=threads.map(function(t){
   var first=t.first==="seen-in-context"?"đã gặp qua hội thoại, chưa tự dùng riêng cụm này":t.first==="independent"?"tự trả lời đúng lần đầu":t.first==="supported"?"trả lời sau khi cần hỗ trợ hoặc thử lại":"đã xem mẫu";
   var check=t.checkpoint==="not-applicable"?"chưa có checkpoint riêng":t.checkpoint==="not-attempted"?"chưa đến checkpoint":t.checkpoint==="independent"?"tự làm đúng checkpoint bằng nhập chữ":t.checkpoint==="supported"?"checkpoint cần trợ giúp hoặc thử lại":"đã xem mẫu checkpoint";
-  return "• "+t.title+" · "+t.model+" — "+first+"; "+check+(t.revisited?"; đã xem lại trong cảnh vật":"");
- }).join("\n")+"\nĐây là bằng chứng tương tác bằng chữ Hán, không phải chứng chỉ HSK hay đánh giá phát âm.":"Chưa có câu nào được ghi nhận từ tình huống đã hoàn thành.";
-
- $("storyMemory").textContent=(function(){var m=HSKStoryDirector.memory(state.storyChoices),rec=state.encounter;
- var lines=m.map(x=>x.note);if(rec.stage==="done")lines.push("An tìm lại được quyển sổ mẹ tặng. "+(rec.answer==="independent"?"An tự giới thiệu tên ngay lần đầu.":"An đã luyện lại cách tự giới thiệu để lấy sổ."));
- return lines.length?"Những điều An đã quyết định: "+lines.join(" · "):"Những trang lựa chọn của An đang còn trống.";
-})();
+  return {target:"notebookThreads",text:t.title+" · "+t.model+"\n"+first+"; "+check+(t.revisited?"; đã xem lại trong cảnh vật":"")};
+ });
+ if(state.done)["summaryStats","summaryDescription","encounterSummary","skillSummary"].forEach(function(id){notebookData.learning.push({target:"notebookResults",text:$(id).textContent})});
+ weak.forEach(function(w){notebookData.learning.push({target:"notebookReview",text:"Một điều để thử lại: "+w.objective})});
+ if(!notebookData.learning.length)notebookData.learning.push({target:"notebookThreads",text:"An chưa ghi lại câu nào. Cứ bước tiếp câu chuyện nhé."});
+ notebookData.learning.push({target:"notebookResults",text:"Sổ ghi lại những lần An dùng chữ Hán trong truyện. Đây chưa phải kết quả thi HSK hoặc đánh giá phát âm."});
+ notebookData.memory=HSKStoryDirector.memory(state.storyChoices).map(function(m){return m.note});
+ if(state.encounter.stage==="done")notebookData.memory.push("An tìm lại được quyển sổ mẹ tặng. "+(state.encounter.answer==="independent"?"An tự giới thiệu tên ngay lần đầu.":"An đã luyện lại cách tự giới thiệu để lấy sổ."));
+ if(!notebookData.memory.length)notebookData.memory.push("Những trang lựa chọn của An đang còn trống. Một ngày mới vừa bắt đầu.");
+ renderNotebookPage();
+}
+function renderNotebookPage(){
+ var short=window.matchMedia&&window.matchMedia("(max-height: 620px)").matches,perPage=short?2:3;
+ var rows=Array.from($("notebookWords").children),total=notebookSection==="words"?Math.max(1,Math.ceil(rows.length/perPage)):notebookSection==="memory"?notebookData.memory.length:notebookSection==="learning"?notebookData.learning.length:1;
+ notebookPage=Math.min(Math.max(0,notebookPage),total-1);
+ ["notebookWords","notebookResults","notebookReview","notebookThreads","storyMemory","notebookProgress","notebookOptions","notebookPracticeLink"].forEach(function(id){$(id).hidden=true});
+ ["words","memory","learning","settings"].forEach(function(section,i){$(["notebookWordsTab","notebookMemoryTab","notebookLearningTab","notebookSettingsTab"][i]).setAttribute("aria-pressed",String(notebookSection===section))});
+ $("notebookCaption").textContent="";
+ if(notebookSection==="words"){
+  $("notebookWords").hidden=false;rows.forEach(function(row,i){row.hidden=i<notebookPage*perPage||i>=(notebookPage+1)*perPage});
+  $("notebookCaption").textContent=rows.length?"Chạm một từ để nghe lại.":"Sổ chưa có từ nào. An sẽ ghi lại những từ mình gặp.";
+ }else if(notebookSection==="memory"){
+  $("storyMemory").hidden=false;$("storyMemory").textContent=notebookData.memory[notebookPage];
+ }else if(notebookSection==="learning"){
+  var entry=notebookData.learning[notebookPage];$(entry.target).hidden=false;$(entry.target).textContent=entry.text;
+  $("notebookPracticeLink").hidden=false;
+ }else{
+  $("notebookProgress").hidden=false;$("notebookOptions").hidden=false;
+ }
+ $("notebookPrev").disabled=notebookPage===0;$("notebookNext").disabled=notebookPage===total-1;
+ $("notebookPageStatus").textContent=(notebookPage+1)+" / "+total;
 }
 function renderTiles(){
  var allowed=state.step<EXAM_START&&!state.solved&&!state.done;
- $("sentenceBuilder").hidden=true;$("openBuilderBtn").hidden=!allowed;if(!allowed)return;
+ $("sentenceBuilder").hidden=true;$("gameShell").classList.remove("builder-open");$("openBuilderBtn").hidden=!allowed;if(!allowed)return;
  $("tileList").replaceChildren();
  HSKLearningKit.tiles(state.step).forEach(function(token){
   var b=document.createElement("button");b.type="button";b.className="sentence-tile";
@@ -91,15 +120,16 @@ function openBuilder(){
  if(state.done||state.solved||state.step>=EXAM_START||HSKStoryBeats.pending(state.step,state.storyBeats))return;
  state.hintUsed=true;save();
  $("sentenceBuilder").hidden=false;$("openBuilderBtn").hidden=true;
- $("builderNotice").textContent="✳ Đã mở bộ từ. Câu này được tính là có trợ giúp dù bạn tự nhập lại.";
+ $("gameShell").classList.add("builder-open");
+ $("builderNotice").textContent="Chạm từ để ghép lời của An · có trợ giúp";
  $("tileList").children[0]?.focus();
 }
 function useTile(token){
  if(state.solved||state.done||state.step>=EXAM_START||HSKStoryBeats.pending(state.step,state.storyBeats))return;
  state.draft=HSKLearningKit.compose($("answerInput").value,token);
  $("answerInput").value=state.draft;
- state.hintUsed=true;save();$("answerInput").focus();
- $("builderNotice").textContent="✳ Đã dùng ghép câu. Câu này sẽ được đánh dấu có hỗ trợ.";
+ state.hintUsed=true;save();
+ $("builderNotice").textContent="Chạm từ để ghép lời của An · có trợ giúp";
 }
 
 
@@ -132,6 +162,7 @@ function closePractice(){
  save();renderStep();$("practiceOpenBtn").focus();
 }
 /* Optional tactile story objects. Never alter school exam scores. */
+var worldPage=0;
 function renderWorld(){
  var id=HSKStoryGraph.idAt(state.step),site=HSKSceneWorld.site(id);
  var blocked=!!(state.done||HSKEncounter.pending(state.step,state.encounter)||practiceActive()||HSKStoryBeats.pending(state.step,state.storyBeats));
@@ -139,26 +170,35 @@ function renderWorld(){
  $("worldPanel").hidden=!available||!state.worldOpen;$("worldActions").replaceChildren();
  $("worldDescription").textContent="Chọn một đồ vật để hiểu thêm cảnh này. Không tính điểm.";
  $("worldBridge").textContent="";
- if(!available||!state.worldOpen)return;
+ if(!available||!state.worldOpen){syncPlayLayout();return}
  $("worldTitle").textContent=site.title;
  var visited=state.worldSeen[id]||[];
  $("worldProgress").textContent="Quan sát theo ý thích · "+visited.length+"/"+site.objects.length+" chi tiết đã xem";
- site.objects.forEach(function(object){
+ site.objects.forEach(function(object,index){
   var b=document.createElement("button");b.type="button";b.className="world-action";
   b.textContent=object.icon+" "+object.label+(visited.includes(object.id)?" ✓":"");
   if(state.worldFocus[id]===object.id)b.classList.add("selected");
   b.addEventListener("click",function(){
    if(state.done||HSKEncounter.pending(state.step,state.encounter)||practiceActive()||HSKStoryBeats.pending(state.step,state.storyBeats))return;
    var next=HSKSceneWorld.inspect(state.worldSeen,id,object.id);
-   state.worldSeen=next.state;state.worldFocus[id]=object.id;save();renderWorld();
+   state.worldSeen=next.state;state.worldFocus[id]=object.id;worldPage=0;save();renderWorld();$("worldActions").children[index]?.focus();
   });
   $("worldActions").appendChild(b);
  });
  var focus=HSKSceneWorld.cleanFocus(state.worldFocus,state.worldSeen)[id];
- if(!focus)return;
- var note=HSKSceneWorld.describe(id,focus,state.worldSeen,readSafe("hai-que-huong-intro-v1"));
- $("worldDescription").textContent=note.vi+"  ·  "+note.zh+(note.callbackText?"  ✳ "+note.callbackText:"")+(note.memory?"  ✳ "+note.memory:"");
- $("worldBridge").textContent=note.bridgeText;
+ if(focus){
+  var note=HSKSceneWorld.describe(id,focus,state.worldSeen,readSafe("hai-que-huong-intro-v1"));
+  $("worldDescription").textContent=note.vi+"  ·  "+note.zh+(note.callbackText?"  ✳ "+note.callbackText:"")+(note.memory?"  ✳ "+note.memory:"");
+  $("worldBridge").textContent=note.bridgeText;
+ }
+ renderWorldPage();syncPlayLayout();
+}
+function renderWorldPage(){
+ var bridge=!!$("worldBridge").textContent;
+ if(!bridge)worldPage=0;
+ $("worldDescription").hidden=worldPage===1;$("worldBridge").hidden=worldPage===0;
+ $("worldPages").hidden=!bridge;$("worldPrev").disabled=worldPage===0;$("worldNext").disabled=worldPage===1;
+ $("worldPageStatus").textContent=(worldPage+1)+" / 2";
 }
 /* V10 formative skill sample. Speech-to-text or TTS playback is NOT a verified language exam. */
 function renderSkillSampler(){
@@ -342,8 +382,10 @@ function showCompletion(){
  syncPlayLayout();
 }
 function syncPlayLayout(){
- var mode=state.done?"completed":!$("encounterPanel").hidden?"encounter":!$("skillPanel").hidden?"practice":!$("storyInterlude").hidden?"interlude":!$("storyChoicePanel").hidden?"choice":state.solved?"resolved":"answer";
+ var mode=state.done?"completed":!$("encounterPanel").hidden?"encounter":!$("skillPanel").hidden?"practice":!$("storyInterlude").hidden?"interlude":!$("worldPanel").hidden?"world":!$("storyChoicePanel").hidden?"choice":state.solved?"resolved":"answer";
  $("gameShell").dataset.mode=mode;
+ closeSparrow(false);
+ $("sparrowTalkBtn").hidden=state.step>=EXAM_START||!["answer","resolved"].includes(mode);
  if(window.ChimSeTutor)window.ChimSeTutor.sync();
 }
 function paintScene(place,sceneId){
@@ -365,7 +407,11 @@ function narrateSparrow(index){
   "Dù cậu nói thế nào, tớ vẫn sẽ chờ ở bậu cửa."
  ];
  var el=$("sparrowWhisper");if(!el)return;
- el.hidden=false;$("sparrowWhisperText").textContent=lines[Math.max(0,Math.min(lines.length-1,index|0))];
+ closeSparrow(false);$("sparrowWhisperText").textContent=lines[Math.max(0,Math.min(lines.length-1,index|0))];
+}
+function closeSparrow(focus){
+ $("sparrowWhisper").hidden=true;$("storyDialogue").classList.remove("sparrow-speaking");$("sparrowTalkBtn").setAttribute("aria-expanded","false");
+ if(focus)$("sparrowTalkBtn").focus();
 }
 function renderStep(){
  state.worldOpen=false;
@@ -427,6 +473,7 @@ function openGame(){
 function closeGame(){
  if(window.ChimSeTutor)window.ChimSeTutor.close();
  $("notebookPanel").hidden=true;$("notebookBtn").setAttribute("aria-expanded","false");
+ $("gameShell").classList.remove("notebook-open");$("storyStage").inert=false;
  if("speechSynthesis" in window)window.speechSynthesis.cancel();
  if(state.recognizer){try{state.recognizer.abort()}catch(e){}state.recognizer=null}
  $("micBtn").classList.remove("listening");$("gameOverlay").hidden=true;document.body.style.overflow="";chapters();
@@ -514,9 +561,18 @@ $("nextBtn").addEventListener("click",nextScene);
 $("micBtn").addEventListener("click",microphone);
 $("notebookBtn").addEventListener("click",function(){setNotebook($("notebookPanel").hidden)});
 $("notebookClose").addEventListener("click",function(){setNotebook(false)});
+$("sparrowTalkBtn").addEventListener("click",function(){
+ if($("sparrowTalkBtn").hidden)return;
+ $("sparrowWhisper").hidden=false;$("storyDialogue").classList.add("sparrow-speaking");$("sparrowTalkBtn").setAttribute("aria-expanded","true");$("sparrowTalkClose").focus();
+});
+$("sparrowTalkClose").addEventListener("click",function(){closeSparrow(true)});
+[["notebookWordsTab","words"],["notebookMemoryTab","memory"],["notebookLearningTab","learning"],["notebookSettingsTab","settings"]].forEach(function(tab){$(tab[0]).addEventListener("click",function(){notebookSection=tab[1];notebookPage=0;renderNotebookPage()})});
+$("notebookPrev").addEventListener("click",function(){notebookPage--;renderNotebookPage()});
+$("notebookNext").addEventListener("click",function(){notebookPage++;renderNotebookPage()});
 $("tileUndo").addEventListener("click",function(){useTile("__undo")});
 $("tileClear").addEventListener("click",function(){useTile("__clear")});
 $("openBuilderBtn").addEventListener("click",openBuilder);
+$("builderClose").addEventListener("click",function(){$("sentenceBuilder").hidden=true;$("openBuilderBtn").hidden=false;$("gameShell").classList.remove("builder-open");$("openBuilderBtn").focus()});
 $("interludeContinue").addEventListener("click",continueStoryInterlude);
 $("skillListen").addEventListener("click",playSkillSample);
 $("practiceOpenBtn").addEventListener("click",openPractice);
@@ -528,8 +584,10 @@ $("encounterHint").addEventListener("click",function(){encounterDispatch({type:"
 $("encounterSample").addEventListener("click",function(){encounterDispatch({type:"sample"})});
 $("encounterContinue").addEventListener("click",function(){encounterDispatch({type:"continue"});renderStep();if(!$("storyInterlude").hidden)$("interludeContinue").focus();else $("answerInput").focus()});
 $("vocabRevealBtn").addEventListener("click",revealWords);
-$("worldOpenBtn").addEventListener("click",function(){state.worldOpen=!state.worldOpen;renderWorld();if(state.worldOpen)$("worldCloseBtn").focus()});
+$("worldOpenBtn").addEventListener("click",function(){state.worldOpen=!state.worldOpen;worldPage=0;renderWorld();if(state.worldOpen)$("worldCloseBtn").focus()});
 $("worldCloseBtn").addEventListener("click",function(){state.worldOpen=false;renderWorld();$("worldOpenBtn").focus()});
+$("worldPrev").addEventListener("click",function(){worldPage=0;renderWorldPage()});
+$("worldNext").addEventListener("click",function(){worldPage=1;renderWorldPage()});
 $("togglePinyin").addEventListener("click",function(){if(practiceActive())return;else if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.pinyin=!state.pinyin}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.pinyin=true}else state.pinyin=!state.pinyin;updateToggles();save()});
 $("toggleVietnamese").addEventListener("click",function(){if(practiceActive())return;else if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.vi=!state.vi}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.vi=true}else state.vi=!state.vi;updateToggles();save()});
 function replay(){state.step=0;state.done=false;state.history=[];state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.storyChoices={};state.storyBeats=[];state.vocabSeen=[];state.encounter=HSKEncounter.initial();state.encounterDraft="";state.worldSeen={};state.worldFocus={};state.skillSampler=HSKSkillSampler.initial();state.practiceOpen=false;state.solved=false;save();chapters();renderStep();$("answerInput").focus();notify("Bắt đầu lại tập truyện. Thành tích cũ đã được đặt lại.")}
@@ -538,8 +596,8 @@ $("retakeExamBtn").addEventListener("click",retakeExam);
 $("resetGame").addEventListener("click",replay);$("replayBtn").addEventListener("click",replay);
 document.addEventListener("keydown",function(e){
  if($("gameOverlay").hidden)return;
- if(e.key==="Escape"){if(!$("notebookPanel").hidden){setNotebook(false);return}closeGame();return}
- if(e.key==="Tab"){var f=Array.from($("gameOverlay").querySelectorAll("button:not([hidden]):not([disabled]),input:not([disabled]):not([hidden])")).filter(function(el){return el.getClientRects().length>0});if(!f.length)return;var first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
+ if(e.key==="Escape"){if(!$("notebookPanel").hidden){setNotebook(false);return}if(!$("sparrowWhisper").hidden){closeSparrow(true);return}if(!$("worldPanel").hidden){state.worldOpen=false;renderWorld();$("worldOpenBtn").focus();return}closeGame();return}
+ if(e.key==="Tab"){var scope=$("notebookPanel").hidden?$("gameOverlay"):$("notebookPanel");var f=Array.from(scope.querySelectorAll("button:not([hidden]):not([disabled]),input:not([disabled]):not([hidden]),a[href],textarea:not([disabled])")).filter(function(el){return el.getClientRects().length>0});if(!f.length)return;var first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
 });
 var keyboardFullHeight=window.innerHeight||0,keyboardViewportWidth=window.innerWidth||0;
 function syncKeyboardLayout(target){
@@ -554,10 +612,10 @@ function syncKeyboardLayout(target){
  if(open){shell.style.setProperty("--chimse-visible-height",Math.max(160,Math.floor(visible))+"px")}
  else shell.style.removeProperty("--chimse-visible-height");
 }
-document.addEventListener("focusin",function(e){syncKeyboardLayout(e.target)});
+document.addEventListener("focusin",function(e){if(e.target===$("answerInput")||e.target===$("aiTutorInput"))closeSparrow(false);syncKeyboardLayout(e.target)});
 document.addEventListener("focusout",function(){setTimeout(function(){syncKeyboardLayout(document.activeElement)},0)});
 if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){syncKeyboardLayout(document.activeElement)});
-window.addEventListener?.("resize",function(){syncKeyboardLayout(document.activeElement)});
+window.addEventListener?.("resize",function(){syncKeyboardLayout(document.activeElement);if(!$("notebookPanel").hidden)renderNotebookPage()});
 /* Direct handoff from the optional Chapter 00; existing learner saves are untouched. */
 if(window.location&&typeof window.location.search==="string"&&window.location.search.indexOf("play=hsk1")>=0){
  try{

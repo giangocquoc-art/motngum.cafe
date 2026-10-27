@@ -16,11 +16,11 @@ async function auditLayout(page,label,state){
   const shell=document.querySelector('#gameOverlay:not([hidden])')||document.querySelector('.intro-screen')||document.querySelector('.review-screen')||document.body;
   const issues=[];
   if(document.documentElement.scrollWidth>innerWidth+2||document.documentElement.scrollHeight>innerHeight+2)issues.push({kind:'viewport-scroll',size:[document.documentElement.scrollWidth,document.documentElement.scrollHeight],viewport:[innerWidth,innerHeight]});
-  for(const el of shell.querySelectorAll('.player-panel,.story-ui,.interactive,.intro-learning,.book,.card,.notice,.curiosity-details')){
+  for(const el of shell.querySelectorAll('.player-panel,.story-ui,.interactive,.intro-learning,.book,.card,.notice,.curiosity-details,.notebook-panel,.world-panel')){
    const r=el.getBoundingClientRect();if(!r.width||!r.height||el.closest('[hidden]'))continue;
    if(el.scrollHeight>el.clientHeight+2)issues.push({kind:'panel-overflow',node:el.id||el.className,size:[el.clientHeight,el.scrollHeight]});
   }
-  for(const el of shell.querySelectorAll('button,input,textarea,a,#interludeStory,#encounterBody,#dialogueText,#episodeReflection')){
+  for(const el of shell.querySelectorAll('button,input,textarea,a,#interludeStory,#encounterBody,#dialogueText,#episodeReflection,#notebookPage p,#notebookResults,#worldDescription,#worldBridge')){
    const r=el.getBoundingClientRect(),cs=getComputedStyle(el),closedDetails=el.closest('details:not([open])');if(!r.width||!r.height||el.closest('[hidden]')||closedDetails&&!closedDetails.querySelector('summary')?.contains(el)||cs.visibility==='hidden'||cs.display==='none')continue;
    let clip={left:0,top:0,right:innerWidth,bottom:innerHeight},ancestor=el.parentElement;
    while(ancestor){const style=getComputedStyle(ancestor),a=ancestor.getBoundingClientRect();if(/hidden|clip|auto|scroll/.test(style.overflowY)){clip.top=Math.max(clip.top,a.top);clip.bottom=Math.min(clip.bottom,a.bottom)}if(/hidden|clip|auto|scroll/.test(style.overflowX)){clip.left=Math.max(clip.left,a.left);clip.right=Math.min(clip.right,a.right)}ancestor=ancestor.parentElement}
@@ -32,6 +32,13 @@ async function auditLayout(page,label,state){
 }
 function watch(page,label){page.on("pageerror",e=>errs.push(label+": "+e.message));}
 async function visible(page,sel){return page.locator(sel).isVisible()}
+async function auditWorld(page,label){
+ const count=await page.locator('#worldActions button').count();
+ for(let i=0;i<count;i++){
+  await page.locator('#worldActions button').nth(i).click();await auditLayout(page,label,'observation-'+i);
+  if(await visible(page,'#worldNext')){await page.locator('#worldNext').click();await auditLayout(page,label,'observation-bridge-'+i);await page.locator('#worldPrev').click()}
+ }
+}
 async function goIntro(page,label){
  await page.goto(ROOT+"/nhap-mon.html",{waitUntil:"networkidle"});
  assert.match(await page.title(),/Chim Sẻ/);
@@ -90,7 +97,7 @@ async function goStory(page,label){
  fs.writeFileSync(path.join(OUT,label+"-resource-timings.json"),JSON.stringify(features,null,2));
  await page.locator("#startBtn").click();
  assert.equal(await visible(page,"#gameOverlay"),true);
- let finished=false,steps=0,practiceUsed=false,arrivalObserved=false,returnedTree=false,streetEchoObserved=false;
+ let finished=false,steps=0,practiceUsed=false,supportUsed=false,arrivalObserved=false,returnedTree=false,streetEchoObserved=false;
  for(;steps<100;steps++){
   await auditLayout(page,label,'story-'+steps+'-'+(await page.locator('#stepText').innerText()));
   if(await visible(page,"#completionPane")){finished=true;break}
@@ -104,16 +111,20 @@ async function goStory(page,label){
    streetEchoObserved=true;
   }
   if(!arrivalObserved&&stepText.trim()==="01 / 10"&&await visible(page,"#worldPanel")){
+   await auditWorld(page,label);
    await page.locator("#worldActions button").first().click();
    assert.ok((await page.locator("#worldBridge").innerText()).includes("日"));
    await page.locator("#worldActions button").last().click();
+   await page.locator('#notebookBtn').click();await auditLayout(page,label,'notebook-from-observation');await page.locator('#notebookClose').click();
    arrivalObserved=true;
    continue;
   }
   if(!returnedTree&&stepText.trim()==="07 / 10"&&await visible(page,"#worldPanel")){
+   await auditWorld(page,label);
    await page.locator("#worldActions button").first().click();
    assert.ok((await page.locator("#worldBridge").innerText()).includes("木"));
    assert.ok((await page.locator("#worldDescription").innerText()).includes("Sáng nay An"));
+   await page.locator('#worldCloseBtn').click();
    returnedTree=true;
    continue;
   }
@@ -147,6 +158,22 @@ async function goStory(page,label){
   }
   if(await visible(page,"#nextBtn")){await page.locator("#nextBtn").click();continue}
   if(await visible(page,"#answerForm")){
+   if(!supportUsed){
+    if(await visible(page,'#worldPanel'))await page.locator('#worldCloseBtn').click();
+    assert.equal(await visible(page,'#sparrowWhisper'),false,'Ambient speech must not cover the lesson');
+    const prompt=await page.locator('#dialogueText').textContent();await page.locator('#sparrowTalkBtn').click();
+    await auditLayout(page,label,'sparrow-conversation');assert.equal(await visible(page,'#dialogueText'),false);
+    await page.locator('#sparrowTalkClose').click();assert.equal(await page.locator('#dialogueText').textContent(),prompt);
+    await page.locator('#answerInput').fill('不知道');await page.locator('#sendAnswer').click();
+    await auditLayout(page,label,'answer-wrong');if(await visible(page,'#worldPanel'))await page.locator('#worldCloseBtn').click();await page.locator('#hintBtn').click();
+    await auditLayout(page,label,'answer-hint');await page.locator('#notebookBtn').click();
+    await auditLayout(page,label,'notebook-first-hint');await page.locator('#notebookClose').click();
+    await page.locator('#openBuilderBtn').click();await auditLayout(page,label,'answer-builder');
+    for(const token of ['我','很','好'])await page.locator('#tileList button').filter({hasText:new RegExp('^'+token+'$')}).click();
+    await auditLayout(page,label,'answer-built');assert.equal(await page.locator('#answerInput').inputValue(),'不知道我很好');
+    await page.locator('#tileClear').click();for(const token of ['我','很','好'])await page.locator('#tileList button').filter({hasText:new RegExp('^'+token+'$')}).click();
+    supportUsed=true;
+   }
    const text=await page.evaluate(()=>{
     const i=Number(document.querySelector("#stepText").textContent.split("/")[0].trim())-1;
     return HSKContent.scenes[i].answers[0];
@@ -164,6 +191,7 @@ async function goStory(page,label){
  const v3=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v3")));
  const v4=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-progress-v4")));
  assert.equal(v3.done,true);assert.equal(v4.v,4);assert.equal(v4.storyId,"hsk1.e01");
+ assert.equal(v3.history[0].hint,true,'Using the builder must retain assistance credit');
  assert.equal(streetEchoObserved,true,"Existing language thread not observed at the walk-home scene");
  const ending=await page.locator("#episodeReflection").innerText();
  assert.ok(ending.length>0&&ending.includes("An"),"Story ending does not reflect the player's choices");
@@ -178,6 +206,22 @@ async function goStory(page,label){
  await page.goto(ROOT+"/?play=hsk1",{waitUntil:"networkidle"});
  assert.equal(await visible(page,"#gameOverlay"),true,"Deep-link HSK1 did not open saved story");
  assert.equal(await visible(page,"#completionPane"),true,"Completed progress did not survive reload");
+ const beforeNotebook=await page.evaluate(()=>localStorage.getItem('hai-que-huong-progress-v3'));
+ await page.locator('#notebookBtn').click();await auditLayout(page,label,'notebook-completed');
+ await page.screenshot({path:path.join(OUT,label+'-notebook.png')});
+ const collectedWords=[];
+ for(const section of ['Words','Memory','Learning','Settings']){
+  await page.locator('#notebook'+section+'Tab').click();let n=0;
+  while(true){
+   await auditLayout(page,label,'notebook-'+section+'-'+n);
+   if(section==='Words')collectedWords.push(...await page.locator('#notebookWords button:visible .notebook-hanzi').allTextContents());
+   if(await page.locator('#notebookNext').isDisabled())break;
+   assert.ok(++n<40,'Notebook pagination must terminate');await page.locator('#notebookNext').click();
+  }
+ }
+ assert.deepEqual(collectedWords,await page.locator('#notebookWords .notebook-hanzi').allTextContents(),'Every learned word must be accessible once across pages');
+ await page.locator('#notebookClose').click();
+ assert.equal(await page.evaluate(()=>localStorage.getItem('hai-que-huong-progress-v3')),beforeNotebook,'Reading the notebook must not mutate story progress');
 }
 async function goReview(page,label,withStory){
  await page.goto(ROOT+"/ren-luyen.html",{waitUntil:"networkidle"});
@@ -261,7 +305,7 @@ async function testBrowser(){
   assert.deepEqual(errs,[]);
   fs.writeFileSync(path.join(OUT,'layout-findings.json'),JSON.stringify(layoutFindings,null,2));
   assert.equal(layoutFindings.length,0,'Layout violations in '+layoutFindings.length+' states; see test-results/layout-findings.json');
-  fs.writeFileSync(path.join(OUT,'qa-summary.json'),JSON.stringify({generatedAt:new Date().toISOString(),scenarios:selected||devices.map(x=>x.name),layoutChecks,result:'PASS',limits:['No physical-device keyboard tested','Artwork fidelity and sibling occlusion are separate checks','Notebook and settings pagination not yet audited']},null,2));
+  fs.writeFileSync(path.join(OUT,'qa-summary.json'),JSON.stringify({generatedAt:new Date().toISOString(),scenarios:selected||devices.map(x=>x.name),layoutChecks,result:'PASS',limits:['No physical-device keyboard tested','Artwork fidelity and sibling occlusion are separate checks','AI provider response is mocked for keyboard checks']},null,2));
   console.log("Browser E2E: requested scenarios completed, "+layoutChecks+' measured layout states: PASS');
  }finally{await browser.close()}
 }
@@ -283,7 +327,7 @@ async function verifyKeyboard(browser,device){
   await page.locator('#answerInput').fill('我很好');
   assert.equal(await page.locator('#gameShell').evaluate(x=>x.classList.contains('keyboard-open')),false,'Focus alone should not move submit controls');
   await page.setViewportSize(contracted);await page.waitForFunction(()=>document.querySelector('#gameShell').classList.contains('keyboard-open'));
-  await auditLayout(page,device.name,'keyboard-answer');await page.locator('#sendAnswer').click();
+  await auditLayout(page,device.name,'keyboard-answer');await page.locator('#openBuilderBtn').click();await auditLayout(page,device.name,'keyboard-builder');await page.locator('#builderClose').click();await page.locator('#sendAnswer').click();
   assert.equal(await visible(page,'#nextBtn'),true,'Focus moving to Send must preserve the pointer click');
   await page.setViewportSize(full);await page.waitForFunction(()=>!document.querySelector('#gameShell').classList.contains('keyboard-open'));
   console.log('Keyboard '+device.name+': sent AI question and story answer');

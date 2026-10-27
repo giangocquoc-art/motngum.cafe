@@ -532,3 +532,82 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .game-shell.keyboard-open .user-instruction{font-size:10px;line-height:1.2;margin-bottom:3px}
 .game-shell.keyboard-open #encounterBody,.game-shell.keyboard-open #encounterHeading,.game-shell.keyboard-open .ai-tutor-note{display:none}
 .game-shell.keyboard-open #openBuilderBtn{min-height:28px;padding:4px 8px;font-size:9px}
+
+/* On-demand tools occupy the approved learning sheet, with explicit pages. */
+.game-top{z-index:9}
+.game-shell[data-mode="world"] .player-panel>:not(#worldPanel){display:none!important}
+.game-shell[data-mode="world"] .scene-toolbelt{display:none}
+.game-shell[data-mode="world"] .player-panel{flex-basis:clamp(330px,44dvh,400px);max-height:55dvh}
+.game-shell .player-panel>#worldPanel{position:static;inset:auto;width:min(100%,920px);height:100%;min-height:0;max-height:none;overflow:visible;margin:0 auto;padding:0;box-shadow:none;border:0;background:transparent;display:flex;flex-direction:column;gap:8px}
+.game-shell .player-panel>#worldPanel[hidden]{display:none}
+.player-panel #worldPanel .world-top{flex-direction:row;align-items:center;gap:12px}
+.player-panel #worldPanel .world-top strong{font-size:15px}.player-panel #worldPanel .world-top span{font-size:11px}
+.player-panel #worldPanel .world-actions{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.player-panel #worldPanel .world-action{min-height:32px;font-size:12px;padding:5px 8px}
+.player-panel #worldPanel .world-page{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.player-panel #worldPanel p{font-size:13px;line-height:1.5;padding:0;margin:0;border:0;background:transparent}
+@media(max-height:620px){
+ .game-shell[data-mode="world"] .player-panel{flex-basis:200px;max-height:56dvh}
+ .game-shell .player-panel>#worldPanel{gap:5px}
+ .player-panel #worldPanel .world-top strong{font-size:13px}.player-panel #worldPanel .world-top span{font-size:10px}
+ .player-panel #worldPanel .world-action{min-height:27px;font-size:11px;padding:3px 6px}
+ .player-panel #worldPanel p{font-size:12px;line-height:1.35}
+}
+.story-ui .sparrow-whisper{position:static;inset:auto;width:auto;padding:0;display:block;border:0;border-radius:0;box-shadow:none;background:transparent;animation:none}
+.story-ui .sparrow-whisper[hidden]{display:none}
+.story-ui.sparrow-speaking>:not(#sparrowWhisper){display:none}
+.sparrow-whisper-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:#506c75}
+.sparrow-whisper-head button{border:1px solid #9bacaa;background:#f5f5e9;padding:5px 8px;font-size:11px;min-height:30px}
+.story-ui .sparrow-whisper p{font-size:13px;line-height:1.5;margin:8px 0 3px}
+.scene-toolbelt{flex-wrap:wrap}
+.game-shell.notebook-open .player-panel{flex-basis:clamp(340px,46dvh,410px);max-height:60dvh;overflow:visible}
+.game-shell.notebook-open .player-panel>:not(#notebookPanel){display:none!important}
+.game-shell.notebook-open .scene-toolbelt{display:none}
+.game-shell.notebook-open .player-panel>#notebookPanel{display:flex!important}
+.game-shell .notebook-panel{position:static;inset:auto;z-index:auto;width:min(100%,920px);height:100%;min-height:0;max-height:none;overflow:visible;padding:0;margin:0 auto;border:0;box-shadow:none;background:transparent;flex-direction:column;gap:8px}
+.notebook-panel .notebook-head{align-items:center;border:0;padding:0}
+.notebook-panel .notebook-head h3{font-family:inherit;font-size:17px;margin:0}
+.notebook-head button{min-width:34px;min-height:30px}
+.notebook-sections{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.notebook-sections button,.notebook-pages button{min-width:0;min-height:32px;padding:5px 4px;border:1px solid #a99c84;background:#fff9ed;font-size:12px}
+.notebook-sections button[aria-pressed="true"]{background:#dceae1;border-color:#5e8177;font-weight:700}
+.notebook-panel .notebook-page{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.notebook-panel p,.notebook-panel .notebook-results{font-size:13px;line-height:1.5;margin:0;white-space:pre-line;padding:0;border:0;background:transparent}
+.notebook-panel .notebook-caption{font-size:11px;color:#786e60}
+.notebook-panel .notebook-word{min-height:39px;padding:6px 0}
+.notebook-panel .notebook-word[hidden]{display:none}
+.notebook-panel .notebook-hanzi{font-size:20px}
+.notebook-panel .notebook-pinyin,.notebook-panel .notebook-meaning{font-size:12px}
+.notebook-panel .notebook-options{border:0;padding:0;margin:0;gap:10px}
+.notebook-panel .notebook-options button{font-size:12px;min-height:36px}
+.notebook-panel .notebook-practice-link{align-self:flex-start;padding:5px 10px;margin:0;font-size:11px;min-height:28px}
+.notebook-pages{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.notebook-pages span{font-size:12px}.notebook-pages button{min-width:80px}
+.notebook-pages button:disabled{opacity:.4;cursor:default}
+.game-shell[data-mode="answer"] .player-panel>#aiTutorBtn{position:absolute;top:9px;right:clamp(16px,5vw,72px);bottom:auto;order:0;margin:0;min-height:28px}
+.game-shell[data-mode="answer"] #userInstruction{padding-right:80px;min-height:30px;display:flex;align-items:center}
+.game-shell.builder-open[data-mode="answer"] .player-panel{flex-basis:clamp(310px,40dvh,370px)}
+.game-shell.builder-open .player-panel>#aiTutorBtn{display:none!important}
+.game-shell.builder-open[data-mode="answer"] #sparrowTalkBtn,.game-shell.builder-open[data-mode="answer"] #worldOpenBtn{display:none}
+.game-shell.keyboard-open.builder-open[data-mode="answer"] .player-panel{flex:1 1 auto;max-height:none}
+.game-shell.builder-open #userInstruction{padding-right:0;min-height:0}
+.game-shell .sentence-builder{padding:6px 8px;margin:5px 0}
+.sentence-builder .builder-heading{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+.sentence-builder .builder-heading span{font-size:11px;color:#665546}
+.sentence-builder .builder-heading button{min-height:25px;padding:3px 8px}
+.sentence-builder .builder-tools{margin-top:4px}
+@media(max-height:620px){
+ .game-shell.notebook-open .player-panel{flex-basis:200px;max-height:56dvh;padding-top:6px;padding-bottom:6px}
+ .game-shell .notebook-panel{gap:4px}
+ .notebook-panel .notebook-head h3{font-size:14px}.notebook-head button{min-height:26px}
+ .notebook-sections button,.notebook-pages button{font-size:11px;min-height:27px;padding:3px 5px}
+ .notebook-panel .notebook-page{gap:4px}
+ .notebook-panel p,.notebook-panel .notebook-results{font-size:12px;line-height:1.35}
+ .notebook-panel .notebook-word{min-height:31px;padding:3px 0}
+ .notebook-panel .notebook-hanzi{font-size:18px}
+ .game-shell.builder-open[data-mode="answer"] .player-panel{flex-basis:200px;max-height:56dvh}
+ .game-shell .sentence-builder{padding:4px 6px;margin:3px 0}
+ .sentence-builder .sentence-tile,.sentence-builder .builder-action{min-height:29px;padding:3px 8px}
+ .sentence-builder .builder-heading button{min-height:23px}
+ .game-shell.builder-open .feedback{font-size:11px;line-height:1.3;min-height:0}
+}
