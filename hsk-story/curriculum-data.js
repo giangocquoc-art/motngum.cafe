@@ -17,7 +17,7 @@ var scenes=[
 {id:5,kind:"practice",objective:"Hiểu giá tiền và cảm ơn",topic:"Quán mì bà Lưu · Tính tiền",words:[["十块钱","shí kuài qián","mười tệ"],["谢谢","xièxie","cảm ơn"]],reviewOf:[4]},
 {id:6,kind:"practice",objective:"Đồng ý lời mời và hẹn gặp",topic:"Đường về · Bạn bè",words:[["明天","míngtiān","ngày mai"],["好","hǎo","được"]],reviewOf:[0,2]},
 {id:7,kind:"checkpoint",objective:"Tự giới thiệu bằng tiếng Trung",topic:"Kiểm tra · Giới thiệu",words:[],reviewOf:[1,2]},
-{id:8,kind:"checkpoint",objective:"Nhớ giá bát mì ở căng tin",topic:"Kiểm tra · Đọc và nhớ ngữ cảnh",words:[],reviewOf:[5]},
+{id:8,kind:"checkpoint",objective:"Nhớ giá bát mì ở quán bà Lưu",topic:"Kiểm tra · Đọc và nhớ ngữ cảnh",words:[],reviewOf:[5]},
 {id:9,kind:"checkpoint",objective:"Tự gọi món đã học",topic:"Kiểm tra · Diễn đạt",words:[],reviewOf:[4]}
 ];
 function validate(){
