@@ -1343,19 +1343,6 @@
       "masterFormat": "PNG",
       "bytes": 420900
     },
-    "backgrounds/mobile/mobile-noodle-shop-v2.webp": {
-      "role": "Alternate mobile composition plate for both noodle shop scenes",
-      "dimensions": {
-        "width": 1448,
-        "height": 1086
-      },
-      "format": "WebP",
-      "alpha": false,
-      "prompt": "Create a separate mobile composition of the same Chengdu family noodle shop as the desktop plate, using the same perspective language, furniture, palette and hand-inked style. Recompose the important counter, bowl/table area and window for a narrow viewport; do not crop or reuse the desktop image. No people, birds, legible text, or UI.",
-      "master": "backgrounds/mobile/mobile-noodle-shop-v2.png",
-      "masterFormat": "PNG",
-      "bytes": 371190
-    },
     "layers/noodle-bowl-v2-clean.webp": {
       "role": "Transparent noodle bowl foreground cutout shared by the ordering and payment scenes",
       "dimensions": {
