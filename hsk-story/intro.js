@@ -165,6 +165,7 @@ function render(){
  case "ending":renderEnding($("interactive"));break;
  }
  $("feedback").textContent=feedback;updateNav(stage);
+ if(window.HSKSceneLayers)window.HSKSceneLayers.mount($("introArt"),"intro.bedroom",{dialogue:document.querySelector(".intro-dialogue"),glyph:document.querySelector(".glyph-frame"),anExpression:stage.kind==="ending"?"smile":stage.kind==="discover"?"curious":"thinking"});
 }
 function next(){
  if(state.step===last){window.location.href="/?play=hsk1";return}

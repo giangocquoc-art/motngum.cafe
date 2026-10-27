@@ -70,7 +70,7 @@ footer{text-align:center;border-top:1px solid #d4bfa8;padding:20px;font-size:11p
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 
 /* Chim Sẻ character marks and small story figures share the game art. */
-.sparrow-brand-mark{background:#b8dce3 url('/art/characters/sparrow-icon-v2.webp') center/cover no-repeat!important;color:transparent!important;font-size:0!important;border:1px solid #546365;border-radius:50%}
+.sparrow-brand-mark{background:#b8dce3!important;color:#263d42!important;font-size:18px!important;border:1px solid #546365;border-radius:50%}
 .illustrated{position:relative;overflow:hidden}
 .book-scene-figures{position:absolute;inset:auto 14px 32px 14px;height:91px;pointer-events:none;z-index:1}
 .book-an{position:absolute;right:0;bottom:-19px;height:108px;aspect-ratio:.5;background:url('/art/characters/an-expressions.webp') 0% center/500% 100% no-repeat;opacity:.94}

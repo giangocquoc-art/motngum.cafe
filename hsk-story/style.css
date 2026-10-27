@@ -10,7 +10,7 @@
 html,body{min-height:100%;overscroll-behavior:none}body{background:var(--sparrow-paper)}.paper-noise{display:none}
 .sparrow-header{position:absolute;z-index:4;left:0;right:0;top:0;max-width:none;padding:18px 28px;background:linear-gradient(#f7f0dfdc,transparent);border:0}
 .sparrow-header .identity{gap:11px}.sparrow-header .seal{width:42px;height:42px;border-radius:50%;background:#b6dce5;color:#243c43;border:1.5px solid #303b3b;font-family:"Noto Sans SC";font-size:23px}
-.sparrow-brand-mark{background:#b6dce5 url('/art/characters/sparrow-icon-v2.webp') center/contain no-repeat!important;color:transparent!important;font-size:0!important}
+.sparrow-brand-mark{background:#b6dce5!important;color:#263d42!important;font-family:"Noto Sans SC"!important}
 .sparrow-header .identity-copy b{font:700 21px/1.1 "DM Sans",sans-serif;letter-spacing:.03em}.sparrow-header .identity-copy small{font-size:9px;letter-spacing:1.8px;color:#5b615c}
 .sparrow-header .nav-progress{padding:12px 17px;background:#fff8e8;border:1.5px solid #3c3b35;color:#302f2b;box-shadow:3px 3px 0 #463b2d65;font-size:12px}
 .sparrow-home{height:100dvh;min-height:0;overflow:hidden}.sparrow-hero{height:100%;min-height:0;display:grid;grid-template-columns:1fr;position:relative;padding:0;gap:0;align-items:stretch}
@@ -223,7 +223,7 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .cast-mother{background-position:0% 0%}.cast-xiaoyu{background-position:50% 0%}.cast-wang{background-position:100% 0%}.cast-liu{background-position:0% 100%}.cast-receptionist{background-position:50% 100%}
 
 /* Unified illustrated character language: one measured five-pose strip for An. */
-.sparrow-brand-mark{background:#b8dce3 url('/art/characters/sparrow-icon-v2.webp') center/contain no-repeat!important;color:transparent!important;font-size:0!important;position:relative}
+.sparrow-brand-mark{background:#b8dce3!important;color:#263d42!important;position:relative}
 .sparrow-brand-mark:after{content:none}
 .hero-scene{position:relative;overflow:hidden;background:#eee1c4}
 .hero-scene>.hero-background{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:58% 54%}
@@ -467,7 +467,7 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .game-shell[data-mode="answer"] .player-panel>:not(#aiTutorBtn,#aiTutorPanel,#userInstruction,#answerForm,#openBuilderBtn,#sentenceBuilder,#feedback,#practiceOpenBtn),
 .game-shell[data-mode="resolved"] .player-panel>:not(#storyBeat,#storyEcho,#feedback,.next-row,#storyChoiceOutcome){display:none!important}
 .game-shell[data-mode] .player-panel{justify-content:flex-start}
-.game-shell[data-mode="interlude"] .player-panel{flex-basis:clamp(265px,36dvh,340px)}
+.game-shell[data-mode="interlude"] .player-panel{flex-basis:auto}
 .game-shell[data-mode="encounter"] .player-panel{flex-basis:clamp(300px,40dvh,380px);max-height:52dvh}
 .game-shell[data-mode="completed"] .player-panel{flex-basis:clamp(300px,40dvh,380px);max-height:52dvh}
 .game-shell[data-mode="choice"] .player-panel{flex-basis:clamp(240px,32dvh,310px)}
@@ -493,7 +493,7 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .notebook-results{white-space:pre-line;font-size:12px;line-height:1.5;margin:10px 0;border-top:1px solid #cbbba5;padding-top:10px}
 .game-shell[data-mode="resolved"] #storyBeat,.game-shell[data-mode="resolved"] #storyEcho{margin:3px auto;padding:4px 8px;font-size:11px;line-height:1.4}
 @media(max-height:620px){
- .game-shell[data-mode] .player-panel{flex-basis:190px;max-height:55dvh}
+ .game-shell[data-mode]:not([data-mode="interlude"]) .player-panel{flex-basis:190px;max-height:55dvh}
  #encounterPanel .encounter-answer>label{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%)}
  #storyInterlude h3,#completionPane h3,#encounterPanel h3{font-size:15px;margin:1px 0 3px}
  #storyInterlude>p,#completionPane #episodeEnding,#completionPane #episodeReflection,#encounterPanel .encounter-body{font-size:10px;line-height:1.3;margin:3px 0}
@@ -610,4 +610,16 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
  .sentence-builder .sentence-tile,.sentence-builder .builder-action{min-height:29px;padding:3px 8px}
  .sentence-builder .builder-heading button{min-height:23px}
  .game-shell.builder-open .feedback{font-size:11px;line-height:1.3;min-height:0}
+}
+
+/* Tablet portrait keeps the scene above the opening copy instead of letting the copy cover An. */
+@media(min-width:691px) and (max-width:900px) and (orientation:portrait){
+ .sparrow-hero .hero-visual:after{background:linear-gradient(180deg,#f5eddb00 0%,#f5eddb00 34%,#f5eddb38 48%,#f5eddbed 61%,#f5eddb 82%)}
+ .sparrow-hero .hero-copy{box-sizing:border-box;width:100%;max-width:none;max-height:55%;margin:0;padding:22px 32px max(26px,env(safe-area-inset-bottom));align-self:end;overflow:hidden;background:linear-gradient(180deg,#f5eddb00 0%,#f5eddbe8 18%,#f5eddb 42%)}
+ .sparrow-hero h1{font-size:clamp(38px,5.4vw,50px);line-height:1.06;letter-spacing:-1.6px;margin:8px 0 10px}
+ .sparrow-hero .lead{font-size:14px;line-height:1.55;max-width:650px}
+ .sparrow-hero .hero-actions{margin-top:15px;gap:12px 18px}
+ .sparrow-hero .primary-btn{min-height:44px;padding:11px 16px;font-size:12px}
+ .sparrow-hero .hero-note{font-size:11px;line-height:1.5;margin-top:14px}
+ .sparrow-hero .review-entry-button{margin-top:5px;padding:5px 0;font-size:10px}
 }

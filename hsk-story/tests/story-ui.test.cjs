@@ -3,7 +3,12 @@ const folder=path.resolve(__dirname,"..");
 function loadModule(file,name){const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box,{filename:file});return box.module.exports}
 const C=loadModule("game-core.js"),M=loadModule("curriculum-data.js"),K=loadModule("learning-kit.js"),D=loadModule("story-director.js"),B=loadModule("story-beats.js"),Content=loadModule("content-manifest.js"),E=loadModule("active-encounter.js"),Graph=loadModule("story-graph.js"),Runtime=loadModule("story-runtime.js"),Art=loadModule("scene-art.js"),IO=loadModule("save-io.js"),World=loadModule("scene-world.js"),Skills=loadModule("skill-sampler.js"),Threads=loadModule("story-threads.js");
 const html=fs.readFileSync(path.join(folder,"index.html"),"utf8"),source=fs.readFileSync(path.join(folder,"app.js"),"utf8");
+const layerContext={HSKSceneManifest:loadModule("scene-manifest.js")};vm.runInNewContext(fs.readFileSync(path.join(folder,"scene-renderer.js"),"utf8"),layerContext);const Layers=layerContext.HSKSceneLayers;
 const ids=Array.from(html.matchAll(/id="([^"]+)"/g),x=>x[1]);
+test("learning metadata places both noodle lessons at Grandma Liu’s shop",()=>{
+ for(const id of [4,5]){assert.equal(Content.scenes[id].place,"noodle-shop");assert.match(M.scenes[id].topic,/Quán mì bà Lưu/)}
+ assert.match(Content.scenes[4].tag,/QUÁN BÀ LƯU/);assert.match(Content.scenes[5].tag,/BÀ LƯU TÍNH TIỀN/);
+});
 function dismissStory(e){if(!e.skillPanel.hidden){e.skillSkip.click();e.skillSkip.click()}if(!e.storyInterlude.hidden)e.interludeContinue.click()}
 function finishEncounter(e,routeIndex=0){
  if(e.encounterPanel.hidden)return;
@@ -30,7 +35,7 @@ function harness(sharedStorage={},options={}){
   window.history={replaceState(_x,_title,path){window.lastReplacedPath=path}};
  }
  function SpeechSynthesisUtterance(text){this.text=text}
- vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,HSKStoryGraph:Graph,HSKStoryRuntime:Runtime,HSKSceneArt:Art,HSKSaveIO:IO,HSKSceneWorld:World,HSKSkillSampler:Skills,HSKStoryThreads:Threads,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,URLSearchParams,console},{filename:"app.js"});
+ vm.runInNewContext(source,{HSKCore:C,HSKCurriculum:M,HSKLearningKit:K,HSKStoryDirector:D,HSKStoryBeats:B,HSKContent:Content,HSKEncounter:E,HSKStoryGraph:Graph,HSKStoryRuntime:Runtime,HSKSceneLayers:Layers,HSKSaveIO:IO,HSKSceneWorld:World,HSKSkillSampler:Skills,HSKStoryThreads:Threads,document,window,localStorage,setTimeout:()=>0,clearTimeout:()=>{},SpeechSynthesisUtterance,URLSearchParams,console},{filename:"app.js"});
  return {e:dom,document,sharedStorage,spoken,window}
 }
 test("story: sentence builder is helpful and notebook only shows past expressions",()=>{
@@ -428,17 +433,8 @@ test("Gate3B scene observation never leaks a previous scene description into unr
  assert.equal(state.worldFocus["hsk1.e01.walk-home"],"tree");
 });
 
-test("Gate 4 roadmap HSK2–5 are non-interactive content; HSK1 remains keyboard-operable",()=>{
- const t=harness(),nodes=t.e.chapterGrid.children;
- assert.equal(nodes.length,5);
- assert.equal(nodes[0].role,"button");
- assert.equal(nodes[0].tabIndex,0);
- for(const card of nodes.slice(1)){
-  assert.equal(card.attributes["aria-disabled"],"true");
-  assert.equal((card.listeners.click||[]).length,0);
-  assert.equal((card.listeners.keydown||[]).length,0);
- }
- nodes[0].click();assert.equal(t.e.gameOverlay.hidden,false);
+test("Unplayable roadmap is absent and story start remains accessible",()=>{
+ const t=harness();assert.equal(t.e.chapterGrid.children.length,0);t.e.startBtn.click();assert.equal(t.e.gameOverlay.hidden,false);
 });
 
 test("Gate5 authored teacher greeting echo appears only after the prior mother greeting is resolved",()=>{

@@ -39,15 +39,10 @@ test("Gate 4 invalid V4 / storage quota cannot corrupt an already saved V3",()=>
 test("Gate 4 loading order: scene art and save I/O before app.js, no unused editor drafts in browser",()=>{
  const html=fs.readFileSync(path.join(base,"index.html"),"utf8");
  const scripts=[...html.matchAll(/<script[^>]*src="([^"]+)"[^>]*>/g)].map(m=>m[1]);
- for(const name of ["/scene-art.js","/save-io.js"]){assert.ok(scripts.includes(name));assert.ok(scripts.indexOf(name)<scripts.indexOf("/app.js"))}
+ for(const name of ["/scene-manifest.js","/scene-renderer.js","/save-io.js"]){assert.ok(scripts.includes(name));assert.ok(scripts.indexOf(name)<scripts.indexOf("/app.js"))}
+ assert.ok(!scripts.includes('/scene-art.js'),'Retired SVG renderer must not be sent to the browser');
  assert.equal(scripts.filter(p=>p==="/app.js").length,1);
  assert.ok(!scripts.includes("/future-acts.js")&&!scripts.includes("/learning-blueprint.js"));
-});
-test("Gate 4 no fake HSK2–5 content should be keyboard button; only the demo HSK1 is actionable",()=>{
- const source=fs.readFileSync(path.join(base,"app.js"),"utf8");
- assert.ok(source.includes('if(c.lvl===1){item.tabIndex=0;item.role="button"'));
- assert.ok(source.includes('else{item.setAttribute("aria-disabled","true")'));
- assert.ok(source.includes('CHƠI BẢN DEMO'));
 });
 test("Gate 4 never treats merely reaching an intro page as confirmed glyph interaction",()=>{
  const unobserved={maxReached:8,discovered:[],momRevealed:false,lightParts:[]};

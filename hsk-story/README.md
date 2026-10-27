@@ -16,7 +16,9 @@ Từ thư mục repo: `node --test hsk-story/tests/*.test.cjs`. Unit tests khôn
 
 ## Tranh, dữ liệu và triển khai
 
-Ứng dụng dùng ảnh raster được tạo, WebP phục vụ và PNG master trong art/. HSK1 hiện dựng lớp qua scene-layers.js; Nhập môn/ôn còn lớp CSS riêng. Xem [ART_DIRECTION](art/ART_DIRECTION.md). Một số mã SVG/tài sản cũ đang được rà, không dùng làm chuẩn tạo ảnh tiếp theo.
+Trang đầu, HSK1, Nhập môn và góc ôn dùng chung `scene-renderer.js` và `scene-layers.css`. Nguồn bố cục/ảnh là `art/manifest.json`; sau khi sửa chạy `node scripts/build-scene-manifest.cjs` trong hsk-story để tạo `scene-manifest.js` cho các trang tĩnh. `--check` kiểm tra bản sinh có khớp nguồn. Không chỉnh hai registry bằng tay.
+
+WebP được phục vụ; PNG master của bộ tài sản đã ghi catalog nằm trong art/. Một số nền cũ chưa đủ provenance/master và NPC chưa có đủ biểu cảm, nên không coi tranh đã hoàn tất. Xem [ART_DIRECTION](art/ART_DIRECTION.md) và [COMPOSITION](art/COMPOSITION.md). Renderer SVG cũ không còn tải vào browser.
 
 Không đổi ID, đáp án hay khóa lưu vì đổi thương hiệu. V3 là tiến độ chính, V4 là shadow, Nhập môn/ôn lưu riêng. Kết quả có trợ giúp không phải độc lập.
 

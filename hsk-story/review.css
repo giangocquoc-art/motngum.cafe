@@ -61,7 +61,7 @@ html,body.chimse-review{width:100%;height:100%;min-height:0;margin:0;overflow:hi
 @media(prefers-reduced-motion:reduce){.review-screen *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 /* Winning art rules follow the legacy layout rules so the page uses real plates. */
-.sparrow-brand-mark{background:#b8dce3 url('/art/characters/sparrow-icon-v2.webp') center/contain no-repeat!important}
+.sparrow-brand-mark{background:#b8dce3!important;color:#263d42!important}
 .review-scene:before{content:none}
 .review-backdrop{inset:0;background-image:url('/art/backgrounds/classroom.webp');background-position:center 52%;background-size:cover;background-repeat:no-repeat}
 .review-characters{position:absolute;z-index:1;inset:0;overflow:hidden;pointer-events:none}

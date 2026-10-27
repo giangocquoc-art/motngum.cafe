@@ -21,6 +21,7 @@ function render(){
  var due=C.queue(D,story,progress,day);
  var active= currentId?D.items.find(x=>x.id===currentId):null;
  if(!active||(!outcome&&!due.some(x=>x.id===currentId))){active=due[0]||null;currentId=active&&active.id||null}
+ if(window.HSKSceneLayers){window.HSKSceneLayers.mount($("reviewArt"),active?HSKSceneLayers.sceneIds[active.after]:"review.notebook",{dialogue:document.querySelector(".opening"),anExpression:outcome&&outcome.result==="independent"?"smile":"thinking"});if(due[1])window.HSKSceneLayers.preload(HSKSceneLayers.sceneIds[due[1].after])}
  $("emptyReview").hidden=!!active;
  document.querySelector(".book").classList.toggle("is-empty",!active);
  $("exerciseCard").hidden=!active;

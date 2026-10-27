@@ -8,6 +8,7 @@ Use the character and world concept sheet shared by the project owner as the vis
 
 - **Minh An:** an 11-year-old boy; short, slightly tousled black hair; mustard yellow hoodie; faded blue-green backpack. The owner's explicit redesign plan controls identity; the supplied concept sheet controls line/color rather than changing An's gender or clothes. Keep childlike proportions and small asymmetries. Feelings should read through head angle, hands, shoulders and stance as well as the face. Never make An look like a polished adult model.
 - **Sẻ:** a small, pale sky-blue sparrow with a cream belly, charcoal ink edge, dark round eye, and a small orange beak. It is curious and fallible, and only An understands its words.
+- Keep exactly one drawn Sẻ in a visible story frame. When the scene already shows the mascot, use the word seal in the page header; keep the bird icon for the browser tab rather than repeating it beside the scene.
 - **Mother, Tiểu Vũ, cô Vương, bà Lưu, and the school receptionist:** keep their silhouettes, age, clothing and palette tied to their panels in the integrated `characters/supporting-cast-v2.webp`. Preserve their differences as well as the common drawing style. That sheet has one pose per person; it is not a complete expression set.
 
 ## Drawing and color
@@ -20,7 +21,7 @@ Use the character and world concept sheet shared by the project owner as the vis
 
 ## Layers and responsive scenes
 
-Scene art is assembled by `scene-layers.js`: background plate, midground, independent character sprites, foreground, and Sẻ. Dialogue, Hanzi, Pinyin, translation, choices and controls are accessible HTML above the art. Use separate portrait environment plates in `backgrounds/mobile/`; do not simply crop a landscape scene to make a phone composition. Characters should stay in frame and retain their face and meaningful hand gesture at both aspect ratios.
+Scene art is assembled by the shared `scene-renderer.js` and `scene-layers.css`. `manifest.json` is the authored source; `node scripts/build-scene-manifest.cjs` compiles its browser data. Layers are background, optional midground, independent character sprites, optional foreground, and Sẻ. An unnecessary image layer is `null`, never a fictional filename. Dialogue, Hanzi, Pinyin, translation, choices and controls stay accessible HTML. Use the separate portrait plates in `backgrounds/mobile/`; preserve faces and gestures when changing composition.
 
 ## Prompt recipe for future art
 

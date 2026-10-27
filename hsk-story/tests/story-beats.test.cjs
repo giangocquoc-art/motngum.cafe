@@ -2,7 +2,9 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../story-beats.js'),'utf8'),box);
 const B=box.module.exports;
 test('narrative pages localized, unique and do not interrupt exam',()=>{assert.equal(B.validate(10,7).join(''),'');assert.equal(B.beats.length,5)});
+test('noodle-shop interlude describes the place already shown by its scene',()=>{const b=B.beats.find(x=>x.id==='lunch');assert.equal(b.zh,'安和小雨在面馆里。');assert.match(b.vi,/đang ở trong quán mì/);assert.match(b.story,/quán mì nhỏ cuối ngõ/)});
 test('first arrival is unscored story moment',()=>assert.equal(B.pending(0,[]).id,'arrival'));
+test('arrival story matches the school approach and the backpack pose shown',()=>{const b=B.beats.find(x=>x.id==='arrival');assert.match(b.story,/mẹ đưa An tới ngôi trường mới ở Thành Đô/i);assert.match(b.story,/quyển sổ.*nằm gọn trong chiếc cặp/i);assert.match(b.story,/mẹ nhắc An nhớ câu hai mẹ con đã ghi tối qua/i);assert.doesNotMatch(b.story,/chiếc xe|mẹ chỉ vào|An ôm quyển sổ/i)});
 test('acknowledged page stays acknowledged',()=>{const x=B.mark([],'arrival');assert.equal(B.pending(0,x),null);assert.equal(B.mark(x,'arrival').length,1)});
 test('invalid browser event cannot unlock page',()=>assert.throws(()=>B.mark([],'forged')));
 test('V5 progress migration does not skip unseen current story page',()=>{const x=B.migrate(undefined,4,[{status:'correct'},{status:'correct'},{status:'correct'},{status:'correct'}],false);assert.ok(x.includes('arrival'));assert.ok(x.includes('gate'));assert.ok(!x.includes('lunch'))});

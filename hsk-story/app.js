@@ -1,13 +1,13 @@
 
 (function(){
 "use strict";
-var CHAPTERS=HSKContent.chapters,SCENES=HSKContent.scenes,REPLIES=HSKContent.replies;
+var SCENES=HSKContent.scenes,REPLIES=HSKContent.replies;
 
 var $=function(id){return document.getElementById(id)};
 var KEY="hai-que-huong-progress-v3",PREVIOUS_KEY="hai-que-huong-progress-v2",OLD_KEY="hai-que-huong-progress-v1";
 var state={step:0,history:[],done:false,pinyin:true,vi:true,attempts:0,hintUsed:false,solved:false,busy:false,recognizer:null,draft:"",examHelp:false,storyChoices:{},storyBeats:[],vocabSeen:[],encounter:HSKEncounter.initial(),encounterDraft:"",worldSeen:{},worldFocus:{},worldOpen:false,skillSampler:HSKSkillSampler.initial(),practiceOpen:false};
 var toastTimer=null,returnFocus=null,SCENE_TOTAL=SCENES.length,EXAM_START=HSKCurriculum.scenes.findIndex(function(x){return x.kind==="checkpoint"});
-if(typeof HSKStoryThreads==="undefined"||HSKStoryThreads.validate(HSKCurriculum,HSKContent).length||typeof HSKSceneArt==="undefined"||typeof HSKSaveIO==="undefined"||typeof HSKStoryRuntime==="undefined"||HSKStoryRuntime.version!==4||typeof HSKStoryGraph==="undefined"||HSKStoryGraph.validate(HSKContent,HSKCurriculum,HSKStoryBeats,HSKStoryDirector,HSKEncounter).length||typeof HSKSceneWorld==="undefined"||HSKSceneWorld.validate(HSKStoryGraph).length||typeof HSKSkillSampler==="undefined"||HSKSkillSampler.validate(HSKStoryGraph,HSKCurriculum).length||typeof HSKEncounter==="undefined"||HSKEncounter.validate().length||typeof HSKContent==="undefined"||HSKContent.validate(HSKCurriculum).length||typeof HSKLearningKit==="undefined"||typeof HSKStoryDirector==="undefined"||typeof HSKStoryBeats==="undefined"||HSKStoryBeats.validate(SCENE_TOTAL,EXAM_START).length||HSKStoryDirector.validate(SCENE_TOTAL,EXAM_START).length||HSKCurriculum.validate().length||HSKCurriculum.scenes.length!==SCENE_TOTAL||REPLIES.length!==SCENE_TOTAL)throw Error("Story content contract invalid");
+if(typeof HSKStoryThreads==="undefined"||HSKStoryThreads.validate(HSKCurriculum,HSKContent).length||typeof HSKSceneLayers==="undefined"||typeof HSKSaveIO==="undefined"||typeof HSKStoryRuntime==="undefined"||HSKStoryRuntime.version!==4||typeof HSKStoryGraph==="undefined"||HSKStoryGraph.validate(HSKContent,HSKCurriculum,HSKStoryBeats,HSKStoryDirector,HSKEncounter).length||typeof HSKSceneWorld==="undefined"||HSKSceneWorld.validate(HSKStoryGraph).length||typeof HSKSkillSampler==="undefined"||HSKSkillSampler.validate(HSKStoryGraph,HSKCurriculum).length||typeof HSKEncounter==="undefined"||HSKEncounter.validate().length||typeof HSKContent==="undefined"||HSKContent.validate(HSKCurriculum).length||typeof HSKLearningKit==="undefined"||typeof HSKStoryDirector==="undefined"||typeof HSKStoryBeats==="undefined"||HSKStoryBeats.validate(SCENE_TOTAL,EXAM_START).length||HSKStoryDirector.validate(SCENE_TOTAL,EXAM_START).length||HSKCurriculum.validate().length||HSKCurriculum.scenes.length!==SCENE_TOTAL||REPLIES.length!==SCENE_TOTAL)throw Error("Story content contract invalid");
 function readSafe(k){return HSKSaveIO.readSafe(localStorage,k)}
 function load(){
  var s=readSafe(KEY);
@@ -39,8 +39,6 @@ function updateToggles(){
  $("togglePinyin").textContent="Pinyin "+(state.step>=EXAM_START&&!canShow?"(trợ giúp)":state.pinyin?"✓":"○");
  $("toggleVietnamese").textContent="Tiếng Việt "+(state.step>=EXAM_START&&!canShow?"(trợ giúp)":state.vi?"✓":"○");
 }
-/* Keep view callers stable during Gate 4 extraction. */
-var sceneArt=HSKSceneArt.render;
 
 var notebookSection="words",notebookPage=0,notebookData={memory:[],learning:[]};
 function notebookAllowed(){return !practiceActive()&&!HSKEncounter.pending(state.step,state.encounter)&&!HSKStoryBeats.pending(state.step,state.storyBeats)&&(state.step<EXAM_START||state.solved||state.done)}
@@ -259,7 +257,7 @@ function renderEncounter(){
  var active=HSKEncounter.pending(state.step,state.encounter);
  $("encounterPanel").hidden=!active;if(!active)return false;
  var data=HSKEncounter.content,progress=state.encounter;
- paintScene("class","lost-notebook");
+ paintScene("class",["respond","outcome"].includes(progress.stage)?"lost-notebook-office":"lost-notebook");
  $("sceneDay").textContent="QUYỂN SỔ THẤT LẠC";
  $("speaker").textContent=progress.stage==="respond"?"Cô trực phòng hành chính":"安 · Minh An";
  $("sceneTag").textContent="QUYỂN SỔ BIẾN MẤT";
@@ -306,7 +304,6 @@ function renderStoryInterlude(){
  $("storyInterlude").hidden=!b;
  if(!b)return false;
  $("interludeHeading").textContent=b.title;$("interludeStory").textContent=b.story;
- $("interludeTranslation").textContent=b.vi;
  $("speaker").textContent="旁白 · Người kể chuyện";$("sceneTag").textContent="TRANG TRUYỆN";
  $("dialogueText").textContent=b.zh;$("pinyinText").textContent=b.py;$("vietText").textContent=b.vi;
  $("userInstruction").hidden=true;$("sceneObjective").hidden=true;
@@ -347,24 +344,14 @@ function renderStoryChoice(){
   btn.addEventListener("click",function(){
    if(!state.solved||state.done)return;
    state.storyChoices=HSKStoryDirector.select(state.storyChoices,p.id,o.id);
-   save();renderStoryChoice();$("nextBtn").hidden=false;syncPlayLayout();$("nextBtn").focus();
+   save();paintScene("noodle-shop",HSKStoryGraph.idAt(state.step));renderStoryChoice();$("nextBtn").hidden=false;syncPlayLayout();$("nextBtn").focus();
   });
   $("storyChoiceOptions").appendChild(btn);
  });
  return true;
 }
-function chapters(){
- var grid=$("chapterGrid");grid.innerHTML="";
- CHAPTERS.forEach(function(c){
-  var item=document.createElement("article");item.className="chapter "+(c.lvl===1?"active":"locked");
-  item.innerHTML='<div class="chapter-art" style="background:'+c.accent+'">'+sceneArt(c.place,true)+'</div><div class="chapter-body"><span class="chapter-index">CHAPTER 0'+c.lvl+' · HSK '+c.lvl+'</span><h3>'+c.title+'</h3><div class="sub">'+c.cn+' · '+c.sub+'</div><p>'+c.desc+'</p><div class="chapter-footer"><span>'+(c.lvl===1?(state.done?"XEM TỔNG KẾT":"CHƠI BẢN DEMO"):"SẮP RA MẮT")+'</span><span class="chapter-arrow">'+(c.lvl===1?"↗":"⌁")+'</span></div></div>';
-  if(c.lvl===1){item.tabIndex=0;item.role="button";item.setAttribute("aria-label","Chơi tập truyện HSK 1");
-   item.addEventListener("click",openGame);
-   item.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();item.click()}});
-  }else{item.setAttribute("aria-disabled","true");item.setAttribute("aria-label","HSK "+c.lvl+" · Lộ trình, chưa có chương để chơi");}
-  grid.appendChild(item);
- });
- $("resumeBtn").firstChild.textContent=state.done?"Xem tổng kết ":"Tiếp tục câu chuyện ";
+function updateResumeLabel(){
+ $("resumeBtn").firstChild.textContent=state.done?"Xem lại câu chuyện ":"Tiếp tục câu chuyện ";
 }
 function showCompletion(){
  var summary=HSKCore.summarize(state.history,SCENE_TOTAL,EXAM_START);
@@ -390,9 +377,11 @@ function syncPlayLayout(){
 }
 function paintScene(place,sceneId){
  var host=$("stageIllustration");
- if(window.HSKSceneLayers){host.innerHTML=HSKSceneLayers.render(place,sceneId,state.storyChoices,state.encounter);return}
- host.innerHTML=sceneArt(place,false);
+ var showForeground=sceneId==="hsk1.e01.liu-noodle-order"&&!!state.storyChoices["noodle-taste"];
+ HSKSceneLayers.mount(host,sceneId,{dialogue:$("storyDialogue"),header:true,showForeground:showForeground});
+ HSKSceneLayers.preload(HSKStoryGraph.idAt(Math.min(state.step+1,SCENE_TOTAL-1)));
 }
+function showAnFeeling(expression){var host=$("stageIllustration");if(host.dataset.artScene)HSKSceneLayers.mount(host,host.dataset.artScene,{dialogue:$("storyDialogue"),header:true,anExpression:expression})}
 function narrateSparrow(index){
  var lines=[
   "Tớ đang giả vờ biết đường. Cậu đừng hỏi nhé.",
@@ -419,10 +408,11 @@ function renderStep(){
  paintScene(s.place,HSKStoryGraph.idAt(state.step));
  $("aiTutorPanel").dataset.sceneId=HSKStoryGraph.idAt(state.step);if(window.ChimSeTutor)window.ChimSeTutor.sync();
  narrateSparrow(state.step);
- $("sceneDay").textContent=meta.kind==="checkpoint"?"CÔ VƯƠNG HỎI AN":s.place==="canteen"?"BỮA MÌ ĐẦU TIÊN":"NGÀY ĐẦU Ở THÀNH ĐÔ";
+ $("sceneDay").textContent=meta.kind==="checkpoint"?"CÔ VƯƠNG HỎI AN":s.place==="noodle-shop"?"QUÁN MÌ CỦA BÀ LƯU":"NGÀY ĐẦU Ở THÀNH ĐÔ";
  $("speaker").textContent=s.speaker;$("sceneTag").textContent=s.tag;
  $("dialogueText").textContent=s.zh;$("pinyinText").textContent=s.py;$("vietText").textContent=s.vi;
  var speakerName=s.speaker||"";$("sendAnswer").textContent=(speakerName.indexOf("Mẹ")>=0?"Nói với mẹ":speakerName.indexOf("Tiểu Vũ")>=0?"Nói với bạn":speakerName.indexOf("Bà Lưu")>=0?"Nói với bà":speakerName.indexOf("Cô Vương")>=0?"Nói với cô":"Nói câu này")+" ↗";
+ $("hintBtn").textContent="Nhờ "+(speakerName.indexOf("Mẹ")>=0?"mẹ":speakerName.indexOf("Tiểu Vũ")>=0?"bạn":speakerName.indexOf("Bà Lưu")>=0?"bà":speakerName.indexOf("Cô Vương")>=0?"cô":"Sẻ");
  $("userInstruction").textContent=(meta.kind==="checkpoint"?"✎ ":"✦ ")+s.request;
  $("stepText").textContent=String(state.step+1).padStart(2,"0")+" / "+String(SCENE_TOTAL).padStart(2,"0");
  $("progressBar").style.width=(100*state.step/SCENE_TOTAL)+"%";
@@ -476,7 +466,7 @@ function closeGame(){
  $("gameShell").classList.remove("notebook-open");$("storyStage").inert=false;
  if("speechSynthesis" in window)window.speechSynthesis.cancel();
  if(state.recognizer){try{state.recognizer.abort()}catch(e){}state.recognizer=null}
- $("micBtn").classList.remove("listening");$("gameOverlay").hidden=true;document.body.style.overflow="";chapters();
+ $("micBtn").classList.remove("listening");$("gameOverlay").hidden=true;document.body.style.overflow="";updateResumeLabel();
  if(returnFocus&&returnFocus.isConnected)returnFocus.focus();
 }
 function speak(text,onFinished,onError){
@@ -498,7 +488,7 @@ function speak(text,onFinished,onError){
 function finishCurrent(status){
  if(state.recognizer){try{state.recognizer.abort()}catch(e){}state.recognizer=null;$("micBtn").classList.remove("listening")}
  state.history[state.step]={status:status,attempts:state.attempts,hint:state.hintUsed};state.draft="";state.busy=false;
- save();displayResolved();$("nextBtn").focus();
+ save();displayResolved();showAnFeeling(status==="correct"?"smile":"awkward");$("nextBtn").focus();
 }
 function submitAnswer(e){
  e.preventDefault();if(state.busy||state.solved||state.done)return;
@@ -509,6 +499,7 @@ function submitAnswer(e){
  if(!value.trim()){feed.className="feedback bad";feed.textContent=result.reason;return}
  state.attempts++;save();$("attemptCounter").textContent="Lượt thử: "+state.attempts;
  feed.className="feedback bad";feed.textContent="Chưa đúng ý. "+result.reason;
+ showAnFeeling("awkward");
  if(state.attempts>=2)$("assistBtn").hidden=false;
 }
 function nextScene(){
@@ -521,7 +512,7 @@ function nextScene(){
   choice:!!HSKStoryDirector.pending(state.step,state.storyChoices)
  },HSKStoryGraph);
  if(!transition.ok)return;
- if(transition.done){state.done=true;save();showCompletion();chapters();notify("✳ Đã hoàn thành tập truyện đầu tiên!");return}
+ if(transition.done){state.done=true;save();showCompletion();updateResumeLabel();notify("✳ Đã hoàn thành tập truyện đầu tiên!");return}
  state.step=HSKStoryGraph.indexOf(transition.sceneRef);
  if(state.step<0)throw Error("Unknown target node "+transition.sceneRef);
  state.draft="";state.attempts=0;state.hintUsed=false;state.examHelp=false;save();renderStep();
@@ -531,6 +522,7 @@ function revealHint(){
  var s=SCENES[state.step];state.hintUsed=true;save();
  $("feedback").className="feedback neutral";$("feedback").textContent="Gợi ý: "+s.hint;
  $("assistBtn").hidden=false;save();
+ showAnFeeling("thinking");
 }
 function showAnswerAndMove(){
  if(state.solved)return;
@@ -550,7 +542,8 @@ function microphone(){
  r.onend=function(){btn.classList.remove("listening");btn.setAttribute("aria-label","Sử dụng micro");state.recognizer=null};
  try{r.start()}catch(e){btn.classList.remove("listening");state.recognizer=null;notify("Không thể mở micro trên thiết bị này.")}
 }
-load();chapters();
+load();updateResumeLabel();
+HSKSceneLayers.mount($("homeArt"),"home.arrival",{bottomAvoid:document.querySelector(".hero-copy"),header:true});
 ["startBtn","resumeBtn","endingBtn"].forEach(function(id){$(id).addEventListener("click",openGame)});
 $("closeGame").addEventListener("click",closeGame);
 $("answerForm").addEventListener("submit",submitAnswer);$("answerInput").addEventListener("input",function(){if(state.solved)return;state.draft=$("answerInput").value.slice(0,300);save()});
@@ -590,8 +583,8 @@ $("worldPrev").addEventListener("click",function(){worldPage=0;renderWorldPage()
 $("worldNext").addEventListener("click",function(){worldPage=1;renderWorldPage()});
 $("togglePinyin").addEventListener("click",function(){if(practiceActive())return;else if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.pinyin=!state.pinyin}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.pinyin=true}else state.pinyin=!state.pinyin;updateToggles();save()});
 $("toggleVietnamese").addEventListener("click",function(){if(practiceActive())return;else if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.vi=!state.vi}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.vi=true}else state.vi=!state.vi;updateToggles();save()});
-function replay(){state.step=0;state.done=false;state.history=[];state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.storyChoices={};state.storyBeats=[];state.vocabSeen=[];state.encounter=HSKEncounter.initial();state.encounterDraft="";state.worldSeen={};state.worldFocus={};state.skillSampler=HSKSkillSampler.initial();state.practiceOpen=false;state.solved=false;save();chapters();renderStep();$("answerInput").focus();notify("Bắt đầu lại tập truyện. Thành tích cũ đã được đặt lại.")}
-function retakeExam(){state.step=EXAM_START;state.done=false;state.history=state.history.slice(0,EXAM_START);state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.solved=false;state.practiceOpen=false;save();chapters();renderStep();$("answerInput").focus();notify("Đã mở lại ba câu kiểm tra. Tiến độ câu chuyện vẫn được giữ.")}
+function replay(){state.step=0;state.done=false;state.history=[];state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.storyChoices={};state.storyBeats=[];state.vocabSeen=[];state.encounter=HSKEncounter.initial();state.encounterDraft="";state.worldSeen={};state.worldFocus={};state.skillSampler=HSKSkillSampler.initial();state.practiceOpen=false;state.solved=false;save();updateResumeLabel();renderStep();$("answerInput").focus();notify("Bắt đầu lại tập truyện. Thành tích cũ đã được đặt lại.")}
+function retakeExam(){state.step=EXAM_START;state.done=false;state.history=state.history.slice(0,EXAM_START);state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.solved=false;state.practiceOpen=false;save();updateResumeLabel();renderStep();$("answerInput").focus();notify("Đã mở lại ba câu kiểm tra. Tiến độ câu chuyện vẫn được giữ.")}
 $("retakeExamBtn").addEventListener("click",retakeExam);
 $("resetGame").addEventListener("click",replay);$("replayBtn").addEventListener("click",replay);
 document.addEventListener("keydown",function(e){

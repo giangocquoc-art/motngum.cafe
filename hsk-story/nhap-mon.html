@@ -5,7 +5,7 @@
 <link rel="icon" type="image/webp" href="/art/characters/sparrow-icon-v2.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/intro.css"></head>
+<link rel="stylesheet" href="/intro.css"><link rel="stylesheet" href="/scene-layers.css"></head>
 <body class="chimse-intro">
 <div class="texture" aria-hidden="true"></div>
 <main class="intro-screen" id="book" aria-live="off">
@@ -16,8 +16,7 @@
   <button type="button" id="resetBtn" class="reset-book" aria-label="Đọc lại từ đầu">↻</button>
  </header>
  <section class="intro-scene" aria-label="Cảnh truyện và chữ An đang khám phá">
-  <div class="intro-backdrop scene-layer" data-asset="/art/backgrounds/bedroom-v2.webp" data-mobile-asset="/art/backgrounds/mobile/mobile-bedroom-v2.webp" aria-hidden="true"></div>
-  <div class="book-scene-figures scene-layer" aria-hidden="true"><span class="book-an"></span><span class="book-sparrow"></span></div>
+  <div id="introArt" class="chimse-art" aria-hidden="true"></div>
   <div class="intro-scene-meta"><span id="chapterType">TRANG SỔ · 01</span><span id="scenePlace">Đêm trước ngày đến trường</span></div>
   <article class="intro-dialogue">
    <p class="eyebrow">TỐI TRƯỚC NGÀY ĐẾN TRƯỜNG</p><h1 id="storyHeading">Lần đầu nhìn chữ</h1><p id="narrative"></p>
@@ -35,6 +34,6 @@
   <div class="book-nav"><button type="button" class="secondary" id="backBtn">← Trang trước</button><button type="button" class="primary" id="nextBtn">Trang tiếp theo ↗</button></div>
  </section>
 </main>
-<script src="/intro-data.js" defer></script><script src="/intro-core.js" defer></script><script src="/intro.js" defer></script>
+<script src="/scene-manifest.js" defer></script><script src="/scene-renderer.js" defer></script><script src="/intro-data.js" defer></script><script src="/intro-core.js" defer></script><script src="/intro.js" defer></script>
 <script>(()=>{const v=window.visualViewport;const set=()=>document.documentElement.style.setProperty('--chimse-visible-height',Math.floor(v?v.height:window.innerHeight)+'px');set();window.addEventListener('resize',set,{passive:true});if(v)v.addEventListener('resize',set,{passive:true})})();</script>
 </body></html>

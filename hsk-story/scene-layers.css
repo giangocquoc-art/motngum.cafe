@@ -1,0 +1,29 @@
+/* Shared sprite geometry for all three learning flows. */
+.chimse-art{position:absolute;inset:0;pointer-events:none;--actors-top:64px;--actors-left:52%}
+.cs-scene,.cs-background,.cs-midground{position:absolute;inset:0}
+.cs-background{z-index:0;display:block}.cs-background img{width:100%;height:100%;object-fit:cover;object-position:center 52%;display:block}
+.cs-midground{z-index:1;pointer-events:none}.cs-midground img{position:absolute;transform:translate(-50%,-50%);width:0;height:auto;max-width:none}
+.cs-actors{position:absolute;z-index:2;top:var(--actors-top);left:var(--actors-left);right:3%;bottom:var(--actors-bottom,0);container-type:size}
+.cs-actor{position:absolute;left:var(--actor-left);bottom:var(--actor-bottom);width:min(var(--actor-width),100cqh);height:auto;aspect-ratio:1;background-repeat:no-repeat;animation:cs-arrive .25s ease-out both}
+.cs-sparrow{position:absolute;z-index:4;left:var(--sparrow-left);top:var(--sparrow-top);width:min(14cqw,48cqh,60px);aspect-ratio:1;background-repeat:no-repeat;animation:cs-breathe 3.7s ease-in-out infinite;transform-origin:50% 80%}
+.cs-foreground{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,-50%)}
+.cs-foreground img{display:block;width:0;height:auto;max-width:none;object-fit:contain}
+.chimse-art[data-composition="portrait"] .cs-actor{left:var(--actor-mobile-left);bottom:var(--actor-mobile-bottom);width:min(var(--actor-mobile-width),100cqh)}
+.chimse-art[data-composition="portrait"][data-tablet-portrait="true"] .cs-actor{left:var(--actor-tablet-left,var(--actor-mobile-left));bottom:var(--actor-tablet-bottom,var(--actor-mobile-bottom));width:min(var(--actor-tablet-width,var(--actor-mobile-width)),100cqh)}
+.chimse-art[data-composition="portrait"] .cs-sparrow{left:var(--sparrow-mobile-left);top:var(--sparrow-mobile-top)}
+.chimse-art[data-composition="short-landscape"] .cs-sparrow{width:min(8vw,34px)}
+#storyStage .story-ui{top:calc(var(--scene-header,56px) + 8px);bottom:auto;left:12px;right:auto;width:calc(50% - 24px);max-width:none;max-height:none;overflow:visible}
+#storyStage:has(.chimse-art[data-composition="portrait"]) .story-ui{width:calc(100% - 24px)}
+#storyStage .scene-day{display:none}
+.sparrow-talk-hotspot{position:absolute;z-index:6;left:var(--sparrow-hit-left);top:var(--sparrow-hit-top);width:var(--sparrow-hit-size);height:var(--sparrow-hit-size);padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;touch-action:manipulation}
+.sparrow-talk-hotspot:focus-visible{outline:3px solid #3d7e90;outline-offset:3px}
+.intro-scene .intro-dialogue{top:42px;left:12px;right:auto;width:calc(50% - 24px);max-width:none}
+.intro-scene:has(.chimse-art[data-composition="portrait"]) .intro-dialogue{width:calc(100% - 24px)}
+.intro-scene .glyph-frame{top:var(--glyph-top,160px);left:var(--glyph-left,12px);right:auto;bottom:auto;transform:none;width:var(--glyph-width,calc(48% - 24px));max-width:250px}
+.intro-scene:has(.chimse-art[data-composition="compact"]) .intro-dialogue{width:calc(44% - 20px);top:36px}
+.intro-scene .paper-foot{display:none}
+.review-scene .opening{left:12px;width:calc(50% - 24px);max-width:none}
+.review-scene:has(.chimse-art[data-composition="portrait"]) .opening{width:calc(100% - 24px)}
+@keyframes cs-arrive{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cs-breathe{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@media(prefers-reduced-motion:reduce){.cs-actor,.cs-sparrow{animation:none!important}}
