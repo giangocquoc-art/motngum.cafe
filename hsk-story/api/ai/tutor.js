@@ -13,6 +13,9 @@ const MAX_HISTORY = 6;
 const MAX_RESPONSE_CHARS = 1400;
 const RATE_WINDOW_MS = 60_000;
 const RATE_LIMIT = 12;
+const MAX_PROVIDER_BUDGET_MS = 54_000;
+const MIN_ATTEMPT_TIMEOUT_MS = 3_000;
+const MAX_ATTEMPT_TIMEOUT_MS = 8_000;
 const rateWindows = new Map();
 let lastFailureAlertAt = 0;
 
@@ -165,15 +168,19 @@ async function handler(req, res) {
   if (!keys.length) return reply(res, 503, { error: "AI_NOT_CONFIGURED", message: "Sẻ chưa được nối với dịch vụ AI. Bạn vẫn có thể tiếp tục câu chuyện." });
   const baseUrl = (process.env.PSHAREHUB_API_BASE_URL || "https://api.psharehub.com/v1").replace(/\/+$/, "");
   let models = readConfiguredModels(process.env);
-  const timeoutMs = Math.min(2200, Math.max(1200, Number(process.env.PSHAREHUB_REQUEST_TIMEOUT_MS) || 1800));
+  const timeoutMs = Math.min(MAX_ATTEMPT_TIMEOUT_MS, Math.max(MIN_ATTEMPT_TIMEOUT_MS, Number(process.env.PSHAREHUB_REQUEST_TIMEOUT_MS) || 7000));
   const requestId = crypto.randomUUID();
   const attempts = [];
   const unusableKeys = new Set();
+  const providerStartedAt = Date.now();
+  const remainingProviderBudget = () => Math.max(0, MAX_PROVIDER_BUDGET_MS - (Date.now() - providerStartedAt));
 
   if (!models.length) {
     for (let keyIndex = 0; keyIndex < keys.length && !models.length; keyIndex += 1) {
+      const remaining = remainingProviderBudget();
+      if (remaining < MIN_ATTEMPT_TIMEOUT_MS) break;
       try {
-        const catalog = await discoverModels(baseUrl, keys[keyIndex], timeoutMs);
+        const catalog = await discoverModels(baseUrl, keys[keyIndex], Math.min(timeoutMs, remaining));
         if ((catalog.status === 401 || catalog.status === 403 || catalog.status === 429) || !catalog.models.length) {
           attempts.push({ keyIndex: keyIndex + 1, stage: "models", status: catalog.status || 502 });
           if (catalog.status === 401 || catalog.status === 403 || catalog.status === 429) unusableKeys.add(keyIndex);
@@ -191,9 +198,12 @@ async function handler(req, res) {
     return reply(res, 503, { error: "AI_TEMPORARILY_UNAVAILABLE", message: "Sẻ chưa gọi được bạn bè ở đám mây. Mình cứ tiếp tục câu chuyện nhé.", requestId });
   }
 
-  // Rotate by model and key so a failed model or provider key cannot pin the whole request.
-  for (let modelIndex = 0; modelIndex < models.length; modelIndex += 1) {
-    for (let offset = 0; offset < keys.length; offset += 1) {
+  // Interleave models and keys so a bounded request budget tests every model before
+  // spending all of its time on keys for a single model.
+  for (let offset = 0; offset < keys.length; offset += 1) {
+    for (let modelIndex = 0; modelIndex < models.length; modelIndex += 1) {
+      const remaining = remainingProviderBudget();
+      if (remaining < MIN_ATTEMPT_TIMEOUT_MS) break;
       const keyIndex = (modelIndex + offset) % keys.length;
       if (unusableKeys.has(keyIndex)) continue;
       const model = models[modelIndex];
@@ -208,7 +218,7 @@ async function handler(req, res) {
             max_tokens: 220,
             stream: false,
           }),
-        }, timeoutMs);
+        }, Math.min(timeoutMs, remaining));
         const content = response.ok ? upstreamContent(data) : "";
         if (response.ok && content) return reply(res, 200, { reply: content, model, requestId });
         attempts.push({ keyIndex: keyIndex + 1, model, status: response.status || 502 });

@@ -4,16 +4,18 @@
 
 The tutor endpoint is `POST /api/ai/tutor`, a Vercel Node function. It accepts OpenAI-compatible chat completions from `https://api.psharehub.com/v1` and only allows the seven ordinary HSK1 practice scenes listed in `api/ai/tutor.js`. Checkpoints, the lost-notebook encounter, exam scenes and completed stories are rejected by the server even if a client tries to call it directly.
 
-The function accepts up to four API keys in `PSHAREHUB_API_KEYS` (comma or newline separated), or the single `PSHAREHUB_API_KEY`. The model list below is tried in order; the backend rotates across model/key pairs and stops at the first non-empty answer. To discover models automatically instead, leave `PSHAREHUB_MODEL_IDS` blank and the function will read `/models`. Each provider request is capped at 1.2–2.2 seconds; with the four-key/four-model maximum, retries fit within the function's 60-second limit, including model discovery and the short failure alert. The endpoint requires a matching same-origin HTTPS `Origin` header; local HTTP is allowed for localhost development. It has a 12-request/minute per-instance limit, bounds request sizes, and keeps question text out of logs. This endpoint serves the public practice UI and does not establish an account identity. Do not prefix secrets with `VITE_`, `NEXT_PUBLIC_`, or put them in HTML/JavaScript.
+The function accepts up to four API keys in `PSHAREHUB_API_KEYS` (comma or newline separated), or the single `PSHAREHUB_API_KEY`. The model list below is tried in order, interleaved with keys so a slow or unavailable model does not consume every key attempt first. It stops at the first non-empty answer. To discover models automatically instead, leave `PSHAREHUB_MODEL_IDS` blank and the function will read `/models`. Each provider request defaults to 7 seconds (configurable from 3–8 seconds); a 54-second total provider budget leaves room for the generic failure alert inside Vercel's 60-second function limit. The endpoint requires a matching same-origin HTTPS `Origin` header; local HTTP is allowed for localhost development. It has a 12-request/minute per-instance limit, bounds request sizes, and keeps question text out of logs. This endpoint serves the public practice UI and does not establish an account identity. Do not prefix secrets with `VITE_`, `NEXT_PUBLIC_`, or put them in HTML/JavaScript.
 
 Configured model IDs:
 
 ```text
-nast/deepseek-ai/DeepSeek-V4.1-Flash
+deepseek-ai/DeepSeek-V4.1-Flash
 gemma-26b-a4b-it
 glm-5.3-flash
-tdug/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4
+nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4
 ```
+
+These are the exact IDs returned by the authenticated `GET /v1/models` catalog. The `nast/` and `tdug/` prefixes shown in the provider dashboard are source labels, not part of the API IDs.
 
 For Vercel, add `PSHAREHUB_MODEL_IDS` with these comma-separated IDs to the Preview and Production environments. Add the provider key using Vercel's encrypted environment-variable settings; the local `.env` file is not uploaded during deployment.
 

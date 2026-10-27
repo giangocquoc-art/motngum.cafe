@@ -1,5 +1,20 @@
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+
+test("safe env template uses the exact PShareHub API model identifiers", () => {
+  const example = fs.readFileSync(path.join(__dirname, "../.env.example"), "utf8");
+  const line = example.split(/\r?\n/).find((entry) => entry.startsWith("PSHAREHUB_MODEL_IDS="));
+  assert.ok(line, "PSHAREHUB_MODEL_IDS is required");
+  assert.deepEqual(line.slice(line.indexOf("=") + 1).split(","), [
+    "deepseek-ai/DeepSeek-V4.1-Flash",
+    "gemma-26b-a4b-it",
+    "glm-5.3-flash",
+    "nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4",
+  ]);
+  assert.doesNotMatch(line, /(?:^|,)(?:nast|tdug)\//);
+});
 
 function responseCapture() {
   return {
@@ -60,7 +75,22 @@ test("AI tutor access, provider rotation and configuration", async (t) => {
       };
       const res = responseCapture(); await handler(request(), res);
       assert.equal(res.statusCode, 200); assert.equal(res.body.reply, "这个是一本书。");
-      assert.deepEqual(calls.map((x) => `${x.model}/${x.key}`), ["model-a/Bearer key-a", "model-a/Bearer key-b", "model-b/Bearer key-b"]);
+      assert.deepEqual(calls.map((x) => `${x.model}/${x.key}`), ["model-a/Bearer key-a", "model-b/Bearer key-b"]);
+    });
+    await t.test("gives chat completions enough time for model inference", async () => {
+      process.env.PSHAREHUB_API_KEY = "key-a"; process.env.PSHAREHUB_MODEL_IDS = "model-a";
+      const oldSetTimeout = global.setTimeout, oldClearTimeout = global.clearTimeout;
+      const delays = [];
+      try {
+        global.setTimeout = (_callback, delay) => { delays.push(delay); return 0; };
+        global.clearTimeout = () => {};
+        global.fetch = async () => ({ ok: true, status: 200, json: async () => ({ choices: [{ message: { content: "你好 là xin chào." } }] }) });
+        const res = responseCapture(); await handler(request(), res);
+        assert.equal(res.statusCode, 200); assert.equal(res.body.reply, "你好 là xin chào.");
+        assert.equal(delays[0], 7000);
+      } finally {
+        global.setTimeout = oldSetTimeout; global.clearTimeout = oldClearTimeout;
+      }
     });
     await t.test("continues through every configured key/model pair when requests time out", async () => {
       process.env.PSHAREHUB_API_KEYS = "key-a,key-b,key-c,key-d";
