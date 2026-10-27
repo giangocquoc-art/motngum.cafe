@@ -2,20 +2,21 @@
 
 **Đọc trước:** [hướng hiện hành từ chat](CHIM_SE_DIRECTION.md) → [đối chiếu và thứ tự sửa](DIRECTION_AUDIT_20261027.md) → [story bible](../STORY_BIBLE.md) → [hợp đồng học liệu](../CONTENT_CONTRACT.md).
 
-Tranh: [ART_DIRECTION](../art/ART_DIRECTION.md), [COMPOSITION](../art/COMPOSITION.md), [manifest](../art/manifest.json), [GENERATION_LOG](../art/GENERATION_LOG.md). AI và email: [AI_SETUP](../AI_SETUP.md). Bố cục đã duyệt; tranh và hành vi còn phải được rà. Các mục Gate/PR dưới đây là hồ sơ tại thời điểm viết, không chứng minh deployment hiện tại.
-
-## Chỉ mục lịch sử (26/10/2026)
-
-**Đọc theo thứ tự:** [PRODUCT_SPEC.md](../PRODUCT_SPEC.md) → [STORY_BIBLE.md](../STORY_BIBLE.md) → [CONTENT_CONTRACT.md](../CONTENT_CONTRACT.md) → [GATE4_AUDIT.md](../GATE4_AUDIT.md).
+Tranh: [ART_DIRECTION](../art/ART_DIRECTION.md), [COMPOSITION](../art/COMPOSITION.md), [CHARACTER_ATLASES](../art/CHARACTER_ATLASES.md), [manifest](../art/manifest.json), [GENERATION_LOG](../art/GENERATION_LOG.md). AI và email: [AI_SETUP](../AI_SETUP.md). Bố cục đã duyệt; tranh và hành vi còn phải được rà. Các mục Gate/PR dưới đây là hồ sơ tại thời điểm viết, không chứng minh deployment hiện tại.
 
 ## Hiện hành
-- [PRODUCT_SPEC](../PRODUCT_SPEC.md): mục tiêu sản phẩm và trạng thái THỰC TẾ của từng chức năng.
+- [CHIM_SE_DIRECTION](CHIM_SE_DIRECTION.md): các quyết định gần nhất từ chủ dự án.
+- [DIRECTION_AUDIT](DIRECTION_AUDIT_20261027.md): từng lệch so với hướng đã chốt, sửa gì, kiểm tra gì và việc nào còn mở.
 - [STORY_BIBLE](../STORY_BIBLE.md): nhân vật, tình tiết và thế giới.
 - [CONTENT_CONTRACT](../CONTENT_CONTRACT.md): học liệu và định dạng bài tập.
-- [Gate5 audit](../GATE5_AUDIT.md): tiếng Trung quay lại trong truyện, bằng chứng học tập, timeline, giới hạn kiểm định.
-- [Gate4 audit](../GATE4_AUDIT.md): tách mã theo module, đối chiếu ảnh/svg, bản lưu, kiểm thử và giới hạn hiệu năng.
+- [ART_DIRECTION](../art/ART_DIRECTION.md) và [COMPOSITION](../art/COMPOSITION.md): quy chuẩn tranh, manifest và cách ghép lớp.
 
-## Nhánh PR đang chờ duyệt (không phải production)
+## Tài liệu cổng cũ (snapshot lịch sử 26/10/2026)
+- [PRODUCT_SPEC](../PRODUCT_SPEC.md): ảnh chụp mục tiêu và trạng thái tại thời điểm Gate 4–6; đọc cùng DIRECTION_AUDIT để biết thay đổi mới hơn.
+- [Gate5 audit](../GATE5_AUDIT.md): snapshot cũ về tiếng Trung trong truyện và bằng chứng học tập.
+- [Gate4 audit](../GATE4_AUDIT.md): snapshot cũ về module, SVG, bản lưu, kiểm thử và hiệu năng.
+
+## Hồ sơ nhánh PR (snapshot lịch sử; trạng thái thay đổi trên GitHub)
 - [Runtime V4 – Gate1/2](../RUNTIME_V4_GATE1_GATE2.md)
 - [Optional practice – Gate3A](../PRACTICE_SIDEPATH_GATE3A.md)
 - [Nhập môn mở rộng – Gate3B](../INTRO_CURIOSITY_GATE3B.md)

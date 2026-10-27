@@ -24,7 +24,8 @@ function layerVisible(layer,options){return !layer.visibleWhen||!!(options&&opti
 function layerImages(value,options){return layerEntries(value).map(function(layer,index){return {layer:layer,index:index}}).filter(function(item){return layerVisible(item.layer,options)}).map(function(item){return '<img alt="" class="cs-layer-image" data-layer-index="'+item.index+'" data-asset="'+escape(item.layer.asset)+'">'}).join('')}
 function render(place,id,options){
  var scene=scenes[id];if(!scene)throw Error("Unknown art scene: "+id);var layers=scene.layers||{};
- var bg=data.backgrounds[scene.background],midground=layers.midground,foreground=layers.foreground,actors=scene.actors.map(function(a){return sprite(a.character,options&&options.anExpression&&a.character==='an'?options.anExpression:a.expression,'cs-actor',a,a.sprite)}).join('');
+ var actorList=scene.actors.slice(),companion=options&&scene.companions&&scene.companions[options.companion];if(companion)actorList.splice(Math.min(1,actorList.length),0,companion);
+ var bg=data.backgrounds[scene.background],midground=layers.midground,foreground=layers.foreground,actors=actorList.map(function(a){return sprite(a.character,options&&options.anExpression&&a.character==='an'?options.anExpression:a.expression,'cs-actor',a,a.sprite)}).join('');
  var p=scene.sparrow,sparrow=sprite('sparrow',p.expression,'cs-sparrow').replace('style="','style="--sparrow-left:'+p.desktop.left+'%;--sparrow-top:'+p.desktop.top+'%;--sparrow-mobile-left:'+p.mobile.left+'%;--sparrow-mobile-top:'+p.mobile.top+'%;'+(p.compact?'--sparrow-compact-left:'+p.compact.left+'%;--sparrow-compact-top:'+p.compact.top+'%;':''));
  var label=scene.background==='bedroom'?'Căn phòng của An trước ngày đến trường':scene.background==='noodle-shop'?'An và những người bạn trong quán mì':scene.background==='school-office'?'An gặp cô trực ở phòng tìm đồ thất lạc':scene.background==='classroom'?'An ở lớp học':'An trên đường phố Thành Đô';
  return '<div class="cs-scene" data-scene="'+escape(id)+'" data-background="'+scene.background+'" role="img" aria-label="'+escape(label)+'"><picture class="cs-background" data-layer="background"><source media="(max-width:900px) and (orientation:portrait)" srcset="/art/'+bg.mobile+'"><img src="/art/'+bg.desktop+'" alt="" decoding="async"></picture><div class="cs-midground" data-layer="midground" aria-hidden="true">'+layerImages(midground,options)+'</div><div class="cs-actors" data-layer="characters">'+actors+sparrow+'</div><div class="cs-foreground" data-layer="foreground" aria-hidden="true">'+layerImages(foreground,options)+'</div></div>';
@@ -32,8 +33,9 @@ function render(place,id,options){
 function mount(host,id,options){
  options=options||{};host.classList.add('chimse-art');
  var sceneForeground=(scenes[id].layers||{}).foreground,foregroundMode=layerEntries(sceneForeground).some(function(layer){return layerVisible(layer,options)})?'shown':'hidden';
- if(host.dataset.artScene!==id||host.dataset.artExpression!==(options.anExpression||'')||host.dataset.artForeground!==foregroundMode){
-  host.innerHTML=render(null,id,options);host.dataset.artScene=id;host.dataset.artExpression=options.anExpression||'';host.dataset.artForeground=foregroundMode;
+ var companionMode=options.companion||'';
+ if(host.dataset.artScene!==id||host.dataset.artExpression!==(options.anExpression||'')||host.dataset.artForeground!==foregroundMode||host.dataset.artCompanion!==companionMode){
+  host.innerHTML=render(null,id,options);host.dataset.artScene=id;host.dataset.artExpression=options.anExpression||'';host.dataset.artForeground=foregroundMode;host.dataset.artCompanion=companionMode;
  }
  if(!host.parentElement||typeof window==='undefined'||!window.ResizeObserver)return;
  var current=observers.get(host);if(current){current.fit();return}
@@ -77,9 +79,11 @@ function preload(id){
 }
 function validate(expected){
  var errors=[];expected=expected||data.sceneIds;
+ Object.keys(data.sprites).forEach(function(name){var s=data.sprites[name],limit=(s.columns||1)*(s.rows||1);if(!Number.isInteger(s.columns)||s.columns<1||!Number.isInteger(s.rows)||s.rows<1)errors.push('Invalid sprite grid '+name);Object.keys(s.frames||{}).forEach(function(expression){var frame=s.frames[expression];if(!Number.isInteger(frame)||frame<0||frame>=limit)errors.push('Invalid sprite frame '+name+'/'+expression)})});
  expected.forEach(function(id){var s=scenes[id];if(!s){errors.push('Missing scene '+id);return}
   if(!data.backgrounds[s.background])errors.push('Missing background '+id);
-  s.actors.forEach(function(a){var sprite=data.sprites[a.sprite||a.character];if(!sprite||sprite.frames[a.expression]===undefined)errors.push('Missing sprite frame '+id+'/'+a.character);['desktop','mobile'].forEach(function(device){var p=a[device];if(!p||p.left<0||p.width<=0||p.left+p.width>100||p.bottom<0)errors.push('Invalid position '+id+'/'+a.character+'/'+device)})});
+  var variants=s.actors.concat(Object.entries(s.companions||{}).map(function(entry){return Object.assign({companionRoute:entry[0]},entry[1])}));
+  variants.forEach(function(a){var sprite=data.sprites[a.sprite||a.character];if(!sprite||sprite.frames[a.expression]===undefined)errors.push('Missing sprite frame '+id+'/'+a.character+'/'+a.expression+(a.companionRoute?'/'+a.companionRoute:''));['desktop','mobile'].forEach(function(device){var p=a[device];if(!p||p.left<0||p.width<=0||p.left+p.width>100||p.bottom<0)errors.push('Invalid position '+id+'/'+a.character+'/'+device)})});
   if(s.sparrow.asset!==data.sprites.sparrow.asset)errors.push('Invalid Sparrow '+id);
  });return errors;
 }

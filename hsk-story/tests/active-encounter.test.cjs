@@ -3,6 +3,12 @@ function load(file){const box={module:{exports:{}}};vm.runInNewContext(fs.readFi
 const E=load("active-encounter.js"),Core=load("game-core.js");
 function advance(route="friend"){let s=E.initial();s=E.move(s,{type:"inspect",id:"desk"});s=E.move(s,{type:"inspect",id:"door"});return E.move(s,{type:"route",id:route})}
 test("V8 encounter schema, canonical trigger and complete localization",()=>{assert.equal(E.validate().join(","),"");assert.equal(E.content.triggerScene,4);assert.equal(E.content.objects.length,3);assert.equal(E.content.routes.length,2)});
+test("V8 notebook outcome has a localized reaction after the notebook is returned",()=>{
+ assert.match(E.content.outcomeZh,/找到了/);
+ assert.match(E.content.outcomePy,/zhǎodào/i);
+ assert.match(E.content.outcomeVi,/tìm thấy/i);
+ assert.notEqual(E.content.outcomeZh,E.content.startZh);
+});
 test("V8 requires examining two unique objects before a route",()=>{let s=E.initial();s=E.move(s,{type:"inspect",id:"desk"});s=E.move(s,{type:"inspect",id:"desk"});assert.equal(s.stage,"inspect");s=E.move(s,{type:"inspect",id:"bag"});assert.equal(s.stage,"decide");assert.throws(()=>E.move(s,{type:"inspect",id:"door"}));});
 test("V8 supports two choices and a persistent callback later in the chapter",()=>{for(const route of ["friend","teacher"]){let s=advance(route);s=E.move(s,{type:"submit",value:"我叫安"},Core);s=E.move(s,{type:"continue"});assert.equal(s.stage,"done");assert.ok(E.callback(6,s).vi)}})
 test("V8 correct first transfer response is independent without altering school scores",()=>{let s=advance();s=E.move(s,{type:"submit",value:"我叫明安"},Core);assert.equal(s.answer,"independent");assert.equal(s.attempts,0)});

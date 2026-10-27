@@ -231,6 +231,8 @@ test("V8 lost notebook episode requires observed clues and retrievable personal 
  assert.equal(e.encounterActions.children.length,2);
  e.encounterActions.children[1].click();
  assert.equal(e.encounterAnswerForm.hidden,false);
+ assert.match(e.stageIllustration.innerHTML,/data-character="wang"/,'The teacher route draws cô Vương in the office');
+ assert.match(e.stageIllustration.innerHTML,/data-character="receptionist"/,'The receptionist remains the person speaking to An');
  assert.ok(e.encounterBody.textContent.includes("Vương"));
  e.encounterInput.value="我叫安";e.encounterInput.fire("input");
  let saved=JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]);
@@ -238,6 +240,11 @@ test("V8 lost notebook episode requires observed clues and retrievable personal 
  e.encounterAnswerForm.fire("submit");saved=JSON.parse(t.sharedStorage["hai-que-huong-progress-v3"]);
  assert.equal(saved.encounter.answer,"independent");
  assert.equal(e.encounterContinue.hidden,false);
+ assert.equal(e.speaker.textContent,"安 · Minh An");
+ assert.equal(e.dialogueText.textContent,"我找到了。谢谢您。");
+ assert.equal(e.pinyinText.textContent,"Wǒ zhǎodào le. Xièxie nín.");
+ assert.equal(e.vietText.textContent,"Cháu tìm thấy rồi ạ. Cháu cảm ơn cô.");
+ assert.match(e.encounterBody.textContent,/Cô trực tìm thấy tên An/);
  e.encounterContinue.click();
  assert.equal(e.encounterPanel.hidden,true);
  assert.equal(e.storyInterlude.hidden,false);

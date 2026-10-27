@@ -30,6 +30,10 @@ test('active character and noodle-shop assets exist with matching dimensions and
   assert.equal(manifest.characters.an.legacyPoses, 'characters/an-expressions.webp');
   assert.equal(manifest.characters.sparrow.legacySprite, 'characters/sparrow.webp');
   assert.equal(manifest.characters.supportingCast.legacySpriteSheet, 'characters/supporting-cast.webp');
+  for (const [role, atlas] of Object.entries(manifest.characters.supportingCast.runtimeAtlases)) {
+    assert.equal(manifest.spriteCharacters[role].asset, atlas, `${role} uses the new expression atlas`);
+    assert.equal(manifest.assetCatalog[atlas].alpha, true, `${role} atlas keeps real transparency`);
+  }
   assert.equal(manifest.backgrounds['noodle-shop'].legacyDesktop, 'backgrounds/noodle-shop.webp');
   assert.equal(manifest.backgrounds.bedroom.desktop, 'backgrounds/bedroom-v3.webp');
   assert.equal(manifest.backgrounds.bedroom.mobile, 'backgrounds/mobile/mobile-bedroom-v3.webp');

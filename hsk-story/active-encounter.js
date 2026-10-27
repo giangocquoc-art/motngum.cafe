@@ -81,7 +81,7 @@ function validate(){
  if(triggerScene!==4)err.push("Encounter position migration requires explicit review");
  return err;
 }
-var content={id:id,triggerScene:triggerScene,title:"Quyển sổ biến mất",startZh:"我的小本子呢？",startPy:"Wǒ de xiǎo běnzi ne?",startVi:"Quyển sổ nhỏ của mình đâu rồi?",promptZh:"你叫什么名字？",promptPy:"Nǐ jiào shénme míngzi?",promptVi:"Cô trực hỏi: “Em tên là gì?”",endingZh:"我学会了一点中文，也认识了新朋友。",endingVi:"Hôm nay An chưa hiểu hết mọi lời nói, nhưng đã tìm được một người bạn, một nơi thân thuộc và quyển sổ mẹ tặng. Trên trang mới, An ghi lời nhắc: ngày mai hãy hiểu thêm một người.",prompt:"Em đã học giới thiệu tên với cô Vương. Bây giờ hãy tự dùng lại câu đó để nhận quyển sổ của An.",objects:objects,routes:routes,accepted:accepted};
+var content={id:id,triggerScene:triggerScene,title:"Quyển sổ biến mất",startZh:"我的小本子呢？",startPy:"Wǒ de xiǎo běnzi ne?",startVi:"Quyển sổ nhỏ của mình đâu rồi?",promptZh:"你叫什么名字？",promptPy:"Nǐ jiào shénme míngzi?",promptVi:"Cô trực hỏi: “Em tên là gì?”",outcomeZh:"我找到了。谢谢您。",outcomePy:"Wǒ zhǎodào le. Xièxie nín.",outcomeVi:"Cháu tìm thấy rồi ạ. Cháu cảm ơn cô.",endingZh:"我学会了一点中文，也认识了新朋友。",endingVi:"Hôm nay An chưa hiểu hết mọi lời nói, nhưng đã tìm được một người bạn, một nơi thân thuộc và quyển sổ mẹ tặng. Trên trang mới, An ghi lời nhắc: ngày mai hãy hiểu thêm một người.",prompt:"Em đã học giới thiệu tên với cô Vương. Bây giờ hãy tự dùng lại câu đó để nhận quyển sổ của An.",objects:objects,routes:routes,accepted:accepted};
 return {content:content,initial:initial,clean:clean,migrate:migrate,pending:pending,move:move,route:route,callback:callback,validate:validate};
 })();
 if(typeof module!=="undefined"&&module.exports)module.exports=HSKEncounter;

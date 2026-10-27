@@ -6,6 +6,11 @@ test("Pre-HSK nine story pages, four glyph previews and four non-HSK review ques
  assert.deepEqual(plain(D.validate()),[]);assert.equal(D.stages.length,9);assert.equal(D.discovery.length,4);assert.equal(D.quizzes.length,4);
  assert.deepEqual(plain(D.stages.map(s=>s.id)),["prologue","strokes","forest","people","light","mother","legend","guess","ending"]);
 });
+test("The opening tells how An first hears Sẻ, in the same existing narrative beat",()=>{
+ const opening=D.stages[0].narrative;
+ assert.match(opening,/mẹ tặng/);assert.match(opening,/ngoài cửa sổ/i);assert.match(opening,/lần đầu nghe chim nói/);assert.match(opening,/Chỉ mình An nghe thấy/);
+ assert.equal((opening.match(/sẻ xanh/gi)||[]).length,1,'The opening introduces one bird, not a second mascot');
+});
 test("Intro starts without assuming any knowledge of Chinese or gating HSK1",()=>{
  const s=C.initial();assert.equal(s.step,0);assert.equal(s.maxReached,0);assert.equal(s.finished,false);
  assert.equal(C.key,"hai-que-huong-intro-v1");assert.notEqual(C.key,"hai-que-huong-progress-v3");

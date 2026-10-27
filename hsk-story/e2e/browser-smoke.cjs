@@ -12,6 +12,8 @@ const layoutFindings=[];
 let layoutChecks=0;
 async function auditLayout(page,label,state){
  layoutChecks++;
+ // Let ResizeObserver finish collision-aware mascot placement after scene swaps.
+ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
  const result=await page.evaluate(()=>{
   const shell=document.querySelector('#gameOverlay:not([hidden])')||document.querySelector('.intro-screen')||document.querySelector('.review-screen')||document.body;
   const issues=[];
@@ -37,7 +39,10 @@ async function auditLayout(page,label,state){
    const face={left:r.left+r.width*box[0],top:r.top+r.height*box[1],right:r.left+r.width*box[2],bottom:r.top+r.height*box[3]};
    if(face.top<stage.top-1||face.bottom>stage.bottom+1||face.left<stage.left-1||face.right>stage.right+1)issues.push({kind:'clipped-face',character:actor.dataset.character,face,stage:[stage.left,stage.top,stage.right,stage.bottom]});
    if(face.bottom-face.top<24||face.right-face.left<24)issues.push({kind:'face-too-small',character:actor.dataset.character});
-   for(const card of shell.querySelectorAll('.story-ui,.intro-dialogue,.glyph-frame,.opening,.hero-copy,.cs-foreground img,.cs-sparrow')){
+   // Foreground layer image boxes often span the whole scene even though their
+   // painted alpha is only a narrow apron (for example the noodle table). Do
+   // not treat that transparent box as a dialogue panel covering a face.
+   for(const card of shell.querySelectorAll('.story-ui,.intro-dialogue,.glyph-frame,.opening,.hero-copy,.cs-sparrow')){
     const c=card.getBoundingClientRect();if(!c.width||!c.height)continue;
     if(overlaps(face,c)>1)issues.push({kind:'face-covered-by-dialogue',character:actor.dataset.character,card:card.className,face:[face.left,face.top,face.right,face.bottom],overlay:[c.left,c.top,c.right,c.bottom]});
    }
@@ -125,12 +130,14 @@ async function goStory(page,label){
   if(!capturedScenes.has(artId)){
    await page.locator('#stageIllustration .cs-background img').evaluate(img=>img.decode());
    if(['hsk1.e01.liu-noodle-order','hsk1.e01.liu-payment'].includes(artId)){
-     await page.waitForFunction(()=>{const img=document.querySelector('#stageIllustration .cs-midground img');return img&&img.getAttribute('src')&&img.complete&&img.naturalWidth>0});
-     await page.locator('#stageIllustration .cs-midground img').evaluate(img=>img.decode());
-     const composition=await page.evaluate(()=>{const rect=e=>{const r=e.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}};const bg=document.querySelector('#stageIllustration .cs-background img'),art=document.querySelector('#stageIllustration');return {menu:rect(document.querySelector('#stageIllustration .cs-midground img')),dialogue:rect(document.querySelector('#storyDialogue')),stage:rect(document.querySelector('#storyStage')),layout:art.dataset.composition,background:{naturalWidth:bg.naturalWidth,naturalHeight:bg.naturalHeight,src:bg.currentSrc},bowl:document.querySelector('#stageIllustration .cs-foreground img')?rect(document.querySelector('#stageIllustration .cs-foreground img')):null}});
+     await page.waitForFunction(()=>{const imgs=[...document.querySelectorAll('#stageIllustration .cs-midground img')];return imgs.length===2&&imgs.every(img=>img.getAttribute('src')&&img.complete&&img.naturalWidth>0)});
+     await page.locator('#stageIllustration .cs-midground img[data-asset="layers/menu-panels-v1.webp"]').evaluate(img=>img.decode());
+     await page.locator('#stageIllustration .cs-midground img[data-asset="layers/noodle-table-top-v1.webp"]').evaluate(img=>img.decode());
+    const composition=await page.evaluate(()=>{const rect=e=>{const r=e.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}};const bg=document.querySelector('#stageIllustration .cs-background img'),art=document.querySelector('#stageIllustration');return {menu:rect(document.querySelector('#stageIllustration .cs-midground img[data-asset="layers/menu-panels-v1.webp"]')),table:rect(document.querySelector('#stageIllustration .cs-midground img[data-asset="layers/noodle-table-top-v1.webp"]')),dialogue:rect(document.querySelector('#storyDialogue')),stage:rect(document.querySelector('#storyStage')),layout:art.dataset.composition,background:{naturalWidth:bg.naturalWidth,naturalHeight:bg.naturalHeight,src:bg.currentSrc},bowl:document.querySelector('#stageIllustration .cs-foreground img[data-asset="layers/noodle-bowl-v3.webp"]')?rect(document.querySelector('#stageIllustration .cs-foreground img[data-asset="layers/noodle-bowl-v3.webp"]')):null}});
      const viewport=page.viewportSize();
      if(viewport.width<=900&&viewport.height>viewport.width){assert.equal(composition.background.naturalWidth,1024,'Portrait tablet should use the native portrait shop background: '+JSON.stringify(composition.background));if(viewport.width>690&&composition.stage.height>composition.stage.width*.72)assert.equal(composition.layout,'portrait','Tablet portrait should compose actors below the dialogue on its portrait plate')}
     assert.ok(composition.menu.width>0&&composition.menu.height>0,'Noodle menu must be visible: '+artId);
+    assert.ok(composition.table.width>0&&composition.table.height>0,'Noodle table top must be visible: '+artId);
      assert.ok(composition.menu.right>composition.stage.left&&composition.menu.left<composition.stage.right&&composition.menu.bottom>composition.stage.top&&composition.menu.top<composition.stage.bottom,'Noodle menu must intersect the visible scene: '+JSON.stringify({viewport,composition}));
     assert.ok(composition.menu.right<=composition.dialogue.left||composition.menu.left>=composition.dialogue.right||composition.menu.bottom<=composition.dialogue.top||composition.menu.top>=composition.dialogue.bottom,'Menu is covered by dialogue: '+artId+' '+JSON.stringify(composition));
      if(artId==='hsk1.e01.liu-payment'){assert.ok(composition.bowl&&composition.bowl.width>40,'The price dialogue needs the served bowl in view: '+JSON.stringify({viewport,composition}));assert.ok(composition.bowl.top>=composition.stage.top-2&&composition.bowl.bottom<=composition.stage.bottom+2,'Bowl is clipped at the scene edge: '+JSON.stringify({viewport,composition}))}
@@ -183,6 +190,11 @@ async function goStory(page,label){
    if(stage==='respond'||stage==='outcome'){
     assert.equal(await current.getAttribute('data-scene'),'lost-notebook-office','Responding to the receptionist must show the school office');
     assert.equal(await page.locator('#stageIllustration [data-character="receptionist"]').count(),1);
+    const route=await page.evaluate(()=>JSON.parse(localStorage.getItem('hai-que-huong-progress-v3')||'{}').encounter?.route);
+    const companion=route==='friend'?'xiaoyu':route==='teacher'?'wang':null;
+    assert.equal(companion?await page.locator('#stageIllustration [data-character="'+companion+'"]').count():0,companion?1:0,'The chosen companion stays in the office scene');
+    assert.equal(await page.locator('#stageIllustration [data-character="sparrow"]').count(),1,'The office scene contains one Sẻ');
+    assert.equal(await page.locator('#stageIllustration [data-character="receptionist"]').getAttribute('data-expression'),stage==='respond'?'speaking':'reassuring','Receptionist reacts to the conversation beat');
    }
    if(await visible(page,"#encounterAnswerForm")){
     await page.locator("#encounterInput").fill("我叫安");

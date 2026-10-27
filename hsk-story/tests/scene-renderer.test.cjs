@@ -37,6 +37,37 @@ test('expression selection uses actual sprite cells and rejects nonexistent pose
  assert.throws(()=>layers.render(null,'intro.bedroom',{anExpression:'unknown'}),/Missing expression/);
  assert.throws(()=>layers.render(null,'unknown'),/Unknown art scene/);
 });
+test('lost-notebook office draws the chosen companion while preserving the canonical scene and solo save fallback',()=>{
+ const office=runtime.scenes['lost-notebook-office'];
+ assert.ok(runtime.sceneIds.includes('lost-notebook'),'The search beat keeps its original progress ID');
+ assert.equal(office.companions.friend.character,'xiaoyu');
+ assert.equal(office.companions.teacher.character,'wang');
+ const solo=layers.render(null,'lost-notebook-office');
+ assert.equal((solo.match(/data-character="xiaoyu"/g)||[]).length,0,'An old route-less save keeps the established solo scene');
+ assert.equal((solo.match(/data-character="wang"/g)||[]).length,0);
+ for(const [route,expected,other] of [['friend','xiaoyu','wang'],['teacher','wang','xiaoyu']]){
+  const markup=layers.render(null,'lost-notebook-office',{companion:route});
+  assert.equal((markup.match(new RegExp('data-character="'+expected+'"','g'))||[]).length,1,route+' route shows its companion exactly once');
+  assert.equal((markup.match(new RegExp('data-character="'+other+'"','g'))||[]).length,0,route+' route does not leak the other companion');
+  assert.equal((markup.match(/data-character="receptionist"/g)||[]).length,1,'The receptionist remains present for the dialogue');
+  assert.equal((markup.match(/data-character="sparrow"/g)||[]).length,1,'The shared scene still has exactly one Sẻ');
+ }
+});
+test('supporting-cast atlases expose six valid frames and every scene/companion uses a real pose',()=>{
+ for(const role of ['mother','xiaoyu','wang','liu','receptionist','xiaoyuNoodle']){
+  const sprite=runtime.sprites[role];assert.equal(sprite.columns,3);assert.equal(sprite.rows,2);assert.equal(Object.keys(sprite.frames).length,6,role+' has six frames');
+  for(const [name,frame] of Object.entries(sprite.frames))assert.ok(Number.isInteger(frame)&&frame>=0&&frame<6,role+'/'+name+' frame is inside the atlas');
+  const assetPath=path.join(root,'art',sprite.asset);assert.ok(fs.existsSync(assetPath),role+' atlas exists');
+ }
+ assert.deepEqual(Array.from(layers.validate(Object.keys(runtime.scenes))),[],'All scene actors and optional route companions resolve to valid expression frames');
+ const office=box.HSKSceneManifest.scenes['lost-notebook-office'],saved=office.companions.friend.expression;
+ office.companions.friend.expression='not-a-frame';
+ assert.ok(Array.from(layers.validate(['lost-notebook-office'])).some(x=>x.includes('xiaoyu')&&x.includes('not-a-frame')),'The validator catches an invalid optional companion expression');
+ office.companions.friend.expression=saved;
+ const order=runtime.scenes['hsk1.e01.liu-noodle-order'].actors.find(a=>a.sprite==='xiaoyuNoodle');
+ const payment=runtime.scenes['hsk1.e01.liu-payment'].actors.find(a=>a.sprite==='xiaoyuNoodle');
+ assert.equal(order.expression,'friendly');assert.equal(payment.expression,'thoughtful','Seated Xiaoyu changes expression between ordering and payment');
+});
 test('a mounted character can change expression in place without creating another sparrow',()=>{
  const sparrow={style:{},dataset:{expression:'curious'}},an={style:{},dataset:{expression:'awkward'}};
  const host={querySelector(selector){return selector==='.cs-sparrow'?sparrow:selector.includes('data-character="an"')?an:null}};

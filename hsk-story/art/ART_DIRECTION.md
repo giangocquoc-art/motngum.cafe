@@ -9,7 +9,7 @@ Use the character and world concept sheet shared by the project owner as the vis
 - **Minh An:** an 11-year-old boy; short, slightly tousled black hair; mustard yellow hoodie; faded blue-green backpack. The owner's explicit redesign plan controls identity; the supplied concept sheet controls line/color rather than changing An's gender or clothes. Keep childlike proportions and small asymmetries. Feelings should read through head angle, hands, shoulders and stance as well as the face. Never make An look like a polished adult model.
 - **Sẻ:** a small, pale sky-blue sparrow with a cream belly, charcoal ink edge, dark round eye, and a small orange beak. It is curious and fallible, and only An understands its words.
 - Keep exactly one drawn Sẻ in a visible story frame. When the scene already shows the mascot, use the word seal in the page header; keep the bird icon for the browser tab rather than repeating it beside the scene.
-- **Mother, Tiểu Vũ, cô Vương, bà Lưu, and the school receptionist:** keep their silhouettes, age, clothing and palette tied to their panels in the integrated `characters/supporting-cast-v2.webp`. Preserve their differences as well as the common drawing style. That sheet has one pose per person; it is not a complete expression set.
+- **Mother, Tiểu Vũ, cô Vương, bà Lưu, and the school receptionist:** the active per-character expression atlases under `characters/*-expressions-v1.webp` now define their face, silhouette, clothes and rendered moods. `supporting-cast-v2.webp` remains an identity reference only. Preserve distinctions between the short bob and glasses of cô Vương and the receptionist's low ponytail and no glasses.
 
 ## Drawing and color
 
@@ -25,7 +25,7 @@ Scene art is assembled by the shared `scene-renderer.js` and `scene-layers.css`.
 
 ## Prompt recipe for future art
 
-Always attach the owner-provided character concept sheet as a reference, together with the current An/Sẻ sprites and reviewed environment samples. Layout approval does not imply owner approval of every integrated image. Original conversation reference images are not yet stored in this repo; recover and save them before a new generation batch. Identify which reference controls identity and which controls line/color, then adapt this prompt to the requested single asset:
+Always use the owner-provided character concept sheet as the line/color authority when it is available, together with the current An/Sẻ sprites and reviewed environment samples. Use the active per-character atlases as NPC identity references. Identify which reference controls identity and which controls line/color; never use an older polished sprite as the sole style reference. Original conversation reference images are not stored in this repo, so keep the written owner style description below with the assets. Then adapt the prompt to the requested single asset:
 
 > Make one new Chim Sẻ story asset consistent with the owner's character concept sheet. Preserve the same slightly uneven black-ink contour, flat muted watercolor, warm textured cream paper, simple expressive faces, and small lived-in details. Match character shape, child proportions, clothing, face and palette to the approved sprite. Imperfect marks should feel deliberate and repeatable. Keep all learning text out of the image. Avoid glossy polish, generic anime, photorealism, crisp vector art, cinematic lighting and style drift. [Describe the single asset, pose/emotion, composition, and required transparent or landscape/portrait layout here.]
 

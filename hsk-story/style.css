@@ -366,7 +366,7 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .stage .sparrow-expression-wave{background-position:100% 100%}
 .stage .scene-background img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 52%}
 .stage .scene-stack{background:#e6e0ce}
-.story-ui{z-index:5;top:clamp(76px,10dvh,104px);bottom:auto;left:clamp(18px,4vw,56px);width:min(610px,46vw);max-height:calc(100% - 92px);overflow:auto}
+.story-ui{z-index:5;top:clamp(76px,10dvh,104px);bottom:auto;left:clamp(18px,4vw,56px);width:min(520px,38vw);max-height:calc(100% - 92px);overflow:auto}
 .player-panel{position:relative;display:flex;flex:0 0 clamp(245px,30dvh,320px);flex-direction:column;justify-content:safe center;min-height:0;max-height:48dvh;overflow:auto;overscroll-behavior:contain;padding:12px clamp(16px,5vw,72px) max(12px,env(safe-area-inset-bottom));background:var(--sparrow-paper);border-top:2px solid #665a4960}
 .player-panel>*{flex-shrink:0}
 .player-panel>.ai-tutor-open{position:static;z-index:auto;align-self:flex-end;order:2;margin:2px 0 0;padding:6px 11px;box-shadow:none}

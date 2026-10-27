@@ -13,7 +13,7 @@
 .chimse-art[data-composition="portrait"] .cs-sparrow{left:var(--sparrow-mobile-left);top:var(--sparrow-mobile-top)}
 .chimse-art[data-composition="short-landscape"] .cs-actor{left:var(--actor-compact-left,var(--actor-left));bottom:var(--actor-compact-bottom,var(--actor-bottom));width:min(var(--actor-compact-width,var(--actor-width)),100cqh)}
 .chimse-art[data-composition="short-landscape"] .cs-sparrow{left:var(--sparrow-compact-left,var(--sparrow-left));top:var(--sparrow-compact-top,var(--sparrow-top));width:min(8vw,34px)}
-#storyStage .story-ui{top:calc(var(--scene-header,56px) + 8px);bottom:auto;left:12px;right:auto;width:calc(50% - 24px);max-width:none;max-height:none;overflow:visible}
+#storyStage .story-ui{top:calc(var(--scene-header,56px) + 8px);bottom:auto;left:12px;right:auto;width:min(520px,40vw);max-width:none;max-height:none;overflow:visible}
 #storyStage:has(.chimse-art[data-composition="portrait"]) .story-ui{width:calc(100% - 24px)}
 #storyStage .scene-day{display:none}
 .sparrow-talk-hotspot{position:absolute;z-index:6;left:var(--sparrow-hit-left);top:var(--sparrow-hit-top);width:var(--sparrow-hit-size);height:var(--sparrow-hit-size);padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;touch-action:manipulation}
@@ -23,7 +23,7 @@
 .intro-scene .glyph-frame{top:var(--glyph-top,160px);left:var(--glyph-left,12px);right:auto;bottom:auto;transform:none;width:var(--glyph-width,calc(48% - 24px));max-width:250px}
 .intro-scene:has(.chimse-art[data-composition="compact"]) .intro-dialogue{width:calc(44% - 20px);top:36px}
 .intro-scene .paper-foot{display:none}
-.review-scene .opening{left:12px;width:calc(50% - 24px);max-width:none}
+.review-scene .opening{left:12px;width:min(470px,36vw);max-width:none}
 .review-scene:has(.chimse-art[data-composition="portrait"]) .opening{width:calc(100% - 24px)}
 @keyframes cs-arrive{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @keyframes cs-breathe{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}

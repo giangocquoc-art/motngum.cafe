@@ -257,13 +257,18 @@ function renderEncounter(){
  var active=HSKEncounter.pending(state.step,state.encounter);
  $("encounterPanel").hidden=!active;if(!active)return false;
  var data=HSKEncounter.content,progress=state.encounter;
- paintScene("class",["respond","outcome"].includes(progress.stage)?"lost-notebook-office":"lost-notebook");
+ paintScene("class",["respond","outcome"].includes(progress.stage)?"lost-notebook-office":"lost-notebook",{companion:progress.route||""});
+ if(progress.stage==="respond")HSKSceneLayers.setExpression($("stageIllustration"),"receptionist","speaking");
+ else if(progress.stage==="outcome"){
+  HSKSceneLayers.setExpression($("stageIllustration"),"receptionist","reassuring");
+  HSKSceneLayers.setExpression($("stageIllustration"),"an","smile");
+ }
  $("sceneDay").textContent="QUYỂN SỔ THẤT LẠC";
  $("speaker").textContent=progress.stage==="respond"?"Cô trực phòng hành chính":"安 · Minh An";
  $("sceneTag").textContent="QUYỂN SỔ BIẾN MẤT";
- $("dialogueText").textContent=progress.stage==="respond"?data.promptZh:data.startZh;
- $("pinyinText").textContent=progress.stage==="respond"?data.promptPy:data.startPy;
- $("vietText").textContent=progress.stage==="respond"?data.promptVi:data.startVi;
+ $("dialogueText").textContent=progress.stage==="respond"?data.promptZh:progress.stage==="outcome"?data.outcomeZh:data.startZh;
+ $("pinyinText").textContent=progress.stage==="respond"?data.promptPy:progress.stage==="outcome"?data.outcomePy:data.startPy;
+ $("vietText").textContent=progress.stage==="respond"?data.promptVi:progress.stage==="outcome"?data.outcomeVi:data.startVi;
  $("storyInterlude").hidden=true;$("storyBeat").hidden=true;$("storyEcho").hidden=true;$("storyChoicePanel").hidden=true;
  $("answerForm").hidden=true;$("sentenceBuilder").hidden=true;$("openBuilderBtn").hidden=true;
  $("learningStrip").hidden=true;$("vocabRevealBtn").hidden=true;
@@ -375,10 +380,10 @@ function syncPlayLayout(){
  $("sparrowTalkBtn").hidden=state.step>=EXAM_START||!["answer","resolved"].includes(mode);
  if(window.ChimSeTutor)window.ChimSeTutor.sync();
 }
-function paintScene(place,sceneId){
+function paintScene(place,sceneId,options){
  var host=$("stageIllustration");
  var showForeground=sceneId==="hsk1.e01.liu-noodle-order"&&!!state.storyChoices["noodle-taste"];
- HSKSceneLayers.mount(host,sceneId,{dialogue:$("storyDialogue"),header:true,showForeground:showForeground});
+ HSKSceneLayers.mount(host,sceneId,Object.assign({dialogue:$("storyDialogue"),header:true,showForeground:showForeground},options||{}));
  HSKSceneLayers.preload(HSKStoryGraph.idAt(Math.min(state.step+1,SCENE_TOTAL-1)));
 }
 function showAnFeeling(expression){var host=$("stageIllustration");if(host.dataset.artScene)HSKSceneLayers.setExpression(host,"an",expression)}

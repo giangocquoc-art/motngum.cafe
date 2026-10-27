@@ -142,16 +142,23 @@
         ]
       },
       "metadata": {
-        "role": "Five transparent supporting character sprites, ordered by the cast panel map",
+        "role": "Legacy identity reference only; runtime uses the per-character expression atlases listed in runtimeAtlases.",
         "dimensions": {
           "width": 1536,
           "height": 1024
         },
         "format": "WebP",
         "alpha": true,
-        "prompt": "Create a transparent 3-column by 2-row sprite sheet in the established Chim Sẻ style. Cells 1-5 are Mother, Tiểu Vũ, cô Vương, bà Lưu and the school receptionist, respectively; cell 6 is empty. Keep each person distinct in age, hair, clothes, palette and expression; no labels or background.",
+        "prompt": "Create a transparent 3-column by 2-row sprite sheet in the established Chim Sẻ style. Cells 1-5 are Mother, Tiểu Vũ, cô Vương, bà Lưu and the school receptionist, respectively; cell 6 is empty. Keep each person distinct in age, hair, clothes, palette and expression; no labels or background. It is retained as an identity reference, not the active expression art.",
         "master": "characters/supporting-cast-v2.png",
         "masterFormat": "PNG"
+      },
+      "runtimeAtlases": {
+        "mother": "characters/mother-expressions-v1.webp",
+        "xiaoyu": "characters/xiaoyu-expressions-v1.webp",
+        "wang": "characters/wang-expressions-v1.webp",
+        "liu": "characters/liu-expressions-v1.webp",
+        "receptionist": "characters/receptionist-expressions-v1.webp"
       }
     }
   },
@@ -427,7 +434,7 @@
         },
         {
           "character": "mother",
-          "expression": "neutral",
+          "expression": "gentle",
           "slot": "mid",
           "desktop": {
             "left": 52,
@@ -505,7 +512,7 @@
         },
         {
           "character": "wang",
-          "expression": "neutral",
+          "expression": "smile",
           "slot": "right",
           "desktop": {
             "left": 52,
@@ -583,7 +590,7 @@
         },
         {
           "character": "xiaoyu",
-          "expression": "neutral",
+          "expression": "speaking",
           "slot": "right",
           "desktop": {
             "left": 52,
@@ -677,7 +684,7 @@
         },
         {
           "character": "wang",
-          "expression": "neutral",
+          "expression": "speaking",
           "slot": "right",
           "desktop": {
             "left": 68,
@@ -740,7 +747,7 @@
       "actors": [
         {
           "character": "liu",
-          "expression": "neutral",
+          "expression": "smile",
           "slot": "behind-counter",
           "desktop": {
             "left": 52,
@@ -902,7 +909,7 @@
             },
             "mobile": {
               "x": 820,
-              "y": 520,
+              "y": 700,
               "width": 260
             },
             "compact": {
@@ -922,7 +929,7 @@
             },
             "tablet": {
               "x": 920,
-              "y": 640,
+              "y": 760,
               "width": 220
             }
           }
@@ -979,7 +986,7 @@
       "actors": [
         {
           "character": "liu",
-          "expression": "neutral",
+          "expression": "speaking",
           "slot": "behind-counter",
           "desktop": {
             "left": 52,
@@ -1033,7 +1040,7 @@
         {
           "character": "xiaoyu",
           "sprite": "xiaoyuNoodle",
-          "expression": "friendly",
+          "expression": "thoughtful",
           "slot": "shared-table-right",
           "desktop": {
             "left": 62,
@@ -1065,8 +1072,8 @@
           "top": 28
         },
         "mobile": {
-          "left": 10,
-          "top": 10
+          "left": 4,
+          "top": 5
         },
         "expression": "thinking",
         "compact": {
@@ -1142,7 +1149,7 @@
             },
             "mobile": {
               "x": 820,
-              "y": 520,
+              "y": 700,
               "width": 260
             },
             "compact": {
@@ -1162,7 +1169,7 @@
             },
             "tablet": {
               "x": 920,
-              "y": 640,
+              "y": 760,
               "width": 220
             }
           }
@@ -1228,7 +1235,7 @@
             "master": "layers/noodle-bowl-v3.png",
             "desktop": {
               "x": 760,
-              "y": 830,
+              "y": 760,
               "width": 145
             },
             "mobile": {
@@ -1273,7 +1280,7 @@
         },
         {
           "character": "xiaoyu",
-          "expression": "neutral",
+          "expression": "thoughtful",
           "slot": "right",
           "desktop": {
             "left": 52,
@@ -1412,7 +1419,7 @@
         },
         {
           "character": "wang",
-          "expression": "neutral",
+          "expression": "speaking",
           "slot": "right",
           "desktop": {
             "left": 52,
@@ -1487,7 +1494,7 @@
         },
         {
           "character": "wang",
-          "expression": "neutral",
+          "expression": "thinking",
           "slot": "right",
           "desktop": {
             "left": 52,
@@ -1562,7 +1569,7 @@
         },
         {
           "character": "wang",
-          "expression": "neutral",
+          "expression": "speaking",
           "slot": "right",
           "desktop": {
             "left": 52,
@@ -2119,6 +2126,84 @@
       "format": "WebP",
       "masterFormat": "PNG",
       "bytes": 334190
+    },
+    "characters/mother-expressions-v1.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/mother-expressions-v1.png",
+      "role": "An's mother expression atlas; same low bun, rust-brown jacket, cream shirt, olive trousers and tote.",
+      "prompt": "Transparent 3x2 six-frame mother atlas. Preserve adult Chinese mother identity, dark low bun, rust-brown jacket, cream shirt, olive trousers and canvas tote. Gentle neutral, reassuring smile, speaking softly, quietly amused, concerned and thoughtful. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 1512950
+    },
+    "characters/xiaoyu-expressions-v1.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/xiaoyu-expressions-v1.png",
+      "role": "Tiểu Vũ expression atlas; same 11-year-old boy, tousled dark hair, blue jacket, white shirt and backpack straps.",
+      "prompt": "Transparent 3x2 six-frame Tiểu Vũ atlas. Preserve the same 11-year-old Chinese boy, short tousled black hair, bright blue jacket, white shirt and dark-blue backpack straps. Shy neutral, friendly, speaking, natural laugh, surprised and thoughtful. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 1389178
+    },
+    "characters/wang-expressions-v1.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/wang-expressions-v1.png",
+      "role": "Cô Vương expression atlas; same adult teacher, bob haircut, round glasses, sage jacket, cream blouse, dark skirt and brown book.",
+      "prompt": "Transparent 3x2 six-frame cô Vương atlas. Preserve the same adult Chinese teacher, short dark bob, round glasses, sage-green jacket, cream blouse, dark skirt and brown book. Calm attentive, encouraging smile, speaking, thoughtful, mildly worried and pleasantly surprised. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 1343100
+    },
+    "characters/liu-expressions-v1.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/liu-expressions-v1.png",
+      "role": "Bà Lưu expression atlas; same elderly noodle-shop owner, blue kerchief, cream blouse and navy apron.",
+      "prompt": "Transparent 3x2 six-frame bà Lưu atlas. Preserve the same elderly Chinese woman, round lined face, silver hair under a blue kerchief, cream blouse and dark navy apron. Kind open-eyed neutral with closed mouth, gentle smile, speaking warmly, soft laugh, curious and quietly determined. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 1438608
+    },
+    "characters/receptionist-expressions-v1.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/receptionist-expressions-v1.png",
+      "role": "School receptionist expression atlas; same adult woman with low ponytail, no glasses and muted teal-gray jacket.",
+      "prompt": "Transparent 3x2 six-frame school receptionist atlas. Preserve the same adult Chinese woman, low dark ponytail, no glasses, teal-gray jacket and cream blouse; distinct from cô Vương's bob and round glasses. Attentive neutral, warm welcome, speaking gently, listening, mildly puzzled and reassuring. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 1341426
+    },
+    "characters/xiaoyu-noodle-expressions-v1.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/xiaoyu-noodle-expressions-v1.png",
+      "role": "Seated Tiểu Vũ expression atlas for the noodle-shop scenes; same blue jacket and child-height shared-table pose.",
+      "prompt": "Transparent 3x2 six-frame seated Tiểu Vũ atlas. Preserve his 11-year-old identity, tousled dark hair, blue jacket, white shirt, backpack straps, turn toward An and elbows/hands just above an unseen table. Attentive neutral, friendly smile, speaking, natural laugh, surprised and thoughtfully concerned. Handmade imperfect ink, muted flat watercolor and fine paper grain; no table, food, text, backdrop or extra characters.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 1432176
     }
   },
   "spriteCharacters": {
@@ -2175,74 +2260,159 @@
       ]
     },
     "mother": {
-      "asset": "characters/supporting-cast-v2.webp",
+      "asset": "characters/mother-expressions-v1.webp",
       "columns": 3,
       "rows": 2,
       "frames": {
-        "neutral": 0
+        "neutral": 0,
+        "gentle": 1,
+        "speaking": 2,
+        "laughing": 3,
+        "concerned": 4,
+        "thinking": 5
       },
       "face": [
-        0.25,
-        0.04,
-        0.83,
-        0.62
-      ]
+        0.2,
+        0.12,
+        0.82,
+        0.6
+      ],
+      "metadata": {
+        "master": "characters/mother-expressions-v1.png",
+        "masterFormat": "PNG",
+        "role": "An's mother expression atlas; same low bun, rust-brown jacket, cream shirt, olive trousers and tote.",
+        "dimensions": {
+          "width": 1536,
+          "height": 1024
+        },
+        "format": "WebP",
+        "alpha": true,
+        "prompt": "Transparent 3x2 six-frame mother atlas. Preserve adult Chinese mother identity, dark low bun, rust-brown jacket, cream shirt, olive trousers and canvas tote. Gentle neutral, reassuring smile, speaking softly, quietly amused, concerned and thoughtful. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters."
+      }
     },
     "xiaoyu": {
-      "asset": "characters/supporting-cast-v2.webp",
+      "asset": "characters/xiaoyu-expressions-v1.webp",
       "columns": 3,
       "rows": 2,
       "frames": {
-        "neutral": 1
+        "neutral": 0,
+        "friendly": 1,
+        "speaking": 2,
+        "laughing": 3,
+        "surprised": 4,
+        "thoughtful": 5
       },
       "face": [
-        0.25,
-        0.04,
-        0.83,
-        0.62
-      ]
+        0.2,
+        0.1,
+        0.82,
+        0.58
+      ],
+      "metadata": {
+        "master": "characters/xiaoyu-expressions-v1.png",
+        "masterFormat": "PNG",
+        "role": "Tiểu Vũ expression atlas; same 11-year-old boy, tousled dark hair, blue jacket, white shirt and backpack straps.",
+        "dimensions": {
+          "width": 1536,
+          "height": 1024
+        },
+        "format": "WebP",
+        "alpha": true,
+        "prompt": "Transparent 3x2 six-frame Tiểu Vũ atlas. Preserve the same 11-year-old Chinese boy, short tousled black hair, bright blue jacket, white shirt and dark-blue backpack straps. Shy neutral, friendly, speaking, natural laugh, surprised and thoughtful. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters."
+      }
     },
     "wang": {
-      "asset": "characters/supporting-cast-v2.webp",
+      "asset": "characters/wang-expressions-v1.webp",
       "columns": 3,
       "rows": 2,
       "frames": {
-        "neutral": 2
+        "neutral": 0,
+        "smile": 1,
+        "speaking": 2,
+        "thinking": 3,
+        "worried": 4,
+        "surprised": 5
       },
       "face": [
-        0.25,
-        0.04,
-        0.83,
-        0.62
-      ]
+        0.2,
+        0.1,
+        0.82,
+        0.58
+      ],
+      "metadata": {
+        "master": "characters/wang-expressions-v1.png",
+        "masterFormat": "PNG",
+        "role": "Cô Vương expression atlas; same adult teacher, bob haircut, round glasses, sage jacket, cream blouse, dark skirt and brown book.",
+        "dimensions": {
+          "width": 1536,
+          "height": 1024
+        },
+        "format": "WebP",
+        "alpha": true,
+        "prompt": "Transparent 3x2 six-frame cô Vương atlas. Preserve the same adult Chinese teacher, short dark bob, round glasses, sage-green jacket, cream blouse, dark skirt and brown book. Calm attentive, encouraging smile, speaking, thoughtful, mildly worried and pleasantly surprised. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters."
+      }
     },
     "liu": {
-      "asset": "characters/supporting-cast-v2.webp",
+      "asset": "characters/liu-expressions-v1.webp",
       "columns": 3,
       "rows": 2,
       "frames": {
-        "neutral": 3
+        "neutral": 0,
+        "smile": 1,
+        "speaking": 2,
+        "laughing": 3,
+        "curious": 4,
+        "determined": 5
       },
       "face": [
-        0.25,
-        0.04,
+        0.2,
+        0.09,
         0.83,
-        0.62
-      ]
+        0.58
+      ],
+      "metadata": {
+        "master": "characters/liu-expressions-v1.png",
+        "masterFormat": "PNG",
+        "role": "Bà Lưu expression atlas; same elderly noodle-shop owner, blue kerchief, cream blouse and navy apron.",
+        "dimensions": {
+          "width": 1536,
+          "height": 1024
+        },
+        "format": "WebP",
+        "alpha": true,
+        "prompt": "Transparent 3x2 six-frame bà Lưu atlas. Preserve the same elderly Chinese woman, round lined face, silver hair under a blue kerchief, cream blouse and dark navy apron. Kind open-eyed neutral with closed mouth, gentle smile, speaking warmly, soft laugh, curious and quietly determined. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters."
+      }
     },
     "receptionist": {
-      "asset": "characters/supporting-cast-v2.webp",
+      "asset": "characters/receptionist-expressions-v1.webp",
       "columns": 3,
       "rows": 2,
       "frames": {
-        "neutral": 4
+        "neutral": 0,
+        "welcoming": 1,
+        "speaking": 2,
+        "listening": 3,
+        "puzzled": 4,
+        "reassuring": 5
       },
       "face": [
-        0.25,
-        0.04,
-        0.83,
-        0.62
-      ]
+        0.2,
+        0.1,
+        0.82,
+        0.58
+      ],
+      "metadata": {
+        "master": "characters/receptionist-expressions-v1.png",
+        "masterFormat": "PNG",
+        "role": "School receptionist expression atlas; same adult woman with low ponytail, no glasses and muted teal-gray jacket.",
+        "dimensions": {
+          "width": 1536,
+          "height": 1024
+        },
+        "format": "WebP",
+        "alpha": true,
+        "prompt": "Transparent 3x2 six-frame school receptionist atlas. Preserve the same adult Chinese woman, low dark ponytail, no glasses, teal-gray jacket and cream blouse; distinct from cô Vương's bob and round glasses. Attentive neutral, warm welcome, speaking gently, listening, mildly puzzled and reassuring. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters."
+      }
     },
     "anNoodle": {
       "asset": "characters/an-noodle-seated-v1.webp",
@@ -2276,29 +2446,34 @@
       }
     },
     "xiaoyuNoodle": {
-      "asset": "characters/xiaoyu-noodle-seated-v1.webp",
-      "columns": 1,
-      "rows": 1,
+      "asset": "characters/xiaoyu-noodle-expressions-v1.webp",
+      "columns": 3,
+      "rows": 2,
       "frames": {
-        "friendly": 0
+        "neutral": 0,
+        "friendly": 1,
+        "speaking": 2,
+        "laughing": 3,
+        "surprised": 4,
+        "thoughtful": 5
       },
       "face": [
-        0.22,
-        0.12,
+        0.18,
+        0.1,
         0.82,
-        0.6
+        0.58
       ],
       "metadata": {
-        "master": "characters/xiaoyu-noodle-seated-v1.png",
+        "master": "characters/xiaoyu-noodle-expressions-v1.png",
         "masterFormat": "PNG",
-        "role": "Single seated Xiaoyu scene sprite, blue jacket and child proportions matching supporting-cast-v2",
+        "role": "Seated Tiểu Vũ expression atlas for the noodle-shop scenes; same blue jacket and child-height shared-table pose.",
         "dimensions": {
-          "width": 1254,
-          "height": 1254
+          "width": 1536,
+          "height": 1024
         },
         "format": "WebP",
         "alpha": true,
-        "prompt": "Transparent seated 11-year-old boy, same Xiaoyu as blue jacket boy in supporting-cast-v2, angled toward An with a small friendly smile, head/shoulders/elbows/hands above unseen table edge, cut at waist. Uneven dark ink, flat muted watercolor, faint warm paper feel, consistent with seated An; no table, food, other figures or UI."
+        "prompt": "Transparent 3x2 six-frame seated Tiểu Vũ atlas. Preserve his 11-year-old identity, tousled dark hair, blue jacket, white shirt, backpack straps, turn toward An and elbows/hands just above an unseen table. Attentive neutral, friendly smile, speaking, natural laugh, surprised and thoughtfully concerned. Handmade imperfect ink, muted flat watercolor and fine paper grain; no table, food, text, backdrop or extra characters."
       }
     }
   },
@@ -2339,6 +2514,50 @@
           "emotion": "welcoming"
         }
       ],
+      "companions": {
+        "friend": {
+          "character": "xiaoyu",
+          "expression": "friendly",
+          "slot": "between-an-and-receptionist",
+          "desktop": {
+            "left": 32,
+            "bottom": 0,
+            "width": 38
+          },
+          "mobile": {
+            "left": 32,
+            "bottom": 0,
+            "width": 38
+          },
+          "tablet": {
+            "left": 32,
+            "bottom": 0,
+            "width": 38
+          },
+          "emotion": "concerned"
+        },
+        "teacher": {
+          "character": "wang",
+          "expression": "smile",
+          "slot": "between-an-and-receptionist",
+          "desktop": {
+            "left": 32,
+            "bottom": 0,
+            "width": 36
+          },
+          "mobile": {
+            "left": 32,
+            "bottom": 0,
+            "width": 36
+          },
+          "tablet": {
+            "left": 32,
+            "bottom": 0,
+            "width": 36
+          },
+          "emotion": "encouraging"
+        }
+      },
       "sparrow": {
         "asset": "characters/sparrow-expressions-v2.webp",
         "desktop": {
