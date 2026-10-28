@@ -1,0 +1,2 @@
+import Link from 'next/link';import Photo from './Photo';
+export default function ProjectCard({project,index}){return <Link href={'/du-an/'+project.slug} className="project-card"><div className="project-image"><Photo src={project.image} alt={'Hình ảnh dự án '+project.title} label={String(index+1).padStart(2,'0')+' / '+project.category.toUpperCase()}/><span className="project-arrow">↗</span></div><div className="project-meta"><span>{project.place}</span><span>{project.year}</span></div><h3>{project.title}</h3></Link>}
