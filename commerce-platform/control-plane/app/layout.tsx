@@ -5,12 +5,12 @@ import { getUser, getTeamForUser } from '@/lib/db/queries';
 import { SWRConfig } from 'swr';
 
 export const metadata: Metadata = {
-  title: 'Next.js SaaS Starter',
-  description: 'Get started quickly with Next.js, Postgres, and Stripe.'
+  title: 'Motngum Studio | Thiết kế website kéo thả',
+  description: 'Thiết kế website đa trang với 24 mẫu giao diện, 8 theme và thư viện thành phần trực quan của Motngum Studio.'
 };
 
 export const viewport: Viewport = {
-  maximumScale: 1
+  initialScale: 1
 };
 
 const manrope = Manrope({ subsets: ['latin'] });
@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="en"
+      lang="vi"
       className={`bg-white dark:bg-gray-950 text-black dark:text-white ${manrope.className}`}
     >
       <body className="min-h-[100dvh] bg-gray-50">
