@@ -112,7 +112,13 @@ export function siteToPuckWorkspace(input: unknown): PuckWorkspace {
 function puckDataToBlocks(value: unknown): Block[] {
   if (!record(value)) return reject('invalid_puck_data');
   if (!Array.isArray(value.content)) return reject('missing_content');
-  if (!record(value.root) || Object.keys(value.root).length !== 0)
+  // Puck can represent an empty root either as {} or {props:{}}.
+  // A populated root must still be rejected because v2 has no root fields.
+  if (!record(value.root)) return reject('unsupported_root_fields');
+  const rootKeys=Object.keys(value.root);
+  if (rootKeys.length > 0 &&
+      !(rootKeys.length === 1 && rootKeys[0] === 'props' &&
+        record(value.root.props) && Object.keys(value.root.props).length === 0))
     return reject('unsupported_root_fields');
   if (value.zones !== undefined &&
       (!record(value.zones) || Object.keys(value.zones).length !== 0))
