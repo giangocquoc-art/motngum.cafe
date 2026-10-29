@@ -52,6 +52,9 @@ jobs:
       - name: Apply Medusa migrations (real PostgreSQL)
         working-directory: commerce-platform/commerce/apps/backend
         run: pnpm medusa db:migrate
+      - name: Bootstrap Vietnam region with official Medusa workflows
+        working-directory: commerce-platform/commerce/apps/backend
+        run: pnpm medusa exec ./src/scripts/seed-vietnam.ts
       - name: Start API and assert health
         working-directory: commerce-platform/commerce/apps/backend
         shell: bash
