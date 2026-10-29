@@ -45,8 +45,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: commerce-rebuild-2026-10
-          sparse-checkout: commerce-platform/control-plane
-          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            commerce-platform/control-plane
+            commerce-platform/edge
+          sparse-checkout-cone-mode: true
       - uses: actions/setup-node@v4
         with:
           node-version: 22.23.4
@@ -59,6 +61,8 @@ jobs:
       - name: Typecheck
         working-directory: commerce-platform/control-plane
         run: pnpm exec tsc --noEmit
+      - name: Edge D1 authorization and idempotent provisioning contract tests
+        run: node --test commerce-platform/edge/test/merchant-provisioning.test.mjs
       - name: Drizzle migrate disposable PostgreSQL
         working-directory: commerce-platform/control-plane
         run: pnpm db:migrate
