@@ -1,0 +1,37 @@
+name: Commerce Control Plane Type and Seed Security
+on:
+  push:
+    branches: [commerce-rebuild-2026-10]
+    paths: [commerce-platform/control-plane.trigger]
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  control-plane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: commerce-rebuild-2026-10
+          sparse-checkout: commerce-platform/control-plane
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.4
+      - name: Install source package
+        working-directory: commerce-platform/control-plane
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.11.1 --activate
+          pnpm install --frozen-lockfile
+      - name: Type-check SaaS code after hardened seed
+        working-directory: commerce-platform/control-plane
+        run: pnpm exec tsc --noEmit
+      - name: Ensure demo password and auto-created Stripe products are absent from seed
+        run: |
+          set -euo pipefail
+          ! grep -F "admin123" commerce-platform/control-plane/lib/db/seed.ts
+          ! grep -F "test@test.com" commerce-platform/control-plane/lib/db/seed.ts
+          ! grep -F "stripe.products.create" commerce-platform/control-plane/lib/db/seed.ts
+          grep -F "ALLOW_LOCAL_SEED" commerce-platform/control-plane/lib/db/seed.ts
+          echo "PASS: unsafe demo seed removed and control plane compiles."
