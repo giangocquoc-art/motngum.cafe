@@ -7,9 +7,14 @@ import {
   updateTeamSubscription
 } from '@/lib/db/queries';
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-04-30.basil'
-});
+export const billingEnabled = () => process.env.ENABLE_PLATFORM_BILLING === 'true';
+
+// Never create a Stripe client during module import or supply a fake key.
+export function getStripeClient(): Stripe {
+  const apiKey = process.env.STRIPE_SECRET_KEY;
+  if (!billingEnabled() || !apiKey) throw new Error('Platform billing is disabled or not configured');
+  return new Stripe(apiKey, { apiVersion: '2025-04-30.basil' });
+}
 
 export async function createCheckoutSession({
   team,
@@ -18,6 +23,7 @@ export async function createCheckoutSession({
   team: Team | null;
   priceId: string;
 }) {
+  const stripe = getStripeClient();
   const user = await getUser();
 
   if (!team || !user) {
@@ -47,6 +53,7 @@ export async function createCheckoutSession({
 }
 
 export async function createCustomerPortalSession(team: Team) {
+  const stripe = getStripeClient();
   if (!team.stripeCustomerId || !team.stripeProductId) {
     redirect('/pricing');
   }
@@ -129,11 +136,13 @@ export async function handleSubscriptionChange(
   }
 
   if (status === 'active' || status === 'trialing') {
-    const plan = subscription.items.data[0]?.plan;
+    const plan = subscription.items.data[0]?.price;
+    const product = plan?.product;
+    const productId = typeof product === 'string' ? product : product?.id;
     await updateTeamSubscription(team.id, {
       stripeSubscriptionId: subscriptionId,
-      stripeProductId: plan?.product as string,
-      planName: (plan?.product as Stripe.Product).name,
+      stripeProductId: productId ?? null,
+      planName: null, // hydrated separately; never cast an opaque product ID to expanded object
       subscriptionStatus: status
     });
   } else if (status === 'canceled' || status === 'unpaid') {
@@ -147,6 +156,8 @@ export async function handleSubscriptionChange(
 }
 
 export async function getStripePrices() {
+  if (!billingEnabled()) return [];
+  const stripe = getStripeClient();
   const prices = await stripe.prices.list({
     expand: ['data.product'],
     active: true,
@@ -165,6 +176,8 @@ export async function getStripePrices() {
 }
 
 export async function getStripeProducts() {
+  if (!billingEnabled()) return [];
+  const stripe = getStripeClient();
   const products = await stripe.products.list({
     active: true,
     expand: ['data.default_price']
