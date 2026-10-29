@@ -7,7 +7,7 @@ This is the code-level counterpart of the Vietnamese architecture illustration. 
 \`\`\`mermaid
 flowchart TD
   A["Next.js SaaS control plane / tenant session"] --> B["SiteDocument v2 + validateSiteDocument"]
-  C["Puck UI (not installed yet)"] --> D["Strict v2 ↔ Puck adapter"]
+  C["Puck UI v0.24.0 (experimental route)"] --> D["Strict v2 ↔ Puck adapter"]
   D --> B
   E["MIT design components / repo templates"] --> F["Component + template normalization"]
   F --> B
@@ -27,7 +27,7 @@ flowchart TD
 | Original repo / service | Purpose | Contract / insertion point | Stage |
 | --- | --- | --- | --- |
 | \`giangocquoc-art/motngum.cafe\` | Owns auth, team access, site API, renderer, tests | \`commerce-platform/control-plane\` | In use |
-| \`puckeditor/puck\` — \`@puckeditor/core\` | Editing controls, canvas and drag/drop | \`lib/builder/puck-adapter.ts\`, \`puck-fields.ts\`, then future client editor | **Adapter implemented; UI runtime not installed** |
+| \`puckeditor/puck\` — \`@puckeditor/core\` | Editing controls, canvas and drag/drop | \`lib/builder/puck-adapter.ts\`, \`puck-fields.ts\`, `components/studio-puck-client.tsx`, `/dashboard/sites/[siteId]/puck` | **Runtime installed, parallel editor (Draft)** |
 | \`shadcn-ui/ui\` | Base UI primitives | Adapt into \`components/site-blocks\`; never store shadcn internals as site data | Candidate |
 | \`magicuidesign/magicui\` | Motion, decorative sections | Adapt and make effects accessibility-safe, lazy and optional | Candidate |
 | \`StartBootstrap/startbootstrap-agency\`, \`-creative\`, \`-freelancer\` | MIT layout patterns and sections | Convert designs into internal editable templates; audit asset licenses | Candidate |
@@ -57,3 +57,12 @@ Do not silently import Puck's zones or arbitrary custom props into v2. A future 
 - **E5 — operations:** backups/recovery drills, error tracking, audit trail, rate limiting, retention and stable dependency upgrade plan.
 
 Source repository migration decision: \`puckeditor/puck\` is the canonical repository; references to \`measuredco/puck\` in the image are historical.
+
+## Gate C2 — implemented experimental runtime (2026-10-30)
+- Dependency `@puckeditor/core` is pinned to **0.24.0** in both `package.json` and `pnpm-lock.yaml`; the lock was generated using GitHub CI and the temporary write-enabled workflow was removed after use.
+- Tenant-checked server route: `commerce-platform/control-plane/app/(dashboard)/dashboard/sites/[siteId]/puck/page.tsx`.
+- Client: `components/studio-puck-client.tsx` with 1600ms debounce, serial revision-CAS save, 409 fail-stop, local JSON export, guarded owner-only publish after successful save, page switching without overwriting other pages, and a link back to the native editor.
+- 16 component definitions: `components/studio-puck-config.tsx` wraps the existing `BlockPreview`, not a second renderer.
+- Adapter accepts only Puck's synthetic `root.props.id=\`root\`` as metadata. Any other custom root fields or zones are rejected until a deliberate v3 migration.
+- CI includes `test/browser-puck.mjs` using real Chromium + disposable PostgreSQL + cross-tenant access checks.
+- **Not complete:** default-editor cutover, real-device touch, screenshot visual regression, lost-connection repair, and full accessibility audit. Do not enable production.
