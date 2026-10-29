@@ -1,5 +1,8 @@
 # MOTNGUM COMMERCE — FLOW REVIEW V5 (2026-10-29)
 
+> **HẬU KIỂM V6:** [COMMERCE_FLOW_AUDIT_V6.md](./COMMERCE_FLOW_AUDIT_V6.md) ghi nhận các khoảng trống còn lại sau bản vá Gate A, bao gồm CI path filter, JWT revocation, Vercel preview ERROR và migration journal Neon. V5 giữ nguyên như lịch sử phát hiện.
+
+
 > **CẬP NHẬT SAU KHI SỬA:** [COMMERCE_GATE_A_EXECUTION_2026-10-29.md](./COMMERCE_GATE_A_EXECUTION_2026-10-29.md) ghi lại các lỗi SEC đã được vá, kết quả CI và database staging. Phần bên dưới là *ảnh chụp thời điểm phát hiện*, không còn đại diện cho trạng thái code mới nhất.
 
 Scope: current connected GitHub branch `commerce-rebuild-2026-10`, Vercel team `peter-pans-projects-898306ed`, Neon `odd-water-50000054`, Cloudflare D1 `motngum-commerce-staging`.
