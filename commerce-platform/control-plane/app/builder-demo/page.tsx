@@ -466,6 +466,20 @@ export default function BuilderDemoPage() {
     finally{setCloudWorking(false);}
   }
 
+  async function unpublishCloud() {
+    if(!cloudSiteId||cloudWorking)return;
+    if(!window.confirm('Gỡ website khỏi URL staging công khai? Bản nháp vẫn được giữ.'))return;
+    setCloudWorking(true);
+    try{
+      const response=await fetch('/api/sites/'+encodeURIComponent(cloudSiteId)+'/unpublish',{
+        method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.error||'Không thể gỡ xuất bản');
+      setPublishedUrl(null);setStatus('Đã gỡ website khỏi URL công khai. Bản nháp được giữ trên PostgreSQL.');
+    }catch(e){setStatus('Không thể gỡ: '+(e instanceof Error?e.message:'Lỗi không xác định'));}
+    finally{setCloudWorking(false);}
+  }
+
   const canvasWidth=viewport==='mobile'?'390px':viewport==='tablet'?'768px':'1120px';
   const isEditing=!preview;
   return <div className="min-h-screen bg-slate-100 text-slate-900">
@@ -489,6 +503,7 @@ export default function BuilderDemoPage() {
           </button>
           {cloudSiteId&&<button onClick={publishCloud} disabled={cloudWorking||cloudDirty} className="rounded-lg border border-slate-400 px-3 py-2 text-xs font-semibold disabled:opacity-50">Xuất bản staging</button>}
           {publishedUrl&&<a href={publishedUrl} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-green-700 px-3 py-2 text-xs font-semibold text-green-900">Mở site công khai</a>}
+          {publishedUrl&&<button onClick={unpublishCloud} disabled={cloudWorking} className="rounded-lg border border-red-300 px-3 py-2 text-xs font-semibold text-red-700 disabled:opacity-40">Gỡ xuất bản</button>
           <button onClick={exportJson} className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white"><Download size={16}/>Xuất JSON</button>
         </div>
       </div>
