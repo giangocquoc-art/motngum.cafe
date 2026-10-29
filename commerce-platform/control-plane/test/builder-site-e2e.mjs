@@ -77,5 +77,17 @@ try {
   assert.equal((await request('/api/sites/'+site.id+'/revisions',{jwt:b})).status,404);
   r=await request('/api/sites/'+site.id+'/revisions',{jwt:a});
   assert.equal(r.status,200);assert.deepEqual(r.data.revisions.map(v=>v.version),[3,2,1]);
-  console.log('PASS: tenant isolation, CSRF, revision CAS, immutable published snapshot, publish content gate and URL safety');
+  r=await request('/api/sites/'+site.id+'/restore',{jwt:a,method:'POST',body:{version:1,expectedCurrentVersion:3}});
+  assert.equal(r.status,200,JSON.stringify(r.data));assert.equal(r.data.version,4);
+  assert.equal((await request('/api/sites/'+site.id+'/restore',{jwt:a,method:'POST',body:{version:1,expectedCurrentVersion:3}})).status,409);
+  r=await request('/api/sites/'+site.id,{jwt:a});assert.equal(r.data.site.document.pages[0].blocks[0].body,doc.pages[0].blocks[0].body);
+  r=await request('/s/'+slug);assert.equal(r.status,200);assert.match(r.data,/phiên bản mới/);
+  r=await request('/api/sites/'+site.id+'/publish',{jwt:a,method:'POST',body:{version:4}});
+  assert.equal(r.status,200,JSON.stringify(r.data));
+  r=await request('/s/'+slug);assert.equal(r.status,200);assert.match(r.data,/Bánh được làm tươi mỗi sáng/);
+  assert.equal((await request('/api/sites/'+site.id+'/unpublish',{jwt:b,method:'POST',body:{}})).status,404);
+  r=await request('/api/sites/'+site.id+'/unpublish',{jwt:a,method:'POST',body:{}});
+  assert.equal(r.status,200,JSON.stringify(r.data));
+  assert.equal((await request('/s/'+slug)).status,404);
+  console.log('PASS: two tenant isolation, CSRF, CAS draft save, revision restore, publish snapshot, unpublish and malicious URL checks');
 }finally{await sql.end();}
