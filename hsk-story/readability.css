@@ -1524,3 +1524,31 @@ summary:focus-visible,
     line-height: 1.2;
   }
 }
+
+/* Keep the opening four-character lesson tight so unused study-panel space
+   expands the scene instead of separating the choices from navigation. */
+@media (min-width: 691px) and (min-height: 621px) {
+  .intro-learning:has(.glyph-grid):not(:has(.glyph-option.selected)) {
+    flex-basis: clamp(288px, 32dvh, 340px);
+  }
+
+  .intro-learning:has(.glyph-grid) .interactive {
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  .intro-learning:has(.glyph-grid):has(.glyph-option.selected) {
+    flex-basis: clamp(320px, 35dvh, 360px);
+  }
+}
+
+@media (min-width: 691px) and (max-height: 620px) {
+  .intro-learning:has(.glyph-grid) {
+    flex-basis: clamp(140px, 36dvh, 190px);
+  }
+
+  .intro-learning:has(.glyph-grid) .interactive {
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+}
