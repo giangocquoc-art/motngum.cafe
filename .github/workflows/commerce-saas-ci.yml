@@ -130,12 +130,22 @@ jobs:
         timeout-minutes: 8
         env:
           PLAYWRIGHT_MODULE: file:///tmp/motngum-browser/node_modules/playwright/index.mjs
+          AXE_MODULE: file:///tmp/motngum-browser/node_modules/@axe-core/playwright/dist/index.js
         run: |
           set -euo pipefail
-          npm install --prefix /tmp/motngum-browser --no-save --no-audit --no-fund playwright@1.56.1
+          npm install --prefix /tmp/motngum-browser --no-save --no-audit --no-fund playwright@1.56.1 @axe-core/playwright@4.10.2
           node /tmp/motngum-browser/node_modules/playwright/cli.js install --with-deps chromium
           node test/browser-builder.mjs
           node test/browser-puck.mjs
+          node /tmp/motngum-puck-contract/node_modules/tsx/dist/cli.mjs test/browser-templates.ts
+      - name: Upload Studio screenshot and visual acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-template-visual-evidence
+          path: commerce-platform/control-plane/artifacts/studio-template-evidence/
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Block unsafe default demo seed
         run: |
           set -euo pipefail
