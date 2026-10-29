@@ -1,3 +1,4 @@
+import { buildCuratedTemplate, type CuratedSource } from './curated-templates';
 export type BlockKind =
   | 'hero' | 'features' | 'text' | 'image' | 'cta' | 'gallery' | 'stats' | 'testimonials'
   | 'pricing' | 'faq' | 'services' | 'team' | 'logos' | 'contact' | 'newsletter' | 'products';
@@ -40,6 +41,7 @@ export const TEMPLATE_CATEGORIES: SiteCategory[] = [
   'Cửa hàng','Portfolio','Dịch vụ & Ẩm thực','Doanh nghiệp','Giáo dục','Sự kiện'
 ];
 type Seed = {
+  curatedSource?: CuratedSource;
   id: string; category: SiteCategory; name: string; tagline: string; description: string;
   theme: ThemeId; layout: BlockVariant; order: BlockKind[]; heroImage: string; detail: string;
 };
@@ -103,8 +105,19 @@ const SEEDS: Seed[] = [
   {id:'echo-festival',category:'Sự kiện',name:'Echo Festival',tagline:'Bật nhịp cảm xúc, sống cùng âm nhạc',description:'Festival sôi động, lịch diễn và đăng ký.',theme:'neon',layout:'banner',order:['hero','gallery','team','pricing','faq','cta'],heroImage:photos.festival,detail:'Âm nhạc · Nghệ thuật · Cộng đồng'},
   {id:'launchpad-product',category:'Sự kiện',name:'Launchpad',tagline:'Màn ra mắt xứng đáng được nhớ',description:'Sự kiện giới thiệu sản phẩm, lợi ích và FAQ.',theme:'ink',layout:'split',order:['hero','features','stats','gallery','faq','cta'],heroImage:photos.launch,detail:'Đột phá · Trải nghiệm · Khám phá'}
 ];
+const CURATED_SEEDS:Seed[]=[
+  {id:'northstar-shadcn-saas',curatedSource:'shadcn-card',category:'Doanh nghiệp',name:'Northstar — SaaS',
+    tagline:'SaaS hiện đại, thẻ rõ ràng',description:'Mẫu được chuẩn hóa từ cấu trúc Card của shadcn/ui: hero chia cột, tính năng, bảng giá và FAQ.',theme:'ocean',layout:'split',
+    order:['hero','features','pricing','cta'],heroImage:'',detail:'SaaS · Dashboard · Giải pháp doanh nghiệp'},
+  {id:'orbit-magic-portfolio',curatedSource:'magic-border-beam',category:'Portfolio',name:'Orbit — Creative Lab',
+    tagline:'Portfolio tối với điểm nhấn chuyển động',description:'Mẫu chuyển sắc và border beam được tái triển khai nhẹ, có hỗ trợ giảm chuyển động.',theme:'neon',layout:'banner',
+    order:['hero','features','text','cta'],heroImage:'',detail:'Digital · Motion · Creative Portfolio'},
+  {id:'foundry-startbootstrap-agency',curatedSource:'startbootstrap-agency',category:'Doanh nghiệp',name:'Foundry — Agency',
+    tagline:'Agency có timeline triển khai',description:'Mẫu agency từ cấu trúc dịch vụ và timeline Start Bootstrap, viết lại thành block v2.',theme:'atelier',layout:'full',
+    order:['hero','features','services','cta'],heroImage:'',detail:'Agency · Timeline · Dịch vụ'}
+];
 export type SiteTemplate = Seed;
-export const SITE_TEMPLATES: SiteTemplate[] = SEEDS;
+export const SITE_TEMPLATES:SiteTemplate[]=[...CURATED_SEEDS,...SEEDS];
 export const DEFAULT_TEMPLATE_ID = 'maison-cafe';
 export const themeById = (id: ThemeId): ThemeDefinition => THEMES.find(theme => theme.id === id) || THEMES[0];
 export function newId() {
@@ -147,6 +160,7 @@ function templateBlock(seed: Seed, kind: BlockKind, index: number): Block {
   return block;
 }
 export function buildTemplateDocument(template: SiteTemplate): SiteDocument {
+  if(template.curatedSource)return buildCuratedTemplate(template.curatedSource,newId);
   const home = template.order.map((kind,i)=>templateBlock(template,kind,i));
   const about = ['hero','text','stats','team','cta'].map((kind,i)=>templateBlock(template,kind as BlockKind,i));
   about[0].title='Về '+template.name;
