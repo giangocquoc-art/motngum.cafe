@@ -89,6 +89,11 @@ test("Gate6 learning practice page is separate, keyboard accessible and never lo
  assert.ok(html.includes('id="questionPrompt"')&&html.includes('id="typedAnswer"'));
  assert.ok(html.includes('aria-live="polite"')&&html.includes('href="/?play=hsk1"'));
  assert.ok(html.includes('src="/review-core.js"')&&html.includes('src="/review-data.js"'));
+ assert.match(html,/id="emptyTitle"/);
+ assert.match(html,/id="emptyCopy"/);
+ assert.match(html,/Hoàn thành một cảnh HSK 1 để mở bài ôn đầu tiên/);
+ assert.match(html,/id="emptyLink"[^>]*>Bắt đầu HSK 1 cùng An/);
+ assert.match(fs.readFileSync(path.join(base,"review.js"),"utf8"),/Bạn đã ôn hết những câu đến hạn hôm nay/);
  assert.ok(home.includes('href="/ren-luyen.html"'));
  assert.ok(!html.includes("speechSynthesis")&&!html.includes("SpeechRecognition"));
 });

@@ -28,11 +28,16 @@ function render(){
  $("nextBtn").hidden=!outcome;
  $("notice").className="notice"+(outcome&&outcome.result==="independent"?" success":outcome&&["assisted","sample"].includes(outcome.result)?" warning":"");
  if(!active){
-  $("taskTitle").textContent=stats.unlocked===0?"Mở trang đầu tiên của câu chuyện":"Ôn tập hôm nay đã xong";
+  var firstReview=stats.unlocked===0;
+  $("taskTitle").textContent=firstReview?"Chưa có bài để ôn":"Hôm nay đã ôn xong";
   $("chapterLabel").textContent="SỔ TAY CỦA AN";
   $("taskKind").textContent="Tự chọn";
-  $("sceneContext").textContent=stats.unlocked===0?"Hoàn thành ít nhất một cảnh HSK 1 để mở bài ôn đúng thời điểm. Nhập môn không bị bắt buộc.":"Bạn đã xử lý hết các bài ôn đang tới hạn. Các bài mới sẽ mở khi An gặp thêm người và tình huống trong truyện.";
-  $("notice").textContent=stats.unlocked===0?"Quay về chơi tập truyện đầu tiên rồi trở lại nhé.":"Không có bài nào đang tới hạn. Hệ thống không tự cấp điểm hoặc làm bài hộ.";
+  $("sceneContext").textContent=firstReview?"Sổ tay mở bài ôn sau khi bạn hoàn thành một cảnh HSK 1. Tập Nhập môn là tùy chọn.":"Bạn đã ôn hết các câu đến hạn hôm nay. Bài mới sẽ mở khi An gặp thêm người và tình huống trong truyện.";
+  $("openingCopy").textContent=firstReview?"Sổ tay giúp An ôn lại những câu đã gặp trong truyện. Hoàn thành một cảnh HSK 1 để mở bài ôn đầu tiên; Nhập môn là tùy chọn.":"Sổ tay giúp An ôn lại những câu đã gặp. Bạn đã xong các bài đến hạn hôm nay; bài mới sẽ mở khi câu chuyện có thêm tình huống.";
+  $("emptyTitle").textContent=firstReview?"Bắt đầu từ một cảnh HSK 1":"Hôm nay chưa có bài mới";
+  $("emptyCopy").textContent=firstReview?"Hoàn thành một cảnh HSK 1 để mở bài ôn đầu tiên. Nhập môn là tùy chọn; bạn có thể bắt đầu ngay cùng An.":"Bạn đã ôn hết những câu đến hạn hôm nay. Tiếp tục câu chuyện để gặp thêm câu mới và mở bài ôn sau này.";
+  $("emptyLink").textContent=firstReview?"Bắt đầu HSK 1 cùng An ↗":"Tiếp tục câu chuyện cùng An ↗";
+  $("notice").textContent=firstReview?"":"Không có bài nào đang tới hạn.";
   return;
  }
  $("chapterLabel").textContent="SAU CẢNH "+String(active.after+1).padStart(2,"0")+" · MỘT KÝ ỨC TRONG TRUYỆN";
