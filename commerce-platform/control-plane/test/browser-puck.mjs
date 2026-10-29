@@ -155,7 +155,7 @@ try{
   await until(async()=>(await page.getByRole('button',{name:'Đã lưu'}).isVisible()).valueOf(),
     'saved before publish');
   await dialogs([''],async()=>{
-    await page.locator('[data-studio="puck"]').getByRole('button',{name:/publish|xuất bản/i}).first().click();
+    await page.getByRole('button',{name:'Xuất bản staging'}).click();
   });
   await until(async()=>{
     const [entry]=await sql.unsafe('SELECT published_version FROM builder_sites WHERE id=$1',[id]);
