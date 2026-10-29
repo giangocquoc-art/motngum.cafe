@@ -25,8 +25,9 @@ The existing GitHub Actions workflow is the minimum gate:
 - Organization site-count quota
 
 **Still required before promoting to ready for user acceptance:**
-- Playwright in real Chromium for editor interactions (drag/drop, undo/redo, page links, templates, themes and modals).
-- Simulate network offline, expired JWT, save conflict and failed cloud load; prove no user content is overwritten or silently lost.
+- **Implemented:** real Chromium Playwright checks for draft hydration, undo/redo, drag/drop, theme selection, autosave failure/retry, stale revision rejection, mobile viewport and cloud-load protection. Tests use an isolated mocked API; real PostgreSQL + auth remain covered by separate HTTP tests.
+- **Still needed:** browser checks for page link/rename/delete flows, template switch/cancel, keyboard controls, accessibility and all interactive dialogs.
+- **Covered:** mocked network failure, conflicting revision and failed cloud load. **Still needed:** expired JWT and crash/close-before-save recovery using browser test fixtures.
 - Screenshot comparison of editor preview and public page across desktop/tablet/mobile.
 - Migrate editor to pinned Puck core with v2 data migration and a shared component registry.
 - Media upload adapter, quotas/storage plan, verified asset licenses, functional forms and SEO/domain workflows.
@@ -39,3 +40,9 @@ Use code from the existing SaaS starter, Puck, compatible MIT template sources, 
 ## Promotion policy
 `Draft PR -> CI -> browser/device acceptance -> separate staging deploy -> production release review -> explicit production cutover`.
 Staging deployment is postponed by project decision. Passing GitHub CI is not proof that the latest commit is running on Vercel.
+
+## Gate B acceptance snapshot (2026-10-30)
+- Browser E2E: `commerce-platform/control-plane/test/browser-builder.mjs`, Chromium Playwright pinned `1.56.1` installed only inside the ephemeral CI runner (`/tmp/motngum-browser`), **not** in the application dependency/lockfile. Includes no deployment.
+- HTTP + DB E2E: `test/builder-site-e2e.mjs`, including nine malformed v2 documents and tenant isolation.
+- Editor now imports server's canonical `validateSiteDocument`, with duplicate validator removed. See `docs/STUDIO_V2_PUCK_CONTRACT.md` for future Puck adapter requirements.
+- These prove baseline behavior, NOT complete visual/mobile-touch user acceptance.
