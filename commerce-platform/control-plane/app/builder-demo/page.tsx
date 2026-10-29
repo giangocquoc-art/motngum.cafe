@@ -136,6 +136,7 @@ export default function BuilderDemoPage() {
   const [viewport,setViewport]=useState<Viewport>('desktop');
   const [preview,setPreview]=useState(false);
   const [hydrated,setHydrated]=useState(false);
+  const [draftMode,setDraftMode]=useState<'loading'|'local'|'cloud'|'load-error'>('loading');
   const [status,setStatus]=useState('Đang tải bản nháp...');
   const [revision,setRevision]=useState(0);
   const [cloudSiteId,setCloudSiteId]=useState<string|null>(null);
@@ -173,10 +174,11 @@ export default function BuilderDemoPage() {
           if(cancelled)return;
           setDoc(stored);setPageId(stored.pages[0].id);setGallery(false);
           setCloudSiteId(data.site.id);setCloudVersion(data.site.version);setCloudDirty(false);
+          setDraftMode('cloud');
           setPublishedUrl(data.site.publishedVersion?'/s/'+data.site.slug:null);
           setStatus('Đã tải website từ PostgreSQL, revision '+data.site.version+'.');
         }catch(e) {
-          if(!cancelled)setStatus('Không mở được website: '+(e instanceof Error?e.message:'Lỗi kết nối')+'. Bản local vẫn có thể xuất JSON.');
+          if(!cancelled){setDraftMode('load-error');setStatus('Không mở được website cloud: '+(e instanceof Error?e.message:'Lỗi kết nối')+'. Không có bản nháp nào bị ghi đè.');}
         }finally{if(!cancelled)setHydrated(true);}
         return;
       }
@@ -195,16 +197,16 @@ export default function BuilderDemoPage() {
           else setStatus('Chọn một mẫu để bắt đầu thiết kế website.');
         }
       }catch{if(!cancelled)setStatus('Không đọc được bản lưu; hãy thử nhập JSON.');}
-      if(!cancelled)setHydrated(true);
+      if(!cancelled){setDraftMode('local');setHydrated(true);}
     }
     void load();
     return ()=>{cancelled=true;};
   },[]);
   useEffect(()=>{
-    if(!hydrated || cloudSiteId)return;
+    if(!hydrated || draftMode!=='local')return;
     try{localStorage.setItem(STORAGE,JSON.stringify(doc));setStatus('Đã tự lưu bản nháp trong trình duyệt · Chưa xuất bản.');}
     catch{setStatus('Không lưu được; hãy xuất tệp JSON để sao lưu.');}
-  },[doc,hydrated,cloudSiteId]);
+  },[doc,hydrated,draftMode]);
   useEffect(()=>{
     // Cloud drafts are never written to the shared localStorage key across user accounts.
     if(!cloudSiteId || !cloudDirty)return;
@@ -260,7 +262,7 @@ export default function BuilderDemoPage() {
     if(target){setPageId(target.id);setSelectedId(null);}else setStatus('Trang đích không tồn tại trong bản nháp.');
   }
   function applyTemplate(template:SiteTemplate) {
-    if(hydrated&&!gallery&&doc.pages.some(p=>p.blocks.length>0)&&!window.confirm('Áp dụng mẫu sẽ thay thế toàn bộ nội dung website. Hãy lưu cloud hoặc xuất JSON trước. Tiếp tục?'))return;
+    if(hydrated&&(cloudSiteId || revision>0 || !gallery)&&doc.pages.some(p=>p.blocks.length>0)&&!window.confirm('Áp dụng mẫu sẽ thay thế toàn bộ nội dung website. Hãy lưu cloud hoặc xuất JSON trước. Tiếp tục?'))return;
     const next=buildTemplateDocument(template);
     commit(next);setPageId(next.pages[0].id);setSelectedId(null);setGallery(false);setPreview(false);
     setStatus('Đã áp dụng mẫu '+template.name+' với 3 trang có thể chỉnh sửa.');
@@ -331,7 +333,7 @@ export default function BuilderDemoPage() {
   }
 
   async function saveCloud() {
-    if(cloudWorking || !hydrated)return;
+    if(cloudWorking || !hydrated || (draftMode!=='local' && draftMode!=='cloud'))return;
     const savingRevision=revisionRef.current;
     setCloudWorking(true);setStatus('Đang lưu bản nháp vào PostgreSQL...');
     const route=cloudSiteId?'/api/sites/'+encodeURIComponent(cloudSiteId):'/api/sites';
@@ -346,7 +348,7 @@ export default function BuilderDemoPage() {
         throw new Error(data.error||'Lưu site thất bại');
       }
       const id=cloudSiteId||data.site.id;
-      setCloudSiteId(id);setCloudVersion(data.site.version);
+      setCloudSiteId(id);setCloudVersion(data.site.version);setDraftMode('cloud');
       if(revisionRef.current===savingRevision){
         setCloudDirty(false);setStatus('Đã lưu an toàn trên PostgreSQL, revision '+data.site.version+'.');
       }else{
@@ -387,6 +389,23 @@ export default function BuilderDemoPage() {
     }catch(e){setStatus('Không thể gỡ: '+(e instanceof Error?e.message:'Lỗi không xác định'));}
     finally{setCloudWorking(false);}
   }
+
+  // Never show a default editable document when the URL refers to a cloud site
+  // whose server response failed. Otherwise that document could be saved as real data.
+  if(draftMode==='loading')return <div className="flex min-h-screen items-center justify-center bg-slate-100 p-8 text-sm text-slate-700"
+    role="status">Đang xác thực và tải bản nháp...</div>;
+  if(draftMode==='load-error')return <div className="flex min-h-screen items-center justify-center bg-slate-100 p-6">
+    <div className="max-w-lg rounded-xl border bg-white p-7 shadow-sm" role="alert">
+      <h1 className="text-xl font-bold text-slate-900">Không thể mở website trên cloud</h1>
+      <p className="mt-3 text-sm leading-7 text-slate-700">{status}</p>
+      <p className="mt-3 text-sm text-slate-600">Trình chỉnh sửa đã được khóa để bảo vệ bản nháp. Nếu bạn đang có bản nháp cục bộ, có thể mở riêng bằng liên kết bên dưới.</p>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <button type="button" onClick={()=>window.location.reload()} className="rounded-lg bg-amber-700 px-4 py-2 text-sm font-semibold text-white">Thử tải lại</button>
+        <a href="/builder-demo" className="rounded-lg border px-4 py-2 text-sm font-semibold">Mở bản nháp cục bộ</a>
+        <a href="/dashboard/sites" className="rounded-lg border px-4 py-2 text-sm font-semibold">Về Website của tôi</a>
+      </div>
+    </div>
+  </div>;
 
   const canvasWidth=viewport==='mobile'?'390px':viewport==='tablet'?'768px':'1120px';
   const isEditing=!preview;
