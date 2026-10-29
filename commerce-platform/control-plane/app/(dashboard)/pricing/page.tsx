@@ -1,12 +1,13 @@
 import { checkoutAction } from '@/lib/payments/actions';
 import { Check } from 'lucide-react';
-import { getStripePrices, getStripeProducts } from '@/lib/payments/stripe';
+import { getStripePrices, getStripeProducts, billingEnabled } from '@/lib/payments/stripe';
 import { SubmitButton } from './submit-button';
 
 // Prices are fresh for one hour max
 export const revalidate = 3600;
 
 export default async function PricingPage() {
+  if (!billingEnabled()) return <main className="max-w-3xl mx-auto p-8"><h1 className="text-2xl font-semibold">Motngum Commerce — thử nghiệm</h1><p>Thanh toán gói dịch vụ chưa được kích hoạt. Không phát sinh phí trong môi trường thử nghiệm.</p></main>;
   const [prices, products] = await Promise.all([
     getStripePrices(),
     getStripeProducts(),
