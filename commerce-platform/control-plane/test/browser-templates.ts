@@ -56,13 +56,13 @@ try{
   const page=await desktop.newPage();
   page.setDefaultTimeout(15000);
   const errors:string[]=[];
-  page.on('pageerror',error=>errors.push(error.message));
+  page.on('pageerror',(error:Error)=>errors.push(error.message));
   for(const site of sites){
     const result=await page.goto('/s/'+site.slug,{waitUntil:'domcontentloaded'});
     assert.equal(result?.status(),200);
     const locator=page.locator('[data-studio-pattern="'+site.pattern+'"]').first();
     await locator.waitFor();
-    const desc=await locator.evaluate(node=>{
+    const desc=await locator.evaluate((node:Element)=>{
       const heading=node.querySelector('h2')!;
       const css=getComputedStyle(heading);
       return {title:heading.textContent?.trim(),font:css.fontFamily,weight:css.fontWeight};
@@ -76,7 +76,7 @@ try{
     const editor=page.frameLocator('#preview-frame')
       .locator('[data-studio-pattern="'+site.pattern+'"]').first();
     await editor.waitFor();
-    const editDesc=await editor.evaluate(node=>{
+    const editDesc=await editor.evaluate((node:Element)=>{
       const heading=node.querySelector('h2')!;
       const css=getComputedStyle(heading);
       return {title:heading.textContent?.trim(),font:css.fontFamily,weight:css.fontWeight};
@@ -112,7 +112,7 @@ try{
       animations:'disabled'});
     if(site.source==='magic-border-beam'){
       const animation=await section.locator('.studio-border-beam').first()
-        .evaluate(node=>getComputedStyle(node,'::before').animationName);
+        .evaluate((node:Element)=>getComputedStyle(node,'::before').animationName);
       assert.equal(animation,'none','Reduced motion did not disable Magic beam');
     }
     if(site.source==='startbootstrap-agency')
@@ -136,7 +136,7 @@ try{
   }
   assert.ok(persisted,'Mobile tap insertion did not autosave to PostgreSQL');
   await add.focus();
-  assert.equal(await add.evaluate(node=>node===document.activeElement),true);
+  assert.equal(await add.evaluate((node:Element)=>node===document.activeElement),true);
   console.log('PASS Puck mobile touch insertion + keyboard focus and PostgreSQL autosave');
   assert.deepEqual(errors,[],'Uncaught public/Puck runtime browser errors');
   console.log('PASS curated visual + accessibility + mobile + shared renderer acceptance');
