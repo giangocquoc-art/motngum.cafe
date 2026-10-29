@@ -1,0 +1,49 @@
+# Self-hosted MEDUSA STAGING backend and database; separate from Cloudflare edge.
+# Requires .env.staging (not checked in), see .env.staging.example.
+# Database URL passwords with reserved URL symbols must be percent-encoded.
+services:
+  postgres:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: medusa
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define in .env.staging}
+      POSTGRES_DB: motngum_staging
+    volumes:
+      - commerce_pg_staging:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medusa -d motngum_staging"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  medusa:
+    build:
+      context: ./commerce
+      dockerfile: Dockerfile.motngum
+    restart: unless-stopped
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    environment:
+      NODE_ENV: production
+      MEDUSA_DISABLE_TELEMETRY: "true"
+      DATABASE_URL: postgres://medusa:${POSTGRES_PASSWORD:?Define}@postgres:5432/motngum_staging
+      REDIS_URL: redis://redis:6379
+      STORE_CORS: ${STORE_CORS:?Define}
+      ADMIN_CORS: ${ADMIN_CORS:?Define}
+      AUTH_CORS: ${AUTH_CORS:?Define}
+      JWT_SECRET: ${JWT_SECRET:?Define}
+      COOKIE_SECRET: ${COOKIE_SECRET:?Define}
+    ports:
+      - "127.0.0.1:9000:9000"
+    # Migrate deliberately as a one-shot deployment step BEFORE starting API.
+volumes:
+  commerce_pg_staging:
