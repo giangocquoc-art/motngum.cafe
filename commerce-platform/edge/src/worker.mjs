@@ -52,12 +52,76 @@ async function summary(env) {
     modules: MODULES, repository: REPO
   };
 }
+// Only the authenticated server-side SaaS control plane may provision D1 entries.
+// No active domain, backend connection, checkout or paid state is created by this route.
+async function safeProvision(request, env) {
+  if (typeof env.PROVISIONING_TOKEN !== "string" || env.PROVISIONING_TOKEN.length < 48) {
+    return json({ error: "service_not_configured" }, 503);
+  }
+  const auth = request.headers.get("authorization") || "";
+  const submitted = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!submitted || submitted.length > 512) return json({ error: "unauthorized" }, 401);
+  const encode = value => new TextEncoder().encode(value);
+  const [a, b] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encode(submitted)),
+    crypto.subtle.digest("SHA-256", encode(env.PROVISIONING_TOKEN))
+  ]);
+  const digestA = new Uint8Array(a);
+  const digestB = new Uint8Array(b);
+  let diff = 0;
+  for (let i = 0; i < digestA.length; i++) diff |= digestA[i] ^ digestB[i];
+  if (diff !== 0) return json({ error: "unauthorized" }, 401);
+  if (Number(request.headers.get("content-length")) > 4096) {
+    return json({ error: "payload_too_large" }, 413);
+  }
+  let body;
+  try {
+    const raw = await request.text();
+    if (raw.length > 4096) return json({ error: "payload_too_large" }, 413);
+    body = JSON.parse(raw);
+  } catch { return json({ error: "invalid_json" }, 400); }
+  if (!body || typeof body !== "object" || Array.isArray(body)) return json({ error: "invalid_body" }, 400);
+  const { id, slug, display_name: displayName } = body;
+  if (typeof id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(id)) {
+    return json({ error: "invalid_merchant_id" }, 400);
+  }
+  if (typeof slug !== "string" || !/^[a-z0-9][a-z0-9-]{1,46}[a-z0-9]$/.test(slug) || slug.includes("--")) {
+    return json({ error: "invalid_slug" }, 400);
+  }
+  if (typeof displayName !== "string" || displayName.trim().length < 2 || displayName.length > 100) {
+    return json({ error: "invalid_display_name" }, 400);
+  }
+  // SELECT by both unique keys before inserting. SQLite uniqueness also protects concurrency.
+  const existing = await env.DB.prepare(
+    "SELECT id, slug, display_name, state FROM merchants WHERE id = ? OR slug = ? LIMIT 1"
+  ).bind(id, slug).first();
+  if (existing && (existing.id !== id || existing.slug !== slug || existing.display_name !== displayName)) {
+    return json({ error: "merchant_identity_conflict" }, 409);
+  }
+  if (!existing) {
+    await env.DB.prepare(
+      "INSERT OR IGNORE INTO merchants (id, slug, display_name, state) VALUES (?, ?, ?, 'provisioning')"
+    ).bind(id, slug, displayName).run();
+  }
+  const merchant = await env.DB.prepare(
+    "SELECT id, slug, display_name, state FROM merchants WHERE id = ?"
+  ).bind(id).first();
+  if (!merchant || merchant.slug !== slug || merchant.display_name !== displayName) {
+    return json({ error: "merchant_identity_conflict" }, 409);
+  }
+  return json({ merchant: { id: merchant.id, slug: merchant.slug, state: merchant.state } }, existing ? 200 : 201);
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const pathname = url.pathname.replace(/\/+$/, "") || "/";
     const host = cleanHostname(url.hostname);
     if (!host) return json({ error: "invalid_hostname" }, 400);
+    if (pathname === "/internal/merchants" && request.method === "POST") {
+      try { return await safeProvision(request, env); }
+      catch { return json({ error: "provisioning_unavailable" }, 503); }
+    }
     if (request.method !== "GET" && request.method !== "HEAD") {
       return json({ error: "read_only_staging", message: "Write actions require authenticated Control Plane and are not enabled." }, 405);
     }
