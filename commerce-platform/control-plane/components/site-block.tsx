@@ -17,8 +17,10 @@ export function foregroundOnAccent(hex:string) {
     .map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4);
   const lum=0.2126*c[0]+0.7152*c[1]+0.0722*c[2];
   const white=(1.05)/(lum+0.05);
-  const dark=(lum+0.05)/(0.012+0.05);
-  return dark>white?'#17202b':'#ffffff';
+  // Use exact black/white so at least one contrast ratio always exceeds
+  // WCAG AA 4.5:1 for ordinary text, including medium-tone accents.
+  const black=(lum+0.05)/0.05;
+  return black>white?'#000000':'#ffffff';
 }
 function parseRows(body:string,max=6):string[][] {
   return body.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,max)
@@ -67,7 +69,7 @@ export function BlockPreview({block,theme,navigate,base}: {block:Block;theme:The
   const isFull = variant==='full' || variant==='banner';
   const common:CSSProperties={borderRadius:'var(--studio-radius)'};
   const title = <h2 className={'font-bold tracking-tight '+(block.kind==='hero'?'text-3xl @md:text-5xl @lg:text-6xl':'text-2xl @md:text-3xl')}>{block.title}</h2>;
-  const description = <p className="mt-4 max-w-2xl whitespace-pre-line text-sm leading-7 opacity-80 @md:text-base">{block.body}</p>;
+  const description = <p className={'mt-4 max-w-2xl whitespace-pre-line text-sm leading-7 @md:text-base '+(block.kind==='hero'?'':'opacity-80')}>{block.body}</p>;
   const action = <div className="mt-6"><ActionLink block={block} navigate={navigate} base={base}/></div>;
   const rows = parseRows(block.body);
   if(block.kind==='hero') {
@@ -95,7 +97,7 @@ export function BlockPreview({block,theme,navigate,base}: {block:Block;theme:The
     </section>;
   }
   if (block.kind==='cta') return <section className="my-8 px-6 py-14 text-center @md:py-20" style={{...common,backgroundColor:accent,color:foregroundOnAccent(accent)}}>
-    {title}<p className="mx-auto mt-4 max-w-xl whitespace-pre-line opacity-90">{block.body}</p>
+    {title}<p className="mx-auto mt-4 max-w-xl whitespace-pre-line">{block.body}</p>
     <div className="mt-6"><ActionLink block={block} navigate={navigate} base={base} inverse/></div>
   </section>;
   if (block.kind==='text') return <section className={'mx-auto py-10 @md:py-16 '+(variant==='minimal'?'max-w-[660px]':'max-w-4xl')}><div className={variant==='centered'?'text-center':''}>{title}{description}</div></section>;
