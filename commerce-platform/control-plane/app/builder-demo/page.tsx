@@ -7,6 +7,7 @@ import {
   PanelLeft, Plus, RotateCcw, Search, Smartphone, Tablet, Trash2, Undo2, Redo2, X
 } from 'lucide-react';
 import { BlockPreview, studioColors } from '@/components/site-block';
+import { validateSiteDocument } from '@/lib/builder/validation';
 import {
   BLOCK_KINDS, BLOCK_VARIANTS, DEFAULT_TEMPLATE_ID, KIND_LABELS,
   SITE_TEMPLATES, TEMPLATE_CATEGORIES, THEMES, buildTemplateDocument, createBlock, newId, themeById,
@@ -45,50 +46,6 @@ function safeLink(value: string) {
 function parseRows(body: string, max = 6): string[][] {
   return body.split('\n').map(x => x.trim()).filter(Boolean).slice(0,max).map(x=>x.split('|').map(part=>part.trim().slice(0,300)));
 }
-function validateDocument(input: unknown): SiteDocument | null {
-  if (!input || typeof input !== 'object') return null;
-  const root = input as Record<string,unknown>;
-  if (root.version !== 2 || typeof root.title !== 'string' || root.title.length > 120 ||
-      typeof root.themeId !== 'string' || !THEMES.some(t=>t.id === root.themeId) ||
-      !Array.isArray(root.pages) || root.pages.length < 1 || root.pages.length > MAX_PAGES) return null;
-  const pageIds = new Set<string>(), slugs = new Set<string>(), blockIds = new Set<string>();
-  const pages: SitePage[] = [];
-  let count = 0;
-  for (const pageRaw of root.pages) {
-    if (!pageRaw || typeof pageRaw !== 'object') return null;
-    const page = pageRaw as Record<string, unknown>;
-    if (typeof page.id !== 'string' || page.id.length < 1 || page.id.length > 100 ||
-        typeof page.title !== 'string' || page.title.length < 1 || page.title.length > 80 ||
-        typeof page.slug !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(page.slug) || page.slug.length > 60 ||
-        pageIds.has(page.id) || slugs.has(page.slug) || !Array.isArray(page.blocks) || page.blocks.length > MAX_BLOCKS) return null;
-    pageIds.add(page.id); slugs.add(page.slug);
-    const blocks: Block[] = [];
-    for (const blockRaw of page.blocks) {
-      if (!blockRaw || typeof blockRaw !== 'object') return null;
-      const block = blockRaw as Record<string, unknown>;
-      if (typeof block.id !== 'string' || block.id.length < 1 || block.id.length > 100 || blockIds.has(block.id) ||
-          !BLOCK_KINDS.includes(block.kind as BlockKind) || !BLOCK_VARIANTS.includes(block.variant as Block['variant']) ||
-          typeof block.title !== 'string' || block.title.length > 160 ||
-          typeof block.body !== 'string' || block.body.length > 2000 ||
-          typeof block.imageUrl !== 'string' || block.imageUrl.length > 600 ||
-          (block.imageUrl.length > 0 && !safeImage(block.imageUrl)) ||
-          typeof block.buttonLabel !== 'string' || block.buttonLabel.length > 80 ||
-          typeof block.buttonUrl !== 'string' || block.buttonUrl.length > 500 ||
-          (block.buttonUrl.length > 0 && !safeLink(block.buttonUrl)) ||
-          typeof block.accent !== 'string' || !/^#[a-f0-9]{6}$/i.test(block.accent)) return null;
-      blockIds.add(block.id);
-      blocks.push({
-        id:block.id,kind:block.kind as BlockKind,variant:block.variant as Block['variant'],
-        title:block.title,body:block.body,imageUrl:block.imageUrl,buttonLabel:block.buttonLabel,
-        buttonUrl:block.buttonUrl,accent:block.accent
-      });
-      count++;
-      if (count > MAX_TOTAL) return null;
-    }
-    pages.push({id:page.id,title:page.title,slug:page.slug,blocks});
-  }
-  return {version:2,title:root.title,themeId:root.themeId as ThemeId,pages};
-}
 function migrateLegacy(input: unknown): SiteDocument | null {
   if (!input || typeof input !== 'object') return null;
   const old = input as {version?:unknown; title?:unknown; blocks?:unknown};
@@ -99,7 +56,7 @@ function migrateLegacy(input: unknown): SiteDocument | null {
       buttonUrl:safeLink(raw.buttonUrl||'')||''};
   });
   if (blocks.some(x=>x === null)) return null;
-  return validateDocument({
+  return validateSiteDocument({
     version:2,title:old.title,themeId:'coffee',
     pages:[{id:newId(),title:'Trang chủ',slug:'trang-chu',blocks}]
   });
@@ -171,7 +128,7 @@ export default function BuilderDemoPage() {
           const response=await fetch('/api/sites/'+encodeURIComponent(siteId),{cache:'no-store'});
           const data=await response.json();
           if(!response.ok)throw new Error(data.error||'Không thể mở dự án');
-          const stored=validateDocument(data.site?.document);
+          const stored=validateSiteDocument(data.site?.document);
           if(!stored)throw new Error('Dữ liệu website từ máy chủ không hợp lệ.');
           if(cancelled)return;
           setDoc(stored);setPageId(stored.pages[0].id);setGallery(false);
@@ -186,7 +143,7 @@ export default function BuilderDemoPage() {
       }
       try {
         const raw=localStorage.getItem(STORAGE);
-        const existing=raw?validateDocument(JSON.parse(raw)):null;
+        const existing=raw?validateSiteDocument(JSON.parse(raw)):null;
         if(existing){
           if(cancelled)return;
           setDoc(existing);setPageId(existing.pages[0]?.id||'');setGallery(false);
@@ -330,7 +287,7 @@ export default function BuilderDemoPage() {
     if(file.size>MAX_FILE){setStatus('Tệp vượt giới hạn 1 MB.');return;}
     try {
       const raw=JSON.parse(await file.text());
-      const next=validateDocument(raw)||migrateLegacy(raw);
+      const next=validateSiteDocument(raw)||migrateLegacy(raw);
       if(!next)throw new Error('invalid format');
       if(!window.confirm('Nhập JSON sẽ thay thế website hiện tại. Tiếp tục?'))return;
       commit(next);setPageId(next.pages[0].id);setSelectedId(null);setGallery(false);
