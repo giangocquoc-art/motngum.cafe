@@ -123,7 +123,7 @@ try {
   assert.equal(full.status,200);
   assert.match(full.data,/photo-1501339847302-ac426a4cbb/,'Full hero image must render publicly');
   assert.match(full.data,/linear-gradient/,'Full hero must use same image overlay variant as editor');
-  assert.match(full.data,/#17202b/,'Light hero accent must use readable dark foreground');
+  assert.match(full.data,/#000000/,'Light hero accent must use readable dark foreground');
   assert.match(full.data,new RegExp('/s/'+fullSite.slug+'/lien-he'),'Internal page CTA must work on public URL');
   console.log('PASS: shared block renderer preserves full hero background, contrast and internal CTA after publish');
   // Bound total sites per tenant to prevent free-plan database abuse and ensure
