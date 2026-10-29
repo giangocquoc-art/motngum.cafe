@@ -69,6 +69,14 @@ const photos = {
   festival:'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=1400',
   launch:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1400'
 };
+const GALLERY_PHOTOS: Record<SiteCategory, string[]> = {
+  'Cửa hàng':[photos.fashion,photos.beauty,photos.interior,photos.flowers],
+  'Portfolio':[photos.architecture,photos.photo,photos.creative,photos.art],
+  'Dịch vụ & Ẩm thực':[photos.cafe,photos.food,photos.table,photos.bakery],
+  'Doanh nghiệp':[photos.agency,photos.tech,photos.consulting,photos.logistics],
+  'Giáo dục':[photos.language,photos.kids,photos.course,photos.notes],
+  'Sự kiện':[photos.wedding,photos.conference,photos.festival,photos.launch]
+};
 const SEEDS: Seed[] = [
   {id:'atelier-mode',category:'Cửa hàng',name:'Atelier Mode',tagline:'Phong cách tạo nên dấu ấn',description:'Lookbook thời trang tinh giản, hình ảnh lớn và sản phẩm.',theme:'atelier',layout:'split',order:['hero','products','gallery','testimonials','cta'],heroImage:photos.fashion,detail:'Trang phục tuyển chọn · Bộ sưu tập mới · Chất liệu tinh tế'},
   {id:'serein-beauty',category:'Cửa hàng',name:'Serein Beauty',tagline:'Đẹp theo cách của riêng bạn',description:'Mỹ phẩm, bộ sưu tập và phản hồi khách hàng.',theme:'playful',layout:'centered',order:['hero','features','products','faq','cta'],heroImage:photos.beauty,detail:'Lành tính · Dịu nhẹ · Chăm sóc mỗi ngày'},
@@ -131,7 +139,7 @@ function templateBlock(seed: Seed, kind: BlockKind, index: number): Block {
     products:['Những lựa chọn nổi bật',seed.detail.split(' · ').map((x,i)=>x+'|Mẫu '+(i+1)).join('\n')]
   };
   block.title=rules[kind][0];
-  block.body=rules[kind][1];
+  block.body=kind==='gallery' ? GALLERY_PHOTOS[seed.category].filter(url=>url!==seed.heroImage).join('\n') : rules[kind][1];
   block.imageUrl=kind==='hero'||kind==='image'||kind==='gallery'||kind==='products'?seed.heroImage:'';
   block.buttonLabel=kind==='hero'?'Khám phá':kind==='cta'?'Liên hệ ngay':'';
   if(kind==='hero' && seed.layout==='full') block.variant='full';
