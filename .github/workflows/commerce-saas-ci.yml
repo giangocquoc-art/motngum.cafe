@@ -69,6 +69,8 @@ jobs:
           check_code /api/user 401
           check_code /api/stripe/checkout 404
           check_code /api/stripe/webhook 404 POST
+          check_code /api/health 200
+          jq -e '.infrastructureOk == true and .postgres == "connected" and .edge == "connected" and .commerceReady == false' /tmp/response.json
           echo "PASS: auth endpoint private, Stripe endpoints disabled, Next.js live."
       - name: Block unsafe default demo seed
         run: |
