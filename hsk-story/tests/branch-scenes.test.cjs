@@ -5,3 +5,9 @@ test('all authored nodes use approved layered assets and valid unique cast expre
 test('every learning task retains its existing artwork mapping',()=>{for(let i=0;i<10;i++)assert.ok(box.HSKSceneManifest.scenes[box.ChimSeBranchScenes.lessonId(i)]);});
 
 test("the after-school reunion takes place outside, with all three characters",()=>{const scene=box.HSKSceneManifest.scenes["branch.walk-home"];assert.equal(scene.background,"evening-street");assert.deepEqual(Array.from(scene.actors,a=>a.character),["an","mother","xiaoyu"]);assert.match(box.AnBranchStory.byId["walk-home"].story,/đầu ngõ/);});
+test('notebook search starts in the classroom before moving to the office',()=>{
+  for(const id of ['search-friend','search-teacher','search-alone']){
+    const node=box.AnBranchStory.byId[id], scene=box.HSKSceneManifest.scenes['branch.'+id];
+    assert.equal(node.place,'class',id);assert.equal(scene.background,'classroom',id);assert.equal(node.to,'staff-office',id);
+  }
+});

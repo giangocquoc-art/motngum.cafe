@@ -43,6 +43,14 @@ test("canonical learners retain the same review results and scheduling",()=>{
  assert.deepEqual(plain(R.act(D,R.initial(),item.id,action,DAY,Core,combined)),plain(R.act(D,R.initial(),item.id,action,DAY,Core,legacy)));
 });
 
+test("a broken branch save does not hide the return path to an intact legacy story",()=>{
+ const old=JSON.stringify({v:3,history:history(2)}),branch=JSON.stringify({version:1,path:[]});
+ const storage=values=>({getItem:key=>values[key]||null});
+ assert.equal(R.storyHref(storage({"hai-que-huong-progress-v3":old,"hai-que-huong-branching-novel-v1":"{broken"})),"/?play=hsk1");
+ assert.equal(R.storyHref(storage({"hai-que-huong-progress-v3":old,"hai-que-huong-branching-novel-v1":branch})),"/duong-re/");
+ assert.equal(R.storyHref(storage({})),"/duong-re/");
+});
+
 test("branch learners can review without rewriting canonical, intro, or branch learning strings",()=>{
  const canonical='{"v":3,"history":[]}',intro='{"v":1,"step":4}',branch=JSON.stringify(history(7)),values=new Map([["hai-que-huong-progress-v3",canonical],["hai-que-huong-intro-v1",intro],["chimse-branch-learning-v1",branch]]),writes=[];
  const storage={getItem:key=>values.get(key)||null,setItem(key,value){writes.push(key);values.set(key,value);}};
