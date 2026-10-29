@@ -28,7 +28,7 @@ export function SiteDashboard() {
         body:JSON.stringify({document:buildTemplateDocument(template)})});
       const data=await response.json();
       if(!response.ok)throw Error(data.error||'Tạo website thất bại');
-      window.location.assign('/builder-demo?site='+encodeURIComponent(data.site.id));
+      window.location.assign(template.curatedSource?'/dashboard/sites/'+encodeURIComponent(data.site.id)+'/puck':'/builder-demo?site='+encodeURIComponent(data.site.id));
     }catch(e){setMessage(e instanceof Error?e.message:'Không thể tạo site');setWorking(false);}
   }
   async function restoreRevision(site:SiteRow) {
@@ -69,7 +69,8 @@ export function SiteDashboard() {
           const theme=themeById(t.theme);
           return <button type="button" key={t.id} onClick={()=>setSelected(t.id)} className={'rounded-xl border p-3 text-left '+(selected===t.id?'border-amber-600 ring-2 ring-amber-100':'border-slate-200')}>
             <div className="mb-2 h-14 rounded-lg p-3 text-xs font-bold" style={{background:theme.background,color:theme.foreground,borderLeft:'5px solid '+theme.primary}}>{t.name}</div>
-            <p className="text-xs font-semibold">{t.name}</p><p className="text-[11px] text-slate-500">{t.category}</p>
+            <p className="text-xs font-semibold">{t.name}</p>
+            {t.curatedSource&&<p className="mt-1 text-[10px] font-semibold text-amber-700">Mẫu chuẩn hóa MIT · Puck</p>}<p className="text-[11px] text-slate-500">{t.category}</p>
           </button>;
         })}
       </div>
