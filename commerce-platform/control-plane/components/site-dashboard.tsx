@@ -31,6 +31,29 @@ export function SiteDashboard() {
       window.location.assign('/builder-demo?site='+encodeURIComponent(data.site.id));
     }catch(e){setMessage(e instanceof Error?e.message:'Không thể tạo site');setWorking(false);}
   }
+  async function restoreRevision(site:SiteRow) {
+    try{
+      const response=await fetch('/api/sites/'+site.id+'/revisions',{cache:'no-store'});
+      const history=await response.json();
+      if(!response.ok)throw Error(history.error||'Không đọc được lịch sử');
+      const available=(history.revisions||[]).filter((v:{version:number})=>v.version!==site.draftVersion);
+      if(!available.length){setMessage('Chưa có revision cũ để phục hồi.');return;}
+      const selected=window.prompt(
+        'Chọn revision cần khôi phục: '+available.map((v:{version:number})=>v.version).join(', '),
+        String(available[0].version));
+      if(selected===null)return;
+      const version=Number(selected);
+      if(!available.some((v:{version:number})=>v.version===version))throw Error('Revision không có trong lịch sử đã kiểm tra');
+      if(!window.confirm('Phục hồi revision '+version+' thành một bản nháp MỚI? Bản đã xuất bản sẽ không thay đổi.'))return;
+      const res=await fetch('/api/sites/'+site.id+'/restore',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({version,expectedCurrentVersion:site.draftVersion})});
+      const body=await res.json();
+      if(!res.ok)throw Error(body.error||'Không phục hồi được');
+      setMessage('Đã phục hồi revision '+version+' thành bản nháp mới revision '+body.version+'.');
+      await refresh();
+    }catch(e){setMessage(e instanceof Error?e.message:'Phục hồi không thành công');}
+  }
   return <div className="mx-auto max-w-6xl p-5 md:p-8">
     <h1 className="text-3xl font-bold text-slate-900">Website của tôi</h1>
     <p className="mt-2 text-sm text-slate-600">Website thuộc tổ chức đang chọn. Mẫu tạo mới chỉ lưu nháp, chưa được phát hành hoặc bán hàng.</p>
@@ -65,6 +88,7 @@ export function SiteDashboard() {
           <div className="mt-4 flex flex-wrap gap-2">
             <a className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white" href={'/builder-demo?site='+site.id}>Chỉnh sửa</a>
             <a className="rounded-lg border px-3 py-2 text-xs" href={'/dashboard/sites/'+site.id+'/preview'}>Xem bản nháp</a>
+            <button type="button" onClick={()=>restoreRevision(site)} className="rounded-lg border px-3 py-2 text-xs">Lịch sử / Khôi phục</button>
             {site.publishedVersion&&<a className="rounded-lg border px-3 py-2 text-xs" href={'/s/'+site.slug} target="_blank" rel="noopener noreferrer">Mở bản công khai</a>}
           </div>
         </article>)}</div>}
