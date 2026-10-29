@@ -43,6 +43,24 @@ try {
   const a=await token(u1.id),b=await token(u2.id);
   assert.equal((await request('/api/sites')).status,401);
   assert.equal((await request('/api/sites',{jwt:a,method:'POST',body:{document:doc},origin:'https://attacker.invalid'})).status,403);
+  // One versioned contract is shared by editor import/cloud hydration and API writes.
+  // Malformed documents fail closed before any site row is created.
+  for (const mutate of [
+    d=>{d.title='   ';},
+    d=>{d.pages[1].slug=d.pages[0].slug;},
+    d=>{d.pages[1].blocks[0].id=d.pages[0].blocks[0].id;},
+    d=>{d.pages[0].blocks[0].imageUrl='javascript:alert(1)';},
+    d=>{d.pages[0].blocks[0].buttonUrl='data:text/html,malicious';},
+    d=>{d.version=99;},
+    d=>{d.pages[0].blocks[0].accent='not-a-color';},
+    d=>{d.pages[0].blocks[0].body='x'.repeat(2001);},
+    d=>{d.pages=[];}
+  ]) {
+    const bad=structuredClone(doc);mutate(bad);
+    const response=await request('/api/sites',{jwt:a,method:'POST',body:{document:bad}});
+    assert.equal(response.status,422,JSON.stringify(response.data));
+    assert.equal(response.data.error,'invalid_site_document');
+  }
   let r=await request('/api/sites',{jwt:a,method:'POST',body:{document:doc}});
   assert.equal(r.status,201,JSON.stringify(r.data));
   const site=r.data.site,slug=site.slug;
