@@ -6,6 +6,7 @@ on:
       - "commerce-platform/control-plane/**"
       - "commerce-platform/packages/tenant-contract/**"
       - "commerce-platform/edge/**"
+      - "commerce-platform/scripts/**"
       - "commerce-platform/control-plane.trigger"
       - ".github/workflows/commerce-saas-ci.yml"
   pull_request:
@@ -61,6 +62,8 @@ jobs:
       - name: Typecheck
         working-directory: commerce-platform/control-plane
         run: pnpm exec tsc --noEmit
+      - name: Production cutover gate must fail closed without evidence
+        run: node commerce-platform/scripts/apex-release-gate.mjs --self-test
       - name: Edge D1 authorization and idempotent provisioning contract tests
         run: node --test commerce-platform/edge/test/merchant-provisioning.test.mjs
       - name: Drizzle migrate disposable PostgreSQL
