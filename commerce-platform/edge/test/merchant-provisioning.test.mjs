@@ -9,6 +9,11 @@ function fixture() {
     DB: {
       prepare(query) {
         return {
+          async first() {
+            if (query.startsWith('SELECT 1 AS ok')) return { ok: 1 };
+            if (query.includes('COUNT(*) AS n')) return { n: merchants.size };
+            throw new Error('unexpected unbound SQL');
+          },
           bind(...params) {
             return {
               async first() {
