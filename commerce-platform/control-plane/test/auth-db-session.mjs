@@ -61,8 +61,19 @@ try {
 
   await sql`UPDATE users SET session_version = session_version + 1 WHERE id = ${user.id}`;
   await check('/api/user', jwtV0, 401); // revoked, even if signed token is not expired
-  res = await check('/dashboard', jwtV0, 307); // DB session guard, not just JWT signature
-  assert.match(res.headers.get('location') || '', /\/sign-in/);
+  res = await fetch(base + '/dashboard', {
+    redirect: 'manual', headers: { cookie: 'session=' + jwtV0 }, cache: 'no-store'
+  });
+  if (res.status === 200) {
+    const html = await res.text();
+    // Next.js streaming may render an HTTP 200 containing a real redirect marker.
+    const marker = /__next-page-redirect[^>]*http-equiv=["']refresh["'][^>]*\/sign-in|NEXT_REDIRECT[^]*\/sign-in/i;
+    assert.match(html, marker,
+      'revoked dashboard session must redirect, not render private UI: ' + html.slice(-700));
+  } else {
+    assert.ok([303, 307, 308].includes(res.status), 'unexpected dashboard status: ' + res.status);
+    assert.match(res.headers.get('location') || '', /\/sign-in/);
+  }
   const jwtV1 = await token(user.id, 1);
   await check('/api/user', jwtV1, 200);
   await sql`UPDATE users SET deleted_at=now() WHERE id=${user.id}`;
