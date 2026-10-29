@@ -36,6 +36,11 @@ function safeExternal(value: string) {
 function safeImage(value: string) {
   try { const u = new URL(value); return u.protocol === 'https:' ? u.toString() : null; } catch { return null; }
 }
+function foregroundOnAccent(hex: string) {
+  const h=hex.replace('#',''); if(!/^[a-f0-9]{6}$/i.test(h))return '#ffffff';
+  const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+  return (r*299+g*587+b*114)/1000>160?'#17202b':'#ffffff';
+}
 function safeLink(value: string) {
   if (/^#page:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) return value;
   if (/^#[A-Za-z0-9_-]+$/.test(value)) return value;
@@ -113,7 +118,7 @@ function ActionLink({block, navigate, inverse = false}: {block:Block; navigate:(
   if (!block.buttonLabel) return null;
   const href = safeLink(block.buttonUrl);
   const className = 'inline-flex items-center justify-center px-5 py-3 text-sm font-semibold shadow-sm transition hover:opacity-85';
-  const style:CSSProperties = {borderRadius:'var(--studio-radius)',backgroundColor:inverse?'var(--studio-foreground)':'var(--studio-accent)',color:inverse?'var(--studio-background)':'#ffffff'};
+  const style:CSSProperties = {borderRadius:'var(--studio-radius)',backgroundColor:inverse?'var(--studio-foreground)':'var(--studio-accent)',color:inverse?'var(--studio-background)':foregroundOnAccent(block.accent)};
   if (!href) return <span className={className} style={style}>{block.buttonLabel}</span>;
   if (href.startsWith('#page:')) return <button type="button" className={className} style={style} onClick={e=>{e.stopPropagation();navigate(href.slice(6));}}>{block.buttonLabel}</button>;
   return <a className={className} style={style} href={href} target={href.startsWith('#')?undefined:'_blank'} rel={href.startsWith('#')?undefined:'noopener noreferrer'} onClick={e=>e.stopPropagation()}>{block.buttonLabel}</a>;
@@ -134,7 +139,7 @@ function BlockPreview({block,theme,navigate}: {block:Block;theme:ThemeDefinition
   const action = <div className="mt-6"><ActionLink block={block} navigate={navigate}/></div>;
   const rows = parseRows(block.body);
   if(block.kind==='hero') {
-    return <section className={'relative overflow-hidden '+(variant==='minimal'?'py-20 @md:py-32':'min-h-[260px]')} style={{...common,backgroundColor:variant==='minimal'?'transparent':accent,color:variant==='minimal'?'var(--studio-foreground)':'#fff'}}>
+    return <section className={'relative overflow-hidden '+(variant==='minimal'?'py-20 @md:py-32':'min-h-[260px]')} style={{...common,backgroundColor:variant==='minimal'?'transparent':accent,color:variant==='minimal'?'var(--studio-foreground)':(isFull&&safeImage(block.imageUrl)?'#ffffff':foregroundOnAccent(accent))}}>
       {isFull && safeImage(block.imageUrl) && <><div className="absolute inset-0" style={{backgroundImage:'linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20)),url("'+safeImage(block.imageUrl)+'")',backgroundSize:'cover',backgroundPosition:'center'}}/><div className="absolute inset-0 bg-black/10"/></>}
       {variant==='split' ? <div className="relative grid min-h-[340px] @md:grid-cols-2">
         <div className="flex flex-col items-start justify-center p-7 @md:p-12">{title}{description}{action}</div>
@@ -146,13 +151,18 @@ function BlockPreview({block,theme,navigate}: {block:Block;theme:ThemeDefinition
     </section>;
   }
   if (block.kind==='image') return <section className="overflow-hidden py-5" style={common}><ImageSurface src={block.imageUrl} alt={block.title} large/><div className="p-5"><h2 className="text-2xl font-bold">{block.title}</h2>{description}</div></section>;
-  if (block.kind==='gallery') return <section className="py-10"><div className="mb-6">{title}{description}</div><div className="grid grid-cols-2 gap-2 @md:grid-cols-3">
-    {Array.from({length:6}).map((_,i)=><div key={i} className="overflow-hidden" style={common}><div className="relative h-32 @md:h-52 overflow-hidden">
-      <ImageSurface src={block.imageUrl} alt={block.title+' '+(i+1)}/>
-      <div className="absolute inset-0" style={{background: i%2===0?'linear-gradient(135deg,transparent 45%,rgba(0,0,0,.2))':'linear-gradient(225deg,rgba(255,255,255,.25),transparent 65%)'}}/>
-    </div></div>)}
-  </div></section>;
-  if (block.kind==='cta') return <section className="my-8 px-6 py-14 text-center @md:py-20" style={{...common,backgroundColor:accent,color:'#fff'}}>
+  if (block.kind==='gallery') {
+    const all=[block.imageUrl,...block.body.split('\n').map(x=>x.trim())].filter((u):u is string=>!!safeImage(u));
+    const images=[...new Set(all)].slice(0,8);
+    return <section className="py-10"><div className="mb-6">{title}<p className="mt-3 text-sm opacity-70">Những khoảnh khắc nổi bật</p></div>
+      <div className="grid grid-cols-2 gap-2 @md:grid-cols-3">
+      {(images.length?images:['']).map((src,i)=><div key={i} className="overflow-hidden" style={common}>
+        <div className="relative h-32 @md:h-52 overflow-hidden"><ImageSurface src={src} alt={block.title+' '+(i+1)}/></div>
+      </div>)}
+      </div>
+    </section>;
+  }
+  if (block.kind==='cta') return <section className="my-8 px-6 py-14 text-center @md:py-20" style={{...common,backgroundColor:accent,color:foregroundOnAccent(accent)}}>
     {title}<p className="mx-auto mt-4 max-w-xl whitespace-pre-line opacity-90">{block.body}</p>
     <div className="mt-6"><ActionLink block={block} navigate={navigate} inverse/></div>
   </section>;
@@ -163,7 +173,7 @@ function BlockPreview({block,theme,navigate}: {block:Block;theme:ThemeDefinition
       <div className={'grid gap-3 '+(variant==='list'?'grid-cols-1':'grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3')}>
         {list.map((parts,i)=><div key={i} className={'overflow-hidden border p-5 '+(variant==='minimal'?'border-transparent !px-0':'')} style={{...common,borderColor:'var(--studio-border)',backgroundColor:variant==='minimal'?'transparent':'var(--studio-surface)'}}>
           {block.kind==='products'&&<div className="mb-4 overflow-hidden" style={common}><ImageSurface src={block.imageUrl} alt={parts[0]}/></div>}
-          {block.kind!=='logos'&&block.kind!=='products'&&<div className="mb-3 flex size-10 items-center justify-center rounded-full text-sm font-bold" style={{backgroundColor:accent,color:'#fff'}}>{String(i+1).padStart(2,'0')}</div>}
+          {block.kind!=='logos'&&block.kind!=='products'&&<div className="mb-3 flex size-10 items-center justify-center rounded-full text-sm font-bold" style={{backgroundColor:accent,color:foregroundOnAccent(accent)}}>{String(i+1).padStart(2,'0')}</div>}
           <h3 className="font-semibold">{parts[0]}</h3>{parts[1]&&<p className="mt-2 text-sm opacity-70">{parts[1]}</p>}
         </div>)}
       </div>
@@ -229,6 +239,7 @@ export default function BuilderDemoPage() {
   const activeBlock=activePage?.blocks.find(b=>b.id===selectedId)||null;
   const totalBlocks=doc.pages.reduce((n,p)=>n+p.blocks.length,0);
   const currentTemplate=SITE_TEMPLATES.find(t=>t.id===candidate)||SITE_TEMPLATES[0];
+  const candidateDocument=buildTemplateDocument(currentTemplate);
   const galleryMatches=SITE_TEMPLATES.filter(t=>
     (category==='Tất cả'||t.category===category)&&
     (t.name+' '+t.description+' '+t.category).toLocaleLowerCase('vi').includes(query.trim().toLocaleLowerCase('vi'))
@@ -461,7 +472,7 @@ export default function BuilderDemoPage() {
         </aside>}
       </div>
     </div>
-    {gallery&&<div className="fixed inset-0 z-[70] overflow-y-auto bg-slate-950/70 px-3 py-4 @md:px-8 @md:py-8" role="dialog" aria-modal="true" aria-label="Thư viện mẫu website">
+    {gallery&&<div className="@container fixed inset-0 z-[70] overflow-y-auto bg-slate-950/70 px-3 py-4 @md:px-8 @md:py-8" role="dialog" aria-modal="true" aria-label="Thư viện mẫu website">
       <div className="mx-auto max-w-[1450px] overflow-hidden rounded-2xl bg-white shadow-2xl">
         <div className="flex items-start justify-between gap-3 border-b px-5 py-5 @md:px-7"><div><p className="text-xs font-bold uppercase tracking-widest text-amber-700">Motngum Studio / Template Gallery</p><h2 className="mt-1 text-2xl font-extrabold">Chọn một website để bắt đầu</h2><p className="mt-1 text-sm text-slate-500">24 mẫu có cấu trúc riêng · 6 ngành nghề · 8 theme · mỗi mẫu gồm 3 trang chỉnh sửa được</p></div><button onClick={()=>setGallery(false)} title="Đóng" className="rounded-lg border p-2"><X size={20}/></button></div>
         <div className="flex flex-wrap items-center gap-2 px-5 py-4 @md:px-7">
@@ -477,6 +488,13 @@ export default function BuilderDemoPage() {
           <aside className="rounded-xl border border-slate-200 bg-slate-50 p-4">
             <p className="text-xs font-semibold uppercase tracking-wider text-amber-800">Xem trước mẫu đang chọn</p><h3 className="mt-2 text-xl font-bold">{currentTemplate.name}</h3><p className="mt-1 text-sm text-slate-600">{currentTemplate.description}</p>
             <div className="my-4 overflow-hidden rounded-lg border border-slate-200"><TemplateThumb template={currentTemplate}/></div>
+            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-700">Trang chủ thực tế từ mẫu</p>
+            <div className="h-56 overflow-y-auto rounded-lg border border-slate-200 bg-white">
+              <div className="@container" style={{...templatePreviewColors(themeById(currentTemplate.theme)),backgroundColor:'var(--studio-background)',color:'var(--studio-foreground)',fontFamily:'var(--studio-font)',fontSize:'12px'}}>
+                <div className="border-b px-4 py-3 text-sm font-bold" style={{borderColor:'var(--studio-border)'}}>{currentTemplate.name}</div>
+                <div className="px-3">{candidateDocument.pages[0].blocks.slice(0,3).map(b=><div key={b.id}><BlockPreview block={b} theme={themeById(currentTemplate.theme)} navigate={()=>{}}/></div>)}</div>
+              </div>
+            </div>
             <div className="mb-4 flex flex-wrap gap-2">{currentTemplate.order.map((k,i)=><span key={i} className="rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-slate-600">{KIND_LABELS[k]}</span>)}</div>
             <p className="mb-4 text-xs text-slate-600">Áp dụng sẽ tạo Trang chủ / Giới thiệu / Liên hệ cùng giao diện nhất quán. Nội dung có thể sửa, không phải ảnh chụp mẫu tĩnh.</p>
             <button onClick={()=>applyTemplate(currentTemplate)} className="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-700 px-4 py-3 text-sm font-bold text-white hover:bg-amber-800">Dùng mẫu {currentTemplate.name}<ArrowRight size={17}/></button>
