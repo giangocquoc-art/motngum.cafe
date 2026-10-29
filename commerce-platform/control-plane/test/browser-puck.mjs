@@ -68,11 +68,21 @@ try{
   assert.equal(errors.length,0,'Puck renderer emitted unexpected browser errors: '+errors.join('; '));
   console.log('PASS Puck browser: authenticated team site opens Puck v0.24 runtime with real draft');
 
+  // An actual Puck canvas selection + field edit must reach the same v2
+  // PostgreSQL draft, not merely update a separate in-memory Puck document.
+  await page.frameLocator('#preview-frame').getByText('Puck kiểm thử thật').first().click();
+  const field=page.locator('input[title="Tiêu đề"]').first();
+  await field.waitFor();
+  await field.fill('Tiêu đề đã sửa trực tiếp bằng Puck');
+  await until(async()=>(await saved())?.draft_document?.pages?.[0]?.blocks?.[0]?.title===
+    'Tiêu đề đã sửa trực tiếp bằng Puck','Puck field autosave');
+  console.log('PASS Puck browser: field edit inside Puck canvas saves actual v2 block via CAS');
+
   const theme=page.getByRole('combobox',{name:'Chọn theme'});
   await theme.selectOption('forest');
   await until(async()=>(await saved())?.draft_document?.themeId==='forest','Puck theme persisted');
   let row=await saved();
-  assert.equal(row.draft_version,2);
+  assert.ok(row.draft_version>=3);
   assert.deepEqual(row.draft_document.pages.map(p=>p.id),original.pages.map(p=>p.id));
   assert.equal(row.draft_document.pages[0].blocks[0].buttonUrl,'#page:lien-he');
   console.log('PASS Puck browser: theme is autosaved with CAS, page IDs and CTA link preserved');
@@ -83,7 +93,8 @@ try{
     return (await nav.getAttribute('aria-current'))==='page';
   },'Switch Puck page');
   const after=await saved();
-  assert.deepEqual(after.draft_document.pages[0].blocks,original.pages[0].blocks);
+  assert.equal(after.draft_document.pages[0].blocks[0].title,'Tiêu đề đã sửa trực tiếp bằng Puck');
+  assert.equal(after.draft_document.pages[0].blocks[0].buttonUrl,original.pages[0].blocks[0].buttonUrl);
   assert.deepEqual(after.draft_document.pages[1].blocks,original.pages[1].blocks);
   assert.equal(errors.length,0,'Page-switch runtime errors: '+errors.join('; '));
   console.log('PASS Puck browser: switching to second page does not rewrite sibling blocks');
