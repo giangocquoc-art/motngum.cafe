@@ -115,6 +115,13 @@ jobs:
       - name: Verify real signed-cookie JWT revocation, scoped membership and PostgreSQL unique index
         working-directory: commerce-platform/control-plane
         run: node test/auth-db-session.mjs
+      - name: Puck v2 lossless round-trip contract and field registry
+        working-directory: commerce-platform/control-plane
+        timeout-minutes: 3
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/motngum-puck-contract --no-save --no-audit --no-fund tsx@4.20.6
+          node /tmp/motngum-puck-contract/node_modules/tsx/dist/cli.mjs --test test/puck-v2-adapter.test.ts
       - name: Builder two-tenant site lifecycle E2E
         working-directory: commerce-platform/control-plane
         run: node test/builder-site-e2e.mjs
