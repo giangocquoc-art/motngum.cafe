@@ -40,3 +40,19 @@
 @media (prefers-reduced-motion: reduce) {
   .studio-border-beam::before { animation: none; }
 }
+
+/* Adapted Start Bootstrap agency-timeline central rail.
+ * CSS pseudo-element keeps the ordered list semantically valid. */
+@media (min-width: 768px) {
+  .studio-agency-timeline::before {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: var(--studio-border, #ddd);
+  }
+}
