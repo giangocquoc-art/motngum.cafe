@@ -1,0 +1,22 @@
+name: Commerce Apex Production Readiness (read-only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: commerce-rebuild-2026-10
+          persist-credentials: false
+          sparse-checkout: commerce-platform/scripts
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Enforce production release preflight (no cutover)
+        env:
+          RELEASE_EDGE_STATUS_URL: https://commerce-preview.motngum.cafe/api/status
+        run: node commerce-platform/scripts/apex-release-gate.mjs
