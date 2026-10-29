@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import { NextRequest } from 'next/server';
 import { db } from '@/lib/db/drizzle';
-import { builderSites, builderSiteRevisions } from '@/lib/db/schema';
+import { builderSites, builderSiteRevisions, teams } from '@/lib/db/schema';
 import { studioContext, mayEdit } from '@/lib/builder/site-context';
 import { readStudioBody, studioReply } from '@/lib/builder/http';
 import { validateSiteDocument } from '@/lib/builder/validation';
@@ -39,6 +39,11 @@ export async function POST(request:NextRequest) {
   const id=randomUUID(),slug=slugify(document.title)+'-'+id.slice(0,8);
   try{
     await db.transaction(async tx=>{
+      // Lock the organization row so concurrent site creations cannot bypass quota.
+      await tx.execute(sql`SELECT id FROM teams WHERE id = ${ctx.team!.id} FOR UPDATE`);
+      const [quota]=await tx.select({total:sql<number>`count(*)::int`}).from(builderSites)
+        .where(eq(builderSites.teamId,ctx.team!.id));
+      if(quota.total>=50)throw new Error('team_site_quota_reached');
       await tx.insert(builderSites).values({
         id,teamId:ctx.team!.id,createdBy:ctx.user!.id,
         slug,title:document.title,draftDocument:document,draftVersion:1
@@ -49,7 +54,9 @@ export async function POST(request:NextRequest) {
       });
     });
     return studioReply({site:{id,slug,version:1,title:document.title},ready:false},201);
-  }catch{
+  }catch(error){
+    if(error instanceof Error&&error.message==='team_site_quota_reached')
+      return studioReply({error:'team_site_quota_reached',limit:50},429);
     return studioReply({error:'site_creation_failed'},503);
   }
 }
