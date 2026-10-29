@@ -89,5 +89,24 @@ try {
   r=await request('/api/sites/'+site.id+'/unpublish',{jwt:a,method:'POST',body:{}});
   assert.equal(r.status,200,JSON.stringify(r.data));
   assert.equal((await request('/s/'+slug)).status,404);
+  // Renderer parity: same block must support full-width hero image and readable CTA
+  // in published HTML (these variants previously existed only inside the editor).
+  const fullDoc=structuredClone(doc);
+  fullDoc.title='CI Full Hero Layout';
+  fullDoc.pages[0].blocks[0].variant='full';
+  fullDoc.pages[0].blocks[0].accent='#f5ecb4';
+  fullDoc.pages[0].blocks[0].imageUrl='https://images.unsplash.com/photo-1501339847302-ac426a4cbb?w=1400';
+  let full=await request('/api/sites',{jwt:a,method:'POST',body:{document:fullDoc}});
+  assert.equal(full.status,201,JSON.stringify(full.data));
+  const fullSite=full.data.site;
+  full=await request('/api/sites/'+fullSite.id+'/publish',{jwt:a,method:'POST',body:{version:1}});
+  assert.equal(full.status,200,JSON.stringify(full.data));
+  full=await request('/s/'+fullSite.slug);
+  assert.equal(full.status,200);
+  assert.match(full.data,/photo-1501339847302-ac426a4cbb/,'Full hero image must render publicly');
+  assert.match(full.data,/linear-gradient/,'Full hero must use same image overlay variant as editor');
+  assert.match(full.data,/#17202b/,'Light hero accent must use readable dark foreground');
+  assert.match(full.data,new RegExp('/s/'+fullSite.slug+'/lien-he'),'Internal page CTA must work on public URL');
+  console.log('PASS: shared block renderer preserves full hero background, contrast and internal CTA after publish');
   console.log('PASS: two tenant isolation, CSRF, CAS draft save, revision restore, publish snapshot, unpublish and malicious URL checks');
 }finally{await sql.end();}
