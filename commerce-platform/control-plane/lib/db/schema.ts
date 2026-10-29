@@ -6,6 +6,7 @@ import {
   timestamp,
   integer,
   uniqueIndex,
+  uuid,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -71,6 +72,27 @@ export const invitations = pgTable('invitations', {
   invitedAt: timestamp('invited_at').notNull().defaultNow(),
   status: varchar('status', { length: 20 }).notNull().default('pending'),
 });
+
+
+/**
+ * Durable SaaS ownership/provisioning record.
+ * NOT a Medusa order/stock/customer database. A merchant is not ACTIVE until
+ * a real isolated commerce backend is connected and independently verified.
+ */
+export const merchantProvisions = pgTable('merchant_provisions', {
+  id: uuid('id').primaryKey(),
+  teamId: integer('team_id').notNull().references(() => teams.id).unique(),
+  slug: varchar('slug', { length: 48 }).notNull().unique(),
+  displayName: varchar('display_name', { length: 100 }).notNull(),
+  state: varchar('state', { length: 24 }).notNull().default('requested'),
+  attempts: integer('attempts').notNull().default(0),
+  lastError: text('last_error'),
+  edgeSyncedAt: timestamp('edge_synced_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export type MerchantProvision = typeof merchantProvisions.$inferSelect;
 
 export const teamsRelations = relations(teams, ({ many }) => ({
   teamMembers: many(teamMembers),
