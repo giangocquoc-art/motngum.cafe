@@ -1,4 +1,4 @@
-name: Commerce Control Plane Type and Seed Security
+name: Commerce Control Plane Security and Build
 on:
   push:
     branches: [commerce-rebuild-2026-10]
@@ -8,7 +8,24 @@ permissions: { contents: read }
 jobs:
   control-plane:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: commerce_ci
+          POSTGRES_PASSWORD: commerce_ci_only
+          POSTGRES_DB: commerce_ci
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U commerce_ci -d commerce_ci" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      POSTGRES_URL: postgres://commerce_ci:commerce_ci_only@127.0.0.1:5432/commerce_ci
+      AUTH_SECRET: ci-only-auth-secret-generated-for-disposable-testing-not-production
+      ENABLE_PUBLIC_SIGNUP: "false"
+      ENABLE_PREVIEW_SIGNUP: "false"
+      ENABLE_PLATFORM_BILLING: "false"
+      BASE_URL: http://127.0.0.1:3000
+      NEXT_TELEMETRY_DISABLED: "1"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -18,20 +35,48 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.23.4
-      - name: Install source package
+      - name: Install source package from lockfile
         working-directory: commerce-platform/control-plane
         run: |
           corepack enable
           corepack prepare pnpm@10.11.1 --activate
           pnpm install --frozen-lockfile
-      - name: Type-check SaaS code after hardened seed
+      - name: Typecheck
         working-directory: commerce-platform/control-plane
         run: pnpm exec tsc --noEmit
-      - name: Ensure demo password and auto-created Stripe products are absent from seed
+      - name: Drizzle migrate disposable PostgreSQL
+        working-directory: commerce-platform/control-plane
+        run: pnpm db:migrate
+      - name: Build Next.js with billing off and no fake Stripe credentials
+        working-directory: commerce-platform/control-plane
+        run: pnpm build
+      - name: Secure route smoke tests
+        working-directory: commerce-platform/control-plane
+        shell: bash
         run: |
           set -euo pipefail
-          ! grep -F "admin123" commerce-platform/control-plane/lib/db/seed.ts
-          ! grep -F "test@test.com" commerce-platform/control-plane/lib/db/seed.ts
-          ! grep -F "stripe.products.create" commerce-platform/control-plane/lib/db/seed.ts
-          grep -F "ALLOW_LOCAL_SEED" commerce-platform/control-plane/lib/db/seed.ts
-          echo "PASS: unsafe demo seed removed and control plane compiles."
+          nohup pnpm start >/tmp/commerce-saas.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:3000/sign-in >/dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:3000/sign-in >/dev/null
+          check_code() {
+            path="$1"; wanted="$2"; method="${3:-GET}"
+            code="$(curl -sS -X "$method" -o /tmp/response.json -w '%{http_code}' "http://127.0.0.1:3000$path")"
+            test "$code" = "$wanted" || { echo "Unexpected $path status: $code"; cat /tmp/response.json; exit 1; }
+          }
+          check_code /api/user 401
+          check_code /api/stripe/checkout 404
+          check_code /api/stripe/webhook 404 POST
+          echo "PASS: auth endpoint private, Stripe endpoints disabled, Next.js live."
+      - name: Block unsafe default demo seed
+        run: |
+          set -euo pipefail
+          ! grep -F 'admin123' commerce-platform/control-plane/lib/db/seed.ts
+          ! grep -F 'test@test.com' commerce-platform/control-plane/lib/db/seed.ts
+          ! grep -F 'stripe.products.create' commerce-platform/control-plane/lib/db/seed.ts
+          echo "PASS: no default seed or auto-created paid products."
+      - name: Build logs if failed
+        if: failure()
+        run: tail -120 /tmp/commerce-saas.log || true
