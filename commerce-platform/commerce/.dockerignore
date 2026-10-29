@@ -1,0 +1,12 @@
+.git
+**/.git
+**/node_modules
+**/.next
+**/.medusa
+**/.turbo
+**/.env
+**/.env.*
+!**/.env.template
+!**/.env.example
+coverage
+*.log
