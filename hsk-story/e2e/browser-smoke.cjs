@@ -429,6 +429,10 @@ async function goReview(page,label,withStory){
   await auditLayout(page,label,'review-feedback-'+(n+5));await page.locator('#nextBtn').click();
  }
  assert.equal(await page.locator('#dueCount').textContent(),'0');await auditLayout(page,label,'review-finished');
+ assert.equal(await page.locator('#taskTitle').innerText(),'Hôm nay đã ôn xong');
+ assert.equal(await page.locator('#emptyTitle').innerText(),'Hôm nay chưa có bài mới');
+ assert.match(await page.locator('#emptyCopy').innerText(),/Bạn đã ôn hết những câu đến hạn hôm nay/);
+ assert.equal(await page.locator('#emptyLink').innerText(),'Tiếp tục câu chuyện cùng An ↗');
  assert.equal(await page.evaluate(()=>localStorage.getItem('hai-que-huong-progress-v3')),oldV3,'Complete review mutated story progress');
  if(label==="mobile")assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+5),false,"Review page horizontal overflow at 360px");
 }
