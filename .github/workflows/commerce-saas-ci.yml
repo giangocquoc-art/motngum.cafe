@@ -49,6 +49,7 @@ jobs:
           sparse-checkout: |
             commerce-platform/control-plane
             commerce-platform/edge
+            commerce-platform/scripts
           sparse-checkout-cone-mode: true
       - uses: actions/setup-node@v4
         with:
