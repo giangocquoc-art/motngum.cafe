@@ -1,419 +1,489 @@
 'use client';
 
-import { useEffect, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type CSSProperties, type DragEvent } from 'react';
 import {
-  ArrowDown, ArrowUp, Download, Eye, FileJson, GripVertical, Image as ImageIcon,
-  LayoutTemplate, Monitor, Plus, RotateCcw, Smartphone, Trash2
+  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, ChevronDown, Copy, Download, Eye,
+  FileJson, GripVertical, Image as ImageIcon, LayoutTemplate, Monitor, Paintbrush,
+  PanelLeft, Plus, RotateCcw, Search, Smartphone, Tablet, Trash2, Undo2, Redo2, X
 } from 'lucide-react';
+import {
+  BLOCK_KINDS, BLOCK_VARIANTS, DEFAULT_TEMPLATE_ID, KIND_LABELS,
+  SITE_TEMPLATES, TEMPLATE_CATEGORIES, THEMES, buildTemplateDocument, createBlock, newId, themeById,
+  type Block, type BlockKind, type SiteCategory, type SiteDocument, type SitePage,
+  type SiteTemplate, type ThemeDefinition, type ThemeId
+} from '@/lib/builder/catalog';
 
-type BlockKind = 'hero' | 'features' | 'text' | 'image' | 'cta';
-type Block = {
-  id: string;
-  kind: BlockKind;
-  title: string;
-  body: string;
-  imageUrl: string;
-  buttonLabel: string;
-  buttonUrl: string;
-  accent: string;
-};
-type SiteDocument = { version: 1; title: string; blocks: Block[] };
-type DragSource = { id: string } | { kind: BlockKind };
-type Viewport = 'desktop' | 'mobile';
+const STORAGE = 'motngum.visual-builder-demo.v2';
+const LEGACY_STORAGE = 'motngum.visual-builder-demo.v1';
+const MAX_FILE = 256 * 1024;
+const MAX_PAGES = 12;
+const MAX_BLOCKS = 40;
+const MAX_TOTAL = 200;
+type Viewport = 'desktop' | 'tablet' | 'mobile';
+type Sidebar = 'templates' | 'blocks' | 'pages' | 'themes';
+type LegacyBlock = Omit<Block, 'variant'>;
 
-const STORAGE_KEY = 'motngum.visual-builder-demo.v1';
-const MAX_BLOCKS = 30;
-const BLOCK_KINDS: BlockKind[] = ['hero', 'features', 'text', 'image', 'cta'];
-
-const KIND_LABELS: Record<BlockKind, string> = {
-  hero: 'Ảnh bìa / Hero',
-  features: 'Điểm nổi bật',
-  text: 'Đoạn giới thiệu',
-  image: 'Hình ảnh',
-  cta: 'Kêu gọi hành động'
-};
-
-const EXAMPLE: SiteDocument = {
-  version: 1,
-  title: 'Cửa hàng của tôi',
-  blocks: [
-    {
-      id: 'example-hero', kind: 'hero', title: 'Một website, một câu chuyện riêng',
-      body: 'Kéo thả từng khối để giới thiệu thương hiệu của bạn theo cách đơn giản nhất.',
-      imageUrl: '', buttonLabel: 'Khám phá ngay', buttonUrl: '#gioi-thieu', accent: '#d97706'
-    },
-    {
-      id: 'example-features', kind: 'features', title: 'Điều làm chúng tôi khác biệt',
-      body: 'Chất lượng tận tâm\nThiết kế linh hoạt\nChăm sóc chu đáo',
-      imageUrl: '', buttonLabel: '', buttonUrl: '', accent: '#d97706'
-    },
-    {
-      id: 'example-text', kind: 'text', title: 'Câu chuyện của thương hiệu',
-      body: 'Bạn có thể nhấp vào một khối để sửa tiêu đề, văn bản, màu sắc và liên kết. Thử kéo các khối ở cột bên trái vào trang.',
-      imageUrl: '', buttonLabel: '', buttonUrl: '', accent: '#d97706'
-    },
-    {
-      id: 'example-cta', kind: 'cta', title: 'Sẵn sàng bắt đầu?',
-      body: 'Để lại dấu ấn riêng với một trang web do chính bạn sắp xếp.',
-      imageUrl: '', buttonLabel: 'Liên hệ', buttonUrl: 'https://motngum.cafe', accent: '#d97706'
-    }
-  ]
-};
-
-function makeBlock(kind: BlockKind): Block {
-  return {
-    id: typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : String(Date.now()) + String(Math.random()),
-    kind,
-    title: kind === 'hero' ? 'Tiêu đề nổi bật' : kind === 'features' ? 'Ba điều đặc biệt' : kind === 'image' ? 'Bộ sưu tập' : kind === 'cta' ? 'Liên hệ với chúng tôi' : 'Một câu chuyện mới',
-    body: kind === 'features' ? 'Lợi ích đầu tiên\nLợi ích thứ hai\nLợi ích thứ ba' : 'Nhấp vào khối và thay nội dung ở bảng thuộc tính.',
-    imageUrl: '',
-    buttonLabel: kind === 'hero' || kind === 'cta' ? 'Tìm hiểu thêm' : '',
-    buttonUrl: '',
-    accent: '#d97706'
-  };
+function slugify(input: string) {
+  return input.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g,'d').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,50);
 }
-
-function safeHttpUrl(value: string): string | null {
+function safeExternal(value: string) {
   try {
     const parsed = new URL(value);
-    return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.toString() : null;
-  } catch {
-    return null;
-  }
+    return (parsed.protocol === 'https:' || parsed.protocol === 'http:') ? parsed.toString() : null;
+  } catch { return null; }
 }
-
-function validateDocument(value: unknown): SiteDocument | null {
-  if (!value || typeof value !== 'object') return null;
-  const input = value as Record<string, unknown>;
-  if (input.version !== 1 || typeof input.title !== 'string' || input.title.length > 120 ||
-      !Array.isArray(input.blocks) || input.blocks.length > MAX_BLOCKS) return null;
-  const ids = new Set<string>();
-  const blocks: Block[] = [];
-  for (const raw of input.blocks) {
-    if (!raw || typeof raw !== 'object') return null;
-    const b = raw as Record<string, unknown>;
-    if (typeof b.id !== 'string' || b.id.length < 1 || b.id.length > 100 || ids.has(b.id) ||
-        !BLOCK_KINDS.includes(b.kind as BlockKind) ||
-        typeof b.title !== 'string' || b.title.length > 160 ||
-        typeof b.body !== 'string' || b.body.length > 1200 ||
-        typeof b.imageUrl !== 'string' || b.imageUrl.length > 500 ||
-        typeof b.buttonLabel !== 'string' || b.buttonLabel.length > 80 ||
-        typeof b.buttonUrl !== 'string' || b.buttonUrl.length > 500 ||
-        typeof b.accent !== 'string' || !/^#[a-fA-F0-9]{6}$/.test(b.accent)) return null;
-    ids.add(b.id);
-    blocks.push({
-      id: b.id, kind: b.kind as BlockKind, title: b.title, body: b.body,
-      imageUrl: b.imageUrl, buttonLabel: b.buttonLabel, buttonUrl: b.buttonUrl, accent: b.accent
-    });
-  }
-  return { version: 1, title: input.title, blocks };
+function safeImage(value: string) {
+  try { const u = new URL(value); return u.protocol === 'https:' ? u.toString() : null; } catch { return null; }
 }
-
-function ActionLink({ block, inverse = false }: { block: Block; inverse?: boolean }) {
+function safeLink(value: string) {
+  if (/^#page:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) return value;
+  if (/^#[A-Za-z0-9_-]+$/.test(value)) return value;
+  return safeExternal(value);
+}
+function parseRows(body: string, max = 6): string[][] {
+  return body.split('\n').map(x => x.trim()).filter(Boolean).slice(0,max).map(x=>x.split('|').map(part=>part.trim().slice(0,300)));
+}
+function validateDocument(input: unknown): SiteDocument | null {
+  if (!input || typeof input !== 'object') return null;
+  const root = input as Record<string,unknown>;
+  if (root.version !== 2 || typeof root.title !== 'string' || root.title.length > 120 ||
+      typeof root.themeId !== 'string' || !THEMES.some(t=>t.id === root.themeId) ||
+      !Array.isArray(root.pages) || root.pages.length < 1 || root.pages.length > MAX_PAGES) return null;
+  const pageIds = new Set<string>(), slugs = new Set<string>(), blockIds = new Set<string>();
+  const pages: SitePage[] = [];
+  let count = 0;
+  for (const pageRaw of root.pages) {
+    if (!pageRaw || typeof pageRaw !== 'object') return null;
+    const page = pageRaw as Record<string, unknown>;
+    if (typeof page.id !== 'string' || page.id.length < 1 || page.id.length > 100 ||
+        typeof page.title !== 'string' || page.title.length < 1 || page.title.length > 80 ||
+        typeof page.slug !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(page.slug) || page.slug.length > 60 ||
+        pageIds.has(page.id) || slugs.has(page.slug) || !Array.isArray(page.blocks) || page.blocks.length > MAX_BLOCKS) return null;
+    pageIds.add(page.id); slugs.add(page.slug);
+    const blocks: Block[] = [];
+    for (const blockRaw of page.blocks) {
+      if (!blockRaw || typeof blockRaw !== 'object') return null;
+      const block = blockRaw as Record<string, unknown>;
+      if (typeof block.id !== 'string' || block.id.length < 1 || block.id.length > 100 || blockIds.has(block.id) ||
+          !BLOCK_KINDS.includes(block.kind as BlockKind) || !BLOCK_VARIANTS.includes(block.variant as Block['variant']) ||
+          typeof block.title !== 'string' || block.title.length > 160 ||
+          typeof block.body !== 'string' || block.body.length > 2000 ||
+          typeof block.imageUrl !== 'string' || block.imageUrl.length > 600 ||
+          (block.imageUrl.length > 0 && !safeImage(block.imageUrl)) ||
+          typeof block.buttonLabel !== 'string' || block.buttonLabel.length > 80 ||
+          typeof block.buttonUrl !== 'string' || block.buttonUrl.length > 500 ||
+          (block.buttonUrl.length > 0 && !safeLink(block.buttonUrl)) ||
+          typeof block.accent !== 'string' || !/^#[a-f0-9]{6}$/i.test(block.accent)) return null;
+      blockIds.add(block.id);
+      blocks.push({
+        id:block.id,kind:block.kind as BlockKind,variant:block.variant as Block['variant'],
+        title:block.title,body:block.body,imageUrl:block.imageUrl,buttonLabel:block.buttonLabel,
+        buttonUrl:block.buttonUrl,accent:block.accent
+      });
+      count++;
+      if (count > MAX_TOTAL) return null;
+    }
+    pages.push({id:page.id,title:page.title,slug:page.slug,blocks});
+  }
+  return {version:2,title:root.title,themeId:root.themeId as ThemeId,pages};
+}
+function migrateLegacy(input: unknown): SiteDocument | null {
+  if (!input || typeof input !== 'object') return null;
+  const old = input as {version?:unknown; title?:unknown; blocks?:unknown};
+  if (old.version !== 1 || typeof old.title !== 'string' || !Array.isArray(old.blocks) || old.blocks.length > MAX_BLOCKS) return null;
+  const blocks = old.blocks.map((raw:LegacyBlock) => {
+    if (!raw || typeof raw !== 'object' || !BLOCK_KINDS.includes(raw.kind)) return null;
+    return {...raw,variant:'cards',imageUrl:safeImage(raw.imageUrl||'')||'',
+      buttonUrl:safeLink(raw.buttonUrl||'')||''};
+  });
+  if (blocks.some(x=>x === null)) return null;
+  return validateDocument({
+    version:2,title:old.title,themeId:'coffee',
+    pages:[{id:newId(),title:'Trang chủ',slug:'trang-chu',blocks}]
+  });
+}
+function templatePreviewColors(theme: ThemeDefinition): CSSProperties {
+  return {'--studio-accent':theme.primary,'--studio-foreground':theme.foreground,
+    '--studio-background':theme.background,'--studio-surface':theme.surface,
+    '--studio-border':theme.border,'--studio-muted':theme.muted,
+    '--studio-radius':theme.radius,'--studio-font':theme.font} as CSSProperties;
+}
+function ActionLink({block, navigate, inverse = false}: {block:Block; navigate:(slug:string)=>void; inverse?:boolean}) {
   if (!block.buttonLabel) return null;
-  const href = block.buttonUrl.startsWith('#') && /^#[\w-]+$/.test(block.buttonUrl)
-    ? block.buttonUrl : safeHttpUrl(block.buttonUrl);
-  const cls = inverse
-    ? 'inline-flex rounded-lg bg-white px-5 py-3 font-semibold text-gray-900 shadow-sm'
-    : 'inline-flex rounded-lg px-5 py-3 font-semibold text-white shadow-sm';
-  if (!href) return <span className={cls} style={inverse ? undefined : { backgroundColor: block.accent }}>{block.buttonLabel}</span>;
-  return <a className={cls} style={inverse ? undefined : { backgroundColor: block.accent }}
-    href={href} target={href.startsWith('#') ? undefined : '_blank'}
-    rel={href.startsWith('#') ? undefined : 'noopener noreferrer'}>{block.buttonLabel}</a>;
+  const href = safeLink(block.buttonUrl);
+  const className = 'inline-flex items-center justify-center px-5 py-3 text-sm font-semibold shadow-sm transition hover:opacity-85';
+  const style:CSSProperties = {borderRadius:'var(--studio-radius)',backgroundColor:inverse?'var(--studio-foreground)':'var(--studio-accent)',color:inverse?'var(--studio-background)':'#ffffff'};
+  if (!href) return <span className={className} style={style}>{block.buttonLabel}</span>;
+  if (href.startsWith('#page:')) return <button type="button" className={className} style={style} onClick={e=>{e.stopPropagation();navigate(href.slice(6));}}>{block.buttonLabel}</button>;
+  return <a className={className} style={style} href={href} target={href.startsWith('#')?undefined:'_blank'} rel={href.startsWith('#')?undefined:'noopener noreferrer'} onClick={e=>e.stopPropagation()}>{block.buttonLabel}</a>;
 }
-
-function BlockPreview({ block }: { block: Block }) {
-  if (block.kind === 'hero') {
-    return <section className="rounded-2xl bg-gray-950 px-7 py-16 text-center text-white sm:px-12">
-      <span className="mb-5 inline-block rounded-full border border-white/25 px-4 py-1 text-xs tracking-widest uppercase">Motngum Builder</span>
-      <h2 className="mx-auto max-w-2xl text-3xl font-extrabold tracking-tight sm:text-5xl">{block.title}</h2>
-      <p className="mx-auto mt-5 max-w-xl whitespace-pre-line text-sm leading-7 text-gray-300 sm:text-base">{block.body}</p>
-      <div className="mt-7"><ActionLink block={block} /></div>
+function ImageSurface({src,alt,large=false}: {src:string;alt:string;large?:boolean}) {
+  const valid = safeImage(src);
+  return valid
+    ? <img src={valid} alt={alt} loading="lazy" referrerPolicy="no-referrer" className={'w-full object-cover '+(large?'min-h-[260px] max-h-[460px]':'h-44 @md:h-64')}/>
+    : <div className={'flex items-center justify-center bg-gradient-to-br from-stone-100 via-gray-50 to-amber-100 text-sm text-stone-500 '+(large?'min-h-[260px]':'h-44')}><ImageIcon size={24} className="mr-2"/>Thêm hình ảnh HTTPS</div>;
+}
+function BlockPreview({block,theme,navigate}: {block:Block;theme:ThemeDefinition;navigate:(slug:string)=>void}) {
+  const accent = block.accent || theme.primary;
+  const variant = block.variant;
+  const isFull = variant==='full' || variant==='banner';
+  const common:CSSProperties={borderRadius:'var(--studio-radius)'};
+  const title = <h2 className={'font-bold tracking-tight '+(block.kind==='hero'?'text-3xl @md:text-5xl @lg:text-6xl':'text-2xl @md:text-3xl')}>{block.title}</h2>;
+  const description = <p className="mt-4 max-w-2xl whitespace-pre-line text-sm leading-7 opacity-80 @md:text-base">{block.body}</p>;
+  const action = <div className="mt-6"><ActionLink block={block} navigate={navigate}/></div>;
+  const rows = parseRows(block.body);
+  if(block.kind==='hero') {
+    return <section className={'relative overflow-hidden '+(variant==='minimal'?'py-20 @md:py-32':'min-h-[260px]')} style={{...common,backgroundColor:variant==='minimal'?'transparent':accent,color:variant==='minimal'?'var(--studio-foreground)':'#fff'}}>
+      {isFull && safeImage(block.imageUrl) && <><div className="absolute inset-0" style={{backgroundImage:'linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20)),url("'+safeImage(block.imageUrl)+'")',backgroundSize:'cover',backgroundPosition:'center'}}/><div className="absolute inset-0 bg-black/10"/></>}
+      {variant==='split' ? <div className="relative grid min-h-[340px] @md:grid-cols-2">
+        <div className="flex flex-col items-start justify-center p-7 @md:p-12">{title}{description}{action}</div>
+        <div className="overflow-hidden"><ImageSurface src={block.imageUrl} alt={block.title} large/></div>
+      </div> : <div className={'relative mx-auto flex max-w-4xl flex-col px-7 py-14 @md:px-14 @md:py-24 '+(variant==='centered'||variant==='cards'?'items-center text-center':'items-start')}>
+        <div className="mb-5 inline-flex rounded-full border border-current/40 px-3 py-1 text-xs uppercase tracking-[.2em]">Motngum Studio</div>
+        {title}{description}{action}
+      </div>}
     </section>;
   }
-  if (block.kind === 'features') {
-    return <section className="py-9">
-      <h2 className="mb-6 text-center text-2xl font-bold text-gray-900">{block.title}</h2>
-      <div className="grid gap-3 sm:grid-cols-3">
-        {block.body.split('\n').filter(Boolean).slice(0, 6).map((line, index) =>
-          <div key={index} className="rounded-xl border border-gray-200 bg-white p-5 text-center shadow-sm">
-            <div className="mx-auto mb-3 flex size-9 items-center justify-center rounded-full text-white" style={{ backgroundColor: block.accent }}>{index + 1}</div>
-            <p className="font-medium text-gray-800">{line}</p>
-          </div>
-        )}
+  if (block.kind==='image') return <section className="overflow-hidden py-5" style={common}><ImageSurface src={block.imageUrl} alt={block.title} large/><div className="p-5"><h2 className="text-2xl font-bold">{block.title}</h2>{description}</div></section>;
+  if (block.kind==='gallery') return <section className="py-10"><div className="mb-6">{title}{description}</div><div className="grid grid-cols-2 gap-2 @md:grid-cols-3">
+    {Array.from({length:6}).map((_,i)=><div key={i} className="overflow-hidden" style={common}><div className="relative h-32 @md:h-52 overflow-hidden">
+      <ImageSurface src={block.imageUrl} alt={block.title+' '+(i+1)}/>
+      <div className="absolute inset-0" style={{background: i%2===0?'linear-gradient(135deg,transparent 45%,rgba(0,0,0,.2))':'linear-gradient(225deg,rgba(255,255,255,.25),transparent 65%)'}}/>
+    </div></div>)}
+  </div></section>;
+  if (block.kind==='cta') return <section className="my-8 px-6 py-14 text-center @md:py-20" style={{...common,backgroundColor:accent,color:'#fff'}}>
+    {title}<p className="mx-auto mt-4 max-w-xl whitespace-pre-line opacity-90">{block.body}</p>
+    <div className="mt-6"><ActionLink block={block} navigate={navigate} inverse/></div>
+  </section>;
+  if (block.kind==='text') return <section className={'mx-auto py-10 @md:py-16 '+(variant==='minimal'?'max-w-[660px]':'max-w-4xl')}><div className={variant==='centered'?'text-center':''}>{title}{description}</div></section>;
+  if (block.kind==='features'||block.kind==='services'||block.kind==='products'||block.kind==='logos') {
+    const list = rows.length?rows:[[block.title]];
+    return <section className="py-9"><div className="mb-7">{title}</div>
+      <div className={'grid gap-3 '+(variant==='list'?'grid-cols-1':'grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3')}>
+        {list.map((parts,i)=><div key={i} className={'overflow-hidden border p-5 '+(variant==='minimal'?'border-transparent !px-0':'')} style={{...common,borderColor:'var(--studio-border)',backgroundColor:variant==='minimal'?'transparent':'var(--studio-surface)'}}>
+          {block.kind==='products'&&<div className="mb-4 overflow-hidden" style={common}><ImageSurface src={block.imageUrl} alt={parts[0]}/></div>}
+          {block.kind!=='logos'&&block.kind!=='products'&&<div className="mb-3 flex size-10 items-center justify-center rounded-full text-sm font-bold" style={{backgroundColor:accent,color:'#fff'}}>{String(i+1).padStart(2,'0')}</div>}
+          <h3 className="font-semibold">{parts[0]}</h3>{parts[1]&&<p className="mt-2 text-sm opacity-70">{parts[1]}</p>}
+        </div>)}
       </div>
     </section>;
   }
-  if (block.kind === 'text') {
-    return <section id="gioi-thieu" className="mx-auto max-w-3xl py-11 text-center">
-      <h2 className="text-2xl font-bold text-gray-900">{block.title}</h2>
-      <div className="mx-auto my-5 h-1 w-14 rounded-full" style={{ backgroundColor: block.accent }} />
-      <p className="whitespace-pre-line leading-8 text-gray-600">{block.body}</p>
-    </section>;
-  }
-  if (block.kind === 'image') {
-    const src = safeHttpUrl(block.imageUrl);
-    return <section className="py-6">
-      <h2 className="mb-4 text-2xl font-bold text-gray-900">{block.title}</h2>
-      {src ? <img src={src} alt={block.title || 'Ảnh nội dung'} loading="lazy"
-        className="max-h-[440px] w-full rounded-2xl object-cover" />
-        : <div className="flex h-52 items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-100 text-sm text-gray-500">Dán URL ảnh HTTPS ở bảng thuộc tính</div>}
-      {block.body ? <p className="mt-3 whitespace-pre-line text-sm leading-6 text-gray-600">{block.body}</p> : null}
-    </section>;
-  }
-  return <section className="rounded-2xl px-7 py-12 text-center text-white" style={{ backgroundColor: block.accent }}>
-    <h2 className="text-2xl font-bold">{block.title}</h2>
-    <p className="mx-auto mt-3 max-w-xl whitespace-pre-line leading-7 text-white/90">{block.body}</p>
-    <div className="mt-6"><ActionLink block={block} inverse /></div>
+  if (block.kind==='stats') return <section className="py-9"><div className="mb-8">{title}</div><div className="grid grid-cols-2 gap-5 @md:grid-cols-3">{rows.map((p,i)=><div key={i} className="border-l-4 pl-4" style={{borderColor:accent}}><div className="text-3xl font-extrabold @md:text-5xl">{p[0]}</div><p className="mt-2 text-sm opacity-70">{p[1]}</p></div>)}</div></section>;
+  if (block.kind==='pricing'||block.kind==='testimonials'||block.kind==='team') return <section className="py-10"><div className="mb-7">{title}</div>
+    <div className="grid gap-4 @md:grid-cols-3">{rows.map((p,i)=><div key={i} className="border p-6" style={{...common,borderColor:'var(--studio-border)',backgroundColor:'var(--studio-surface)'}}>
+      {block.kind==='testimonials'&&<div className="mb-4 text-lg" style={{color:accent}}>★★★★★</div>}
+      <h3 className="text-lg font-bold">{p[0]}</h3><p className="mt-4 text-sm leading-7 opacity-75">{p[1]||''}</p>
+      {p[2]&&<p className="mt-5 border-t pt-4 text-sm font-semibold" style={{borderColor:'var(--studio-border)'}}>{p[2]}</p>}
+    </div>)}</div></section>;
+  if (block.kind==='faq') return <section className="mx-auto max-w-4xl py-12">{title}<div className="mt-8 divide-y" style={{borderColor:'var(--studio-border)'}}>
+    {rows.map((p,i)=><details key={i} className="group py-5"><summary className="flex cursor-pointer list-none items-center justify-between font-semibold">{p[0]}<ChevronDown size={18}/></summary><p className="pt-3 text-sm leading-7 opacity-70">{p[1]||''}</p></details>)}
+  </div></section>;
+  if (block.kind==='contact') return <section className="my-10 grid gap-7 border p-7 @md:grid-cols-2 @md:p-10" style={{...common,borderColor:'var(--studio-border)',backgroundColor:'var(--studio-surface)'}}>
+    <div>{title}<p className="mt-5 whitespace-pre-line text-sm leading-8 opacity-75">{block.body}</p></div>
+    <div className="rounded-xl border p-6 text-sm" style={{borderColor:'var(--studio-border)'}}><p className="font-bold">Liên hệ trực tiếp</p><p className="mt-3 opacity-70">Thông tin ở bên trái là dữ liệu mẫu. Hãy thay bằng thông tin thật trước khi phát hành.</p></div>
   </section>;
+  if(block.kind==='newsletter') return <section className="my-10 px-7 py-12 text-center" style={{...common,backgroundColor:'var(--studio-surface)',border:'1px solid var(--studio-border)'}}>{title}<p className="mx-auto mt-3 max-w-xl text-sm opacity-75">{block.body}</p><p className="mt-4 text-xs opacity-60">Chức năng đăng ký nhận tin chưa kết nối máy chủ.</p></section>;
+  return null;
 }
-
+function TemplateThumb({template}: {template:SiteTemplate}) {
+  const t=themeById(template.theme);
+  return <div className="relative aspect-[16/10] overflow-hidden rounded-lg" style={{backgroundColor:t.background,color:t.foreground}}>
+    <div className="flex items-center justify-between border-b px-3 py-2 text-[8px]" style={{borderColor:t.border}}><b>{template.name}</b><span>● ● ●</span></div>
+    <div className={'grid h-[82%] '+(template.layout==='split'?'grid-cols-2':'grid-cols-1')}>
+      <div className={'flex flex-col justify-center p-3 '+(template.layout==='centered'?'items-center text-center':'')}>
+        <div className="mb-2 h-1 w-10 rounded-full" style={{backgroundColor:t.primary}}/>
+        <p className="line-clamp-2 text-[11px] font-bold leading-tight">{template.tagline}</p>
+        <div className="mt-2 h-[3px] w-3/4 rounded-full opacity-30" style={{backgroundColor:t.foreground}}/>
+        <div className="mt-1 h-[3px] w-1/2 rounded-full opacity-30" style={{backgroundColor:t.foreground}}/>
+        <div className="mt-3 h-2 w-11 rounded-sm" style={{backgroundColor:t.primary}}/>
+      </div>
+      {(template.layout==='split'||template.layout==='full'||template.layout==='banner')&&
+        <div className={'overflow-hidden '+(template.layout==='split'?'':'absolute inset-0 -z-10 opacity-30')}>
+          <img src={template.heroImage} loading="lazy" alt="" className="h-full w-full object-cover"/>
+        </div>}
+    </div>
+    <div className="absolute bottom-2 right-2 flex gap-1"><span className="size-2 rounded-full" style={{backgroundColor:t.primary}}/><span className="size-2 rounded-full" style={{backgroundColor:t.foreground}}/></div>
+  </div>;
+}
 export default function BuilderDemoPage() {
-  const [doc, setDoc] = useState<SiteDocument>(EXAMPLE);
-  const [hydrated, setHydrated] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(EXAMPLE.blocks[0].id);
-  const [viewport, setViewport] = useState<Viewport>('desktop');
-  const [preview, setPreview] = useState(false);
-  const [status, setStatus] = useState('Đang mở bản nháp...');
-  const dragSource = useRef<DragSource | null>(null);
-  const importInput = useRef<HTMLInputElement>(null);
+  const [doc,setDoc]=useState<SiteDocument>(()=>buildTemplateDocument(SITE_TEMPLATES.find(t=>t.id===DEFAULT_TEMPLATE_ID)||SITE_TEMPLATES[0]));
+  const [pageId,setPageId]=useState<string>('');
+  const [selectedId,setSelectedId]=useState<string|null>(null);
+  const [sidebar,setSidebar]=useState<Sidebar>('templates');
+  const [category,setCategory]=useState<SiteCategory|'Tất cả'>('Tất cả');
+  const [query,setQuery]=useState('');
+  const [gallery,setGallery]=useState(true);
+  const [candidate,setCandidate]=useState<string>(DEFAULT_TEMPLATE_ID);
+  const [viewport,setViewport]=useState<Viewport>('desktop');
+  const [preview,setPreview]=useState(false);
+  const [hydrated,setHydrated]=useState(false);
+  const [status,setStatus]=useState('Đang tải bản nháp...');
+  const [revision,setRevision]=useState(0);
+  const undoRef=useRef<SiteDocument[]>([]);
+  const redoRef=useRef<SiteDocument[]>([]);
+  const dragRef=useRef<{id?:string;kind?:BlockKind}|null>(null);
+  const fileInput=useRef<HTMLInputElement>(null);
+  const theme=themeById(doc.themeId);
+  const activePage=doc.pages.find(p=>p.id===pageId)||doc.pages[0];
+  const activeBlock=activePage?.blocks.find(b=>b.id===selectedId)||null;
+  const totalBlocks=doc.pages.reduce((n,p)=>n+p.blocks.length,0);
+  const currentTemplate=SITE_TEMPLATES.find(t=>t.id===candidate)||SITE_TEMPLATES[0];
+  const galleryMatches=SITE_TEMPLATES.filter(t=>
+    (category==='Tất cả'||t.category===category)&&
+    (t.name+' '+t.description+' '+t.category).toLocaleLowerCase('vi').includes(query.trim().toLocaleLowerCase('vi'))
+  );
 
-  useEffect(() => {
+  useEffect(()=>{
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const next = validateDocument(JSON.parse(stored));
-        if (next) {
-          setDoc(next);
-          setSelectedId(next.blocks[0]?.id ?? null);
-        } else {
-          setStatus('Bản lưu cũ không hợp lệ; đã sử dụng mẫu an toàn.');
-        }
+      const raw=localStorage.getItem(STORAGE);
+      const existing=raw?validateDocument(JSON.parse(raw)):null;
+      if(existing){setDoc(existing);setPageId(existing.pages[0]?.id||'');setGallery(false);setStatus('Đã khôi phục bản nháp trong trình duyệt.');}
+      else {
+        const old=localStorage.getItem(LEGACY_STORAGE);
+        const migrated=old?migrateLegacy(JSON.parse(old)):null;
+        if(migrated){setDoc(migrated);setPageId(migrated.pages[0].id);setGallery(false);setStatus('Đã chuyển bản nháp cũ sang cấu trúc nhiều trang.');}
+        else if(raw) setStatus('Bản nháp lưu không hợp lệ; hãy chọn mẫu mới.');
+        else setStatus('Chọn một mẫu để bắt đầu thiết kế website.');
       }
-    } catch {
-      setStatus('Không đọc được bản lưu; đã sử dụng mẫu mặc định.');
-    }
+    }catch{setStatus('Không đọc được bản lưu; hãy chọn mẫu hoặc nhập JSON.');}
     setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
+  },[]);
+  useEffect(()=>{
+    if(!hydrated)return;
+    try{localStorage.setItem(STORAGE,JSON.stringify(doc));setStatus('Đã tự lưu bản nháp trong trình duyệt · Chưa xuất bản.');}
+    catch{setStatus('Không lưu được; hãy xuất tệp JSON để sao lưu.');}
+  },[doc,hydrated]);
+  function commit(next:SiteDocument) {
+    if(next===doc)return;
+    undoRef.current=[...undoRef.current.slice(-39),doc];
+    redoRef.current=[];
+    setDoc(next);setRevision(r=>r+1);
+  }
+  function undo() {
+    const next=undoRef.current.pop();if(!next)return;
+    redoRef.current.push(doc);setDoc(next);setSelectedId(null);setRevision(r=>r+1);
+  }
+  function redo() {
+    const next=redoRef.current.pop();if(!next)return;
+    undoRef.current.push(doc);setDoc(next);setSelectedId(null);setRevision(r=>r+1);
+  }
+  function modifyPage(blocks:Block[]) {
+    commit({...doc,pages:doc.pages.map(p=>p.id===activePage.id?{...p,blocks}:p)});
+  }
+  function patchBlock(patch:Partial<Block>) {
+    if(!activeBlock)return;
+    modifyPage(activePage.blocks.map(b=>b.id===activeBlock.id?{...b,...patch}:b));
+  }
+  function addBlock(kind:BlockKind,index=activePage.blocks.length) {
+    if(activePage.blocks.length>=MAX_BLOCKS||totalBlocks>=MAX_TOTAL){setStatus('Đã đạt giới hạn 40 khối/trang hoặc 200 khối/site.');return;}
+    const b=createBlock(kind,doc.themeId);
+    const blocks=[...activePage.blocks];blocks.splice(Math.max(0,Math.min(index,blocks.length)),0,b);
+    modifyPage(blocks);setSelectedId(b.id);
+  }
+  function moveBlock(id:string,to:number) {
+    const blocks=[...activePage.blocks],from=blocks.findIndex(b=>b.id===id);
+    if(from<0||to<0||to>=blocks.length||from===to)return;
+    const [block]=blocks.splice(from,1);blocks.splice(to,0,block);modifyPage(blocks);
+  }
+  function dropAt(event:DragEvent<HTMLElement>,index:number) {
+    event.preventDefault();const source=dragRef.current;dragRef.current=null;
+    if(!source)return;
+    if(source.kind){addBlock(source.kind,index);return;}
+    if(source.id){const from=activePage.blocks.findIndex(b=>b.id===source.id);if(from<0)return;
+      moveBlock(source.id,from<index?index-1:index);}
+  }
+  function startDrag(event:DragEvent<HTMLElement>,source:{id?:string;kind?:BlockKind}) {
+    dragRef.current=source;event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain','motngum-block');
+  }
+  function navigate(slug:string) {
+    const target=doc.pages.find(p=>p.slug===slug);
+    if(target){setPageId(target.id);setSelectedId(null);}else setStatus('Trang đích không tồn tại trong bản nháp.');
+  }
+  function applyTemplate(template:SiteTemplate) {
+    if(hydrated&&revision>0&&!window.confirm('Áp dụng mẫu sẽ thay thế website đang chỉnh sửa. Hãy xuất JSON nếu muốn sao lưu. Tiếp tục?'))return;
+    const next=buildTemplateDocument(template);
+    commit(next);setPageId(next.pages[0].id);setSelectedId(null);setGallery(false);setPreview(false);
+    setStatus('Đã áp dụng mẫu '+template.name+' với 3 trang có thể chỉnh sửa.');
+  }
+  function changeTheme(themeId:ThemeId) {
+    if(themeId===doc.themeId)return;
+    const old=themeById(doc.themeId).primary,next=themeById(themeId).primary;
+    commit({...doc,themeId,pages:doc.pages.map(p=>({...p,blocks:p.blocks.map(b=>({...b,accent:b.accent===old?next:b.accent}))}))});
+  }
+  function addPage() {
+    if(doc.pages.length>=MAX_PAGES){setStatus('Tối đa 12 trang cho một website thử nghiệm.');return;}
+    const base='trang-moi';let slug=base,n=2;
+    while(doc.pages.some(p=>p.slug===slug))slug=base+'-'+n++;
+    const p:SitePage={id:newId(),title:'Trang mới',slug,blocks:[createBlock('hero',doc.themeId,'minimal'),createBlock('text',doc.themeId,'minimal')]};
+    commit({...doc,pages:[...doc.pages,p]});setPageId(p.id);setSelectedId(null);setSidebar('pages');
+  }
+  function patchPage(patch:Partial<SitePage>) {
+    if(!activePage)return;
+    commit({...doc,pages:doc.pages.map(p=>p.id===activePage.id?{...p,...patch}:p)});
+  }
+  function changeSlug(raw:string) {
+    const slug=slugify(raw);if(!slug)return;
+    if(doc.pages.some(p=>p.slug===slug&&p.id!==activePage.id)){setStatus('Đường dẫn trang đã được dùng.');return;}
+    patchPage({slug});
+  }
+  function duplicatePage() {
+    if(doc.pages.length>=MAX_PAGES||totalBlocks+activePage.blocks.length>MAX_TOTAL){setStatus('Không đủ dung lượng để nhân bản trang.');return;}
+    let slug=activePage.slug+'-copy',n=2;
+    while(doc.pages.some(p=>p.slug===slug))slug=activePage.slug+'-copy-'+n++;
+    const p={...activePage,id:newId(),title:activePage.title+' (bản sao)',slug,blocks:activePage.blocks.map(b=>({...b,id:newId()}))};
+    commit({...doc,pages:[...doc.pages,p]});setPageId(p.id);setSelectedId(null);
+  }
+  function deletePage() {
+    if(doc.pages.length===1){setStatus('Cần giữ ít nhất một trang.');return;}
+    if(!window.confirm('Xóa trang '+activePage.title+' và toàn bộ nội dung?'))return;
+    commit({...doc,pages:doc.pages.filter(p=>p.id!==activePage.id)});
+    setPageId(doc.pages.find(p=>p.id!==activePage.id)?.id||'');setSelectedId(null);
+  }
+  function exportJson() {
+    const blob=new Blob([JSON.stringify(doc,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='motngum-'+(slugify(doc.title)||'site')+'-v2.json';document.body.appendChild(a);a.click();a.remove();
+    window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  async function importJson(event:ChangeEvent<HTMLInputElement>) {
+    const file=event.target.files?.[0];event.target.value='';
+    if(!file)return;
+    if(file.size>MAX_FILE){setStatus('Tệp vượt giới hạn 256 KB.');return;}
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(doc));
-      setStatus('Đã lưu tự động trong trình duyệt');
-    } catch {
-      setStatus('Không lưu được trong trình duyệt — hãy xuất JSON để sao lưu.');
-    }
-  }, [doc, hydrated]);
-
-  const selected = doc.blocks.find(b => b.id === selectedId) ?? null;
-  const updateBlock = (patch: Partial<Block>) => {
-    if (!selected) return;
-    setDoc(current => ({
-      ...current,
-      blocks: current.blocks.map(block => block.id === selected.id ? { ...block, ...patch } : block)
-    }));
-  };
-  const addBlock = (kind: BlockKind, index = doc.blocks.length) => {
-    if (doc.blocks.length >= MAX_BLOCKS) {
-      setStatus('Một trang demo tối đa 30 khối.');
-      return;
-    }
-    const block = makeBlock(kind);
-    setDoc(current => {
-      const next = [...current.blocks];
-      next.splice(Math.min(index, next.length), 0, block);
-      return { ...current, blocks: next };
-    });
-    setSelectedId(block.id);
-  };
-  const removeBlock = (id: string) => {
-    setDoc(current => ({ ...current, blocks: current.blocks.filter(b => b.id !== id) }));
-    if (selectedId === id) setSelectedId(null);
-  };
-  const moveBlock = (id: string, direction: number) => {
-    setDoc(current => {
-      const from = current.blocks.findIndex(b => b.id === id);
-      const to = from + direction;
-      if (from < 0 || to < 0 || to >= current.blocks.length) return current;
-      const next = [...current.blocks];
-      const temp = next[from];
-      next[from] = next[to];
-      next[to] = temp;
-      return { ...current, blocks: next };
-    });
-  };
-  const onDropAt = (event: DragEvent<HTMLElement>, index: number) => {
-    event.preventDefault();
-    const source = dragSource.current;
-    dragSource.current = null;
-    if (!source) return;
-    if ('kind' in source) {
-      addBlock(source.kind, index);
-      return;
-    }
-    setDoc(current => {
-      const from = current.blocks.findIndex(b => b.id === source.id);
-      if (from < 0) return current;
-      const next = [...current.blocks];
-      const [item] = next.splice(from, 1);
-      next.splice(Math.max(0, Math.min(next.length, from < index ? index - 1 : index)), 0, item);
-      return { ...current, blocks: next };
-    });
-  };
-  const beginDrag = (event: DragEvent<HTMLElement>, source: DragSource) => {
-    dragSource.current = source;
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setData('text/plain', 'motngum-builder-block');
-  };
-  const exportJSON = () => {
-    const blob = new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'motngum-builder-draft.json';
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-  };
-  const importJSON = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-    if (!file) return;
-    if (file.size > 128 * 1024) {
-      setStatus('Tệp vượt quá giới hạn 128 KB.');
-      return;
-    }
-    try {
-      const next = validateDocument(JSON.parse(await file.text()));
-      if (!next) throw new Error('invalid draft');
-      setDoc(next);
-      setSelectedId(next.blocks[0]?.id ?? null);
-      setStatus('Đã nhập bản nháp hợp lệ.');
-    } catch {
-      setStatus('JSON không đúng định dạng Motngum Builder v1.');
-    }
-  };
-  const reset = () => {
-    if (!window.confirm('Khôi phục mẫu mặc định và thay thế bản nháp đang lưu?')) return;
-    setDoc(EXAMPLE);
-    setSelectedId(EXAMPLE.blocks[0].id);
-  };
-
+      const raw=JSON.parse(await file.text());
+      const next=validateDocument(raw)||migrateLegacy(raw);
+      if(!next)throw new Error('invalid format');
+      if(!window.confirm('Nhập JSON sẽ thay thế website hiện tại. Tiếp tục?'))return;
+      commit(next);setPageId(next.pages[0].id);setSelectedId(null);setGallery(false);
+      setStatus('Đã nhập website hợp lệ ('+next.pages.length+' trang).');
+    }catch{setStatus('Không thể nhập JSON: sai phiên bản, cấu trúc hoặc đường dẫn không an toàn.');}
+  }
+  function reset() {
+    if(!window.confirm('Khôi phục website sẽ thay thế bản nháp. Tiếp tục?'))return;
+    const next=buildTemplateDocument(SITE_TEMPLATES.find(t=>t.id===DEFAULT_TEMPLATE_ID)||SITE_TEMPLATES[0]);
+    commit(next);setPageId(next.pages[0].id);setSelectedId(null);setGallery(true);
+  }
+  const canvasWidth=viewport==='mobile'?'390px':viewport==='tablet'?'768px':'1120px';
+  const isEditing=!preview;
   return <div className="min-h-screen bg-slate-100 text-slate-900">
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur">
-      <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-amber-700">Motngum Studio · thử nghiệm</p>
-          <h1 className="text-xl font-bold">Trình tạo website kéo thả</h1>
-        </div>
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 px-3 py-3 backdrop-blur @md:px-5">
+      <div className="mx-auto flex max-w-[1750px] flex-wrap items-center justify-between gap-3">
+        <div><div className="flex items-center gap-2"><LayoutTemplate size={19} className="text-amber-700"/><b>Motngum Studio</b><span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">DEMO</span></div>
+          <p className="text-xs text-slate-500">Dựng website từ template · 24 mẫu · 8 theme</p></div>
         <div className="flex flex-wrap items-center gap-2">
-          <button onClick={() => setViewport('desktop')} aria-label="Xem trên máy tính"
-            className={'rounded-lg border p-2 ' + (viewport === 'desktop' ? 'border-amber-500 bg-amber-50' : 'border-slate-200')}><Monitor size={18}/></button>
-          <button onClick={() => setViewport('mobile')} aria-label="Xem trên điện thoại"
-            className={'rounded-lg border p-2 ' + (viewport === 'mobile' ? 'border-amber-500 bg-amber-50' : 'border-slate-200')}><Smartphone size={18}/></button>
-          <button onClick={() => setPreview(v => !v)}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium"><Eye size={16}/>{preview ? 'Chỉnh sửa' : 'Xem trước'}</button>
-          <button onClick={exportJSON} className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white"><Download size={16}/>Xuất JSON</button>
+          <button onClick={()=>setGallery(true)} className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-slate-50"><LayoutTemplate size={16}/>Chọn mẫu</button>
+          <div className="flex items-center rounded-lg border border-slate-200">
+            {([['desktop',Monitor],['tablet',Tablet],['mobile',Smartphone]] as const).map(([key,Icon])=>
+              <button key={key} aria-label={'Xem '+key} title={'Xem '+key} onClick={()=>setViewport(key)} className={'p-2 '+(viewport===key?'bg-amber-100 text-amber-800':'text-slate-500')}><Icon size={17}/></button>)}
+          </div>
+          <button onClick={undo} disabled={!undoRef.current.length} title="Hoàn tác" aria-label="Hoàn tác" className="rounded-lg border p-2 disabled:opacity-30"><Undo2 size={17}/></button>
+          <button onClick={redo} disabled={!redoRef.current.length} title="Làm lại" aria-label="Làm lại" className="rounded-lg border p-2 disabled:opacity-30"><Redo2 size={17}/></button>
+          <button onClick={()=>setPreview(v=>!v)} className="inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm font-semibold"><Eye size={16}/>{preview?'Chỉnh sửa':'Xem trước'}</button>
+          <button onClick={exportJson} className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white"><Download size={16}/>Xuất JSON</button>
         </div>
       </div>
     </header>
-    <div className="mx-auto max-w-[1600px] px-4 py-4">
-      <p role="status" aria-live="polite" className="mb-3 text-xs text-slate-600">
-        {status}. Đây là bản demo lưu cục bộ, chưa phát hành website hoặc ghi dữ liệu lên máy chủ.
-      </p>
-      <div className={'grid gap-4 ' + (preview ? '' : 'xl:grid-cols-[230px_minmax(0,1fr)_290px]')}>
-        {!preview && <aside className="self-start rounded-xl border border-slate-200 bg-white p-4">
-          <h2 className="mb-2 flex items-center gap-2 font-bold"><LayoutTemplate size={18}/>Thư viện khối</h2>
-          <p className="mb-4 text-xs text-slate-500">Kéo khối vào vạch chấm trong trang, hoặc nhấp để thêm ở cuối.</p>
-          <div className="space-y-2">
-            {BLOCK_KINDS.map(kind => <button type="button" key={kind} draggable
-              onDragStart={event => beginDrag(event, { kind })}
-              onDragEnd={() => { dragSource.current = null; }}
-              onClick={() => addBlock(kind)}
-              className="flex w-full cursor-grab items-center justify-between gap-2 rounded-lg border border-slate-200 px-3 py-3 text-left text-sm hover:border-amber-500 hover:bg-amber-50">
-              <span>{KIND_LABELS[kind]}</span><Plus size={15}/>
-            </button>)}
+    <div className="mx-auto max-w-[1750px] px-3 py-3 @md:px-5">
+      <div role="status" aria-live="polite" className="mb-3 rounded-lg bg-white px-4 py-2 text-xs text-slate-600">{status} Đang xem bản thử nghiệm, không có nút xuất bản hoặc thu tiền.</div>
+      <div className={'grid items-start gap-4 '+(isEditing?'xl:grid-cols-[270px_minmax(0,1fr)_270px]':'')}>
+        {isEditing&&<aside className="overflow-hidden rounded-xl border border-slate-200 bg-white xl:sticky xl:top-24">
+          <div className="grid grid-cols-4 border-b border-slate-200 text-[11px] font-semibold">
+            {([['templates','Mẫu',LayoutTemplate],['blocks','Khối',PanelLeft],['pages','Trang',FileJson],['themes','Theme',Paintbrush]] as const).map(([tab,label,Icon])=><button key={tab} onClick={()=>setSidebar(tab)} className={'flex flex-col items-center gap-1 px-1 py-3 '+(sidebar===tab?'border-b-2 border-amber-600 bg-amber-50 text-amber-900':'text-slate-600 hover:bg-slate-50')}><Icon size={17}/>{label}</button>)}
           </div>
-          <hr className="my-4 border-slate-200"/>
-          <button onClick={() => importInput.current?.click()} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-slate-100"><FileJson size={17}/>Nhập bản nháp JSON</button>
-          <input ref={importInput} className="hidden" type="file" accept="application/json,.json" onChange={importJSON}/>
-          <button onClick={reset} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-slate-100"><RotateCcw size={17}/>Khôi phục mẫu</button>
+          <div className="max-h-[75vh] overflow-auto p-3">
+            {sidebar==='templates'&&<><p className="mb-3 text-sm font-bold">Kho giao diện · 24 mẫu</p><button onClick={()=>setGallery(true)} className="mb-3 w-full rounded-lg bg-amber-700 px-3 py-2 text-sm font-semibold text-white">Mở thư viện và xem trước</button>
+              <div className="space-y-2">{SITE_TEMPLATES.filter(t=>t.category==='Cửa hàng'||t.category==='Portfolio').slice(0,6).map(t=>
+                <button key={t.id} onClick={()=>{setCandidate(t.id);setGallery(true);}} className="w-full rounded-lg border p-2 text-left hover:border-amber-400"><TemplateThumb template={t}/><p className="mt-2 text-xs font-semibold">{t.name}</p></button>)}</div></>}
+            {sidebar==='blocks'&&<><p className="mb-2 text-sm font-bold">Thư viện 16 thành phần</p><p className="mb-3 text-xs text-slate-500">Kéo vào vùng chấm hoặc nhấp để thêm cuối trang.</p>
+              <div className="grid grid-cols-1 gap-2">{BLOCK_KINDS.map(kind=><button key={kind} draggable onDragStart={e=>startDrag(e,{kind})} onDragEnd={()=>dragRef.current=null} onClick={()=>addBlock(kind)} className="flex w-full cursor-grab items-center justify-between rounded-lg border border-slate-200 p-3 text-left text-xs hover:border-amber-500 hover:bg-amber-50"><span>{KIND_LABELS[kind]}</span><Plus size={15}/></button>)}</div></>}
+            {sidebar==='pages'&&<><div className="mb-3 flex items-center justify-between"><b className="text-sm">Các trang ({doc.pages.length}/{MAX_PAGES})</b><button onClick={addPage} title="Thêm trang" className="rounded-lg bg-amber-700 p-2 text-white"><Plus size={17}/></button></div>
+              <div className="space-y-2">{doc.pages.map(p=><button key={p.id} onClick={()=>{setPageId(p.id);setSelectedId(null)}} className={'flex w-full items-center justify-between rounded-lg border px-3 py-3 text-left text-sm '+(p.id===activePage.id?'border-amber-400 bg-amber-50 font-semibold':'border-slate-200')}><span>{p.title}</span><span className="text-[10px] text-slate-500">/{p.slug}</span></button>)}</div>
+              <hr className="my-4"/><b className="text-sm">Thiết lập trang</b>
+              <label className="mt-3 block text-xs">Tên trang<input className="mt-1 w-full rounded-lg border px-3 py-2 text-sm" maxLength={80} value={activePage.title} onChange={e=>patchPage({title:e.target.value||' '})}/></label>
+              <label className="mt-3 block text-xs">Đường dẫn slug<input className="mt-1 w-full rounded-lg border px-3 py-2 text-sm" value={activePage.slug} onChange={e=>changeSlug(e.target.value)} /></label>
+              <div className="mt-4 flex gap-2"><button onClick={duplicatePage} className="flex items-center gap-1 rounded-lg border p-2 text-xs"><Copy size={14}/>Nhân bản</button><button onClick={deletePage} className="flex items-center gap-1 rounded-lg border p-2 text-xs text-red-700"><Trash2 size={14}/>Xóa trang</button></div>
+            </>}
+            {sidebar==='themes'&&<><b className="text-sm">Giao diện toàn website</b><p className="my-2 text-xs text-slate-500">Thay màu chủ đạo, nền, bề mặt, góc bo và typography trên mọi trang.</p>
+              <div className="space-y-2">{THEMES.map(t=><button key={t.id} onClick={()=>changeTheme(t.id)} className={'w-full rounded-lg border p-3 text-left '+(t.id===doc.themeId?'border-amber-500 bg-amber-50':'border-slate-200')}>
+                <div className="flex items-center gap-2"><span className="size-7 rounded-full border" style={{backgroundColor:t.primary}}/><span className="size-7 rounded-full border" style={{backgroundColor:t.background}}/><b className="text-sm">{t.name}</b>{t.id===doc.themeId&&<Check size={16} className="ml-auto text-amber-700"/>}</div><p className="mt-2 text-xs text-slate-600">{t.mood}</p>
+              </button>)}</div></>}
+          </div>
         </aside>}
         <main className="min-w-0">
-          <div className={'mx-auto rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition-[max-width] sm:p-5 ' +
-            (viewport === 'mobile' ? 'max-w-[390px]' : 'max-w-[1000px]')}>
-            <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-4">
-              <span className="truncate text-lg font-extrabold">{doc.title || 'Website của tôi'}</span>
-              <span className="text-xs text-slate-400">Bản xem trước</span>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white p-2">
+            <div className="flex max-w-full flex-wrap items-center gap-1 overflow-auto">{doc.pages.map(p=><button key={p.id} onClick={()=>navigate(p.slug)} className={'rounded-md px-3 py-1.5 text-xs '+(p.id===activePage.id?'bg-slate-900 font-semibold text-white':'text-slate-600 hover:bg-slate-100')}>{p.title}</button>)}</div>
+            <span className="px-2 text-xs text-slate-500">{viewport==='mobile'?'390 px':viewport==='tablet'?'768 px':'Desktop'}</span>
+          </div>
+          <div className="overflow-x-auto pb-5">
+            <div className="@container mx-auto overflow-hidden border shadow-lg transition-[width] duration-200" style={{...templatePreviewColors(theme),width:canvasWidth,maxWidth:'100%',backgroundColor:'var(--studio-background)',color:'var(--studio-foreground)',fontFamily:'var(--studio-font)',borderColor:'var(--studio-border)',borderRadius:'var(--studio-radius)'}}>
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b px-5 py-5 @md:px-10" style={{borderColor:'var(--studio-border)'}}>
+                <button onClick={()=>navigate(doc.pages[0].slug)} className="text-lg font-bold tracking-tight">{doc.title||'Website của tôi'}</button>
+                <nav className="flex flex-wrap gap-2 @md:gap-5">{doc.pages.map(p=><button key={p.id} onClick={()=>navigate(p.slug)} className={'text-xs @md:text-sm '+(p.id===activePage.id?'font-bold underline underline-offset-8':'opacity-70 hover:opacity-100')}>{p.title}</button>)}</nav>
+              </div>
+              <div className="px-3 pb-2 @md:px-7">
+                {activePage.blocks.map((block,index)=><div key={block.id}>
+                  {isEditing&&<div onDragOver={e=>e.preventDefault()} onDrop={e=>dropAt(e,index)} aria-label={'Thả khối ở vị trí '+(index+1)} className="my-1 flex h-5 items-center justify-center rounded-lg border border-dashed border-transparent text-[10px] text-transparent hover:border-amber-500 hover:bg-amber-100 hover:text-amber-900">Thả tại đây</div>}
+                  <section draggable={isEditing} onDragStart={e=>startDrag(e,{id:block.id})} onDragEnd={()=>dragRef.current=null} onClick={()=>isEditing&&setSelectedId(block.id)} className={'relative '+(isEditing?'cursor-pointer border-2 border-transparent hover:border-amber-300 '+(selectedId===block.id?'!border-amber-500':''):'')}>
+                    {isEditing&&<div className="absolute right-1 top-1 z-20 flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 font-sans text-slate-800 shadow-lg">
+                      <GripVertical size={15} className="cursor-grab"/><button title="Lên" onClick={e=>{e.stopPropagation();moveBlock(block.id,index-1)}} disabled={index===0} className="rounded p-1 disabled:opacity-20"><ArrowUp size={15}/></button>
+                      <button title="Xuống" onClick={e=>{e.stopPropagation();moveBlock(block.id,index+1)}} disabled={index===activePage.blocks.length-1} className="rounded p-1 disabled:opacity-20"><ArrowDown size={15}/></button>
+                      <button title="Nhân bản" onClick={e=>{e.stopPropagation();if(activePage.blocks.length>=MAX_BLOCKS||totalBlocks>=MAX_TOTAL)return;const arr=[...activePage.blocks];const copy={...block,id:newId()};arr.splice(index+1,0,copy);modifyPage(arr);setSelectedId(copy.id)}} className="rounded p-1"><Copy size={15}/></button>
+                      <button title="Xóa" onClick={e=>{e.stopPropagation();modifyPage(activePage.blocks.filter(b=>b.id!==block.id));if(selectedId===block.id)setSelectedId(null)}} className="rounded p-1 text-red-600"><Trash2 size={15}/></button>
+                    </div>}
+                    <BlockPreview block={block} theme={theme} navigate={navigate}/>
+                  </section>
+                </div>)}
+                {isEditing&&<div onDragOver={e=>e.preventDefault()} onDrop={e=>dropAt(e,activePage.blocks.length)} className="my-4 rounded-xl border-2 border-dashed border-slate-300 px-4 py-7 text-center font-sans text-xs text-slate-500 hover:border-amber-500 hover:bg-amber-50"><Plus size={18} className="mx-auto mb-2"/>Thả một khối vào cuối trang</div>}
+              </div>
+              <footer className="mt-7 flex flex-wrap items-center justify-between gap-3 border-t px-6 py-7 text-xs opacity-70 @md:px-10" style={{borderColor:'var(--studio-border)'}}><span>© {new Date().getFullYear()} {doc.title}</span><span>Thiết kế bằng Motngum Studio · Bản nháp</span></footer>
             </div>
-            {doc.blocks.map((block, index) => <div key={block.id}>
-              {!preview && <div onDragOver={event => event.preventDefault()} onDrop={event => onDropAt(event, index)}
-                className="group my-2 flex h-5 items-center justify-center rounded-lg border border-dashed border-transparent text-xs text-transparent hover:border-amber-400 hover:bg-amber-50 hover:text-amber-700"
-                aria-label={'Thả khối ở vị trí ' + (index + 1)}>Thả khối tại đây</div>}
-              <section
-                draggable={!preview}
-                onDragStart={event => beginDrag(event, { id: block.id })}
-                onDragEnd={() => { dragSource.current = null; }}
-                onClick={() => !preview && setSelectedId(block.id)}
-                aria-label={KIND_LABELS[block.kind]}
-                className={'relative rounded-xl ' + (!preview ? 'cursor-pointer border-2 border-transparent p-1 hover:border-amber-300 ' +
-                  (selectedId === block.id ? '!border-amber-500' : '') : '')}>
-                {!preview && <div className="absolute right-2 top-2 z-10 flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow">
-                  <span title="Kéo để sắp xếp" className="cursor-grab p-1 text-slate-500"><GripVertical size={15}/></span>
-                  <button onClick={event => {event.stopPropagation();moveBlock(block.id, -1);}} disabled={index===0} aria-label="Đưa lên" className="rounded p-1 hover:bg-slate-100 disabled:opacity-30"><ArrowUp size={15}/></button>
-                  <button onClick={event => {event.stopPropagation();moveBlock(block.id, 1);}} disabled={index===doc.blocks.length-1} aria-label="Đưa xuống" className="rounded p-1 hover:bg-slate-100 disabled:opacity-30"><ArrowDown size={15}/></button>
-                  <button onClick={event => {event.stopPropagation();removeBlock(block.id);}} aria-label="Xóa khối" className="rounded p-1 text-red-600 hover:bg-red-50"><Trash2 size={15}/></button>
-                </div>}
-                <BlockPreview block={block}/>
-              </section>
-            </div>)}
-            {!preview && <div onDragOver={event => event.preventDefault()} onDrop={event => onDropAt(event, doc.blocks.length)}
-              className="mt-3 rounded-xl border-2 border-dashed border-slate-300 px-5 py-8 text-center text-sm text-slate-500 hover:border-amber-500 hover:bg-amber-50">
-              <Plus size={20} className="mx-auto mb-2"/>Thả một khối mới vào đây
-            </div>}
-            <footer className="mt-8 border-t border-slate-100 py-5 text-center text-xs text-slate-400">Được dựng bằng Motngum Studio · Bản nháp</footer>
           </div>
         </main>
-        {!preview && <aside className="self-start rounded-xl border border-slate-200 bg-white p-4 xl:sticky xl:top-24">
-          <h2 className="mb-3 font-bold">Thuộc tính</h2>
-          <label className="mb-4 block text-xs font-semibold text-slate-600">Tên website
-            <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={doc.title}
-              maxLength={120} onChange={event => setDoc(current => ({ ...current, title: event.target.value }))}/>
-          </label>
-          {selected ? <>
-            <p className="mb-4 rounded-lg bg-amber-50 p-2 text-sm text-amber-900">{KIND_LABELS[selected.kind]}</p>
-            <label className="mb-3 block text-xs font-semibold text-slate-600">Tiêu đề
-              <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={selected.title}
-                maxLength={160} onChange={event => updateBlock({title: event.target.value})}/>
-            </label>
-            <label className="mb-3 block text-xs font-semibold text-slate-600">Nội dung (mỗi dòng là một thẻ nếu chọn Điểm nổi bật)
-              <textarea rows={5} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                value={selected.body} maxLength={1200} onChange={event => updateBlock({body: event.target.value})}/>
-            </label>
-            {selected.kind === 'image' && <label className="mb-3 block text-xs font-semibold text-slate-600"><ImageIcon size={14} className="inline"/> URL hình ảnh HTTPS
-              <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={selected.imageUrl}
-                maxLength={500} placeholder="https://example.com/image.jpg" onChange={event => updateBlock({imageUrl: event.target.value})}/>
-            </label>}
-            {(selected.kind === 'hero' || selected.kind === 'cta') && <>
-              <label className="mb-3 block text-xs font-semibold text-slate-600">Nhãn nút
-                <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={selected.buttonLabel}
-                  maxLength={80} onChange={event => updateBlock({buttonLabel: event.target.value})}/>
-              </label>
-              <label className="mb-3 block text-xs font-semibold text-slate-600">Liên kết nút (http, https hoặc #gioi-thieu)
-                <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={selected.buttonUrl}
-                  maxLength={500} onChange={event => updateBlock({buttonUrl: event.target.value})}/>
-              </label>
-            </>}
-            <label className="mb-3 flex items-center justify-between text-xs font-semibold text-slate-600">Màu nhấn
-              <input type="color" aria-label="Màu nhấn" value={selected.accent}
-                onChange={event => updateBlock({accent: event.target.value})} className="h-10 w-14 cursor-pointer"/>
-            </label>
-          </> : <p className="text-sm text-slate-500">Chọn một khối trên trang để chỉnh sửa.</p>}
-          <p className="mt-5 text-xs leading-5 text-slate-500">Bản thử nghiệm không lưu lên cloud, không có đa người dùng, xuất bản, domain riêng, thương mại hoặc thanh toán.</p>
+        {isEditing&&<aside className="rounded-xl border border-slate-200 bg-white p-4 xl:sticky xl:top-24">
+          <h2 className="mb-4 text-sm font-bold">Thuộc tính thiết kế</h2>
+          <label className="mb-4 block text-xs font-semibold">Tên website<input value={doc.title} maxLength={120} onChange={e=>commit({...doc,title:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
+          {activeBlock?<div className="space-y-3">
+            <div className="rounded-lg bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">{KIND_LABELS[activeBlock.kind]}</div>
+            <label className="block text-xs font-semibold">Bố cục<select value={activeBlock.variant} onChange={e=>patchBlock({variant:e.target.value as Block['variant']})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm">{BLOCK_VARIANTS.map(v=><option key={v} value={v}>{v}</option>)}</select></label>
+            <label className="block text-xs font-semibold">Tiêu đề<input value={activeBlock.title} maxLength={160} onChange={e=>patchBlock({title:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
+            <label className="block text-xs font-semibold">Nội dung / mỗi dòng một mục<textarea value={activeBlock.body} maxLength={2000} rows={6} onChange={e=>patchBlock({body:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
+            {(['hero','image','gallery','products'].includes(activeBlock.kind))&&<label className="block text-xs font-semibold">URL ảnh HTTPS<input value={activeBlock.imageUrl} maxLength={600} onChange={e=>patchBlock({imageUrl:safeImage(e.target.value)||''})} placeholder="https://..." className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>}
+            {(['hero','cta'].includes(activeBlock.kind))&&<><label className="block text-xs font-semibold">Chữ trên nút<input value={activeBlock.buttonLabel} maxLength={80} onChange={e=>patchBlock({buttonLabel:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
+              <label className="block text-xs font-semibold">Liên kết (https hoặc #page:slug)<input value={activeBlock.buttonUrl} maxLength={500} onChange={e=>patchBlock({buttonUrl:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label></>}
+            <label className="flex items-center justify-between text-xs font-semibold">Màu nhấn khối<input type="color" value={activeBlock.accent} onChange={e=>patchBlock({accent:e.target.value})} className="size-10 cursor-pointer"/></label>
+          </div>:<p className="text-xs text-slate-500">Chọn một khối trên canvas để chỉnh sửa nội dung, màu sắc và bố cục.</p>}
+          <hr className="my-4"/>
+          <button onClick={()=>fileInput.current?.click()} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-xs hover:bg-slate-100"><FileJson size={16}/>Nhập website JSON</button>
+          <input className="hidden" ref={fileInput} type="file" accept="application/json,.json" onChange={importJson}/>
+          <button onClick={reset} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-xs hover:bg-slate-100"><RotateCcw size={16}/>Đặt lại mẫu</button>
+          <p className="mt-4 rounded-lg bg-slate-50 p-3 text-[11px] leading-5 text-slate-600">Lưu cục bộ trong trình duyệt. Chưa có tài khoản dự án, lưu cloud, upload ảnh, biểu mẫu thật hoặc xuất bản.</p>
         </aside>}
       </div>
     </div>
+    {gallery&&<div className="fixed inset-0 z-[70] overflow-y-auto bg-slate-950/70 px-3 py-4 @md:px-8 @md:py-8" role="dialog" aria-modal="true" aria-label="Thư viện mẫu website">
+      <div className="mx-auto max-w-[1450px] overflow-hidden rounded-2xl bg-white shadow-2xl">
+        <div className="flex items-start justify-between gap-3 border-b px-5 py-5 @md:px-7"><div><p className="text-xs font-bold uppercase tracking-widest text-amber-700">Motngum Studio / Template Gallery</p><h2 className="mt-1 text-2xl font-extrabold">Chọn một website để bắt đầu</h2><p className="mt-1 text-sm text-slate-500">24 mẫu có cấu trúc riêng · 6 ngành nghề · 8 theme · mỗi mẫu gồm 3 trang chỉnh sửa được</p></div><button onClick={()=>setGallery(false)} title="Đóng" className="rounded-lg border p-2"><X size={20}/></button></div>
+        <div className="flex flex-wrap items-center gap-2 px-5 py-4 @md:px-7">
+          <div className="flex min-w-[210px] flex-1 items-center gap-2 rounded-lg border px-3 py-2"><Search size={16} className="text-slate-400"/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Tìm tên mẫu hoặc ngành nghề..." className="w-full min-w-0 text-sm outline-none"/></div>
+          <span className="text-xs text-slate-500">{galleryMatches.length} kết quả</span>
+        </div>
+        <div className="flex flex-wrap gap-2 px-5 pb-4 @md:px-7">{(['Tất cả',...TEMPLATE_CATEGORIES] as const).map(c=><button key={c} onClick={()=>setCategory(c)} className={'rounded-full border px-3 py-1.5 text-xs font-semibold '+(category===c?'border-amber-700 bg-amber-700 text-white':'border-slate-200 text-slate-600 hover:bg-slate-50')}>{c}</button>)}</div>
+        <div className="grid gap-6 border-t p-4 @lg:grid-cols-[1fr_420px] @md:p-6">
+          <div className="max-h-[62vh] overflow-y-auto pr-1"><div className="grid grid-cols-1 gap-3 @sm:grid-cols-2 @xl:grid-cols-3">
+            {galleryMatches.map(t=><button key={t.id} onClick={()=>setCandidate(t.id)} className={'rounded-xl border p-2 text-left transition hover:border-amber-500 hover:shadow-md '+(t.id===candidate?'border-amber-500 ring-2 ring-amber-100':'border-slate-200')}>
+              <TemplateThumb template={t}/><div className="flex items-center justify-between gap-2 px-1 pt-2"><b className="text-sm">{t.name}</b>{t.id===candidate&&<Check size={16} className="text-amber-700"/>}</div><p className="px-1 pt-1 text-[11px] text-slate-500">{t.category} · {themeById(t.theme).mood}</p><p className="px-1 pb-1 pt-2 text-xs leading-5 text-slate-600">{t.description}</p>
+            </button>)}</div>{galleryMatches.length===0&&<p className="p-8 text-center text-slate-500">Không tìm thấy mẫu. Thử chọn ngành nghề khác.</p>}</div>
+          <aside className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-amber-800">Xem trước mẫu đang chọn</p><h3 className="mt-2 text-xl font-bold">{currentTemplate.name}</h3><p className="mt-1 text-sm text-slate-600">{currentTemplate.description}</p>
+            <div className="my-4 overflow-hidden rounded-lg border border-slate-200"><TemplateThumb template={currentTemplate}/></div>
+            <div className="mb-4 flex flex-wrap gap-2">{currentTemplate.order.map((k,i)=><span key={i} className="rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-slate-600">{KIND_LABELS[k]}</span>)}</div>
+            <p className="mb-4 text-xs text-slate-600">Áp dụng sẽ tạo Trang chủ / Giới thiệu / Liên hệ cùng giao diện nhất quán. Nội dung có thể sửa, không phải ảnh chụp mẫu tĩnh.</p>
+            <button onClick={()=>applyTemplate(currentTemplate)} className="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-700 px-4 py-3 text-sm font-bold text-white hover:bg-amber-800">Dùng mẫu {currentTemplate.name}<ArrowRight size={17}/></button>
+            <p className="mt-3 text-[11px] leading-5 text-slate-500">Đang chỉnh một website khác? Hãy xuất JSON để sao lưu trước khi thay mẫu.</p>
+          </aside>
+        </div>
+      </div>
+    </div>}
   </div>;
 }
