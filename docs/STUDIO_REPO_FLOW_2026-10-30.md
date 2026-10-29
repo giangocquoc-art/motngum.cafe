@@ -41,8 +41,8 @@ flowchart TD
 
 1. **C1 — adapter (this PR):** all existing 24 seeds and 16 × 8 × 8 combinations round-trip without lost IDs, ordering, titles, slugs, Unicode, content, images, CTA URLs or themes. Reject custom Puck components, root data and nested zones until v3 can store them.
 2. **C2 — package install:** select an exact tested \`@puckeditor/core\` version (0.23 and 0.24 have different API/release notes). Update \`package.json\` **and** \`pnpm-lock.yaml\` together, verify Next/React compatibility in CI.
-3. **C3 — editor UI:** add a parallel guarded \`/studio-puck\` route for authorized teams; use adapter for one page at a time and preserve other pages. Reuse \`components/site-block.tsx\` as the sole renderer.
-4. **C4 — save/publish:** Puck onChange must use existing debounced CAS update; Puck Publish must call existing owner-only backend publish endpoint only *after* a successful draft save. Handle 409 by freezing auto-retry and preserving local user work.
+3. **C3 — editor UI (implemented):** tenant-scoped experimental Puck editor, create/rename/duplicate/reorder/delete pages, CTA link preservation, category-based 16-block discovery, accessible quick insert, without replacing the native editor.
+4. **C4 — save/publish (implemented + CI verified):** debounced CAS autosave, queued saves, fail-stop on 409, JSON export, owner-only staging publish button, immutable snapshot; page CRUD and publish exercised against disposable PostgreSQL.
 5. **C5 — accept:** Playwright smoke, keyboard/touch, editor-vs-public screenshots, lost connection and 409, draft restoration, limits and anti-XSS; keep old editor as rollback until all pass.
 
 Do not silently import Puck's zones or arbitrary custom props into v2. A future nested-layout feature requires explicit SiteDocument v3 migration and tests.
@@ -66,3 +66,16 @@ Source repository migration decision: \`puckeditor/puck\` is the canonical repos
 - Adapter accepts only Puck's synthetic `root.props.id=\`root\`` as metadata. Any other custom root fields or zones are rejected until a deliberate v3 migration.
 - CI includes `test/browser-puck.mjs` using real Chromium + disposable PostgreSQL + cross-tenant access checks.
 - **Not complete:** default-editor cutover, real-device touch, screenshot visual regression, lost-connection repair, and full accessibility audit. Do not enable production.
+
+## Gate C3/C4 acceptance evidence (2026-10-30)
+
+**Completed in PR #11 Draft; never deployed to Vercel.** CI run https://github.com/giangocquoc-art/motngum.cafe/actions/runs/40943800961 passed TypeScript, Next build, PostgreSQL migrations, tenant authorization, v2 round-trip, native editor E2E and actual Puck Chromium E2E. The Puck test exercised:
+
+- Editing a block field in a Puck iframe and autosaving the modified v2 document via optimistic CAS.
+- Theme change and page switching with sibling pages unchanged.
+- Slug renaming with inbound CTA rewrite, adding a blank page, duplicating IDs safely, reordering, and deleting a referenced page with explicit link replacement.
+- Publishing an owner-authorized snapshot only after draft save; checking the public site and that subsequent edits to the draft do not mutate the published snapshot.
+- Accessible select-and-insert fallback for all 16 existing component kinds; four Puck component categories and per-page/site insertion guards (40/200).
+- Cross-tenant editor access denied even when the visitor is logged in.
+
+**Still not passed / not claimed:** direct cross-iframe Puck drag gesture E2E, touch and keyboard reordering with screen readers, screenshot parity across devices, browser-crash local recovery for Puck, and production domain/media/form/commerce modules. These remain gates before default cutover or a paid/production launch. The original editor is preserved as rollback.
