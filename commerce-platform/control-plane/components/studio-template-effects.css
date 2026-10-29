@@ -1,0 +1,42 @@
+/*
+ * Studio-native normalization of Magic UI Border Beam's visual principle.
+ * The original implementation uses motion/react; this isolated CSS version
+ * has no runtime dependency and honors prefers-reduced-motion.
+ * Upstream: magicuidesign/magicui (MIT), see docs/STUDIO_TEMPLATE_PROVENANCE.md.
+ */
+.studio-border-beam {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--studio-radius, 16px);
+}
+.studio-border-beam::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--studio-beam-angle, 0deg),
+    transparent 0%, transparent 42%, var(--studio-accent, #a8ff5f) 64%,
+    #ab82ff 76%, transparent 96%);
+  opacity: .8;
+}
+.studio-border-beam > * {
+  position: relative;
+  z-index: 1;
+}
+@property --studio-beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .studio-border-beam::before {
+    animation: studio-beam-spin 9s linear infinite;
+  }
+}
+@keyframes studio-beam-spin {
+  to { --studio-beam-angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .studio-border-beam::before { animation: none; }
+}
