@@ -29,7 +29,7 @@
 - Cloud autosave is DEBOUNCED (1600 ms) and serialized; save errors/conflicts pause retries until a manual action. Browser leave warning protects unsaved cloud edits. Failed cloud loads are read-only. Cloud documents must not persist in a shared localStorage key.
 - No verified domain routing, user-generated subdomain provisioning, real contact/newsletter forms, advanced SEO, analytics or billing.
 - No Medusa backend runtime/merchant checkout or PSP confirmation. Commerce skeleton must remain isolated.
-- No browser drag/drop/touch E2E. Unit/HTTP passing is not browser acceptance. Public block renderer parity is now covered by the HTTP full hero/CTA test; full visual screenshot parity is not yet tested.
+- Playwright real Chromium tests now cover editor drag/drop, undo/redo, theme, autosave, mocked network failure, stale version conflict, basic mobile viewport and failed cloud load. These use mocked cloud APIs; real HTTP/PostgreSQL tenant checks remain separate. Mobile touch gestures, page links, template modal, accessibility and screenshot parity still need E2E.
 - Template stats, sample reviews and photo licenses require checking before production use.
 - SaaS registration remains disabled. Production release needs secure user onboarding, supported stable Next.js, domain/hosting terms and operations.
 - Latest Vercel preview may lag GitHub commits due to deployment quota; do not claim the final commit is live without verifying its SHA.
@@ -50,3 +50,10 @@ Keep PR #11 draft. Do not touch other site projects, domains, production DNS or 
 - Public metadata+page data is deduplicated per request with React cache; separate pre-stream 404 gate remains for now.
 - See `docs/STUDIO_FOUNDATION_GATES.md` for acceptance invariants and remaining browser tests.
 - Vercel rollout intentionally deferred. Remain Draft regardless of CI status.
+
+## Browser acceptance and Puck readiness (2026-10-30)
+- `test/browser-builder.mjs` is run in GitHub Actions with Playwright Chromium pinned to `1.56.1`, installed in an isolated CI `/tmp` directory; application package/lockfile remain unchanged. Browser E2E does not connect production accounts.
+- `test/builder-site-e2e.mjs` also rejects nine malformed/unsafe JSON v2 documents at the real API boundary.
+- Editor imports `lib/builder/validation.ts:validateSiteDocument` directly; the duplicate browser-only document validator was removed.
+- `docs/STUDIO_V2_PUCK_CONTRACT.md` defines Puck round-trip, stable IDs, versioning and editor/renderer requirements. **Puck is not installed yet.**
+- No Vercel deployment is planned at this stage.
