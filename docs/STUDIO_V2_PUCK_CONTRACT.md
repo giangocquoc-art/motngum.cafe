@@ -53,8 +53,17 @@ Invariants:
 
 ## Required before Puck rollout
 
-- Implement and test actual reversible Puck adapters (not yet written).
+- **Implemented, pending CI verification:** dependency-free two-way adapter in `lib/builder/puck-adapter.ts` with strict unknown-field rejection; field schema for 16 block kinds in `lib/builder/puck-fields.ts`. Tests cover 24 seed templates, 16 block kinds × 8 variants × 8 themes, 3+ pages, Unicode, links, ID stability, edits, invalid data and nested-zone rejection.
+- **Next:** pin/install `@puckeditor/core` together with a regenerated `pnpm-lock.yaml`; implement the actual Puck React editor UI only after adapter/CI passes. This repository currently does NOT include the runtime package.
 - Browser tests for 409 simultaneous edit conflict, keyboard accessibility, mobile/touch, template switch/cancel, page rename/delete link handling.
 - Browser visual regression between editor/preview/published pages across breakpoints.
 - Recovery test when the browser closes unexpectedly during unsaved cloud draft edits.
 - Keep PR Draft and do not deploy to Vercel until acceptance explicitly changes.
+
+## Verified upstream implementation reference
+
+- Upstream repository: `https://github.com/puckeditor/puck` (the historical `measuredco/puck` name is outdated).
+- Official npm scope: `@puckeditor/core`, MIT license. As of Oct 29 2026 Puck 0.24 was released; choose an **exact tested version** and check breaking changes before adding it to the control-plane lockfile.
+- The adapter deliberately does not import the Puck runtime. It returns flat Puck `Data` documents (`content` and `root`), so it can be checked in CI without disrupting the existing, working editor.
+- Runtime renderer remains `components/site-block.tsx`, without Puck's `<Render>` becoming a second source of truth. Puck component definitions must wrap this same renderer.
+- Nested zones/root fields cannot be persisted in SiteDocument v2 and therefore trigger explicit conversion errors, not silent field loss. Supporting nested layouts requires a versioned v3 migration.
