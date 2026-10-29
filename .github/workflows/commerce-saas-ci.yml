@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: commerce-rebuild-2026-10
+          # Use the actual PR/branch revision; never test an unrelated hard-coded ref.
           sparse-checkout: |
             commerce-platform/control-plane
             commerce-platform/edge
@@ -89,6 +89,7 @@ jobs:
             code="$(curl -sS -X "$method" -o /tmp/response.json -w '%{http_code}' "http://127.0.0.1:3000$path")"
             test "$code" = "$wanted" || { echo "Unexpected $path status: $code"; cat /tmp/response.json; exit 1; }
           }
+          check_code /builder-demo 200
           check_code /api/user 401
           check_code /api/team 401
           check_code /api/stripe/checkout 404
