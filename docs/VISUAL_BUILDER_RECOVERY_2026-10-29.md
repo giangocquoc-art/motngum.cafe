@@ -24,7 +24,7 @@
 - Test test/builder-site-e2e.mjs: real HTTP and DB with two isolated organizations, CSRF, create/load/update, concurrent version conflicts, public snapshot stability, fake-content gate, revision restore and unpublish.
 
 ## Not completed / must remain staging
-- Puck is NOT installed. Existing editor is a native React prototype. Next gate: install pinned Puck core and versioned document mapping onto the now-shared block renderer in components/site-block.tsx.
+- Puck 0.24.0 IS installed in a **parallel, experimental** authenticated editor at `/dashboard/sites/[siteId]/puck`. The existing native React editor remains available. Default cutover and full browser/device acceptance are NOT complete.
 - No managed media uploads. The connected Cloudflare R2 account currently requires enabling R2. Existing external images are placeholders.
 - Cloud autosave is DEBOUNCED (1600 ms) and serialized; save errors/conflicts pause retries until a manual action. Browser leave warning protects unsaved cloud edits. Failed cloud loads are read-only. Cloud documents must not persist in a shared localStorage key.
 - No verified domain routing, user-generated subdomain provisioning, real contact/newsletter forms, advanced SEO, analytics or billing.
@@ -55,5 +55,12 @@ Keep PR #11 draft. Do not touch other site projects, domains, production DNS or 
 - `test/browser-builder.mjs` is run in GitHub Actions with Playwright Chromium pinned to `1.56.1`, installed in an isolated CI `/tmp` directory; application package/lockfile remain unchanged. Browser E2E does not connect production accounts.
 - `test/builder-site-e2e.mjs` also rejects nine malformed/unsafe JSON v2 documents at the real API boundary.
 - Editor imports `lib/builder/validation.ts:validateSiteDocument` directly; the duplicate browser-only document validator was removed.
-- `docs/STUDIO_V2_PUCK_CONTRACT.md` defines Puck round-trip, stable IDs, versioning and editor/renderer requirements. **Puck is not installed yet.**
+- `docs/STUDIO_V2_PUCK_CONTRACT.md` defines strict round-trip, stable IDs, versioning and editor/renderer rules. **Puck is now pinned in the isolated parallel editor; it has not replaced the native editor.**
 - No Vercel deployment is planned at this stage.
+
+## Gate C2 — Puck runtime (2026-10-30)
+- Exact package lock: `@puckeditor/core@0.24.0` and matching pnpm lockfile.
+- New owner/member-scoped Puck editor route `/dashboard/sites/[siteId]/puck` and opt-in dashboard link. Native editor remains available for rollback.
+- Studio block registry wraps `components/site-block.tsx`, preserving output parity. No new database tables, site schema or public renderer were created.
+- CAS autosave with debounce and fail-stop; manual retry; JSON export; owner-only publishing via the original endpoint following a successful save.
+- Real Chromium/PostgreSQL acceptance test `test/browser-puck.mjs` added to GitHub Actions. No Vercel/DNS/paid commerce action.
