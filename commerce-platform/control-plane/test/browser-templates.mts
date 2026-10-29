@@ -140,7 +140,14 @@ try{
   let persisted=false;
   for(let i=0;i<72;i++){
     const [row]=await sql.unsafe('SELECT draft_document FROM builder_sites WHERE id=$1',[first.id]);
-    const result=row.draft_document.pages.find((p:{slug:string})=>p.slug==='giai-phap');
+    const raw=row.draft_document;
+    const data=typeof raw==='string'?JSON.parse(raw):raw;
+    if(!data||!Array.isArray(data.pages))
+      throw Error('Unexpected PostgreSQL JSONB draft response '+JSON.stringify({
+        type:typeof raw,keys:raw&&typeof raw==='object'?Object.keys(raw):[],
+        sample:String(typeof raw==='string'?raw:JSON.stringify(raw)).slice(0,250)
+      }));
+    const result=data.pages.find((p:{slug:string})=>p.slug==='giai-phap');
     if(result?.blocks.length===4){persisted=true;break;}
     await new Promise(resolve=>setTimeout(resolve,250));
   }
