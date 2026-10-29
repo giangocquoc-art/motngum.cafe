@@ -24,12 +24,12 @@
 - Test test/builder-site-e2e.mjs: real HTTP and DB with two isolated organizations, CSRF, create/load/update, concurrent version conflicts, public snapshot stability, fake-content gate, revision restore and unpublish.
 
 ## Not completed / must remain staging
-- Puck is NOT installed. Existing editor is a native React prototype. Next gate: install pinned Puck core, versioned document mapping, Puck-config components and shared renderer.
+- Puck is NOT installed. Existing editor is a native React prototype. Next gate: install pinned Puck core and versioned document mapping onto the now-shared block renderer in components/site-block.tsx.
 - No managed media uploads. The connected Cloudflare R2 account currently requires enabling R2. Existing external images are placeholders.
-- Cloud save is MANUAL; not autosave. Browser leave warning protects unsaved cloud edits. Cloud documents must not be persisted in a shared localStorage key.
+- Cloud autosave is DEBOUNCED (1600 ms) and serialized; save errors/conflicts pause retries until a manual action. Browser leave warning protects unsaved cloud edits. Failed cloud loads are read-only. Cloud documents must not persist in a shared localStorage key.
 - No verified domain routing, user-generated subdomain provisioning, real contact/newsletter forms, advanced SEO, analytics or billing.
 - No Medusa backend runtime/merchant checkout or PSP confirmation. Commerce skeleton must remain isolated.
-- No browser drag/drop/touch E2E. Unit/HTTP passing is not browser acceptance.
+- No browser drag/drop/touch E2E. Unit/HTTP passing is not browser acceptance. Public block renderer parity is now covered by the HTTP full hero/CTA test; full visual screenshot parity is not yet tested.
 - Template stats, sample reviews and photo licenses require checking before production use.
 - SaaS registration remains disabled. Production release needs secure user onboarding, supported stable Next.js, domain/hosting terms and operations.
 - Latest Vercel preview may lag GitHub commits due to deployment quota; do not claim the final commit is live without verifying its SHA.
@@ -41,3 +41,12 @@
 4. Browser/device E2E and observability, followed by request-scoped Medusa connectivity and verified test checkout.
 
 Keep PR #11 draft. Do not touch other site projects, domains, production DNS or payment settings.
+
+## Foundation stabilization (2026-10-30)
+- Single shared renderer and design tokens for editor + published page: `components/site-block.tsx`.
+- Cloud-load failure locks editing rather than falling back to default content and overwriting standalone localStorage drafts.
+- Cloud autosave is debounced, serialized and fail-stops on errors; manual retry remains available.
+- Transactionally enforced cap of 50 websites per organization.
+- Public metadata+page data is deduplicated per request with React cache; separate pre-stream 404 gate remains for now.
+- See `docs/STUDIO_FOUNDATION_GATES.md` for acceptance invariants and remaining browser tests.
+- Vercel rollout intentionally deferred. Remain Draft regardless of CI status.
