@@ -79,6 +79,24 @@ try{
     assert.equal(after.title,saved.title);
     await local.close();
   });
+  await check('mobile editor viewport keeps navigation and responsive canvas available',async()=>{
+    await page.setViewportSize({width:390,height:844});
+    await page.getByRole('button',{name:'Xem mobile'}).click();
+    await page.getByText('390 px').waitFor();
+    assert.equal(await page.locator('input[maxlength="120"]').count(),1);
+    await page.setViewportSize({width:1380,height:900});
+  });
+  await check('simulated concurrent revision conflict does not overwrite remote draft',async()=>{
+    const previouslySaved=current.title;
+    const oldCount=saveCount;
+    version++; // another editor successfully saved a newer version
+    await page.locator('input[maxlength="120"]').fill('Conflict must not overwrite');
+    await page.getByRole('button',{name:'Thử lưu lại'}).waitFor({timeout:14000});
+    assert.equal(current.title,previouslySaved);
+    assert.equal(saveCount,oldCount);
+    assert.equal(await page.locator('input[maxlength="120"]').inputValue(),
+      'Conflict must not overwrite','Local unsaved text remains visible for export/reconciliation');
+  });
   console.log('PASS: all Chromium editor foundation checks');
 }catch(e){
   console.error('FAIL Chromium:',e);
