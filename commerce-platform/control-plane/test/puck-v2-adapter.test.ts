@@ -5,6 +5,7 @@ import {
   buildTemplateDocument, createBlock, type SiteDocument, type SitePage
 } from '../lib/builder/catalog';
 import { studioPuckDefinitions, STUDIO_PUCK_FIELDS } from '../lib/builder/puck-fields';
+import { publishIssues, validateSiteDocument } from '../lib/builder/validation';
 import { addSitePage, renameSitePageTitle, duplicateSitePage, moveSitePage, normalizePageSlug,
   renameSitePage, countPageReferences, deleteSitePage, SitePageOperationError } from '../lib/builder/page-operations';
 import {
@@ -16,8 +17,8 @@ const deepCopy = <T,>(x: T): T => structuredClone(x);
 const errorCode = (fn: () => unknown, expected: string) =>
   assert.throws(fn, (error: unknown) => error instanceof PuckConversionError && error.code === expected);
 
-test('all 24 seeded templates, including 3 pages each, round-trip byte-equivalent JSON', () => {
-  assert.equal(SITE_TEMPLATES.length, 24);
+test('all 27 catalog templates, including 3 pages each, round-trip byte-equivalent JSON', () => {
+  assert.equal(SITE_TEMPLATES.length, 27);
   for (const template of SITE_TEMPLATES) {
     const before = buildTemplateDocument(template);
     const snapshot = deepCopy(before);
@@ -217,4 +218,30 @@ test('C4 editor site limits fail closed without mutating source',()=>{
     (e:unknown)=>e instanceof SitePageOperationError&&e.code==='page_limit');
   assert.throws(()=>duplicateSitePage(doc,doc.pages[0].id,'copy'),
     (e:unknown)=>e instanceof SitePageOperationError&&e.code==='page_limit');
+});
+
+test('all three source-normalized MIT templates are distinct, editable, and cannot publish demo contacts',()=>{
+  const curated=SITE_TEMPLATES.filter(t=>t.curatedSource);
+  assert.deepEqual(curated.map(t=>t.curatedSource),
+    ['shadcn-card','magic-border-beam','startbootstrap-agency']);
+  const docs=curated.map(buildTemplateDocument);
+  assert.equal(new Set(docs.map(d=>JSON.stringify(d.pages[0].blocks.map(b=>b.kind+':'+b.variant)))).size,3);
+  for(let i=0;i<docs.length;i++){
+    const doc=docs[i];
+    assert.deepEqual(validateSiteDocument(doc),doc,curated[i].id);
+    assert.deepEqual(puckWorkspaceToSite(siteToPuckWorkspace(doc)),doc);
+    assert.equal(doc.pages.length,3);
+    assert.ok(doc.pages.every(p=>p.blocks.length>=2));
+    assert.equal(doc.pages.flatMap(p=>p.blocks).some(b=>b.kind==='stats'||b.kind==='testimonials'),false,
+      'curated sources must not include invented customer statistics or testimonials');
+    assert.ok(publishIssues(doc).length>0,'unfinished template contact and placeholders must block publishing');
+    const slugs=new Set(doc.pages.map(page=>page.slug));
+    for(const block of doc.pages.flatMap(page=>page.blocks)){
+      if(block.buttonUrl.startsWith('#page:'))
+        assert.ok(slugs.has(block.buttonUrl.slice(6)), 'CTA target must exist in same template');
+    }
+  }
+  assert.equal(docs[0].pages[0].blocks.find(b=>b.kind==='features')?.variant,'cards');
+  assert.equal(docs[1].pages[0].blocks.find(b=>b.kind==='features')?.variant,'banner');
+  assert.equal(docs[2].pages[0].blocks.find(b=>b.kind==='services')?.variant,'list');
 });
