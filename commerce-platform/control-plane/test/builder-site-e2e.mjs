@@ -108,5 +108,20 @@ try {
   assert.match(full.data,/#17202b/,'Light hero accent must use readable dark foreground');
   assert.match(full.data,new RegExp('/s/'+fullSite.slug+'/lien-he'),'Internal page CTA must work on public URL');
   console.log('PASS: shared block renderer preserves full hero background, contrast and internal CTA after publish');
+  // Bound total sites per tenant to prevent free-plan database abuse and ensure
+  // concurrent creation is serialized by the organization's database row lock.
+  for(let i=0;i<48;i++){
+    const extraId=randomUUID();
+    await sql.unsafe(
+      'INSERT INTO builder_sites (id,team_id,created_by,slug,title,draft_document) VALUES ($1,$2,$3,$4,$5,$6::jsonb)',
+      [extraId,t1.id,u1.id,'ci-quota-'+extraId,'CI quota item',JSON.stringify(doc)]);
+  }
+  const limited=await request('/api/sites',{jwt:a,method:'POST',body:{document:doc}});
+  assert.equal(limited.status,429,JSON.stringify(limited.data));
+  assert.equal(limited.data.error,'team_site_quota_reached');
+  assert.equal((await request('/api/sites',{jwt:b})).data.sites.length,0,
+    'Other team remains isolated from quota and sites');
+  console.log('PASS: atomic team-level 50-site quota while independent team stays isolated');
+
   console.log('PASS: two tenant isolation, CSRF, CAS draft save, revision restore, publish snapshot, unpublish and malicious URL checks');
 }finally{await sql.end();}
