@@ -33,6 +33,8 @@ jobs:
           python3 -m http.server 4173 --bind 127.0.0.1 --directory hsk-story >/tmp/an-branch-http.log 2>&1 &
           for i in {1..30}; do if curl -fsS http://127.0.0.1:4173/duong-re/ >/dev/null; then break; fi; sleep 1; done
           node hsk-story/e2e/branch-integration-browser.cjs
+          node hsk-story/e2e/branch-controls-browser.cjs
+          node hsk-story/e2e/branch-account-signout-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

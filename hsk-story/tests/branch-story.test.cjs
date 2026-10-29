@@ -94,3 +94,14 @@ test("Rewind from a journal entry restores exact prefix, enabling a different ge
  assert.equal(alternative.flags["keep-secret"],true);assert.equal(alternative.path.length,i+1);
  assert.equal(s.flags["invite-friend"],true); // original untouched
 });
+
+test("Day two arrives at class before the recap and the quiet bird route opens a window",()=>{
+ for(const id of ["day2-ready","day2-confession","day2-mother-explains","day2-guest-prep"]){
+  assert.equal(D.byId[id].to,"day2-bird");
+ }
+ assert.match(fs.readFileSync(path.join(dir,"branch-ui.js"),"utf8"),/Đến lớp, cô Vương mời An ôn lại/);
+ assert.match(D.byId["day2-bird-quiet"].story,/mở cửa sổ/);
+ const hot=D.byId["noodle-order"].options.find(o=>o.id==="try-hot");
+ assert.match(hot.memory,/cốc nước bà chuẩn bị/);
+ assert.match(hot.reply,/để sẵn nước/);
+});

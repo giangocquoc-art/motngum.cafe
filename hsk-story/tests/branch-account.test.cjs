@@ -7,3 +7,41 @@ test('uploads guest progress, preserves separate owners and restores guest after
 test('conflicting local and cloud data require an explicit choice and keep restore points',async()=>{let s=storage(),srv=server(),a=C.create({storage:s,fetch:srv.fetch}), local=state(), remote=C.empty();remote.learning[0]={status:'correct',attempts:0,hint:false}; C.apply(s,local);srv.users.set('alice',{revision:2,snapshot:remote});assert.equal((await a.reconcile('alice')).conflict,true);assert.equal((await a.flush()).conflict,true);assert.ok((await a.resolve('cloud')).ok);assert.deepEqual(C.capture(s),remote);assert.ok(JSON.parse(s.getItem(C.keys.restore)).length);});
 test('rejects malformed path and drafts',()=>{let bad=state();bad.path.push({at:'bad',choice:'next'});assert.throws(()=>C.normalize(bad));bad=C.empty();bad.draft={index:0,at:'bad',path:[],attempts:0,helped:false,draft:''};assert.throws(()=>C.normalize(bad));});
 
+
+test('a failed initial read cannot make an unverified empty save look synchronized',async()=>{
+ let s=storage(),srv=server(),online=false,remote=state();
+ srv.users.set('alice',{revision:3,snapshot:remote});
+ let a=C.create({storage:s,fetch:async (...args)=>{if(!online)throw new TypeError('offline');return srv.fetch(...args)}});
+ assert.equal((await a.reconcile('alice')).ok,false);
+ assert.equal((await a.flush()).ok,false);
+ assert.equal(a.getStatus().state,'error');
+ assert.equal(await a.beforeSignOut(),false);
+ online=true;
+ assert.ok((await a.flush()).ok);
+ assert.deepEqual(C.capture(s),remote);
+ assert.equal(a.getStatus().state,'saved');
+});
+
+test('edits made during conflict resolution are saved after the chosen local snapshot',async()=>{
+ let s=storage(),srv=server(),local=state(),remote=C.empty();
+ remote.learning[0]={status:'correct',attempts:0,hint:false};
+ C.apply(s,local);srv.users.set('alice',{revision:2,snapshot:remote});
+ let release,started;const wait=new Promise(r=>release=r), began=new Promise(r=>started=r);
+ let a=C.create({storage:s,fetch:async (url,opts)=>{if(opts.method==='PUT'){started();await wait}return srv.fetch(url,opts)}});
+ assert.equal((await a.reconcile('alice')).conflict,true);
+ const saving=a.resolve('local');await began;
+ let updated=structuredClone(local);updated.learning[0]={status:'correct',attempts:0,hint:false};C.apply(s,updated);
+ release();assert.ok((await saving).ok);
+ assert.deepEqual(srv.users.get('alice').snapshot,updated);
+});
+
+test('offline signout keeps the account story in its local backup and restores it on return',async()=>{
+ let s=storage(),srv=server(),online=true,a=C.create({storage:s,fetch:(...args)=>online?srv.fetch(...args):Promise.reject(new TypeError('offline'))});
+ assert.ok((await a.reconcile('alice')).ok);
+ let progress=state();C.apply(s,progress);online=false;
+ assert.equal(await a.beforeSignOut(),false);
+ assert.equal(await a.prepareLocalSignOut(),true);
+ await a.afterSignOut();assert.deepEqual(C.capture(s),C.empty());
+ online=true;assert.ok((await a.reconcile('alice')).ok);
+ assert.deepEqual(C.capture(s),progress);assert.deepEqual(srv.users.get('alice').snapshot,progress);
+});
