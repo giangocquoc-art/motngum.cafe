@@ -78,7 +78,7 @@ export function publishIssues(doc: SiteDocument): string[] {
         problems.push('Liên kết tới trang không tồn tại: '+block.buttonUrl);
       if (/hello@example\.com|0900 000 000|Điền địa chỉ|Thay nội dung của bạn|Đối tác 0[1-9]/i.test(block.body))
         problems.push('Trang '+page.title+' còn thông tin demo.');
-      if (block.kind === 'stats' && /120\+\||15\+\||98%\|/.test(block.body))
+      if (/120\+\|Khách hàng tin tưởng|15\+\|Dự án tiêu biểu|98%\|Phản hồi tích cực/.test(block.body))
         problems.push('Trang '+page.title+' còn số liệu minh họa.');
       if (block.kind === 'testimonials' && /Minh Anh\||Hoàng Nam\||Bảo Trân\|/.test(block.body))
         problems.push('Trang '+page.title+' còn đánh giá giả định.');
