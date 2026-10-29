@@ -87,6 +87,7 @@ export function SiteDashboard() {
           <p className="mt-2 text-xs text-slate-500">/{site.slug} · Revision {site.draftVersion}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             <a className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white" href={'/builder-demo?site='+site.id}>Chỉnh sửa</a>
+            {(role==='owner'||role==='member'||role==='editor')&&<a className="rounded-lg border border-amber-700 px-3 py-2 text-xs font-semibold text-amber-800" href={'/dashboard/sites/'+site.id+'/puck'}>Thử Puck Editor</a>}
             <a className="rounded-lg border px-3 py-2 text-xs" href={'/dashboard/sites/'+site.id+'/preview'}>Xem bản nháp</a>
             <button type="button" onClick={()=>restoreRevision(site)} className="rounded-lg border px-3 py-2 text-xs">Lịch sử / Khôi phục</button>
             {site.publishedVersion&&<a className="rounded-lg border px-3 py-2 text-xs" href={'/s/'+site.slug} target="_blank" rel="noopener noreferrer">Mở bản công khai</a>}
