@@ -6,14 +6,14 @@ var items=[
   "id": "mother-question",
   "after": 0,
   "kind": "reading",
-  "topic": "Chào hỏi",
-  "zh": "安，你好吗？",
-  "py": "Ān, nǐ hǎo ma?",
+  "topic": "Lời hỏi thăm",
+  "zh": "安，你还好吗？",
+  "py": "Ān, nǐ hái hǎo ma?",
   "question": "Mẹ đang muốn biết điều gì?",
   "options": [
    [
     "health",
-    "An có khỏe không"
+    "An có ổn không"
    ],
    [
     "food",
@@ -25,8 +25,8 @@ var items=[
    ]
   ],
   "correct": "health",
-  "hint": "Đây là câu mẹ nói ngay khi đưa An tới trường.",
-  "explain": "你好吗？ là cách hỏi thăm người đối diện."
+  "hint": "An còn ngập ngừng, siết quai cặp trước cổng trường mới nên mẹ hỏi thăm.",
+  "explain": "你还好吗？ hỏi xem người kia có ổn không trong tình huống này; 你好 mới là lời chào."
  },
  {
   "id": "arrived-city",
@@ -51,7 +51,7 @@ var items=[
    ]
   ],
   "correct": "arrived",
-  "hint": "Nghĩ tới chiếc xe vừa dừng ở cổng trường.",
+  "hint": "Nhớ câu mẹ nói khi hai mẹ con dừng trước cổng trường.",
   "explain": "到了 nghĩa là đã tới nơi."
  },
  {
@@ -154,9 +154,9 @@ var items=[
   "after": 3,
   "kind": "hanzi",
   "topic": "Số đếm",
-  "zh": "一，二，三。",
-  "py": "Yī, èr, sān.",
-  "question": "Chọn chữ Hán chỉ số ba.",
+  "zh": "三个学生",
+  "py": "Sān ge xuésheng",
+  "question": "Chữ nào trong cụm này chỉ số ba?",
   "options": [
    [
     "three",
@@ -182,7 +182,7 @@ var items=[
   "topic": "Lớp học",
   "zh": "这里有三个学生。",
   "py": "Zhèlǐ yǒu sān ge xuésheng.",
-  "question": "Trong lớp có bao nhiêu học sinh?",
+  "question": "Nhóm của An có bao nhiêu học sinh?",
   "options": [
    [
     "three",
@@ -434,7 +434,7 @@ var items=[
    ]
   ],
   "correct": "ming",
-  "hint": "Bạn có thể nhớ 日 và 月 đứng cùng nhau.",
+  "hint": "明 là chữ đứng đầu cụm 明天 (ngày mai). Hãy nhìn chữ trong cụm rồi chọn cách đọc tương ứng.",
   "explain": "明 là chữ đứng trước 天 trong 明天. Đây là một mẹo nhận dạng, không phải khẳng định lịch sử từ nguyên."
  }
 ];

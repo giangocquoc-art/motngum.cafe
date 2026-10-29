@@ -32,7 +32,7 @@ function cleanText(value, max = MAX_MESSAGE_CHARS) {
 }
 
 function readKeys(env) {
-  const list = env.PSHAREHUB_API_KEYS || env.PSHAREHUB_API_KEY || "";
+  const list = [env.PSHAREHUB_API_KEYS, env.PSHAREHUB_API_KEY].filter(Boolean).join("\n");
   return [...new Set(list.split(/[\n,;]+/).map((x) => x.trim()).filter(Boolean))].slice(0, 4);
 }
 
@@ -102,10 +102,13 @@ async function discoverModels(baseUrl, key, timeoutMs) {
   return { models, status: response.status };
 }
 
-function sceneSystemPrompt(sceneId) {
+function sceneSystemPrompt(sceneId, compact = false) {
+  const style = compact
+    ? "Hãy trả lời bằng tiếng Việt thật gọn (tối đa 2 câu ngắn, khoảng 120 ký tự) để đọc được trên màn hình điện thoại đang bật bàn phím."
+    : "Hãy trả lời bằng tiếng Việt gần gũi, ngắn (tối đa 4 câu), giải thích từ vựng hoặc cấu trúc tiếng Trung trong cảnh hiện tại bằng ví dụ đơn giản.";
   return [
     "Bạn là Sẻ, chú chim xanh nhỏ đồng hành với Minh An trong một câu chuyện học tiếng Trung dành cho trẻ 11 tuổi.",
-    "Hãy trả lời bằng tiếng Việt gần gũi, ngắn (tối đa 4 câu), giải thích từ vựng hoặc cấu trúc tiếng Trung trong cảnh hiện tại bằng ví dụ đơn giản.",
+    style,
     "Không làm bài thay người học, không đưa nguyên câu trả lời để vượt qua một tình huống. Nếu được hỏi đáp án, hãy động viên và gợi ý cách nghĩ mà không viết câu cần nộp.",
     "Không bịa chi tiết truyện ngoài cảnh đã biết. Không yêu cầu tên thật, email, trường học, địa chỉ hoặc thông tin riêng tư.",
     `Mã cảnh luyện tập hiện tại: ${sceneId}.`,
@@ -151,6 +154,7 @@ async function handler(req, res) {
     try { body = JSON.parse(req.body); } catch { return reply(res, 400, { error: "INVALID_JSON" }); }
   }
   const sceneId = cleanText(body.sceneId, 80);
+  const compact = body.compact === true;
   if (!PRACTICE_SCENES.has(sceneId)) return reply(res, 403, { error: "TUTOR_UNAVAILABLE", message: "Sẻ chỉ giúp giải thích trong lúc luyện tập." });
   const messages = Array.isArray(body.messages) ? body.messages.slice(-MAX_HISTORY) : [];
   if (!messages.length || messages.length > MAX_HISTORY) return reply(res, 400, { error: "INVALID_MESSAGES" });
@@ -213,9 +217,9 @@ async function handler(req, res) {
           headers: { Authorization: `Bearer ${keys[keyIndex]}`, "Content-Type": "application/json", Accept: "application/json" },
           body: JSON.stringify({
             model,
-            messages: [{ role: "system", content: sceneSystemPrompt(sceneId) }, ...safeMessages],
+            messages: [{ role: "system", content: sceneSystemPrompt(sceneId, compact) }, ...safeMessages],
             temperature: 0.3,
-            max_tokens: 220,
+            max_tokens: compact ? 80 : 220,
             stream: false,
           }),
         }, Math.min(timeoutMs, remaining));

@@ -4,10 +4,10 @@
  */
 var HSKStoryThreads=(function(){"use strict";
  var lines=[
-  {id:"introduce",title:"Giới thiệu bản thân",model:"我叫安 · 我是学生",first:1,practice:[1,2],checkpoint:7,note:"Cô Vương hỏi tên, rồi Tiểu Vũ hỏi An có phải học sinh không.",recall:"Trong bài kiểm tra của cô Vương, An thử nối hai câu đã nói riêng lẻ."},
+  {id:"introduce",title:"Giới thiệu bản thân",model:"我叫安 · 我是学生",first:1,practice:[1,2],checkpoint:7,note:"Cô Vương hỏi tên, rồi Tiểu Vũ làm quen với học sinh mới.",recall:"Trong bài kiểm tra của cô Vương, An thử nối hai câu đã nói riêng lẻ."},
   {id:"order",title:"Gọi món mì",model:"我想吃面条",first:4,practice:[4],checkpoint:9,note:"An thử gọi món trong quán bà Lưu.",recall:"Cô Vương hỏi lại ở một tình huống khác, không phải món mới."},
   {id:"price",title:"Hiểu giá tiền",model:"十块钱",first:5,practice:[5],checkpoint:8,contextOnly:true,note:"Bà Lưu báo giá khi An mua mì.",recall:"An nhớ lại giá đã được đọc trên màn hình; đây không phải bài kiểm tra nghe độc lập."},
-  {id:"thanks",title:"Lời cảm ơn",model:"谢谢",first:5,practice:[5],checkpoint:null,note:"An nói lời cảm ơn sau bữa ăn.",recall:"Khi đi ngang quán, lời cảm ơn có thể gợi An nhớ bà Lưu."},
+  {id:"thanks",title:"Lời cảm ơn",model:"谢谢",first:5,practice:[5],checkpoint:null,note:"An trả tiền, nhận mì và cảm ơn bà Lưu.",recall:"Khi đi ngang quán, lời cảm ơn có thể gợi An nhớ bà Lưu."},
   {id:"tomorrow",title:"Hẹn gặp ngày mai",model:"明天见",first:6,practice:[6],checkpoint:null,contextOnly:true,note:"Tiểu Vũ hẹn An ngày mai tới trường.",recall:"Ngày mai là một lời hẹn trong tình bạn, không chỉ là từ mới."}
  ];
  function independent(record){return !!record&&record.status==="correct"&&!record.hint&&(!Number.isFinite(Number(record.attempts))||Number(record.attempts)===0)}
@@ -31,7 +31,7 @@ var HSKStoryThreads=(function(){"use strict";
  function echo(sceneIndex,history,choices,encounter){
   var h=Array.isArray(history)?history:[],mem=choices&&typeof choices==="object"?choices:{};
   if(sceneIndex===1&&h[0]){
-   return {zh:"你好！",py:"Nǐ hǎo!",vi:"Ở nhà An đã nghe mẹ hỏi 你好吗. Hôm nay cô Vương dùng 你好 để chào An. Cùng những âm quen thuộc, nhưng một người mới đang nói với An.",kind:"language-reappearance"};
+   return {zh:"你好！",py:"Nǐ hǎo!",vi:"Lúc nãy mẹ hỏi An có ổn không vì thấy An lo lắng. Còn 你好 là lời cô Vương chào học sinh mới. Cùng chữ 好, nhưng hai người đang muốn nói hai điều khác nhau.",kind:"language-reappearance"};
   }
   if(sceneIndex===3&&h[1]&&h[2]){
    var sit=mem.friendship==="sit-with-friend";

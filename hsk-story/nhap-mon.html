@@ -2,16 +2,14 @@
 <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="theme-color" content="#e9f2f2"><meta name="description" content="Tối trước ngày đầu đến trường, An mở cuốn sổ và gặp những chữ Hán đầu tiên cùng Sẻ.">
 <title>Cuốn sổ của An · Chim Sẻ</title>
-<link rel="icon" type="image/webp" href="/art/characters/sparrow-icon-v2.webp">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/intro.css"><link rel="stylesheet" href="/scene-layers.css"></head>
+<link rel="icon" type="image/svg+xml" href="/art/brand/flat-favicon.svg">
+<link rel="stylesheet" href="/intro.css"><link rel="stylesheet" href="/scene-layers.css"><link rel="stylesheet" href="/readability.css"><link rel="stylesheet" href="/fonts.css"><link rel="stylesheet" href="/brand.css"><link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/account.css"><link rel="preload" href="/art/fonts/noto-sans-sc-game-v1.woff2" as="font" type="font/woff2" crossorigin></head>
 <body class="chimse-intro">
 <div class="texture" aria-hidden="true"></div>
 <main class="intro-screen" id="book" aria-live="off">
  <header class="topbar">
-  <a class="brand" href="/" aria-label="Về câu chuyện Chim Sẻ"><span class="brand-mark sparrow-brand-mark">雀</span><span><b>Chim Sẻ</b><small>CHUYỆN CỦA AN</small></span></a>
-  <div class="progress-band" aria-label="Tiến độ tập nhập môn"><span id="position">TRANG 01 / 09</span><progress id="storyProgress" max="9" value="1">1/9</progress></div>
+  <a class="brand chimse-brand" href="/" aria-label="Chim Sẻ — Chuyện của An"><img class="chimse-brand-mark" src="/art/brand/flat-sparrow.svg" alt=""><span class="chimse-brand-copy"><b>Chim Sẻ</b><small>CHUYỆN CỦA AN</small></span></a>
+  <div class="progress-band"><span id="position">TRANG 01 / 09</span><progress id="storyProgress" aria-label="Tiến độ tập nhập môn" max="9" value="1">1/9</progress></div>
   <details class="source-details"><summary>Ghi chú</summary><p>Nhập môn không phải HSK 0 chính thức và không chấm năng lực HSK. Các hình dung giúp nhớ chữ không phải lúc nào cũng là nguồn gốc lịch sử của chữ.</p><ul id="sourceList"></ul></details>
   <button type="button" id="resetBtn" class="reset-book" aria-label="Đọc lại từ đầu">↻</button>
  </header>
@@ -23,7 +21,7 @@
   </article>
   <div class="glyph-frame" aria-label="Chữ Hán đang khám phá">
    <span class="ink-label" id="inkLabel">LẦN ĐẦU NHÌN CHỮ</span><div class="main-glyph" id="mainGlyph" lang="zh-CN">字</div>
-   <div class="main-pinyin" id="mainPinyin">zì</div><button id="hearBtn" type="button" class="hear" aria-label="Nghe chữ tiếng Trung">◖)) Nghe chữ này</button>
+   <div class="main-pinyin" id="mainPinyin">zì</div><button id="hearBtn" type="button" class="hear">◖)) Nghe chữ này</button>
   </div>
   <div class="paper-foot"><span>图 · NHẬP MÔN</span><span>Góc nhỏ trong sổ tay của An</span></div>
  </section>
@@ -34,6 +32,7 @@
   <div class="book-nav"><button type="button" class="secondary" id="backBtn">← Trang trước</button><button type="button" class="primary" id="nextBtn">Trang tiếp theo ↗</button></div>
  </section>
 </main>
-<script src="/scene-manifest.js" defer></script><script src="/scene-renderer.js" defer></script><script src="/intro-data.js" defer></script><script src="/intro-core.js" defer></script><script src="/intro.js" defer></script>
+<script src="/scene-flat-art.js" defer></script><script src="/scene-manifest.js" defer></script><script src="/scene-renderer.js" defer></script><script src="/intro-data.js" defer></script><script src="/intro-core.js" defer></script><script src="/intro.js" defer></script>
 <script>(()=>{const v=window.visualViewport;const set=()=>document.documentElement.style.setProperty('--chimse-visible-height',Math.floor(v?v.height:window.innerHeight)+'px');set();window.addEventListener('resize',set,{passive:true});if(v)v.addEventListener('resize',set,{passive:true})})();</script>
+<script src="/progress-core.js" defer></script><script src="/account.js" defer></script>
 </body></html>

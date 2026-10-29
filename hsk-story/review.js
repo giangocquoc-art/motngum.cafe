@@ -8,7 +8,7 @@ function $(id){return document.getElementById(id)}
 function today(){var d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-")}
 function readStory(){try{return JSON.parse(localStorage.getItem("hai-que-huong-progress-v3")||"null")}catch(e){return null}}
 var story=readStory(),progress=C.read(localStorage,D),day=today(),currentId=null,outcome=null,notice="",draft="";
-function persist(){if(!C.write(localStorage,D,progress))$("storageNotice").textContent="Trình duyệt không cho phép lưu lịch ôn. Bạn vẫn có thể luyện trong phiên này, nhưng lần sau có thể phải làm lại. Không ảnh hưởng tiến độ truyện."}
+function persist(){if(!C.write(localStorage,D,progress))$("storageNotice").textContent="Trình duyệt chưa giữ được lịch ôn trên máy. Bạn vẫn có thể luyện tiếp và thử lưu vào tài khoản.";if(typeof window.CustomEvent==="function"&&typeof window.dispatchEvent==="function")window.dispatchEvent(new window.CustomEvent("chimse-progress-changed",{detail:{area:"review",value:C.clean(progress,D)}}))}
 function actionLabel(item){return item.kind==="reading"?"ĐỌC HIỂU":item.kind==="hanzi"?"NHẬN MẶT CHỮ":"NHẬP CHỮ HÁN"}
 function clearChildren(el){el.replaceChildren()}
 function render(){

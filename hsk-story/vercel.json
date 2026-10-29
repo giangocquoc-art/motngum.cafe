@@ -1,6 +1,9 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/auth/:path*", "destination": "/api/auth-handler?authPath=:path*" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

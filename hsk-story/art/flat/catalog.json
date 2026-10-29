@@ -1,0 +1,255 @@
+{
+  "authority": "Production hsk.motngum.cafe / dpl_2sWy8xHJ7WAajSPRTFWPraMeWVZS; captured 2026-10-29",
+  "authoringSource": "scene-flat-art.js",
+  "backgrounds": {
+    "arrival-street": {
+      "desktop": "flat/backgrounds/arrival-street.svg",
+      "mobile": "flat/backgrounds/arrival-street-portrait.svg",
+      "compact": "flat/backgrounds/arrival-street-compact.svg"
+    },
+    "school-gate": {
+      "desktop": "flat/backgrounds/school-gate.svg",
+      "mobile": "flat/backgrounds/school-gate-portrait.svg",
+      "compact": "flat/backgrounds/school-gate-compact.svg"
+    },
+    "classroom": {
+      "desktop": "flat/backgrounds/classroom.svg",
+      "mobile": "flat/backgrounds/classroom-portrait.svg",
+      "compact": "flat/backgrounds/classroom-compact.svg"
+    },
+    "noodle-shop": {
+      "desktop": "flat/backgrounds/noodle-shop.svg",
+      "mobile": "flat/backgrounds/noodle-shop-portrait.svg",
+      "compact": "flat/backgrounds/noodle-shop-compact.svg"
+    },
+    "evening-street": {
+      "desktop": "flat/backgrounds/evening-street.svg",
+      "mobile": "flat/backgrounds/evening-street-portrait.svg",
+      "compact": "flat/backgrounds/evening-street-compact.svg"
+    },
+    "school-office": {
+      "desktop": "flat/backgrounds/school-office.svg",
+      "mobile": "flat/backgrounds/school-office-portrait.svg",
+      "compact": "flat/backgrounds/school-office-compact.svg"
+    },
+    "bedroom": {
+      "desktop": "flat/backgrounds/bedroom.svg",
+      "mobile": "flat/backgrounds/bedroom-portrait.svg",
+      "compact": "flat/backgrounds/bedroom-compact.svg"
+    }
+  },
+  "sprites": {
+    "classmates": {
+      "asset": "flat/characters/classmates-attentive.svg",
+      "format": "svg",
+      "frameAssets": {
+        "attentive": "flat/characters/classmates-attentive.svg"
+      },
+      "face": [
+        0.05,
+        0.1,
+        0.95,
+        0.75
+      ]
+    },
+    "an": {
+      "asset": "flat/characters/an-listening.svg",
+      "format": "svg",
+      "frameAssets": {
+        "listening": "flat/characters/an-listening.svg",
+        "neutral": "flat/characters/an-neutral.svg",
+        "curious": "flat/characters/an-curious.svg",
+        "awkward": "flat/characters/an-awkward.svg",
+        "confused": "flat/characters/an-confused.svg",
+        "thinking": "flat/characters/an-thinking.svg",
+        "shy": "flat/characters/an-shy.svg",
+        "sad": "flat/characters/an-sad.svg",
+        "smile": "flat/characters/an-smile.svg",
+        "determined": "flat/characters/an-determined.svg"
+      },
+      "face": [
+        0.34,
+        0.02,
+        0.66,
+        0.36
+      ]
+    },
+    "sparrow": {
+      "asset": "flat/characters/sparrow-curious.svg",
+      "format": "svg",
+      "frameAssets": {
+        "curious": "flat/characters/sparrow-curious.svg",
+        "listening": "flat/characters/sparrow-listening.svg",
+        "worried": "flat/characters/sparrow-worried.svg",
+        "happy": "flat/characters/sparrow-happy.svg",
+        "thinking": "flat/characters/sparrow-thinking.svg",
+        "wave": "flat/characters/sparrow-wave.svg"
+      },
+      "face": [
+        0.18,
+        0.15,
+        0.82,
+        0.7
+      ]
+    },
+    "mother": {
+      "asset": "flat/characters/mother-neutral.svg",
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/mother-neutral.svg",
+        "gentle": "flat/characters/mother-gentle.svg",
+        "speaking": "flat/characters/mother-speaking.svg",
+        "laughing": "flat/characters/mother-laughing.svg",
+        "concerned": "flat/characters/mother-concerned.svg",
+        "thinking": "flat/characters/mother-thinking.svg"
+      },
+      "face": [
+        0.34,
+        0.02,
+        0.66,
+        0.36
+      ]
+    },
+    "xiaoyu": {
+      "asset": "flat/characters/xiaoyu-neutral.svg",
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/xiaoyu-neutral.svg",
+        "friendly": "flat/characters/xiaoyu-friendly.svg",
+        "speaking": "flat/characters/xiaoyu-speaking.svg",
+        "laughing": "flat/characters/xiaoyu-laughing.svg",
+        "surprised": "flat/characters/xiaoyu-surprised.svg",
+        "thoughtful": "flat/characters/xiaoyu-thoughtful.svg"
+      },
+      "face": [
+        0.34,
+        0.02,
+        0.66,
+        0.36
+      ]
+    },
+    "wang": {
+      "asset": "flat/characters/wang-neutral.svg",
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/wang-neutral.svg",
+        "smile": "flat/characters/wang-smile.svg",
+        "speaking": "flat/characters/wang-speaking.svg",
+        "thinking": "flat/characters/wang-thinking.svg",
+        "worried": "flat/characters/wang-worried.svg",
+        "surprised": "flat/characters/wang-surprised.svg"
+      },
+      "face": [
+        0.34,
+        0.02,
+        0.66,
+        0.36
+      ]
+    },
+    "liu": {
+      "asset": "flat/characters/liu-neutral.svg",
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/liu-neutral.svg",
+        "smile": "flat/characters/liu-smile.svg",
+        "speaking": "flat/characters/liu-speaking.svg",
+        "laughing": "flat/characters/liu-laughing.svg",
+        "curious": "flat/characters/liu-curious.svg",
+        "determined": "flat/characters/liu-determined.svg"
+      },
+      "face": [
+        0.34,
+        0.02,
+        0.66,
+        0.36
+      ]
+    },
+    "receptionist": {
+      "asset": "flat/characters/receptionist-neutral.svg",
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/receptionist-neutral.svg",
+        "welcoming": "flat/characters/receptionist-welcoming.svg",
+        "speaking": "flat/characters/receptionist-speaking.svg",
+        "listening": "flat/characters/receptionist-listening.svg",
+        "puzzled": "flat/characters/receptionist-puzzled.svg",
+        "reassuring": "flat/characters/receptionist-reassuring.svg"
+      },
+      "face": [
+        0.34,
+        0.02,
+        0.66,
+        0.36
+      ]
+    },
+    "anNoodle": {
+      "asset": "flat/characters/anNoodle-shy.svg",
+      "format": "svg",
+      "frameAssets": {
+        "shy": "flat/characters/anNoodle-shy.svg",
+        "listening": "flat/characters/anNoodle-listening.svg",
+        "curious": "flat/characters/anNoodle-curious.svg",
+        "thinking": "flat/characters/anNoodle-thinking.svg",
+        "awkward": "flat/characters/anNoodle-awkward.svg",
+        "smile": "flat/characters/anNoodle-smile.svg",
+        "speaking": "flat/characters/anNoodle-speaking.svg"
+      },
+      "face": [
+        0.32,
+        0.05,
+        0.7,
+        0.44
+      ]
+    },
+    "xiaoyuNoodle": {
+      "asset": "flat/characters/xiaoyuNoodle-neutral.svg",
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/xiaoyuNoodle-neutral.svg",
+        "friendly": "flat/characters/xiaoyuNoodle-friendly.svg",
+        "speaking": "flat/characters/xiaoyuNoodle-speaking.svg",
+        "laughing": "flat/characters/xiaoyuNoodle-laughing.svg",
+        "surprised": "flat/characters/xiaoyuNoodle-surprised.svg",
+        "thoughtful": "flat/characters/xiaoyuNoodle-thoughtful.svg"
+      },
+      "face": [
+        0.32,
+        0.05,
+        0.7,
+        0.44
+      ]
+    }
+  },
+  "props": {
+    "menu": {
+      "desktop": "flat/layers/menu.svg",
+      "mobile": "flat/layers/menu-portrait.svg",
+      "compact": "flat/layers/menu-compact.svg"
+    },
+    "counter": {
+      "desktop": "flat/layers/counter.svg",
+      "mobile": "flat/layers/counter-portrait.svg",
+      "compact": "flat/layers/counter-compact.svg"
+    },
+    "table-top": {
+      "desktop": "flat/layers/table-top.svg",
+      "mobile": "flat/layers/table-top-portrait.svg",
+      "compact": "flat/layers/table-top-compact.svg"
+    },
+    "table-apron": {
+      "desktop": "flat/layers/table-apron.svg",
+      "mobile": "flat/layers/table-apron-portrait.svg",
+      "compact": "flat/layers/table-apron-compact.svg"
+    },
+    "bowl": {
+      "desktop": "flat/layers/bowl.svg",
+      "mobile": "flat/layers/bowl-portrait.svg",
+      "compact": "flat/layers/bowl-compact.svg"
+    },
+    "steam": {
+      "desktop": "flat/layers/steam.svg",
+      "mobile": "flat/layers/steam-portrait.svg",
+      "compact": "flat/layers/steam-compact.svg"
+    }
+  }
+}

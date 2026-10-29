@@ -4,7 +4,7 @@ if(typeof HSKIntroContent==="undefined"||typeof HSKIntroCore==="undefined"||HSKI
 var Data=HSKIntroContent,Core=HSKIntroCore,$=function(id){return document.getElementById(id)};
 var state=read(),last=Data.stages.length-1,feedback="",curiosityIndex=0;
 function read(){try{return Core.clean(JSON.parse(localStorage.getItem(Core.key)||"null"))}catch(e){return Core.initial()}}
-function save(){try{localStorage.setItem(Core.key,JSON.stringify(state));$("saveStatus").textContent="Đã lưu tiến độ trên thiết bị"}catch(e){$("saveStatus").textContent="Trình duyệt không lưu được — vẫn có thể tiếp tục"}}
+function save(){try{localStorage.setItem(Core.key,JSON.stringify(state));$("saveStatus").textContent="Đã giữ trang này trên máy"}catch(e){$("saveStatus").textContent="Trình duyệt không lưu được — vẫn có thể tiếp tục"}if(typeof window.CustomEvent==="function"&&typeof window.dispatchEvent==="function")window.dispatchEvent(new window.CustomEvent("chimse-progress-changed",{detail:{area:"intro",value:Core.clean(state)}}))}
 function el(tag,cls,text){var node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node}
 function button(label,handle,cls){var b=el("button",cls||"number-button",label);b.type="button";b.addEventListener("click",handle);return b}
 function change(next,message){state=Core.clean(next);save();feedback=message||"";render()}
@@ -37,7 +37,7 @@ function renderDiscover(root){
   var seen=state.discovered.includes(g.zi),b=button("",function(){change(Core.visit(state,g.zi),g.zi+" · "+g.py+" · "+g.meaning+". "+g.note)}, "glyph-option");
   b.replaceChildren();
   var glyph=el("strong","",g.zi);glyph.lang="zh-CN";b.appendChild(glyph);
-  b.appendChild(el("span","",seen?g.meaning:"Chạm để khám phá"));
+  b.appendChild(el("span","",seen?g.meaning:"Chạm"));
   b.appendChild(el("small","",seen?g.py:""));
   b.classList.toggle("selected",state.focusGlyph===g.zi);
   grid.appendChild(b);
@@ -89,7 +89,7 @@ function renderMother(root){
 function renderLegend(root){
  var d=Data.curiosity;
  if(!state.curiosityOpen){
-  root.appendChild(el("p","micro-note","Mẹ hỏi An: “Một câu đùa về chữ Hán có phải lúc nào cũng đúng nghĩa từ điển?”"));
+  root.appendChild(el("p","micro-note","安 là chữ mẹ dùng để viết tên An. Thử tìm lại chữ ấy trong trang sổ phía trên nhé."));
   root.appendChild(button(state.legendRead?"Xem lại góc chữ Hán kỳ lạ ↗":"✳ Tò mò? Mở trang chữ Hán kỳ lạ ↗",
    function(){curiosityIndex=0;change(Core.curiosity(state,true),"")},"number-button"));
   root.appendChild(el("p","micro-note","Bạn có thể đọc tiếp câu chuyện mà không cần mở trang này."));
@@ -110,7 +110,7 @@ function renderLegend(root){
  var back=button("← Chữ trước",function(){curiosityIndex--;render()},"secondary");back.disabled=curiosityIndex===0;
  var next=button("Chữ tiếp →",function(){curiosityIndex++;render()},"secondary");next.disabled=curiosityIndex===d.examples.length-1;
  nav.appendChild(back);nav.appendChild(el("span","",(curiosityIndex+1)+" / "+d.examples.length));nav.appendChild(next);panel.appendChild(nav);
- panel.appendChild(button("← Đóng trang đọc thêm, quay lại An và mẹ",function(){change(Core.curiosity(state,false),"")},"secondary"));
+ panel.appendChild(button("← Về An và mẹ",function(){change(Core.curiosity(state,false),"")},"secondary"));
  root.appendChild(panel);
 }
 function renderQuiz(root){
@@ -130,11 +130,10 @@ function renderQuiz(root){
  (picked===-1?"✳ Đã bỏ qua câu này. ":picked===q.answer?"✳ Nhận ra đúng ngay lần chọn đầu tiên. ":"✳ Đây là chỗ mình vừa học thêm! Đáp án đúng: "+q.options[q.answer]+". ")+q.explain);result.setAttribute("role","status");root.appendChild(result)}
 }
 function renderEnding(root){
- var recap=Core.recap(state,Data.quizzes);
  var card=el("div","finish-card");
- card.appendChild(el("div","seal","好"));
- card.appendChild(el("p","", "An đã nhận ra nét chữ, bộ phận gợi nghĩa và cả bí mật gợi âm. "+(recap.seen?"Bạn nhận ra "+recap.recognized+" chữ ở lượt chọn đầu tiên, học thêm "+recap.practiced+" chữ nhờ lời giải"+(recap.skipped?", bỏ qua "+recap.skipped+" chữ":"")+". ":"")+"Không cần học thuộc tất cả ngay hôm nay."));
- var link=el("a","","Bước sang HSK 1 — gặp cô Vương ↗");link.href="/?play=hsk1";card.appendChild(link);
+ card.appendChild(el("p","ending-meaning","好 (hǎo) nghĩa là “ổn, tốt”. Mẹ hỏi An: 你好吗？ (Nǐ hǎo ma?) — “Con khỏe không?”"));
+ var example=el("div","ending-example"),han=el("strong","","我很好。"),reading=el("span","","Wǒ hěn hǎo. · Con ổn ạ.");
+ han.lang="zh-CN";example.appendChild(el("small","","An đáp:"));example.appendChild(han);example.appendChild(reading);card.appendChild(example);
  root.appendChild(card);
 }
 function updateNav(stage){
@@ -178,7 +177,7 @@ function next(){
  change(Core.move(state,"next"),"");window.scrollTo?.({top:0,behavior:"auto"});
 }
 function previous(){change(Core.move(state,"back"),"");window.scrollTo?.({top:0,behavior:"auto"})}
-$("hearBtn").addEventListener("click",function(){var stage=Data.stages[state.step],str=topGlyph(stage);if(stage.kind==="legend")str="女";say(str)});
+$("hearBtn").addEventListener("click",function(){say(topGlyph(Data.stages[state.step]))});
 $("nextBtn").addEventListener("click",next);
 $("backBtn").addEventListener("click",previous);
 $("resetBtn").addEventListener("click",function(){if(window.confirm("Đọc lại toàn bộ tập nhập môn từ trang đầu? Tiến độ HSK 1–5 sẽ không bị ảnh hưởng.")){change(Core.restart(),"");window.scrollTo?.({top:0,behavior:"auto"})}});

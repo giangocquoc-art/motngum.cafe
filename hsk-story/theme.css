@@ -1,0 +1,32 @@
+/* Chim Sẻ interface palette, shared by every public screen. Artwork keeps its approved colors. */
+:root{
+ --cs-paper:#f8f1e1;--cs-surface:#fff9ee;--cs-surface-soft:#eee5d3;
+ --cs-ink:#303731;--cs-muted:#665e52;--cs-line:#b5a58f;
+ --cs-sky:#b8d6dd;--cs-sky-ink:#294c58;--cs-sky-soft:#e3eff0;
+ --cs-terra:#a94e35;--cs-terra-hover:#8e3f2a;--cs-on-terra:#fffaf1;
+ --cs-sage:#d3ddcb;--cs-success:#325740;--cs-warning:#7b4b26;
+ --cs-focus:#376a80;--cs-shadow:#51463b26;
+ --chimse-font-ui:"Be Vietnam Pro","Segoe UI",sans-serif;
+ --chimse-font-title:"Playfair Display","Be Vietnam Pro",serif;
+ --chimse-font-pinyin:"Chimse Pinyin","Be Vietnam Pro",sans-serif;
+ --chimse-font-han:"Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;
+ --chimse-han:var(--chimse-font-han);--chimse-brand-ink:var(--cs-ink);--chimse-brand-muted:var(--cs-muted);
+ --paper:var(--cs-paper);--ink:var(--cs-ink);--muted:var(--cs-muted);--terra:var(--cs-terra);--sage:var(--cs-sage);--line:var(--cs-line);
+}
+body{color:var(--cs-ink);background:var(--cs-paper);font-family:var(--chimse-font-ui)}
+button,input,textarea,select{font-family:var(--chimse-font-ui)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--cs-focus);outline-offset:3px}
+.site-header,.game-top,.intro-screen .topbar,.review-screen .head{background:var(--cs-paper);border-color:var(--cs-line);color:var(--cs-ink)}
+.story-ui,.intro-story,.opening,.notebook-panel,.world-panel,.ai-tutor-panel{background:var(--cs-surface);border-color:var(--cs-line);color:var(--cs-ink)}
+.player-panel,.intro-learning,.book{background:var(--cs-paper);color:var(--cs-ink);border-color:var(--cs-line)}
+.primary-btn,.send-btn,.next-btn,.interlude-continue,.completion-actions button,.book .primary,.intro-screen .primary,.review-empty a,.ai-tutor-send{background:var(--cs-terra);border-color:var(--cs-terra);color:var(--cs-on-terra)}
+.primary-btn:hover,.send-btn:hover,.next-btn:hover,.interlude-continue:hover,.book .primary:hover,.intro-screen .primary:hover{background:var(--cs-terra-hover);color:var(--cs-on-terra)}
+.feedback.good,.notice.success{color:var(--cs-success)}
+.feedback.neutral,.notice.warning{color:var(--cs-warning)}
+.speaker-label,.viet-text,.book-caption,.intro-screen .story-tip,.review-screen .notice{color:var(--cs-muted)}
+.pinyin-text,.main-pinyin,.notebook-pinyin,.feedback,.notice,.story-echo,.ai-tutor-message{font-family:var(--chimse-font-pinyin)}
+html [lang|="zh"],.zh,.main-glyph,.talk-line{font-family:var(--chimse-font-han)}
+.hero h1,.opening h1,.intro-story h1,.book h2,.player-panel h3{font-family:var(--chimse-font-title)}
+.ai-tutor-head,.notebook-heading,.learning-strip{background:var(--cs-sky-soft);color:var(--cs-sky-ink);border-color:var(--cs-line)}
+.pill,.emote-tag{background:var(--cs-sage);color:var(--cs-ink)}
+@media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}}

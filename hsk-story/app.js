@@ -9,6 +9,11 @@ var state={step:0,history:[],done:false,pinyin:true,vi:true,attempts:0,hintUsed:
 var toastTimer=null,returnFocus=null,SCENE_TOTAL=SCENES.length,EXAM_START=HSKCurriculum.scenes.findIndex(function(x){return x.kind==="checkpoint"});
 if(typeof HSKStoryThreads==="undefined"||HSKStoryThreads.validate(HSKCurriculum,HSKContent).length||typeof HSKSceneLayers==="undefined"||typeof HSKSaveIO==="undefined"||typeof HSKStoryRuntime==="undefined"||HSKStoryRuntime.version!==4||typeof HSKStoryGraph==="undefined"||HSKStoryGraph.validate(HSKContent,HSKCurriculum,HSKStoryBeats,HSKStoryDirector,HSKEncounter).length||typeof HSKSceneWorld==="undefined"||HSKSceneWorld.validate(HSKStoryGraph).length||typeof HSKSkillSampler==="undefined"||HSKSkillSampler.validate(HSKStoryGraph,HSKCurriculum).length||typeof HSKEncounter==="undefined"||HSKEncounter.validate().length||typeof HSKContent==="undefined"||HSKContent.validate(HSKCurriculum).length||typeof HSKLearningKit==="undefined"||typeof HSKStoryDirector==="undefined"||typeof HSKStoryBeats==="undefined"||HSKStoryBeats.validate(SCENE_TOTAL,EXAM_START).length||HSKStoryDirector.validate(SCENE_TOTAL,EXAM_START).length||HSKCurriculum.validate().length||HSKCurriculum.scenes.length!==SCENE_TOTAL||REPLIES.length!==SCENE_TOTAL)throw Error("Story content contract invalid");
 function readSafe(k){return HSKSaveIO.readSafe(localStorage,k)}
+window.addEventListener("chimse-ai-helped",function(event){
+ var sceneId=event&&event.detail&&event.detail.sceneId,scene=HSKCurriculum.scenes[state.step];
+ if(typeof sceneId!=="string"||!scene||scene.kind!=="practice"||state.step>=EXAM_START||state.done||state.solved||state.history[state.step]||HSKStoryGraph.idAt(state.step)!==sceneId)return;
+ if(!state.hintUsed){state.hintUsed=true;save()}
+});
 function load(){
  var s=readSafe(KEY);
  if(s&&s.v===3&&Array.isArray(s.history)&&Number.isInteger(s.step)){
@@ -27,7 +32,7 @@ function load(){
  }
  state.step=0;
 }
-function save(){try{HSKSaveIO.persist(localStorage,KEY,state,HSKStoryGraph,HSKStoryRuntime)}catch(e){}}
+function save(){try{HSKSaveIO.persist(localStorage,KEY,state,HSKStoryGraph,HSKStoryRuntime)}catch(e){}if(typeof window.CustomEvent==="function"&&typeof window.dispatchEvent==="function")window.dispatchEvent(new window.CustomEvent("chimse-progress-changed",{detail:{area:"story",value:HSKSaveIO.snapshot(state,HSKStoryGraph)}}))}
 
 function notify(msg){var el=$("toast");el.textContent=msg;el.classList.add("visible");clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove("visible")},3300)}
 function updateToggles(){
@@ -38,12 +43,15 @@ function updateToggles(){
  $("toggleVietnamese").setAttribute("aria-pressed",String(state.vi&&canShow));
  $("togglePinyin").textContent="Pinyin "+(state.step>=EXAM_START&&!canShow?"(trợ giúp)":state.pinyin?"✓":"○");
  $("toggleVietnamese").textContent="Tiếng Việt "+(state.step>=EXAM_START&&!canShow?"(trợ giúp)":state.vi?"✓":"○");
+ $("checkpointHelpBtn").hidden=state.step<EXAM_START||state.done||state.solved||state.examHelp||practiceActive()||!!HSKStoryBeats.pending(state.step,state.storyBeats);
 }
 
 var notebookSection="words",notebookPage=0,notebookData={memory:[],learning:[]};
-function notebookAllowed(){return !practiceActive()&&!HSKEncounter.pending(state.step,state.encounter)&&!HSKStoryBeats.pending(state.step,state.storyBeats)&&(state.step<EXAM_START||state.solved||state.done)}
+function notebookAllowed(){return !practiceActive()&&!HSKEncounter.pending(state.step,state.encounter)&&!HSKStoryBeats.pending(state.step,state.storyBeats)&&!pendingModel()&&(state.step<EXAM_START||state.solved||state.done)}
 function setNotebook(open){
- if(open&&!notebookAllowed()){notify("Cô Vương đang kiểm tra. Sổ tay chỉ được mở sau khi trả lời xong.");return}
+ if(open&&!notebookAllowed()){
+  notify(practiceActive()?"Thử xong lượt này rồi mình mở sổ nhé.":HSKEncounter.pending(state.step,state.encounter)?"Mình tìm lại quyển sổ của An trước nhé.":HSKStoryBeats.pending(state.step,state.storyBeats)||pendingModel()?"Đọc tiếp đoạn này rồi mình mở sổ nhé.":"Cô Vương đang kiểm tra. Sổ tay mở lại sau câu trả lời; cần phụ đề thì nhờ cô nhé.");return;
+ }
  $("notebookPanel").hidden=!open;
  $("notebookBtn").setAttribute("aria-expanded",String(open));
  if(open){
@@ -123,7 +131,7 @@ function openBuilder(){
  $("tileList").children[0]?.focus();
 }
 function useTile(token){
- if(state.solved||state.done||state.step>=EXAM_START||HSKStoryBeats.pending(state.step,state.storyBeats))return;
+ if(state.solved||state.done||state.step>=EXAM_START||HSKStoryBeats.pending(state.step,state.storyBeats)||pendingModel())return;
  state.draft=HSKLearningKit.compose($("answerInput").value,token);
  $("answerInput").value=state.draft;
  state.hintUsed=true;save();
@@ -163,7 +171,7 @@ function closePractice(){
 var worldPage=0;
 function renderWorld(){
  var id=HSKStoryGraph.idAt(state.step),site=HSKSceneWorld.site(id);
- var blocked=!!(state.done||HSKEncounter.pending(state.step,state.encounter)||practiceActive()||HSKStoryBeats.pending(state.step,state.storyBeats));
+ var blocked=!!(state.done||HSKEncounter.pending(state.step,state.encounter)||practiceActive()||HSKStoryBeats.pending(state.step,state.storyBeats)||pendingModel());
  var available=!!site&&!blocked;$("worldOpenBtn").hidden=!available;$("worldOpenBtn").setAttribute("aria-expanded",String(state.worldOpen));
  $("worldPanel").hidden=!available||!state.worldOpen;$("worldActions").replaceChildren();
  $("worldDescription").textContent="Chọn một đồ vật để hiểu thêm cảnh này. Không tính điểm.";
@@ -290,7 +298,7 @@ function renderEncounter(){
   $("encounterBody").textContent="An sờ vào quai cặp. Quyển sổ mẹ tặng không thấy đâu. Hãy nhìn quanh ít nhất hai nơi để tìm manh mối ("+progress.inspected.length+"/2).";
   data.objects.forEach(o=>actionButton(o.label,()=>encounterDispatch({type:"inspect",id:o.id}),progress.inspected.includes(o.id)));
  }else if(progress.stage==="decide"){
-  $("encounterBody").textContent="Một manh mối dẫn tới phòng trực. An phải quyết định nhờ ai đồng hành. Lựa chọn này không chấm điểm ngôn ngữ.";
+  $("encounterBody").textContent="An đã nhìn quanh, nhưng vẫn chưa biết quyển sổ đang ở đâu. Cậu có thể nhờ Tiểu Vũ đi cùng hoặc hỏi cô Vương đường tới phòng trực. Lựa chọn này không chấm điểm ngôn ngữ.";
   data.routes.forEach(o=>actionButton(o.label,()=>encounterDispatch({type:"route",id:o.id}),false));
  }else if(progress.stage==="respond"){
   var path=HSKEncounter.route(progress.route);
@@ -304,12 +312,18 @@ function renderEncounter(){
  updateToggles();return true;
 }
 
+function pendingModel(){
+ return !state.done&&state.step<EXAM_START&&!state.history[state.step]&&!state.vocabSeen.includes(state.step)?SCENES[state.step].guidedModel:null;
+}
 function renderStoryInterlude(){
- var b=HSKStoryBeats.pending(state.step,state.storyBeats);
+ var story=HSKStoryBeats.pending(state.step,state.storyBeats),model=!story&&pendingModel(),b=story||model;
  $("storyInterlude").hidden=!b;
+ $("storyInterlude").dataset.kind=model?"model":"story";
  if(!b)return false;
  $("interludeHeading").textContent=b.title;$("interludeStory").textContent=b.story;
- $("speaker").textContent="旁白 · Người kể chuyện";$("sceneTag").textContent="TRANG TRUYỆN";
+ $("speaker").textContent=model?(model.speaker||SCENES[state.step].speaker)+" · nhắc An":"旁白 · Người kể chuyện";$("sceneTag").textContent=model?"CÂU AN TẬP NÓI":"TRANG TRUYỆN";
+ $("interludeContinue").textContent=model?"Thử nói cùng An ↗":"Đọc tiếp câu chuyện ↗";
+ if(model&&(model.speakerCharacter||SCENES[state.step].speakerCharacter))HSKSceneLayers.setExpression($("stageIllustration"),model.speakerCharacter||SCENES[state.step].speakerCharacter,"speaking");
  $("dialogueText").textContent=b.zh;$("pinyinText").textContent=b.py;$("vietText").textContent=b.vi;
  $("userInstruction").hidden=true;$("sceneObjective").hidden=true;
  $("answerForm").hidden=true;$("sentenceBuilder").hidden=true;$("learningStrip").hidden=true;
@@ -318,8 +332,12 @@ function renderStoryInterlude(){
  updateToggles();return true;
 }
 function continueStoryInterlude(){
- var b=HSKStoryBeats.pending(state.step,state.storyBeats);if(!b||$("gameOverlay").hidden)return;
- state.storyBeats=HSKStoryBeats.mark(state.storyBeats,b.id);save();renderStep();(state.solved?$("nextBtn"):$("answerInput")).focus();
+ if($("gameOverlay").hidden)return;
+ var b=HSKStoryBeats.pending(state.step,state.storyBeats);
+ if(b)state.storyBeats=HSKStoryBeats.mark(state.storyBeats,b.id);
+ else if(pendingModel()){state.hintUsed=true;state.vocabSeen.push(state.step)}
+ else return;
+ save();renderStep();($("storyInterlude").hidden?(state.solved?$("nextBtn"):$("answerInput")):$("interludeContinue")).focus();
 }
 function revealWords(){
  if(state.done||state.solved||state.step>=EXAM_START||HSKStoryBeats.pending(state.step,state.storyBeats))return;
@@ -395,7 +413,7 @@ function narrateSparrow(index){
   "Tiểu Vũ cười với cậu kìa. Tớ nghĩ cậu ấy cũng hơi ngại.",
   "Tớ đếm nhầm mấy lần rồi. Cứ nhìn nét mặt của cô thôi.",
   "Mùi thơm quá. Tớ xin ngồi cạnh cửa sổ thêm một chút.",
-  "Ôi, tớ tưởng cậu quên chiếc sổ. May mà nó vẫn ở đây.",
+  "Bà Lưu còn nhớ cậu thích ít cay hay muốn thử một chút đấy. Tớ thích cách bà chờ cậu nói.",
   "Con đường này vẫn lạ, nhưng giờ đã có người đi cùng.",
   "Tớ đợi ngoài cửa sổ nhé. Cậu cứ từ từ.",
   "Tớ chẳng biết giá mì đâu. Hôm qua tớ mải nhìn cái bát.",
@@ -423,7 +441,7 @@ function renderStep(){
  $("stepText").textContent=String(state.step+1).padStart(2,"0")+" / "+String(SCENE_TOTAL).padStart(2,"0");
  $("progressBar").style.width=(100*state.step/SCENE_TOTAL)+"%";
  $("answerInput").value=state.draft;$("answerInput").disabled=false;
- $("answerInput").placeholder=meta.kind==="checkpoint"?"Viết câu An sẽ nói…":"Viết câu An sẽ nói…";
+ $("answerInput").placeholder="An nói gì đây?";
  $("sendAnswer").disabled=false;$("micBtn").disabled=false;
  $("feedback").textContent="";$("feedback").className="feedback";
  $("answerForm").hidden=false;$("nextBtn").hidden=true;$("hintBtn").hidden=meta.kind==="checkpoint";$("assistBtn").hidden=state.attempts<2;
@@ -434,7 +452,7 @@ function renderStep(){
  $("builderNotice").textContent="Chạm từ để ghép câu nếu chưa biết gõ chữ Hán. Dùng ghép câu được tính là trợ giúp.";renderTiles();
  if(!$("notebookPanel").hidden)setNotebook(false);
  $("attemptCounter").textContent="Lượt thử: "+state.attempts;
- $("learningStrip").hidden=meta.kind!=="practice"||!state.vocabSeen.includes(state.step);
+ $("learningStrip").hidden=true;
  $("vocabRevealBtn").hidden=true;
  $("learningStrip").textContent=meta.kind==="practice"?"✳ "+meta.topic+" · "+meta.words.map(function(w){return w[0]+" ("+w[1]+") — "+w[2]}).join("  ·  "):"";
  $("sceneObjective").textContent=meta.kind==="checkpoint"?"Kiểm tra nhớ lại · "+meta.objective+" · Phụ đề/gợi ý tính là có hỗ trợ.":"Mục tiêu hôm nay · "+meta.objective;
@@ -457,7 +475,7 @@ function displayResolved(){
  $("dialogueText").textContent=reply.zh;$("pinyinText").textContent=reply.py;$("vietText").textContent=reply.vi;
  $("sceneTag").textContent="PHẢN HỒI CỦA NHÂN VẬT";updateToggles();
  $("feedback").className="feedback "+(saved.status==="correct"?"good":"neutral");
- $("feedback").textContent=saved.status==="correct"?(saved.hint?"✓ Đã trả lời đúng sau hỗ trợ. Câu này nên ôn thêm.":"✓ Nhân vật đã hiểu bạn. Đọc phản hồi rồi nhấn Tiếp tục."):"✦ Bạn đã xem câu mẫu và đi tiếp; câu này không tính là tự làm đúng.";
+ $("feedback").textContent=saved.status==="correct"?(saved.hint?"✓ An đã nói được câu này sau hỗ trợ.":"✓ Nhân vật đã hiểu bạn. Đọc phản hồi rồi nhấn Tiếp tục."):"✦ Bạn đã xem câu mẫu và đi tiếp; câu này không tính là tự làm đúng.";
  $("sentenceBuilder").hidden=true;$("openBuilderBtn").hidden=true;$("learningStrip").hidden=state.step>=EXAM_START;$("vocabRevealBtn").hidden=true;
  $("nextBtn").hidden=renderStoryChoice();$("nextBtn").textContent=state.step===SCENE_TOTAL-1?"Xem tổng kết ↗":"Tiếp tục câu chuyện ↗";
  syncPlayLayout();
@@ -499,13 +517,13 @@ function finishCurrent(status){
 }
 function submitAnswer(e){
  e.preventDefault();if(state.busy||state.solved||state.done)return;
- if(practiceActive()||HSKEncounter.pending(state.step,state.encounter)||HSKStoryBeats.pending(state.step,state.storyBeats))return;
+ if(practiceActive()||HSKEncounter.pending(state.step,state.encounter)||HSKStoryBeats.pending(state.step,state.storyBeats)||pendingModel())return;
  var scene=SCENES[state.step],value=$("answerInput").value;
  var result=HSKCore.evaluate(scene,value),feed=$("feedback");
  if(result.ok){state.busy=true;finishCurrent("correct");return}
  if(!value.trim()){feed.className="feedback bad";feed.textContent=result.reason;return}
  state.attempts++;save();$("attemptCounter").textContent="Lượt thử: "+state.attempts;
- feed.className="feedback bad";feed.textContent="Chưa đúng ý. "+result.reason;
+ feed.className="feedback bad";feed.textContent="Mình thử lại nhé. "+result.reason;
  showAnFeeling("awkward");showSparrowFeeling("worried");
  if(state.attempts>=2)$("assistBtn").hidden=false;
 }
@@ -515,7 +533,7 @@ function nextScene(){
   solved:state.solved,
   sampler:practiceActive(),
   encounter:HSKEncounter.pending(state.step,state.encounter),
-  interlude:!!HSKStoryBeats.pending(state.step,state.storyBeats),
+  interlude:!!HSKStoryBeats.pending(state.step,state.storyBeats)||!!pendingModel(),
   choice:!!HSKStoryDirector.pending(state.step,state.storyChoices)
  },HSKStoryGraph);
  if(!transition.ok)return;
@@ -540,7 +558,7 @@ function showAnswerAndMove(){
 function microphone(){
  var API=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!API){notify("Trình duyệt này không có chức năng nhận diện tiếng Trung. Hãy gõ câu trả lời.");return}
- if(state.solved||practiceActive()||HSKEncounter.pending(state.step,state.encounter)||HSKStoryBeats.pending(state.step,state.storyBeats))return;
+ if(state.solved||practiceActive()||HSKEncounter.pending(state.step,state.encounter)||HSKStoryBeats.pending(state.step,state.storyBeats)||pendingModel())return;
  if(state.recognizer){try{state.recognizer.stop()}catch(e){}return}
  var r=new API();r.lang="zh-CN";r.interimResults=false;r.maxAlternatives=1;state.recognizer=r;
  var btn=$("micBtn");btn.classList.add("listening");btn.setAttribute("aria-label","Dừng micro");
@@ -554,7 +572,7 @@ HSKSceneLayers.mount($("homeArt"),"home.arrival",{bottomAvoid:document.querySele
 ["startBtn","resumeBtn","endingBtn"].forEach(function(id){$(id).addEventListener("click",openGame)});
 $("closeGame").addEventListener("click",closeGame);
 $("answerForm").addEventListener("submit",submitAnswer);$("answerInput").addEventListener("input",function(){if(state.solved)return;state.draft=$("answerInput").value.slice(0,300);save()});
-$("listenBtn").addEventListener("click",function(){if(practiceActive()){playSkillSample();return}var b=HSKStoryBeats.pending(state.step,state.storyBeats),q=HSKEncounter.pending(state.step,state.encounter);speak(q?(state.encounter.stage==="respond"?HSKEncounter.content.promptZh:HSKEncounter.content.startZh):b?b.zh:state.solved?REPLIES[state.step].zh:SCENES[state.step].zh)});
+$("listenBtn").addEventListener("click",function(){if(practiceActive()){playSkillSample();return}speak($("dialogueText").textContent)});
 $("hintBtn").addEventListener("click",revealHint);
 $("assistBtn").addEventListener("click",showAnswerAndMove);
 $("nextBtn").addEventListener("click",nextScene);
@@ -563,7 +581,7 @@ $("notebookBtn").addEventListener("click",function(){setNotebook($("notebookPane
 $("notebookClose").addEventListener("click",function(){setNotebook(false)});
 $("sparrowTalkBtn").addEventListener("click",function(){
  if($("sparrowTalkBtn").hidden)return;
- showSparrowFeeling("listening");$("sparrowWhisper").hidden=false;$("storyDialogue").classList.add("sparrow-speaking");$("sparrowTalkBtn").setAttribute("aria-expanded","true");$("sparrowTalkClose").focus();
+ showSparrowFeeling("listening");HSKSceneLayers.react($("stageIllustration"),"sparrow");$("sparrowWhisper").hidden=false;$("storyDialogue").classList.add("sparrow-speaking");$("sparrowTalkBtn").setAttribute("aria-expanded","true");$("sparrowTalkClose").focus();
 });
 $("sparrowTalkClose").addEventListener("click",function(){closeSparrow(true)});
 [["notebookWordsTab","words"],["notebookMemoryTab","memory"],["notebookLearningTab","learning"],["notebookSettingsTab","settings"]].forEach(function(tab){$(tab[0]).addEventListener("click",function(){notebookSection=tab[1];notebookPage=0;renderNotebookPage()})});
@@ -590,12 +608,18 @@ $("worldPrev").addEventListener("click",function(){worldPage=0;renderWorldPage()
 $("worldNext").addEventListener("click",function(){worldPage=1;renderWorldPage()});
 $("togglePinyin").addEventListener("click",function(){if(practiceActive())return;else if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.pinyin=!state.pinyin}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.pinyin=true}else state.pinyin=!state.pinyin;updateToggles();save()});
 $("toggleVietnamese").addEventListener("click",function(){if(practiceActive())return;else if(HSKStoryBeats.pending(state.step,state.storyBeats)){state.vi=!state.vi}else if(state.step>=EXAM_START&&!state.solved){state.hintUsed=true;state.examHelp=true;state.vi=true}else state.vi=!state.vi;updateToggles();save()});
+$("checkpointHelpBtn").addEventListener("click",function(){
+ if(state.step<EXAM_START||state.solved||state.done||practiceActive()||HSKStoryBeats.pending(state.step,state.storyBeats))return;
+ state.hintUsed=true;state.examHelp=true;state.pinyin=true;state.vi=true;updateToggles();save();
+ notify("Cô nhắc lại câu hỏi bằng phụ đề. Lượt này được ghi là có hỗ trợ.");
+ $("answerInput").focus();
+});
 function replay(){state.step=0;state.done=false;state.history=[];state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.storyChoices={};state.storyBeats=[];state.vocabSeen=[];state.encounter=HSKEncounter.initial();state.encounterDraft="";state.worldSeen={};state.worldFocus={};state.skillSampler=HSKSkillSampler.initial();state.practiceOpen=false;state.solved=false;save();updateResumeLabel();renderStep();$("answerInput").focus();notify("Bắt đầu lại tập truyện. Thành tích cũ đã được đặt lại.")}
 function retakeExam(){state.step=EXAM_START;state.done=false;state.history=state.history.slice(0,EXAM_START);state.attempts=0;state.hintUsed=false;state.draft="";state.examHelp=false;state.solved=false;state.practiceOpen=false;save();updateResumeLabel();renderStep();$("answerInput").focus();notify("Đã mở lại ba câu kiểm tra. Tiến độ câu chuyện vẫn được giữ.")}
 $("retakeExamBtn").addEventListener("click",retakeExam);
 $("resetGame").addEventListener("click",replay);$("replayBtn").addEventListener("click",replay);
 document.addEventListener("keydown",function(e){
- if($("gameOverlay").hidden)return;
+ if(e.defaultPrevented||e.isComposing||$("gameOverlay").hidden||document.querySelector("dialog[open]")||!$("aiTutorPanel").hidden)return;
  if(e.key==="Escape"){if(!$("notebookPanel").hidden){setNotebook(false);return}if(!$("sparrowWhisper").hidden){closeSparrow(true);return}if(!$("worldPanel").hidden){state.worldOpen=false;renderWorld();$("worldOpenBtn").focus();return}closeGame();return}
  if(e.key==="Tab"){var scope=$("notebookPanel").hidden?$("gameOverlay"):$("notebookPanel");var f=Array.from(scope.querySelectorAll("button:not([hidden]):not([disabled]),input:not([disabled]):not([hidden]),a[href],textarea:not([disabled])")).filter(function(el){return el.getClientRects().length>0});if(!f.length)return;var first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
 });
@@ -604,7 +628,8 @@ function syncKeyboardLayout(target){
  var input=target===$("answerInput")||target===$("encounterInput")||target===$("aiTutorInput");
  var compactInput=window.matchMedia&&window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
  var shell=$("gameShell"),visible=window.visualViewport?window.visualViewport.height:window.innerHeight;
- if(keyboardViewportWidth!==window.innerWidth){keyboardViewportWidth=window.innerWidth;keyboardFullHeight=window.innerHeight||visible}
+ var stillContracted=!!(compactInput&&shell.classList.contains("keyboard-open")&&visible<keyboardFullHeight-100);
+ if(keyboardViewportWidth!==window.innerWidth){keyboardViewportWidth=window.innerWidth;if(!stillContracted)keyboardFullHeight=window.innerHeight||visible}
  if(!compactInput||!input&&!shell.classList.contains("keyboard-open"))keyboardFullHeight=visible;
  keyboardFullHeight=Math.max(keyboardFullHeight||0,visible||0);
  // Keep the contracted layout through input → button focus; a pointer click must not move its target.

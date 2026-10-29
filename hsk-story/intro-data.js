@@ -7,7 +7,7 @@ var stages=[
  {id:"people",label:"Một người, một nhóm bạn",hanzi:"人 从 众",pinyin:"rén · cóng · zhòng",scene:"Tưởng tượng về sân trường ngày mai",narrative:"An tưởng tượng một người đang đi. Một người khác đi theo. Rồi sân trường đông dần lên. Thì ra một nét có thể dẫn đến cả câu chuyện về con người.",tip:"Chạm 1, 2 hoặc 3 người. 从 thường mang nghĩa theo; 众 nghĩa là đông người (dạng giản thể; phồn thể: 眾).",kind:"people"},
  {id:"light",label:"Mặt trời gặp mặt trăng",hanzi:"日 月 明",pinyin:"rì · yuè · míng",scene:"Bên cửa sổ lúc hoàng hôn",narrative:"Trên trang sổ, mẹ viết 日 rồi 月. An ghép hai hình lại, thấy một chữ mới như sáng lên. Mẹ nói: “Mẹo nhớ này khá đẹp, nhưng nguồn gốc chữ Hán đôi khi có nhiều lối giải thích lịch sử hơn con tưởng.”",tip:"日 là mặt trời, 月 là mặt trăng, 明 là sáng. Cách ghép này hữu ích để nhớ dạng chữ hiện đại; đừng xem mọi câu chuyện hình ảnh là nguồn gốc lịch sử duy nhất.",kind:"light"},
  {id:"mother",label:"Chữ mẹ có bí mật âm thanh",hanzi:"女 马 妈",pinyin:"nǚ · mǎ · mā",scene:"Mẹ và quyển sổ",narrative:"An hỏi: “Sao chữ chỉ mẹ lại có hình giống chữ ngựa?” Mẹ bật cười: “Vì không phải mảnh nào trong một chữ cũng kể ý nghĩa. Có mảnh giúp đoán âm đọc nữa!”",tip:"妈 (mā) gồm 女 (gợi ý nghĩa liên quan đến người nữ) và 马 (mǎ, gợi âm ma). Hai âm có thanh điệu khác nhau. Không phải cứ cộng nghĩa các mảnh là đoán đúng một chữ.",kind:"mother"},
- {id:"legend",label:"Một câu đùa làm An tò mò",hanzi:"女",pinyin:"nǚ",scene:"Mẹ kể thêm một chuyện",narrative:"An nhớ một câu đùa trên mạng: “Ghép vài chữ 女 thì ra một cái chợ, phải không mẹ?” Mẹ bật cười: “Một câu đùa có thể làm mình thích học chữ. Nhưng chuyện vui không nhất thiết là nghĩa thật.”",tip:"女 (nǚ) là chữ chỉ phụ nữ. Nếu thích tìm hiểu thêm, bạn có thể mở câu chuyện chữ cổ. Hoàn toàn không cần đọc phần này để tiếp tục HSK 1.",kind:"legend"},
+ {id:"legend",label:"Một chữ trong tên An",hanzi:"安",pinyin:"Ān",scene:"Mẹ chỉ vào tên An trong quyển sổ",narrative:"Mẹ viết 安 bên cạnh tên An trong quyển sổ. “Đây là chữ mẹ dùng để viết tên con,” mẹ nói. An nhận ra mình đã nhìn thấy chữ ấy trên trang giấy suốt buổi tối, giờ lại gặp nó ở cổng trường. Một chữ quen có thể nối quyển sổ với câu chuyện ngày mai.",tip:"安 (Ān) là chữ trong tên An; chữ này thường mang nghĩa yên, bình an. Hãy nhận mặt chữ trong tên, không cần học thêm quy tắc nào để tiếp tục.",kind:"legend"},
  {id:"guess",label:"Thử đoán bằng mắt",hanzi:"林",pinyin:"lín",scene:"Trang cuối của buổi tối",narrative:"Mẹ đóng quyển sổ, rồi lại mở ra. An chưa biết nói nhiều câu tiếng Trung, nhưng những hình vuông trên giấy không còn vô nghĩa. “Đố con: mình nhận ra được bao nhiêu chữ rồi?”",tip:"Chọn nghĩa bạn đoán được. Sai cũng không sao: đây là trò quan sát, không phải bài kiểm tra HSK.",kind:"guess"},
  {id:"ending",label:"Ngày mai gặp nhé",hanzi:"明天见！",pinyin:"Míngtiān jiàn!",scene:"Đặt sổ vào cặp",narrative:"An gấp quyển sổ lại và đặt vào cặp. Sáng mai là ngày đầu đi học. An chưa biết nói chuyện thật giỏi, nhưng đã quen mặt vài chữ. Có lẽ như vậy đã là một khởi đầu đẹp rồi.",tip:"Bạn đã đi qua tập nhập môn. Khi sẵn sàng, hãy bước sang HSK 1 để thực sự dùng tiếng Trung nói chuyện với các nhân vật.",kind:"ending"}
 ];
@@ -24,14 +24,14 @@ var quizzes=[
 {id:"bright",zi:"明",py:"míng",question:"日 + 月 = 明. Nghĩa phổ biến của 明?",options:["Sáng, rõ","Một cái chợ","Một người"],answer:0,explain:"明 (míng) thường có nghĩa sáng hoặc rõ ràng."}
 ];
 var curiosity={
- title:"Trang đọc thêm · Mẹo chữ và câu đùa",
- lead:"Thứ khiến An tò mò là chuyện ghép chữ 女. Mẹ rủ An kiểm tra nghĩa trong từ điển: một mẹo nhớ vui khác với nghĩa chữ được ghi nhận.",
+ title:"Mẹo chữ và câu đùa",
+ lead:"Mẹ rủ An tra từ điển: câu đùa về ghép chữ có đúng nghĩa thật không?",
  examples:[
-  {zi:"女",py:"nǚ",vi:"người nữ, phụ nữ",note:"Một chữ rất thường gặp; cũng là bộ phận gợi nghĩa trong 妈."},
-  {zi:"奻",py:"nuán",vi:"chữ cổ, hiếm: tranh cãi",note:"Không phải “chợ”. Hầu như không thuộc vốn chữ giao tiếp thông dụng ngày nay."},
-  {zi:"姦",py:"jiān",vi:"nghĩa cổ tiêu cực",note:"Gắn với quan niệm và định kiến giới lịch sử; không dùng để mô tả phụ nữ ngày nay."}
+  {zi:"女",py:"nǚ",vi:"người nữ, phụ nữ",note:"Bộ phận gợi nghĩa trong 妈."},
+  {zi:"奻",py:"nuán",vi:"chữ cổ, hiếm: tranh cãi",note:"奻 là chữ cổ, hiếm, nghĩa là tranh cãi."},
+  {zi:"姦",py:"jiān",vi:"nghĩa cổ tiêu cực",note:"Nghĩa cổ mang định kiến; không dùng để nói về phụ nữ hôm nay."}
  ],
- closing:"Chuyện thú vị nhất không phải cứ ghép người với người là ra một địa điểm, mà là: có chữ gợi nghĩa, chữ gợi âm và những câu chuyện truyền miệng cần kiểm chứng."
+ closing:"Ghép chữ không phải lúc nào cũng thành nghĩa thật: có chữ gợi nghĩa, có chữ gợi âm."
 };
 var sources=[
 {title:"Open University — cấu tạo 木/林/森, 人/从/众",url:"https://stadium.open.ac.uk/berrill/documents/20220717_2022_06_01_Yan_Tong_edited_transcript_5_.pdf"},

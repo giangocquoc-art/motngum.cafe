@@ -1,14 +1,14 @@
-:root{color-scheme:light;--ink:#25231f;--brown:#6f4736;--terra:#a65a43;--sage:#dce3d0;--cream:#faf1df;--paper:#fff9ed;--line:#cbb6a0}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--cream);font-family:"DM Sans","Noto Sans SC",sans-serif;line-height:1.55}
+:root{color-scheme:light;--ink:#25231f;--brown:#6f4736;--terra:#a65a43;--sage:#dce3d0;--cream:#faf1df;--paper:var(--cs-surface);--line:#cbb6a0}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--cream);font-family:"Be Vietnam Pro","Noto Sans SC",sans-serif;line-height:1.55}
 button{font:inherit;cursor:pointer}button:disabled{cursor:not-allowed;opacity:.48}a{color:inherit}
 .texture{pointer-events:none;position:fixed;inset:0;z-index:5;opacity:.2;background-image:radial-gradient(#88674a33 .6px,transparent .7px);background-size:8px 8px}
-.topbar{height:75px;display:flex;justify-content:space-between;align-items:center;padding:0 max(25px,calc((100vw - 1200px)/2));border-bottom:1px solid #beaa94;background:#f9f1e3;position:relative;z-index:6}
+.topbar{height:75px;display:flex;justify-content:space-between;align-items:center;padding:0 max(25px,calc((100vw - 1200px)/2));border-bottom:1px solid #beaa94;background:var(--cs-paper);position:relative;z-index:6}
 .brand{text-decoration:none;display:flex;align-items:center;gap:10px}.brand-mark{width:43px;height:43px;background:var(--terra);color:white;display:grid;place-items:center;border-radius:4px;font-size:28px;font-weight:700}.brand b{display:block;font-family:"Noto Sans SC";font-size:19px;letter-spacing:2px}.brand small{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--brown)}
 .topbar nav{display:flex;gap:27px;font-size:12px;font-weight:700}.topbar nav a{text-decoration:none}.topbar nav a:hover{text-decoration:underline}
 .page{max-width:1200px;margin:0 auto;padding:40px 25px 75px;position:relative}
 .intro-head{display:flex;align-items:center;justify-content:space-between;gap:26px;max-width:1060px;margin:0 auto 34px}
 .intro-head h1{font-family:"Playfair Display","Noto Sans SC",serif;font-size:clamp(36px,4.3vw,60px);font-weight:600;line-height:1.12;letter-spacing:-1px;margin:12px 0 14px}
-.intro-head h1 em{font-weight:500;color:#ad6248}.intro-head p{font-size:14px;max-width:680px;color:#675447;margin:0}
+.intro-head h1 em{font-weight:500;color:#ad6248}.intro-head p{font-size:14px;max-width:680px;color:var(--cs-muted);margin:0}
 .eyebrow,.interaction-label{font-size:10px;letter-spacing:2px;font-weight:800;color:var(--terra)}
 .paper-stamp{width:128px;height:140px;flex:0 0 auto;border:2px double #a17c65;color:var(--terra);display:flex;align-items:center;justify-content:center;flex-direction:column;transform:rotate(5deg);background:#fff5e4}
 .paper-stamp span{font-size:76px;font-family:"Noto Sans SC";line-height:1}.paper-stamp small{font-size:10px;letter-spacing:1px;color:#72594b}
@@ -33,7 +33,7 @@ progress{flex:1;min-width:30px;height:7px;border:0;border-radius:12px;accent-col
 .interactive{border-top:1px solid #d6c0aa;padding:17px 0 5px;min-height:128px;display:flex;flex-direction:column;gap:10px}
 .interaction-label{margin-bottom:2px}
 .glyph-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.glyph-option,.number-button,.part-button,.quiz-choice{background:#fffaf0;border:1.5px solid #9a7c66;color:#614536;text-align:left;padding:12px;min-height:53px}
+.glyph-option,.number-button,.part-button,.quiz-choice{background:var(--cs-surface);border:1.5px solid #9a7c66;color:#614536;text-align:left;padding:12px;min-height:53px}
 .glyph-option:hover,.number-button:hover,.part-button:hover,.quiz-choice:hover{background:#f6e1c9}
 .glyph-option.selected,.number-button.active,.part-button.active,.quiz-choice.active{border-color:#8f4930;background:#f6e0ce}
 .glyph-option strong{font-family:"Noto Sans SC";font-size:31px;display:inline-block;width:50px;color:#644131;font-weight:600}
@@ -59,6 +59,11 @@ progress{flex:1;min-width:30px;height:7px;border:0;border-radius:12px;accent-col
 .quiz-choice{width:100%;font-size:13px}.quiz-choices{display:grid;gap:8px}
 .good{color:#3f6b4e;font-weight:700}.again{color:#9d5638;font-weight:700}
 .finish-card{text-align:center;background:#f7e9d3;padding:20px 14px;border:1px solid #ceb398}
+.finish-card .ending-meaning{margin:5px 0 8px;font-size:14px;line-height:1.4;color:#554c45}
+.finish-card .ending-example{display:flex;align-items:center;justify-content:center;gap:7px 12px;flex-wrap:wrap}
+.finish-card .ending-example small{font-size:12px;color:#795d4e}
+.finish-card .ending-example strong{font:600 20px/1.2 "Noto Sans SC",sans-serif;letter-spacing:0}
+.finish-card .ending-example span{font-size:13px;line-height:1.35}
 .finish-card .seal{font-family:"Noto Sans SC";font-size:68px;color:#9a563e}.finish-card p{font-size:13px}.finish-card a{display:inline-block;text-decoration:none;padding:12px 18px;background:#9a4d33;color:#fff;font-size:12px;font-weight:700}
 .bottom-note{max-width:1100px;margin:22px auto 0;display:flex;gap:16px;align-items:center;justify-content:space-between;font-size:11px;color:#766553}
 .bottom-note p{max-width:740px}.bottom-note button{border:0;background:transparent;text-decoration:underline;color:#81553e;font-size:11px;white-space:nowrap}
@@ -70,11 +75,11 @@ footer{text-align:center;border-top:1px solid #d4bfa8;padding:20px;font-size:11p
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 
 /* Chim Sẻ character marks and small story figures share the game art. */
-.sparrow-brand-mark{background:#b8dce3!important;color:#263d42!important;font-size:18px!important;border:1px solid #546365;border-radius:50%}
+.sparrow-brand-mark{background:var(--cs-sky)!important;color:var(--cs-sky-ink)!important;font-size:18px!important;border:1px solid #546365;border-radius:50%}
 .illustrated{position:relative;overflow:hidden}
 .book-scene-figures{position:absolute;inset:auto 14px 32px 14px;height:91px;pointer-events:none;z-index:1}
-.book-an{position:absolute;right:0;bottom:-19px;height:108px;aspect-ratio:.5;background:url('/art/characters/an-expressions.webp') 0% center/500% 100% no-repeat;opacity:.94}
-.book-sparrow{position:absolute;left:2px;top:2px;width:41px;height:36px;background:url('/art/characters/sparrow-icon-v2.webp') center/contain no-repeat;transform:rotate(-8deg)}
+.book-an{position:absolute;right:0;bottom:-19px;height:108px;aspect-ratio:.5;background:none 0% center/500% 100% no-repeat;opacity:.94}
+.book-sparrow{position:absolute;left:2px;top:2px;width:41px;height:36px;background:none center/contain no-repeat;transform:rotate(-8deg)}
 .main-glyph,.main-pinyin,.ink-label,.hear{position:relative;z-index:2}
 @media(max-width:520px){.book-scene-figures{inset:auto 9px 26px 9px;height:64px}.book-an{height:76px}.book-sparrow{width:32px;height:29px}}
 
@@ -90,26 +95,27 @@ footer{text-align:center;border-top:1px solid #d4bfa8;padding:20px;font-size:11p
 @media(max-width:520px){.curiosity-details{padding:12px}.curiosity-example strong{font-size:28px}.curiosity-details h3{font-size:19px}}
 
 /* Real layered bedroom scene, sharing An and Sẻ's active sprite sheets. */
-#book .intro-backdrop{background:url('/art/backgrounds/bedroom-v2.webp') center 55%/cover no-repeat}
+#book .intro-backdrop{background:none center 55%/cover no-repeat}
 #book .intro-scene:before{content:none}
 #book .intro-midground,#book .intro-foreground{display:none}
 #book .book-scene-figures{inset:0;height:auto;z-index:1}
-#book .book-an{right:9%;bottom:0;width:clamp(132px,22vw,250px);height:auto;aspect-ratio:1;border:0;border-radius:0;background:url('/art/characters/an-expressions-v3.webp') 0% 0%/300% 200% no-repeat;opacity:1;filter:drop-shadow(0 2px 2px #221a1640)}
-#book .book-sparrow{left:18%;top:53%;width:clamp(42px,5vw,60px);height:auto;aspect-ratio:1;border:0;border-radius:0;background:url('/art/characters/sparrow-expressions-v2.webp') 0% 0%/300% 200% no-repeat;transform:none;filter:drop-shadow(0 2px 1px #2225);animation:sparrow-idle 3.6s ease-in-out infinite}
+#book .book-an{right:9%;bottom:0;width:clamp(132px,22vw,250px);height:auto;aspect-ratio:1;border:0;border-radius:0;background:none 0% 0%/300% 200% no-repeat;opacity:1;filter:drop-shadow(0 2px 2px #221a1640)}
+#book .book-sparrow{left:18%;top:53%;width:clamp(42px,5vw,60px);height:auto;aspect-ratio:1;border:0;border-radius:0;background:none 0% 0%/300% 200% no-repeat;transform:none;filter:drop-shadow(0 2px 1px #2225);animation:sparrow-idle 3.6s ease-in-out infinite}
 .intro-learning .story-tip{margin:0;padding:4px 7px;flex:none}.intro-learning .story-tip summary{cursor:pointer;font-size:8px;color:#815746}
-@media(max-width:690px){#book .intro-backdrop{background-image:url('/art/backgrounds/mobile/mobile-bedroom-v2.webp');background-position:center 55%}#book .book-an{right:3%;bottom:0;width:clamp(132px,38vw,180px)}#book .book-sparrow{left:14%;top:52%;width:44px}}
+@media(max-width:690px){#book .intro-backdrop{background-image:none;background-position:center 55%}#book .book-an{right:3%;bottom:0;width:clamp(132px,38vw,180px)}#book .book-sparrow{left:14%;top:52%;width:44px}}
 @media(prefers-reduced-motion:reduce){#book .book-sparrow{animation:none}}
 
 /* One-screen story layout shared with the main Chim Sẻ play view. */
 html,body.chimse-intro{width:100%;height:100%;min-height:0;margin:0;overflow:hidden;overscroll-behavior:none}
 .intro-screen{width:100%;height:var(--chimse-visible-height,100dvh);max-height:var(--chimse-visible-height,100dvh);min-height:0;display:flex;flex-direction:column;overflow:hidden;background:var(--cream);position:relative}
 .intro-screen>.topbar{height:auto;min-height:58px;flex:0 0 58px;padding:6px clamp(12px,3vw,42px);gap:14px;z-index:4}
+.intro-screen .brand{min-height:40px}
 .intro-screen .brand-mark{width:36px;height:36px;flex:none}
 .intro-screen .brand b{font-size:15px;letter-spacing:1px}
 .intro-screen .brand small{font-size:8px;letter-spacing:1.4px}
 .intro-screen .progress-band{width:min(300px,34vw);margin:0;gap:9px;flex:none;font-size:8px}
 .intro-screen .progress-band progress{height:5px}
-.reset-book{width:34px;height:34px;flex:none;border:1px solid #bcae9c;background:#fff9ed;color:#725747;font-size:17px}
+.reset-book{width:34px;height:34px;flex:none;border:1px solid var(--cs-line);background:var(--cs-surface);color:#725747;font-size:17px}
 .intro-scene{position:relative;isolation:isolate;flex:1 1 0%;min-height:0;overflow:hidden;background:linear-gradient(155deg,#d7e0d3 0%,#c7d8d3 53%,#e4e3cc 100%)}
 .intro-scene:before{position:absolute;content:"";inset:12px 4vw 0;border:1px dashed #65776e45;pointer-events:none}
 .scene-layer{position:absolute;pointer-events:none}
@@ -146,12 +152,12 @@ html,body.chimse-intro{width:100%;height:100%;min-height:0;margin:0;overflow:hid
 .intro-learning .book-nav{flex:none;margin-top:0;padding-top:6px}
 .intro-learning .book-nav button{min-height:38px;padding:7px 12px;font-size:10px}
 .intro-screen>.topbar .source-details{position:relative;z-index:8;top:auto;right:auto;flex:none;width:auto;margin:0;padding:0;border:0;background:transparent;font-size:8px}
-.source-details summary{cursor:pointer;padding:6px 8px;border:1px solid #bcae9c;background:#fff9ed;color:#725747;white-space:nowrap}
-.source-details[open]{position:absolute;top:calc(100% + 5px)!important;right:9px!important;bottom:auto!important;width:min(370px,calc(100vw - 18px))!important;max-height:60dvh;overflow:auto;padding:9px 11px!important;border:1px solid #bcae9c!important;background:#fff9ed!important;box-shadow:0 0 0 100vmax #26231f55}
+.source-details summary{cursor:pointer;padding:6px 8px;border:1px solid var(--cs-line);background:var(--cs-surface);color:#725747;white-space:nowrap}
+.source-details[open]{position:absolute;top:calc(100% + 5px)!important;right:9px!important;bottom:auto!important;width:min(370px,calc(100vw - 18px))!important;max-height:60dvh;overflow:auto;padding:9px 11px!important;border:1px solid var(--cs-line)!important;background:var(--cs-surface)!important;box-shadow:0 0 0 100vmax #26231f55}
 @media(min-width:900px){.intro-learning{flex-basis:clamp(270px,34dvh,340px)}.intro-scene .glyph-frame{left:72%;top:57%}.intro-dialogue{width:min(560px,40vw)}}
 @media(max-width:690px){
  .intro-screen>.topbar{flex-basis:52px;min-height:52px;padding:5px 9px;gap:7px}
- .intro-screen .brand{gap:6px}.intro-screen .brand-mark{width:31px;height:31px;font-size:18px}.intro-screen .brand b{font-size:12px}.intro-screen .brand small{font-size:7px}
+ .intro-screen .brand{gap:6px}.intro-screen .brand-mark{width:31px;height:31px;font-size:18px}.intro-screen .brand b{font-size:12px}.intro-screen .brand small{display:none}
  .intro-screen .progress-band{width:min(142px,31vw);font-size:7px;gap:5px}.reset-book{width:30px;height:30px}.intro-screen>.topbar .source-details{font-size:7px}.source-details summary{padding:5px 6px}
  .intro-scene:before{inset:9px 4% 0}.intro-scene-meta{top:8px;left:8px;padding:5px 7px;font-size:7px;gap:6px}.intro-scene-meta span+span{padding-left:6px}
  .intro-dialogue{top:42px;left:8px;width:calc(100% - 16px);padding:7px 9px}.intro-dialogue .eyebrow{font-size:7px}.intro-dialogue h1{font-size:17px}.intro-dialogue>p:last-child{font-size:9px;line-height:1.3}
@@ -160,6 +166,9 @@ html,body.chimse-intro{width:100%;height:100%;min-height:0;margin:0;overflow:hid
  .learning-head h2{font-size:17px}.intro-learning .interactive{gap:4px;overflow:hidden}.intro-learning .stroke-drawing{height:110px}.intro-learning .glyph-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.intro-learning .glyph-option{min-height:40px;padding:5px;text-align:center}.intro-learning .glyph-option strong{width:auto;font-size:22px}.intro-learning .glyph-option small{display:none}
  .intro-learning .number-button,.intro-learning .quiz-choice{min-height:38px;padding:7px;font-size:10px}.intro-learning .parts{padding:6px}.intro-learning .part-button{min-width:50px;min-height:54px;padding:4px;font-size:25px}.intro-learning .character-result{padding:7px;font-size:10px}.intro-learning .character-result b{font-size:34px}
  .intro-learning .story-tip{padding:5px 7px}.intro-learning .story-tip p{font-size:8px}.intro-learning .feedback{font-size:9px}.intro-learning .book-nav button{min-height:36px}
+ /* The opening page has only four tap-to-hear characters. Keep its study strip
+    close to the controls so the scene, rather than an empty panel, fills the phone. */
+ .intro-learning:has(.glyph-grid){flex-basis:clamp(190px,36dvh,310px)}
 }
 @media(max-height:620px){
  .intro-screen>.topbar{flex-basis:44px;min-height:44px;padding-top:max(3px,env(safe-area-inset-top))}
@@ -167,6 +176,21 @@ html,body.chimse-intro{width:100%;height:100%;min-height:0;margin:0;overflow:hid
  .intro-dialogue{top:34px;padding:5px 7px}.intro-dialogue .eyebrow{display:none}.intro-dialogue h1{font-size:14px}.intro-dialogue>p:last-child{font-size:8px}
  .intro-scene .glyph-frame{top:64%;width:118px;padding:4px}.intro-scene .main-glyph{font-size:36px}
  .intro-learning .learning-head h2{font-size:15px}.intro-learning .interaction-label,.intro-learning .save-status,.intro-learning .story-tip,.intro-learning .interactive .micro-note{display:none}.intro-learning .interactive{padding:1px 0;gap:3px}.intro-learning .stroke-drawing{height:92px}.intro-learning .parts{padding:3px}.intro-learning .part-button{min-height:45px;min-width:45px}.intro-learning .number-button{min-width:0;flex:1;padding:5px}.intro-learning .book-nav{padding-top:3px}.intro-learning .book-nav button{min-height:32px;padding:5px 9px}
+}
+
+/* Keep the complete character card, including its listen control, in the scene
+   after the larger interface fonts are applied. */
+@media(max-width:690px) and (min-height:621px){
+ .intro-scene .glyph-frame{padding-top:3px;padding-bottom:3px}
+ .intro-scene .main-glyph{font-size:42px;line-height:1}
+ .intro-scene .main-pinyin{font-size:10px;line-height:1.2}
+ .intro-scene .ink-label{font-size:10px!important;line-height:1.2}
+}
+@media(min-width:691px) and (min-height:621px){
+ .intro-scene .glyph-frame{padding-top:4px;padding-bottom:4px}
+ .intro-scene .main-glyph{font-size:clamp(42px,6vw,60px);line-height:1}
+ .intro-scene .main-pinyin{font-size:10px;line-height:1.2}
+ .intro-scene .ink-label{font-size:10px!important;line-height:1.2}
 }
 @media(max-height:620px) and (min-width:691px){
  .intro-dialogue{top:32px;left:12px;width:min(480px,57vw);padding:5px 7px}
@@ -285,3 +309,5 @@ html,body.chimse-intro{width:100%;height:100%;min-height:0;margin:0;overflow:hid
  .intro-learning .finish-card p{font-size:9px;line-height:1.3;margin:3px 0}
  .intro-learning .finish-card a{padding:5px 7px;font-size:9px}
 }
+/* Keep the optional source note anchored below its header control on short screens. */
+.intro-screen>.topbar .source-details[open]{position:absolute!important;top:calc(100% + 5px)!important;right:9px!important;bottom:auto!important;max-height:calc(100dvh - 64px)!important}

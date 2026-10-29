@@ -1,8 +1,38 @@
 # Editable source masters stay in the repository; the site serves optimized WebP assets.
 art/**/*.png
+art/characters/candidates/
+art/layers/candidates/
+# Archived watercolor studies are kept locally; the current product uses art/flat/.
+art/characters/
+art/backgrounds/
+art/layers/
+art/reference/
+art/scenes/
+art/manifest.json
+scene-art.js
+data/art-reference/
+data/art-generation/
 .env*
+**/.env*
 
-# Private layout review scaffolding and QA captures are not part of the product.
+# Build support, notes, test suites and local QA captures are not part of the deployed site.
+docs/
+scripts/
+tests/
+e2e/
+test-results/
+.sites-runtime/
+*.md
+
+# Private layout review scaffolding is not part of the product.
 design-review/
 layout-review.html
 layout-review.css
+
+# Account handlers and SDK are bundled before packaging. Source and tooling stay private.
+node_modules/
+client/
+server/
+migrations/
+package.json
+package-lock.json

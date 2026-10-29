@@ -7,12 +7,12 @@ function evaluate(scene,input){
  if(!s)return {ok:false,reason:"Hãy thử trả lời bằng tiếng Trung trước nhé."};
  if(s.length>100)return {ok:false,reason:"Câu hơi dài cho thử thách này. Bạn thử viết ngắn gọn hơn nhé."};
  if(!/[\u3400-\u9fff]/.test(s)||/[a-z0-9]/.test(s))return {ok:false,reason:"Hãy trả lời bằng chữ Hán. Pinyin dùng để gợi ý, không phải câu trả lời."};
- if((scene.answers||[]).some(function(a){return normalize(a)===s}))return {ok:true};
+ if((scene.answers||[]).concat(scene.naturalAnswers||[]).some(function(a){return normalize(a)===s}))return {ok:true};
  if(scene.id===1&&/^(?:你好)?(?:老师)?我叫(?:安|明安)(?:老师好|谢谢)?$/.test(s))return {ok:true};
  if(scene.id===7&&/^(?:大家好|老师好|你好)?(?:我叫(?:安|明安)|我是安)(?:我)?是学生(?:谢谢)?$/.test(s))return {ok:true};
  if(scene.id===8&&/^(?:是)?(?:十块钱|十块|十元)$/.test(s))return {ok:true};
  if(scene.id===9&&/^(?:我想吃|我要|我想要)(?:一碗)?面条$/.test(s))return {ok:true};
- return {ok:false,reason:scene.error||"Câu này chưa diễn đạt đúng mục tiêu. Thử diễn đạt lại hoặc xem gợi ý nhé."};
+ return {ok:false,reason:scene.error||"Thử dùng câu ngắn của lượt này nhé. Nếu chưa nhớ, bạn có thể nhờ gợi ý."};
 }
 function summarize(history,total,examStart){
  var list=Array.isArray(history)?history:[];

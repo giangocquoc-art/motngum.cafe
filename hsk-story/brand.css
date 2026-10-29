@@ -1,0 +1,128 @@
+:root {
+  --chimse-font-ui: "Be Vietnam Pro", "Segoe UI", sans-serif;
+  --chimse-font-han: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  --chimse-han: var(--chimse-font-han);
+  --chimse-brand-ink: var(--cs-ink);
+  --chimse-brand-muted: var(--cs-muted);
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  scroll-behavior: auto;
+}
+
+body { font-family: var(--chimse-font-ui); }
+
+.sparrow-header .chimse-brand-copy b {
+  font: 700 16px/1.05 var(--chimse-font-ui);
+  letter-spacing: .015em;
+}
+
+.sparrow-header .chimse-brand-copy small {
+  color: var(--chimse-brand-muted);
+  font: 600 8px/1.15 var(--chimse-font-ui);
+  letter-spacing: .09em;
+}
+
+/* One Sparrow lockup shared by the home, notebook, and review headers. */
+.chimse-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7px;
+  min-width: 0;
+  min-height: 40px;
+  color: var(--chimse-brand-ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.chimse-brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.chimse-brand-copy {
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  line-height: 1.05;
+}
+
+.chimse-brand-copy b {
+  color: var(--chimse-brand-ink);
+  font: 700 16px/1.05 var(--chimse-font-ui);
+  letter-spacing: .015em;
+}
+
+.chimse-brand-copy small {
+  overflow: hidden;
+  color: var(--chimse-brand-muted);
+  font: 600 8px/1.15 var(--chimse-font-ui);
+  letter-spacing: .09em;
+  text-overflow: ellipsis;
+}
+
+.game-brand-name {
+  color: var(--chimse-brand-ink);
+  font: 700 10px/1.2 var(--chimse-font-ui);
+  letter-spacing: .04em;
+}
+
+.game-brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+/* The illustration already contains the mascot. Keep the wordmark in the
+   header, but don't draw a second sparrow in the same story viewport. */
+body:has(.cs-sparrow) .chimse-brand-mark,
+body:has(.cs-sparrow) .game-brand-mark {
+  display: none;
+}
+
+.intro-screen .chimse-brand-mark,
+.review-screen .chimse-brand-mark {
+  width: 28px;
+  height: 28px;
+}
+
+.intro-screen .chimse-brand-copy b,
+.review-screen .chimse-brand-copy b {
+  font-size: 13px;
+}
+
+.intro-screen .chimse-brand-copy small,
+.review-screen .chimse-brand-copy small {
+  font-size: 7px;
+  letter-spacing: .07em;
+}
+
+@media (max-width: 690px) {
+  .sparrow-header .chimse-brand-mark { width: 30px; height: 30px; }
+  .sparrow-header .chimse-brand-copy b { font-size: 14px; }
+  .sparrow-header .chimse-brand-copy small { font-size: 7px; }
+  .intro-screen .chimse-brand-mark,
+  .review-screen .chimse-brand-mark { width: 25px; height: 25px; }
+  .intro-screen .chimse-brand-copy b,
+  .review-screen .chimse-brand-copy b { font-size: 12px; }
+}
+
+@media (max-width: 350px) {
+  .intro-screen .chimse-brand-copy small,
+  .review-screen .chimse-brand-copy small { display: none; }
+}

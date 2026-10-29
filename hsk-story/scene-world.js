@@ -3,9 +3,9 @@
 var HSKSceneWorld=(function(){"use strict";
 var sites=[
 {scene:"hsk1.e01.arrival-greeting",place:"street",title:"Thành Đô qua đôi mắt của An",objects:[
-{id:"window",icon:"▤",label:"Nhìn qua cửa kính",zh:"这里是成都。",vi:"Ngoài cửa xe, hàng cây và những biển hiệu lạ lướt qua. An chưa đọc được chúng nhưng bắt đầu nhận ra tên Thành Đô.",
+{id:"window",icon:"▤",label:"Ô cửa bên cổng trường",zh:"这里是学校。",vi:"Nắng phản chiếu trên ô cửa bên cổng trường. An nhìn hàng cây rồi nhìn những chữ trên biển; cậu chưa đọc được hết, nên vẫn đứng sát bên mẹ.",
  bridge:{zi:"日",py:"rì",meaning:"mặt trời / ngày",from:"intro",page:4,note:"Ánh nắng trên cửa kính khiến An nhớ hình chữ 日 trong quyển sổ."}},
-{id:"case",icon:"▣",label:"Chiếc vali",zh:"这是我的行李。",vi:"Vali vẫn còn chiếc khăn mẹ xếp từ Việt Nam. An nhớ rằng ở nơi xa lạ, mình vẫn có những thứ thân quen.",
+{id:"case",icon:"▣",label:"Chiếc cặp xanh",zh:"这是我的书包。",vi:"An nắm chặt quai chiếc cặp xanh bạc màu. Mẹ đã đặt quyển sổ vào ngăn nhỏ tối qua; chạm vào nó, An thấy mình bớt lạc lõng.",
  memory:"Dù chuyển sang một thành phố khác, An vẫn mang theo một phần ngôi nhà cũ."},
 {id:"diary",icon:"✎",label:"Quyển sổ của mẹ",zh:"这是我的小本子。",vi:"Ở trang đầu sổ, mẹ viết: “Mỗi ngày, chỉ cần hiểu thêm một người.” An quyết định mang nó tới trường.",
  bridge:{zi:"妈",py:"mā",meaning:"mẹ",from:"intro",page:5,note:"Mẹ đã chỉ An chữ 妈, một chữ có mảnh gợi nghĩa và mảnh gợi âm."}}
@@ -13,7 +13,7 @@ var sites=[
 {scene:"hsk1.e01.walk-home",place:"street",title:"Con đường bắt đầu quen",objects:[
 {id:"tree",icon:"♧",label:"Cây trước cổng trường",zh:"这是我们的学校。",vi:"Dưới bóng cây, An đã chào một người bạn bằng tiếng Trung lần đầu tiên.",
  bridge:{zi:"木",py:"mù",meaning:"cây / gỗ",from:"intro",page:2,note:"Trên trang sổ, 木 ghép thành 林 rồi 森. Giờ An nhìn thấy cây thật bên đường."},
- callback:{scene:"hsk1.e01.arrival-greeting",object:"window",note:"Sáng nay An chỉ thấy hàng cây thoáng qua ô cửa xe; giờ chúng thành dấu mốc trên đường về."}},
+ callback:{scene:"hsk1.e01.arrival-greeting",object:"window",note:"Sáng nay An còn nép bên mẹ, nhìn hàng cây ở cổng trường; giờ chúng thành dấu mốc trên đường về."}},
 {id:"store",icon:"▤",label:"Quán mì bà Lưu",zh:"谢谢奶奶！",vi:"Hơi ấm từ quán mì khiến An nhớ tiếng cười và lời cảm ơn dành cho bà Lưu.",
  bridge:{zi:"谢谢",py:"xièxie",meaning:"cảm ơn",from:"story",page:5,note:"Câu cảm ơn đã xuất hiện trong cuộc trò chuyện ở quán mì. An có thể nhận ra nó ngoài bối cảnh bài tập."}},
 {id:"diary",icon:"✎",label:"Mở lại quyển sổ",zh:"我有一个好朋友。",vi:"An lật trang tiếp theo: một ngày dài đã trôi qua. Những tên người quen thuộc bắt đầu xuất hiện trong trang giấy.",
