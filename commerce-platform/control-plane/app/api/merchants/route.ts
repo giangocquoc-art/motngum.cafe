@@ -1,3 +1,4 @@
+import { sameOriginRequest } from '@/lib/auth/origin';
 import { randomUUID } from 'node:crypto';
 import { and, eq, sql } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
@@ -47,8 +48,7 @@ export async function POST(request: NextRequest) {
   if (!ctx.team) return reply({ error: 'team_not_selected' }, 409);
   if (ctx.role !== 'owner') return reply({ error: 'owner_required' }, 403);
   // Browser-side CSRF protection in addition to SameSite cookies.
-  const origin = request.headers.get('origin');
-  if (!origin || origin !== request.nextUrl.origin) {
+  if (!sameOriginRequest(request)) {
     return reply({ error: 'same_origin_required' }, 403);
   }
   const length = Number(request.headers.get('content-length') ?? 0);
