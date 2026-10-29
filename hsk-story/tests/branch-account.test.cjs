@@ -45,3 +45,11 @@ test('offline signout keeps the account story in its local backup and restores i
  online=true;assert.ok((await a.reconcile('alice')).ok);
  assert.deepEqual(C.capture(s),progress);assert.deepEqual(srv.users.get('alice').snapshot,progress);
 });
+
+test('a delayed cloud restore notifies the running view after the snapshot is committed',async()=>{
+ let s=storage(),srv=server(),online=false,remote=state(), notifications=0;
+ srv.users.set('alice',{revision:2,snapshot:remote});
+ let a=C.create({storage:s,fetch:async (...args)=>{if(!online)throw new TypeError('offline');return srv.fetch(...args)},onApplied:()=>{notifications++;assert.deepEqual(C.capture(s),remote);assert.equal(JSON.parse(s.getItem(C.keys.meta)).revision,2)}});
+ assert.equal((await a.reconcile('alice')).ok,false);online=true;
+ assert.equal((await a.flush()).changed,true);assert.equal(notifications,1);
+});

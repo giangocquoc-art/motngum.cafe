@@ -140,6 +140,7 @@ $("accountSignout").addEventListener("click",()=>signOut(false));
 $("accountSignoutLocal").addEventListener("click",()=>signOut(true));
 window.addEventListener("chimse-progress-changed",function(event){try{var detail=event.detail;if(!P.keys[detail.area])return;var value={v:1};value[detail.area]=detail.value;memory[detail.area]=P.clean(value)[detail.area];if(user&&!pending){setMessage("Mốc mới đã giữ trên máy, đang nối với tài khoản…");clearTimeout(timer);timer=setTimeout(flush,900)}}catch(e){}});
 window.addEventListener("chimse-branch-changed",()=>{if(branch)branch.schedule()});
+window.addEventListener("chimse-branch-restored",()=>reload());
 window.addEventListener("online",()=>{if(user){flush();if(branch)branch.flush()}else if(meta.owner)init()});
 window.addEventListener("storage",event=>{if(Object.values(P.keys).includes(event.key)&&user){meta.needsChoice=true;saveMeta();setMessage("Mốc học vừa đổi ở tab khác. Mở tài khoản để chọn mốc dùng tiếp.",true)}});
 window.addEventListener("pagehide",()=>{if(user&&!busy&&!pending&&!meta.needsChoice&&meta.owner===user.id){try{var local=capture();if(!P.equal(local,meta.base)&&JSON.stringify(local).length<55000)request("PUT",local,meta.revision||0,true).catch(()=>{})}catch(e){}}});

@@ -19,7 +19,7 @@ AnBranchStory.scenes.forEach(function(node){
  if(node.place==="class"&&/Vương/.test(node.speaker))scene.actors=[actor("an",0),actor("wang",1)];
  if(node.id==="day2-bird-teacher")scene.actors=group(["an","wang","xiaoyu"]);
  if(node.id==="arrival"||node.id==="arrival-mother")scene.actors=[actor("an",0),actor("mother",1)];
- if(node.id==="walk-home")scene.actors=[actor("an",0),actor("mother",1),Object.assign(actor("xiaoyu",1),{desktop:{left:30,bottom:0,width:38},mobile:{left:30,bottom:0,width:38}})];
+ if(node.id==="walk-home"){scene=copy(manifest.scenes["hsk1.e01.walk-home"]);scene.actors=group(["an","mother","xiaoyu"]);}
  if(/lost-diary|search-alone/.test(node.id))scene.actors[0].expression="awkward";
  else if(/epilogue|confession|bird-team/.test(node.id))scene.actors[0].expression="smile";
  else if(/school|watch/.test(node.id))scene.actors[0].expression="shy";
