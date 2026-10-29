@@ -150,7 +150,7 @@ export function BlockPreview({block,theme,navigate,base}: {block:Block;theme:The
           <span className="hidden text-xs font-bold @md:inline">{String(i+1).padStart(2,'0')}</span>
         </div>
         <article className={'@md:row-start-1 '+(i%2===0?'@md:col-start-1 @md:text-right':'@md:col-start-3')}>
-          <span className="text-xs font-bold uppercase tracking-widest" style={{color:accent}}>
+          <span className="text-xs font-bold uppercase tracking-widest" style={{color:'var(--studio-foreground)'}}>
             Giai đoạn {String(i+1).padStart(2,'0')}</span>
           <h3 className="mt-2 text-lg font-bold">{parts[0]}</h3>
           {parts[1]&&<p className="mt-3 text-sm leading-7 opacity-75">{parts[1]}</p>}
