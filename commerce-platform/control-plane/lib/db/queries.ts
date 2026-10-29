@@ -78,9 +78,10 @@ export async function getUserWithTeam(userId: number) {
     .from(users)
     .leftJoin(teamMembers, eq(users.id, teamMembers.userId))
     .where(eq(users.id, userId))
-    .limit(1);
+    .limit(2);
 
-  return result[0];
+  // Until activeTeamId is explicitly bound to the session, refuse ambiguous multi-team context.
+  return result.length === 1 && result[0].teamId !== null ? result[0] : null;
 }
 
 export async function getActivityLogs() {
@@ -110,8 +111,11 @@ export async function getTeamForUser() {
     return null;
   }
 
+  const selected = await db.select({ teamId: teamMembers.teamId })
+    .from(teamMembers).where(eq(teamMembers.userId, user.id)).limit(2);
+  if (selected.length !== 1) return null; // fail closed on no/ambiguous tenant
   const result = await db.query.teamMembers.findFirst({
-    where: eq(teamMembers.userId, user.id),
+    where: and(eq(teamMembers.userId, user.id), eq(teamMembers.teamId, selected[0].teamId)),
     with: {
       team: {
         with: {
