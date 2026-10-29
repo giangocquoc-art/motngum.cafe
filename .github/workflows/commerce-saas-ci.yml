@@ -2,7 +2,19 @@ name: Commerce Control Plane Security and Build
 on:
   push:
     branches: [commerce-rebuild-2026-10]
-    paths: [commerce-platform/control-plane.trigger]
+    paths:
+      - "commerce-platform/control-plane/**"
+      - "commerce-platform/packages/tenant-contract/**"
+      - "commerce-platform/edge/**"
+      - "commerce-platform/control-plane.trigger"
+      - ".github/workflows/commerce-saas-ci.yml"
+  pull_request:
+    branches: [commerce-rebuild-2026-10]
+    paths:
+      - "commerce-platform/control-plane/**"
+      - "commerce-platform/packages/tenant-contract/**"
+      - "commerce-platform/edge/**"
+      - ".github/workflows/commerce-saas-ci.yml"
   workflow_dispatch:
 permissions: { contents: read }
 jobs:
