@@ -25,11 +25,11 @@ function responseCapture() {
   };
 }
 
-function request(sceneId = "hsk1.e01.arrival-greeting") {
+function request(sceneId = "hsk1.e01.arrival-greeting", compact = false) {
   return {
     method: "POST", headers: { host: "hsk.motngum.cafe", origin: "https://hsk.motngum.cafe", "content-length": "90" },
     socket: { remoteAddress: "ai-test" },
-    body: { sceneId, messages: [{ role: "user", content: "这是什么？" }] },
+    body: { sceneId, messages: [{ role: "user", content: "这是什么？" }], compact },
   };
 }
 
@@ -77,6 +77,22 @@ test("AI tutor access, provider rotation and configuration", async (t) => {
       assert.equal(res.statusCode, 200); assert.equal(res.body.reply, "这个是一本书。");
       assert.deepEqual(calls.map((x) => `${x.model}/${x.key}`), ["model-a/Bearer key-a", "model-b/Bearer key-b"]);
     });
+    await t.test("tries the single key alongside the key list and removes duplicates", async () => {
+      process.env.PSHAREHUB_API_KEYS = "key-a,key-b";
+      process.env.PSHAREHUB_API_KEY = "key-b,key-c";
+      process.env.PSHAREHUB_MODEL_IDS = "model-a";
+      const calls = [];
+      global.fetch = async (_url, options) => {
+        calls.push(options.headers.Authorization);
+        if (options.headers.Authorization === "Bearer key-c") {
+          return { ok: true, status: 200, json: async () => ({ choices: [{ message: { content: "这个是一本书。" } }] }) };
+        }
+        return { ok: false, status: 500, json: async () => ({ error: { message: "private upstream detail" } }) };
+      };
+      const res = responseCapture(); await handler(request(), res);
+      assert.equal(res.statusCode, 200); assert.equal(res.body.reply, "这个是一本书。");
+      assert.deepEqual(calls, ["Bearer key-a", "Bearer key-b", "Bearer key-c"]);
+    });
     await t.test("gives chat completions enough time for model inference", async () => {
       process.env.PSHAREHUB_API_KEY = "key-a"; process.env.PSHAREHUB_MODEL_IDS = "model-a";
       const oldSetTimeout = global.setTimeout, oldClearTimeout = global.clearTimeout;
@@ -91,6 +107,14 @@ test("AI tutor access, provider rotation and configuration", async (t) => {
       } finally {
         global.setTimeout = oldSetTimeout; global.clearTimeout = oldClearTimeout;
       }
+    });
+    await t.test("uses a concise response budget while a short mobile keyboard viewport is open", async () => {
+      process.env.PSHAREHUB_API_KEY = "key-a"; process.env.PSHAREHUB_MODEL_IDS = "model-a";
+      let payload;
+      global.fetch = async (_url, options) => { payload = JSON.parse(options.body); return { ok: true, status: 200, json: async () => ({ choices: [{ message: { content: "你好 là lời chào." } }] }) }; };
+      const res = responseCapture(); await handler(request("hsk1.e01.arrival-greeting", true), res);
+      assert.equal(res.statusCode, 200); assert.equal(payload.max_tokens, 80);
+      assert.match(payload.messages[0].content, /tối đa 2 câu ngắn, khoảng 120 ký tự/);
     });
     await t.test("continues through every configured key/model pair when requests time out", async () => {
       process.env.PSHAREHUB_API_KEYS = "key-a,key-b,key-c,key-d";

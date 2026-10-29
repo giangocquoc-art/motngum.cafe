@@ -75,7 +75,7 @@ test("Gate5 chapter chronology: notebook was opened the previous evening, not ha
  assert.ok(intro.includes("Đêm trước buổi học đầu tiên"));
  assert.ok(B.beats[0].story.includes("Sáng hôm sau"));
  assert.ok(B.beats[0].story.includes("tối qua"));
- assert.equal(C.scenes[0].tag,"SÁNG ĐẦU TIÊN TỚI TRƯỜNG");
+	 assert.equal(C.scenes[0].tag,"TRƯỚC CỔNG TRƯỜNG MỚI");
  assert.equal(C.scenes[0].id,0);
 });
 

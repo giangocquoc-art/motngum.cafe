@@ -22,7 +22,7 @@ test("V9 optional scene objects do not change curriculum or scores",()=>{
  state=W.inspect(state,G.idAt(0),"diary").state;
  state=W.inspect(state,G.idAt(0),"diary").state;
  assert.equal(state[G.idAt(0)].length,1);
- assert.equal(W.inspect(state,G.idAt(0),"window").object.zh,"这里是成都。");
+ assert.equal(W.inspect(state,G.idAt(0),"window").object.zh,"这里是学校。");
  assert.throws(()=>W.inspect(state,G.idAt(7),"future-leak"));
  assert.equal(K.scenes.length,10);
 });
@@ -101,7 +101,7 @@ test("Gate3B past observations unlock small emotional callbacks, not story grade
  const past={[G.idAt(0)]:["window","diary"]};
  const tree=W.describe(G.idAt(6),"tree",past,null);
  const diary=W.describe(G.idAt(6),"diary",past,null);
- assert.ok(tree.callbackText.includes("ô cửa xe"));
+ assert.ok(tree.callbackText.includes("nép bên mẹ"));
  assert.ok(diary.callbackText.includes("trang đầu"));
  assert.equal(W.describe(G.idAt(6),"tree",{},null).callbackText,"");
  assert.equal(W.describe(G.idAt(0),"window",past,null).callbackText,"");

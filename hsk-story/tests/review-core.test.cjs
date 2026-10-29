@@ -87,7 +87,7 @@ test("Gate6 learning practice page is separate, keyboard accessible and never lo
  const html=fs.readFileSync(path.join(base,"ren-luyen.html"),"utf8");
  const home=fs.readFileSync(path.join(base,"index.html"),"utf8");
  assert.ok(html.includes('id="questionPrompt"')&&html.includes('id="typedAnswer"'));
- assert.ok(html.includes('aria-live="polite"')&&html.includes('href="/?play=hsk1"'));
+ assert.ok(html.includes('aria-live="polite"')&&html.includes('href="/duong-re/"'));
  assert.ok(html.includes('src="/review-core.js"')&&html.includes('src="/review-data.js"'));
  assert.match(html,/id="emptyTitle"/);
  assert.match(html,/id="emptyCopy"/);

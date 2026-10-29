@@ -1,10 +1,10 @@
 {
   "brand": "Chim Sẻ",
-  "version": "2.0.0",
-  "visualReference": "Owner-provided Chengdu illustration and concept sheet control drawing and palette; docs/CHIM_SE_DIRECTION.md controls character identity. Layout is approved; integrated artwork remains subject to scene-by-scene visual review.",
+  "version": "3.0.0",
+  "visualReference": "Current owner-approved style authority: current Production hsk.motngum.cafe, deployment dpl_2sWy8xHJ7WAajSPRTFWPraMeWVZS. Direct captures and audit: data/art-reference/production-current-20261029/. Earlier publication lineage: dpl_9Nb3d6QXVJniHMdcM7VS45i8di1w / cba551bd7810d7bd86f70611f1bb8f46a289f23a in data/art-reference/production-cba551bd-20261028/.",
   "style": {
-    "line": "Slightly uneven, expressive dark ink with consistent recurring character contours",
-    "fill": "Muted flat watercolor on warm cream paper",
+    "line": "Sparse slightly irregular dark brown-grey outlines matching verified Production",
+    "fill": "Large flat muted colors matching verified Production; avoid detailed watercolor texture",
     "palette": [
       "cream paper",
       "muted orange",
@@ -20,7 +20,9 @@
       "clear readable silhouettes",
       "learning text remains HTML",
       "transparent sprite layers"
-    ]
+    ],
+    "authority": "data/art-reference/production-current-20261029/home-art-style-390x844.png",
+    "localRuntimeStatus": "Native flat art is deployed on hsk.motngum.cafe; sourceDigest 8f96baddc4be7e0e50355b73982dacffbb7840f00f14151d0143558909969d53. Live mobile and landscape scene acceptance: test-results/native-flat-20261028/content-production/acceptance.json."
   },
   "layers": {
     "background": {
@@ -34,9 +36,9 @@
       "asset": null
     },
     "characters": {
-      "zIndex": 2,
-      "kind": "transparent-sprite",
-      "asset": "characters/supporting-cast-v2.webp; characters/an-expressions-v3.webp"
+      "zIndex": 4,
+      "kind": "inline-svg-expression",
+      "asset": "native frame assets cataloged in spriteCharacters"
     },
     "foreground": {
       "zIndex": 3,
@@ -45,8 +47,8 @@
     },
     "sparrow": {
       "zIndex": 4,
-      "kind": "transparent-sprite",
-      "asset": "characters/sparrow-expressions-v2.webp",
+      "kind": "inline-svg",
+      "asset": "flat/characters/sparrow-curious.svg",
       "countPerScene": 1
     },
     "dialogue": {
@@ -58,44 +60,37 @@
   "characters": {
     "an": {
       "identity": "11-year-old boy; short tousled black hair; mustard yellow hoodie; faded blue-green backpack",
-      "sprite": "characters/an-expressions-v3.webp",
-      "poses": "characters/an-expressions-v3.webp",
+      "sprite": "flat/characters/an-listening.svg",
+      "poses": "characters/an-expressions-v5.webp",
       "posesOrder": [
-        "shy-neutral",
-        "surprised",
+        "neutral/listening",
+        "curious",
+        "confused/awkward",
         "thinking",
-        "awkward",
-        "gentle smile",
-        "listening"
+        "shy/sad",
+        "quiet relieved smile"
       ],
       "transparent": true,
       "legacySprite": "characters/an.webp",
       "legacyPoses": "characters/an-expressions.webp",
       "sheet": {
-        "columns": 3,
-        "rows": 2,
-        "cellOrder": "row-major"
+        "kind": "separate-svg-expression-states",
+        "frameCount": 6
       },
       "metadata": {
-        "role": "An character expression sheet; scene sprites for the protagonist",
-        "dimensions": {
-          "width": 1536,
-          "height": 1024
-        },
-        "format": "WebP",
-        "alpha": true,
-        "prompt": "Create one transparent 3-column by 2-row character sheet of the same 11-year-old Minh An, an ordinary boy with slightly tousled short black hair, mustard yellow hoodie, faded blue-green backpack. Use the approved imperfect hand-inked storybook line with muted flat watercolor and paper grain. Keep identity consistent and expressions clear but understated. No text, no background, no extra characters.",
-        "master": "characters/an-expressions-v3.png",
-        "masterFormat": "PNG"
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "master": "flat/characters/an-listening.svg",
+        "format": "SVG"
       }
     },
     "sparrow": {
       "identity": "small pale-blue sparrow; cream belly; dark ink contour; orange beak",
-      "sprite": "characters/sparrow-expressions-v2.webp",
-      "icon": "characters/sparrow-icon-v2.webp",
+      "sprite": "flat/characters/sparrow-curious.svg",
+      "icon": "brand/flat-sparrow.svg",
       "transparent": true,
       "legacySprite": "characters/sparrow.webp",
-      "poses": "characters/sparrow-expressions-v2.webp",
+      "poses": "characters/sparrow-expressions-v3.webp",
       "posesOrder": [
         "curious",
         "listening",
@@ -105,21 +100,14 @@
         "wave"
       ],
       "sheet": {
-        "columns": 3,
-        "rows": 2,
-        "cellOrder": "row-major"
+        "kind": "separate-svg-expression-states",
+        "frameCount": 6
       },
       "metadata": {
-        "role": "Single Sparrow mascot expression sheet; one cell per scene mood",
-        "dimensions": {
-          "width": 1536,
-          "height": 1024
-        },
-        "format": "WebP",
-        "alpha": true,
-        "prompt": "Create one transparent 3-column by 2-row sprite sheet for the single pale blue Chim Sẻ sparrow. Keep identical rounded silhouette, cream belly, dark ink contour and orange beak in all six cells; vary expression/gesture. No text, no background, no duplicate birds inside a cell.",
-        "master": "characters/sparrow-expressions-v2.png",
-        "masterFormat": "PNG"
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "master": "flat/characters/sparrow-curious.svg",
+        "format": "SVG"
       }
     },
     "supportingCast": {
@@ -154,262 +142,121 @@
         "masterFormat": "PNG"
       },
       "runtimeAtlases": {
-        "mother": "characters/mother-expressions-v1.webp",
-        "xiaoyu": "characters/xiaoyu-expressions-v1.webp",
-        "wang": "characters/wang-expressions-v1.webp",
-        "liu": "characters/liu-expressions-v1.webp",
-        "receptionist": "characters/receptionist-expressions-v1.webp"
+        "mother": "flat/characters/mother-neutral.svg",
+        "xiaoyu": "flat/characters/xiaoyu-neutral.svg",
+        "wang": "flat/characters/wang-neutral.svg",
+        "liu": "flat/characters/liu-neutral.svg",
+        "receptionist": "flat/characters/receptionist-neutral.svg",
+        "xiaoyuNoodle": "flat/characters/xiaoyuNoodle-neutral.svg"
       }
     }
   },
   "backgrounds": {
     "arrival-street": {
-      "desktop": "backgrounds/arrival-street-v2.webp",
-      "mobile": "backgrounds/mobile/mobile-arrival-street-v2.webp",
+      "desktop": "flat/backgrounds/arrival-street.svg",
+      "mobile": "flat/backgrounds/arrival-street-portrait.svg",
       "metadata": {
-        "desktop": {
-          "role": "Landscape Chengdu neighborhood approach leading toward the school before An reaches its gate",
-          "dimensions": {
-            "width": 1536,
-            "height": 1024
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Create one wide landscape background plate for the Chim Sẻ story game, 3:2 ratio. Show an ordinary tree-lined neighborhood street in Chengdu in gentle morning light, looking along a quiet sidewalk toward a new primary school set back at the far end. This is the approach one beat before the child stands at the open school gate: show the school as a modest distant destination partly glimpsed beyond trees and a low boundary wall, not a huge centered gate portrait. A path leads into the scene. Include a few lived-in details such as potted plants, a quiet storefront edge, bicycle rack or street lamp, but keep them small and low-contrast. Foreground lower-right and lower-middle should stay calm paved space for two independent character bust sprites. Upper-left should stay simple and low contrast behind an HTML dialogue card. The composition must read clearly as arriving at a school on foot and transition naturally to the closer gate scene. No car, no people, no birds, no text, no signage lettering, no labels, no UI. Match the supplied references: imperfect but consistent hand-drawn dark brown-black ink lines with subtle wobble and varied pressure; simple observed forms; muted flat watercolor in warm cream, faded teal, dusty sage, ochre, tan and soft gray; fine restrained paper grain; gentle ambient daylight. Keep the contours and leaf shapes simplified, the shadows soft, and the detail density quiet. Avoid hyper-detailed rendering, glossy surfaces, hard sun shafts, dramatic lighting, oversaturated colors, polished anime, photorealism, vector smoothness, and any generated characters.",
-          "master": "backgrounds/arrival-street-v2.png",
-          "masterFormat": "PNG",
-          "styleReference": "backgrounds/classroom-v2.png; backgrounds/noodle-shop-order-v5.png; backgrounds/school-gate-v3.png"
-        },
-        "mobile": {
-          "role": "Native portrait Chengdu neighborhood approach toward the school, composed below dialogue and behind sprites",
-          "dimensions": {
-            "width": 1024,
-            "height": 1536
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Create one native portrait background plate for the same Chim Sẻ story scene, vertical 2:3 composition. It must be a separately composed view of a quiet Chengdu neighborhood sidewalk approaching a new primary school in gentle morning light, not a crop of a landscape scene. This is one beat before the close school-gate scene: a small school entrance and pale school facade are visible in the upper-middle distance beyond a low boundary wall and trees; the street/path leads toward it. Do not make the gate huge or centered like a gate portrait. Keep the lowest 25 percent simple pale sidewalk for two separate character bust sprites, with unobtrusive edges. Keep the upper 18 percent calm and low contrast behind an HTML dialogue card. Include just a few modest local details along the margins: wall, potted plants, tree canopy, one quiet shop edge or a bicycle stand, not a row of many bicycles. The scene should clearly read as a mother bringing a child toward a school on foot, but background only: no car, people, birds, text, lettering, signage, labels or UI. Match the supplied references and companion landscape plate: deliberate imperfect dark brown-black pen contours with subtle wobble and varied pressure; simple observed everyday forms; quiet mostly-flat watercolor; fine restrained warm cream paper grain; muted ochre, faded teal, dusty sage, tan, warm gray; gentle ambient morning daylight. Simplify leaf clusters, pavement and architectural details, reduce contrast and texture, soften shadows. Keep generous negative space. Avoid hyper-detail, glossy surfaces, hard sun rays, dramatic cinematic light, oversaturation, polished anime, photorealism, vector smoothness and generated characters.",
-          "master": "backgrounds/mobile/mobile-arrival-street-v2.png",
-          "masterFormat": "PNG",
-          "styleReference": "backgrounds/mobile/mobile-classroom-v2.png; backgrounds/mobile/mobile-school-gate-v3.png; backgrounds/mobile/mobile-evening-street-v3.png"
-        }
+        "role": "Separate landscape and portrait flat scenery; no characters, bird or learned text.",
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a"
       },
       "legacyDesktop": "backgrounds/arrival-street.webp",
-      "legacyMobile": "backgrounds/mobile/mobile-arrival-street.webp"
+      "legacyMobile": "backgrounds/mobile/mobile-arrival-street.webp",
+      "archivedRaster": {
+        "desktop": "backgrounds/arrival-street-v2.webp",
+        "mobile": "backgrounds/mobile/mobile-arrival-street-v2.webp"
+      },
+      "compact": "flat/backgrounds/arrival-street-compact.svg"
     },
     "school-gate": {
-      "desktop": "backgrounds/school-gate-v3.webp",
-      "mobile": "backgrounds/mobile/mobile-school-gate-v3.webp",
+      "desktop": "flat/backgrounds/school-gate.svg",
+      "mobile": "flat/backgrounds/school-gate-portrait.svg",
       "metadata": {
-        "desktop": {
-          "role": "Hand-ink landscape Chengdu school gate for An meeting Teacher Wang",
-          "dimensions": {
-            "width": 1536,
-            "height": 1024
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Restyle the approved Chengdu primary-school gate background while preserving the place and layout: open faded teal gates, cream plaster boundary wall with brick base and muted red-brown pillars, school entrance behind the gate, leafy canopy and planter, one bicycle at left, low plants and open path. This is the moment when An hesitates and Teacher Wang approaches. Match the current Chim Sẻ storybook environment style: slightly wavering dark brown-black ink, simple imperfect marks, quiet mostly-flat watercolor, fine low-contrast warm cream paper grain, muted dusty ochre, faded teal, sage, tan and warm gray. Keep gentle morning light and reduce harsh leaf shadows, sharp sunlight, saturation, contrast, glossy surfaces and hyper-detail. Lower foreground stays open for independent An/teacher sprites; upper-left stays calm behind HTML dialogue. Background only: no people, birds, writing, labels or UI. Preserve wide gate geometry. Style references: classroom-v2, noodle-shop-order-v5 and An expression sheet.",
-          "master": "backgrounds/school-gate-v3.png",
-          "masterFormat": "PNG",
-          "styleReference": "backgrounds/classroom-v2.png; backgrounds/noodle-shop-order-v5.png; characters/an-expressions-v3.png"
-        },
-        "mobile": {
-          "role": "Portrait school gate composition with readable entrance and sprite area",
-          "dimensions": {
-            "width": 1024,
-            "height": 1536
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Recompose the Chengdu school entrance as a separate native 2:3 portrait plate. Preserve open faded-teal gate, cream wall/brick base, muted-red pillars, school building, leafy canopy/planter, one bicycle at left, plants and path. Match the companion wide school-gate art and classroom portrait: hand-ink contours with slight wobble, simple imperfect shapes, mostly-flat watercolor, fine low-contrast cream paper grain, muted ochre/teal/sage/tan/warm gray, gentle morning light without hard shadows or glossy texture. Top 18 percent calm behind HTML dialogue; gate opening and school doorway clear in middle below it; bicycle/planter at left-middle; lower 22 percent open pavement for independent An and Teacher Wang sprites. Keep gate centered and readable. Background only: no people, birds, writing, labels or UI.",
-          "master": "backgrounds/mobile/mobile-school-gate-v3.png",
-          "masterFormat": "PNG",
-          "styleReference": "backgrounds/mobile/mobile-classroom-v2.png; backgrounds/school-gate-v3.png; characters/an-expressions-v3.png"
-        }
+        "role": "Separate landscape and portrait flat scenery; no characters, bird or learned text.",
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a"
       },
       "legacyDesktop": "backgrounds/school-gate-v2.webp",
-      "legacyMobile": "backgrounds/mobile/mobile-school-gate-v2.webp"
+      "legacyMobile": "backgrounds/mobile/mobile-school-gate-v2.webp",
+      "archivedRaster": {
+        "desktop": "backgrounds/school-gate-v3.webp",
+        "mobile": "backgrounds/mobile/mobile-school-gate-v3.webp"
+      },
+      "compact": "flat/backgrounds/school-gate-compact.svg"
     },
     "classroom": {
-      "desktop": "backgrounds/classroom-v2.webp",
-      "mobile": "backgrounds/mobile/mobile-classroom-v2.webp",
+      "desktop": "flat/backgrounds/classroom.svg",
+      "mobile": "flat/backgrounds/classroom-portrait.svg",
       "legacyDesktop": "backgrounds/classroom.webp",
       "legacyMobile": "backgrounds/mobile/mobile-classroom.webp",
       "metadata": {
-        "desktop": {
-          "role": "Hand-ink landscape classroom for introductions, counting, notebook search and lesson checks",
-          "dimensions": {
-            "width": 1586,
-            "height": 992
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Restyle the existing Chengdu primary classroom while preserving the room layout: tall leafy windows on the left, blank dark-green chalkboard, teacher desk centered below it, low bookcase and bulletin boards, rows of wooden desks/chairs on both sides, a few books and pencil pots. This plate is reused for introductions, counting three independent student sprites, notebook search and a class check, so keep it neutral and show no students. Match the Chim Sẻ picture-book environment style with slightly wavering dark brown-black ink, simple imperfect forms, quiet mostly-flat watercolor, low-contrast warm cream paper grain, muted ochre, faded teal, dusty sage, tan and warm gray. Keep welcoming morning daylight; soften leaf shadows into broad gentle washes. No harsh sun streaks, reflective polished floor, deep contrast, glossy wood or hyper-detailed render. Upper-left remains calm for HTML dialogue; middle foreground remains open for independent sprites while teacher desk and board read clearly. Board blank. Background only: no people, birds, writing, diagrams, legible text, labels or UI. Preserve landscape room identity. Style references: noodle-shop-order-v5, school-office-v2 and An expression sheet.",
-          "master": "backgrounds/classroom-v2.png",
-          "masterFormat": "PNG",
-          "derivedFrom": "backgrounds/classroom.webp (previous WebP only; original PNG was not present)",
-          "styleReference": "backgrounds/noodle-shop-order-v5.png; backgrounds/school-office-v2.png; characters/an-expressions-v3.png"
-        },
-        "mobile": {
-          "role": "Portrait classroom composition with clear student sprite area",
-          "dimensions": {
-            "width": 1024,
-            "height": 1536
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Recompose the existing Chengdu classroom as an independent portrait phone plate, preserving its classroom identity: leafy windows left, blank chalkboard, teacher desk below, bookcase/bulletin boards, child desks/chairs, a few books and pencil pots, open floor. Match the companion landscape art and portrait noodle-shop watercolor: imperfect dark-ink contours, simplified handmade forms, quiet flat watercolor, fine low-contrast warm paper grain, muted ochre, faded teal, sage and warm gray. Calm morning daylight with soft broad light, no hard leaf-pattern shadows, sun stripes, glossy surfaces or polished floor. Portrait layout: top 18 percent calm for HTML dialogue; windows upper-left; blank board upper-middle/right below dialogue; teacher desk visible in middle; desks frame left/right; broad clear center-lower space for separate student sprites. Board stays blank. No people, birds, writing, diagrams, legible text, labels or UI. Preserve the wide room identity and match its line/color style.",
-          "master": "backgrounds/mobile/mobile-classroom-v2.png",
-          "masterFormat": "PNG",
-          "derivedFrom": "backgrounds/mobile/mobile-classroom.webp (previous WebP only; original PNG was not present)",
-          "styleReference": "backgrounds/mobile/mobile-noodle-shop-order-v4.png; backgrounds/classroom-v2.png; characters/an-expressions-v3.png"
-        }
-      }
+        "role": "Separate landscape and portrait flat scenery; no characters, bird or learned text.",
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a"
+      },
+      "archivedRaster": {
+        "desktop": "backgrounds/classroom-v2.webp",
+        "mobile": "backgrounds/mobile/mobile-classroom-v2.webp"
+      },
+      "compact": "flat/backgrounds/classroom-compact.svg"
     },
     "noodle-shop": {
-      "desktop": "backgrounds/noodle-shop-order-v6.webp",
-      "mobile": "backgrounds/mobile/mobile-noodle-shop-order-v5.webp",
+      "desktop": "flat/backgrounds/noodle-shop.svg",
+      "mobile": "flat/backgrounds/noodle-shop-portrait.svg",
       "legacyDesktop": "backgrounds/noodle-shop.webp",
       "legacyMobile": "backgrounds/mobile/mobile-noodle-shop-v2.webp",
       "metadata": {
-        "desktop": {
-          "path": "backgrounds/noodle-shop-order-v6.webp",
-          "master": "backgrounds/noodle-shop-order-v6.png",
-          "bytes": 363754,
-          "role": "Empty noodle-shop environment with open floor for layered foreground table and characters",
-          "dimensions": {
-            "width": 1536,
-            "height": 1024
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Redraw the small Chengdu noodle shop environment with the same open left window and lane, rear shelves and jars, right service counter, pale blank menu wall and muted teal lower wall. Remove every table and stool from center and lower floor for separate character/table layers. Imperfect hand-ink contours, flat quiet watercolor, warm paper grain, muted palette; no people, birds, food, table, menu artwork, text or UI.",
-          "masterFormat": "PNG",
-          "promptHistory": [
-            "Generate a new wide landscape static background plate for the Chim Sẻ picture-book game. Treat the provided An sheet as a STYLE sample only: match its black-brown hand-ink outlines, slightly wobbly imperfect strokes, simple childlike drawn marks, quiet flat watercolor, warm cream paper grain and muted mustard/teal/sage palette. Make a lived-in small Chengdu noodle shop, viewed at child eye level: open doorway and leafy lane on the left, simple wood counter and shelves with bowls on the right, a few tables and mismatched stools, ordinary lived-in details. Keep the composition asymmetrical and calm with a clear right-side wall zone for one separate menu layer, and empty tables / clear lower space for character sprites. The scene should read like an illustration drawn by a person with pen and watercolor, not an architectural render: simplify shapes, use broken uneven contours, leave some imperfect searching strokes, keep shadows light and broad, use mostly flat color with subtle paper grain. Avoid tiny photorealistic textures, polished perspective, glossy highlights, cinematic lighting, deep black shadows, dramatic gradients, perfectly straight vector lines, anime styling, 3D or photography. Background only: no people, no birds, no food, no menu illustrations, no legible signs, no letters, no labels, no UI. Use 3:2 landscape composition.",
-            "Keep the exact scene composition, objects, perspective and hand-drawn dark-ink contours of the first reference. Recolor it toward the gentle palette of the An sprite reference and the Chim Sẻ concept: lighten the warm paper base, reduce overall orange/yellow saturation by about 20%, soften the darkest shadow areas, lower contrast, use muted dusty ochre, faded blue-green, sage, cream and light warm gray. Keep the watercolor washes flat and quiet with visible paper grain. Do not add detail or change the furniture. Avoid golden-hour lighting, glowing highlights, deep brown blacks, glossy surfaces, dramatic shadows or gradients. This is an empty noodle shop background: no people, birds, bowls of food, menu art, writing or UI."
-          ],
-          "derivedFrom": "original empty-table noodle-shop composition; style guided by characters/an-expressions-v3.png",
-          "styleReference": "characters/an-expressions-v3.webp; owner Chim Sẻ palette/line description in art/ART_DIRECTION.md"
-        },
-        "mobile": {
-          "path": "backgrounds/mobile/mobile-noodle-shop-order-v5.webp",
-          "master": "backgrounds/mobile/mobile-noodle-shop-order-v5.png",
-          "bytes": 334190,
-          "role": "Independently composed portrait noodle-shop environment with empty lower floor",
-          "dimensions": {
-            "width": 1024,
-            "height": 1536
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Separate portrait re-composition of the same noodle shop: open left window and lane, rear shelves and jars, service counter on right, blank wall for HTML menu and clear lower floor for separate table/characters. No table or stools, people, bird, food, menu artwork, words or UI. Follow current hand-inked muted watercolor environment.",
-          "masterFormat": "PNG",
-          "derivedFrom": "desktop noodle-shop-order-v5.png; characters/an-expressions-v3.png",
-          "styleReference": "characters/an-expressions-v3.webp; owner Chim Sẻ palette/line description in art/ART_DIRECTION.md"
-        }
-      }
+        "role": "Separate landscape and portrait flat scenery; no characters, bird or learned text.",
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a"
+      },
+      "archivedRaster": {
+        "desktop": "backgrounds/noodle-shop-order-v6.webp",
+        "mobile": "backgrounds/mobile/mobile-noodle-shop-order-v5.webp"
+      },
+      "compact": "flat/backgrounds/noodle-shop-compact.svg"
     },
     "evening-street": {
-      "desktop": "backgrounds/evening-street-v3.webp",
-      "mobile": "backgrounds/mobile/mobile-evening-street-v3.webp",
+      "desktop": "flat/backgrounds/evening-street.svg",
+      "mobile": "flat/backgrounds/evening-street-portrait.svg",
       "metadata": {
-        "desktop": {
-          "role": "Desktop dusk walk-home street background, hand-ink style pass",
-          "dimensions": {
-            "width": 1536,
-            "height": 1024
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Edit the owner-reference dusk street scene, preserving the Chengdu lane, shopfronts, path, bicycle, trees and everyday objects. Match the established Chim Sẻ picture-book environment style: slightly wavering dark brown-black hand ink, simple imperfect shapes, quiet mostly-flat watercolor, fine low-contrast cream paper grain, muted ochre, faded teal, sage, tan and brick red. Keep dusk calm with muted blue-gray sky and softly warm windows. Remove cinematic sunset glow, flares, glossy highlights, deep dramatic shadows, hyper-detailed stone texture and polished digital-paint rendering. Keep lower path open for independent child sprites and upper left calm for HTML dialogue. Background only: no people, birds, food, menu art, text, labels or UI. Style references: noodle-shop-order-v5 and An expression sheet.",
-          "master": "backgrounds/evening-street-v3.png",
-          "masterFormat": "PNG",
-          "styleReference": "backgrounds/noodle-shop-order-v5.png; characters/an-expressions-v3.png"
-        },
-        "mobile": {
-          "role": "Portrait dusk walk-home street composition, hand-ink style pass",
-          "dimensions": {
-            "width": 1024,
-            "height": 1536
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Recompose the owner-reference dusk street as a separate portrait 2:3 phone plate, preserving the Chengdu lane identity: leafy trees, one bicycle, low old shopfronts and the noodle shop as a familiar landmark. Match the companion desktop dusk plate and approved portrait noodle-shop illustration: imperfect slightly wavering dark-ink contours, simple hand-drawn shapes, quiet mostly-flat watercolor, fine low-contrast cream paper grain, muted ochre, faded teal, sage, tan and brick red. Calm muted blue-gray dusk with gentle window warmth; no sunset glow, flares, glossy highlights, deep shadows or hyper-detailed paving. Upper 20 percent calm for HTML dialogue, middle shows lane and shop, lower 25 percent open for separate child sprites. Keep bicycle and storefront visible. Background only: no people, birds, food, readable signs, letters, labels or UI.",
-          "master": "backgrounds/mobile/mobile-evening-street-v3.png",
-          "masterFormat": "PNG",
-          "styleReference": "backgrounds/mobile/mobile-noodle-shop-order-v4.png; backgrounds/evening-street-v3.png; characters/an-expressions-v3.png"
-        }
-      }
+        "role": "Separate landscape and portrait flat scenery; no characters, bird or learned text.",
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a"
+      },
+      "archivedRaster": {
+        "desktop": "backgrounds/evening-street-v3.webp",
+        "mobile": "backgrounds/mobile/mobile-evening-street-v3.webp"
+      },
+      "compact": "flat/backgrounds/evening-street-compact.svg"
     },
     "school-office": {
-      "desktop": "backgrounds/school-office-v2.webp",
-      "mobile": "backgrounds/mobile/mobile-school-office-v2.webp",
+      "desktop": "flat/backgrounds/school-office.svg",
+      "mobile": "flat/backgrounds/school-office-portrait.svg",
       "metadata": {
-        "desktop": {
-          "role": "Hand-ink school lost-property office, wide plate for notebook-return encounter",
-          "dimensions": {
-            "width": 1672,
-            "height": 941
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Edit the approved Chengdu primary-school lost-property office background while preserving its exact wide composition: windows and bench at left, bookshelf, open doorway to leafy corridor, reception counter at right, shallow tray with found notebooks and pencil cases, hooks with backpack and coat, plant, and clear foreground. Match the Chim Sẻ storybook environment style with slightly wavering dark brown-black hand ink, simple imperfect everyday shapes, quiet mostly-flat watercolor, fine low-contrast cream paper grain, muted ochre, faded teal, sage and warm gray. Make the room calm and ordinary. Remove polished reflective floor, bright sun streaks, glossy surfaces, dramatic shadows, crisp architectural rendering and over-detailed textures; use matte floor and soft broad light. Keep upper-left visually quiet for HTML dialogue and lower-right unobstructed for independent An and receptionist sprites. Background only: no people, birds, text, labels, signs or UI. Style references: noodle-shop-order-v5 and An expression sheet.",
-          "master": "backgrounds/school-office-v2.png",
-          "masterFormat": "PNG",
-          "styleReference": "backgrounds/noodle-shop-order-v5.png; characters/an-expressions-v3.png"
-        },
-        "mobile": {
-          "role": "Portrait re-composition of the hand-ink lost-property office",
-          "dimensions": {
-            "width": 1024,
-            "height": 1536
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Recompose the approved school lost-property office as a separate portrait 2:3 phone plate. Preserve its identity and evidence: tall left windows with leafy school corridor outside, bench and bookcase, open doorway, reception counter with a shallow tray of found notebooks and pencil cases, wall hooks with backpack and coat, and a plant. Match the companion desktop art and approved portrait noodle-shop style: imperfect wavering dark-ink contours, simple hand-drawn shapes, mostly-flat watercolor, fine low-contrast cream paper grain, muted ochre, teal, sage and warm gray. Matte floor and soft even light; no reflection, hard sun stripes, glossy surfaces, cinematic contrast or intricate texture. Compose natively for portrait: upper 18 percent calm for HTML dialogue; window/corridor upper-left; counter and tray readable middle-right below dialogue; lower 25 percent open for An/receptionist sprites. Keep the tray visible, not behind dialogue. Background only: no characters, birds, writing, labels or UI.",
-          "master": "backgrounds/mobile/mobile-school-office-v2.png",
-          "masterFormat": "PNG",
-          "styleReference": "backgrounds/mobile/mobile-noodle-shop-order-v4.png; backgrounds/school-office-v2.png; characters/an-expressions-v3.png"
-        }
-      }
+        "role": "Separate landscape and portrait flat scenery; no characters, bird or learned text.",
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a"
+      },
+      "archivedRaster": {
+        "desktop": "backgrounds/school-office-v2.webp",
+        "mobile": "backgrounds/mobile/mobile-school-office-v2.webp"
+      },
+      "compact": "flat/backgrounds/school-office-compact.svg"
     },
     "bedroom": {
-      "desktop": "backgrounds/bedroom-v3.webp",
-      "mobile": "backgrounds/mobile/mobile-bedroom-v3.webp",
+      "desktop": "flat/backgrounds/bedroom.svg",
+      "mobile": "flat/backgrounds/bedroom-portrait.svg",
       "metadata": {
-        "desktop": {
-          "role": "Chim Sẻ bedroom, landscape background for the opening night before school",
-          "dimensions": {
-            "width": 1536,
-            "height": 1024
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Edit the approved Chengdu bedroom background and preserve the story-defining composition: evening city through the window, curtains, wooden desk, warm desk lamp, open notebook and pencils, chair, bed, school backpack, books and small plant. This is the night before An’s first school day. Match the Chim Sẻ picture-book environment style with slightly wavering dark brown-black hand-ink contours, imperfect searching strokes, simplified ordinary shapes, quiet mostly-flat watercolor, fine low-contrast warm cream paper grain, muted dusty ochre, faded teal, sage, tan and warm gray. Keep night readable through a quiet blue-gray exterior and a small soft warm pool at the notebook. Remove polished reflective wood, glossy highlights, deep cinematic shadows, dense photo-like detail and smooth gradients. Keep upper-left quiet behind HTML dialogue, mid-left simple behind the Hanzi card, desk/notebook/backpack readable center-right, lower-right clear for An sprite. Background only, no people, birds, legible writing, captions or UI. Style reference: noodle-shop-order-v5 and the An expression sheet.",
-          "master": "backgrounds/bedroom-v3.png",
-          "masterFormat": "PNG",
-          "styleReference": "backgrounds/noodle-shop-order-v5.png; characters/an-expressions-v3.png"
-        },
-        "mobile": {
-          "role": "Portrait bedroom composition for the Chim Sẻ opening",
-          "dimensions": {
-            "width": 1024,
-            "height": 1536
-          },
-          "format": "WebP",
-          "alpha": false,
-          "prompt": "Color/texture pass on the approved portrait bedroom composition: preserve the exact 2:3 layout and all object positions. Match the lighter muted exposure of bedroom-v3 desktop and the noodle-shop watercolor reference. Lift deep shadows substantially, reduce orange/brown saturation and contrast by about 20%, use dusty ochre/tan instead of dark wood, soften the desk-lamp pool, and show more warm cream paper and light watercolor. Preserve night only through the blue-gray city outside. Keep quiet flat washes, fine low-contrast grain and imperfect ink contours; remove dark vignette, near-black corners, glowing lamp, glossy highlights and cinematic contrast. Keep window, desk, open notebook, pencils, backpack, chair, shelves and bed visible.",
-          "promptHistory": [
-            "Recompose the approved bedroom as a native portrait 2:3 phone background, not a crop. Keep the same night city through the window, curtains, desk lamp, open notebook and pencils, school bag, chair, bed, books and plant. Match the approved Chim Sẻ ink/watercolor look: imperfect consistent dark ink, simple drawn forms, muted flat washes, low-contrast warm paper grain, ochre, teal, sage, tan and blue-gray. Upper 18 percent calm behind HTML dialogue; left-middle simple behind a separate Hanzi card; window/city upper-left; desk/notebook/backpack visible center-right and below dialogue; lower-right clear for An sprite. No people, birds, writing, captions or UI.",
-            "Color/texture pass on the approved portrait bedroom composition: preserve the exact 2:3 layout and all object positions. Match the lighter muted exposure of bedroom-v3 desktop and the noodle-shop watercolor reference. Lift deep shadows substantially, reduce orange/brown saturation and contrast by about 20%, use dusty ochre/tan instead of dark wood, soften the desk-lamp pool, and show more warm cream paper and light watercolor. Preserve night only through the blue-gray city outside. Keep quiet flat washes, fine low-contrast grain and imperfect ink contours; remove dark vignette, near-black corners, glowing lamp, glossy highlights and cinematic contrast. Keep window, desk, open notebook, pencils, backpack, chair, shelves and bed visible."
-          ],
-          "master": "backgrounds/mobile/mobile-bedroom-v3.png",
-          "masterFormat": "PNG",
-          "styleReference": "backgrounds/mobile/mobile-noodle-shop-order-v4.png; backgrounds/bedroom-v3.png; characters/an-expressions-v3.png"
-        }
-      }
+        "role": "Separate landscape and portrait flat scenery; no characters, bird or learned text.",
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a"
+      },
+      "archivedRaster": {
+        "desktop": "backgrounds/bedroom-v3.webp",
+        "mobile": "backgrounds/mobile/mobile-bedroom-v3.webp"
+      },
+      "compact": "flat/backgrounds/bedroom-compact.svg"
     }
   },
   "scenes": {
@@ -450,7 +297,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 45,
           "top": 3
@@ -459,7 +306,8 @@
           "left": 45,
           "top": 3
         },
-        "expression": "curious"
+        "expression": "curious",
+        "flight": true
       },
       "hotspots": [
         "school-gate",
@@ -479,16 +327,17 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/arrival-street-v2.webp",
-          "mobile": "backgrounds/mobile/mobile-arrival-street-v2.webp"
+          "desktop": "flat/backgrounds/arrival-street.svg",
+          "mobile": "flat/backgrounds/arrival-street-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/an-listening.svg",
+          "flat/characters/mother-neutral.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       }
     },
     "hsk1.e01.school-introduction": {
@@ -528,7 +377,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 45,
           "top": 3
@@ -537,7 +386,8 @@
           "left": 45,
           "top": 3
         },
-        "expression": "happy"
+        "expression": "happy",
+        "flight": true
       },
       "hotspots": [
         "school-sign",
@@ -557,16 +407,17 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/school-gate-v3.webp",
-          "mobile": "backgrounds/mobile/mobile-school-gate-v3.webp"
+          "desktop": "flat/backgrounds/school-gate.svg",
+          "mobile": "flat/backgrounds/school-gate-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/an-listening.svg",
+          "flat/characters/wang-neutral.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       }
     },
     "hsk1.e01.xiaoyu-friendship": {
@@ -606,7 +457,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 45,
           "top": 3
@@ -615,7 +466,8 @@
           "left": 45,
           "top": 3
         },
-        "expression": "listening"
+        "expression": "listening",
+        "flight": true
       },
       "hotspots": [
         "empty-seat",
@@ -635,16 +487,17 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/classroom-v2.webp",
-          "mobile": "backgrounds/mobile/mobile-classroom-v2.webp"
+          "desktop": "flat/backgrounds/classroom.svg",
+          "mobile": "flat/backgrounds/classroom-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/an-listening.svg",
+          "flat/characters/xiaoyu-neutral.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       }
     },
     "hsk1.e01.class-counting": {
@@ -700,7 +553,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 45,
           "top": 3
@@ -709,7 +562,8 @@
           "left": 45,
           "top": 3
         },
-        "expression": "thinking"
+        "expression": "thinking",
+        "flight": true
       },
       "hotspots": [
         "blackboard",
@@ -729,21 +583,23 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/classroom-v2.webp",
-          "mobile": "backgrounds/mobile/mobile-classroom-v2.webp"
+          "desktop": "flat/backgrounds/classroom.svg",
+          "mobile": "flat/backgrounds/classroom-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp",
-          "characters/classmates-pair-v1.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/an-listening.svg",
+          "flat/characters/classmates-attentive.svg",
+          "flat/characters/wang-neutral.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       }
     },
     "hsk1.e01.liu-noodle-order": {
       "background": "noodle-shop",
+      "counterOccluder": true,
       "actors": [
         {
           "character": "liu",
@@ -751,24 +607,41 @@
           "slot": "behind-counter",
           "desktop": {
             "left": 52,
-            "bottom": 40,
+            "bottom": 48,
             "width": 16
           },
           "mobile": {
-            "left": 84,
-            "bottom": 64,
-            "width": 16
+            "left": 38,
+            "bottom": 78,
+            "width": 20
           },
           "tablet": {
-            "left": 56,
-            "bottom": 64,
+            "left": 36,
+            "bottom": 65,
             "width": 19
           },
           "emotion": "kind",
           "compact": {
-            "left": 88,
-            "bottom": 22,
-            "width": 6
+            "left": 86,
+            "bottom": 58,
+            "width": 9
+          },
+          "sourcePosition": {
+            "desktop": {
+              "x": 1050,
+              "y": 365,
+              "width": 170
+            },
+            "mobile": {
+              "x": 440,
+              "y": 530,
+              "width": 165
+            },
+            "compact": {
+              "x": 1100,
+              "y": 245,
+              "width": 120
+            }
           }
         },
         {
@@ -794,8 +667,25 @@
           "emotion": "curious",
           "compact": {
             "left": 50,
-            "bottom": 0,
+            "bottom": 18,
             "width": 18
+          },
+          "sourcePosition": {
+            "desktop": {
+              "x": 560,
+              "y": 450,
+              "width": 240
+            },
+            "mobile": {
+              "x": 165,
+              "y": 695,
+              "width": 210
+            },
+            "compact": {
+              "x": 560,
+              "y": 295,
+              "width": 140
+            }
           }
         },
         {
@@ -821,13 +711,30 @@
           "emotion": "chatting",
           "compact": {
             "left": 65,
-            "bottom": 0,
+            "bottom": 18,
             "width": 18
+          },
+          "sourcePosition": {
+            "desktop": {
+              "x": 880,
+              "y": 450,
+              "width": 240
+            },
+            "mobile": {
+              "x": 435,
+              "y": 695,
+              "width": 210
+            },
+            "compact": {
+              "x": 880,
+              "y": 295,
+              "width": 140
+            }
           }
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 5,
           "top": 28
@@ -838,8 +745,26 @@
         },
         "expression": "curious",
         "compact": {
-          "left": 49,
-          "top": 0
+          "left": 43,
+          "top": 9
+        },
+        "flight": false,
+        "sourcePosition": {
+          "desktop": {
+            "x": 150,
+            "y": 409,
+            "width": 54
+          },
+          "mobile": {
+            "x": 100,
+            "y": 631,
+            "width": 54
+          },
+          "compact": {
+            "x": 550,
+            "y": 90,
+            "width": 44
+          }
         }
       },
       "hotspots": [
@@ -859,130 +784,129 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/noodle-shop-order-v6.webp",
-          "mobile": "backgrounds/mobile/mobile-noodle-shop-order-v5.webp"
+          "desktop": "flat/backgrounds/noodle-shop.svg",
+          "mobile": "flat/backgrounds/noodle-shop-portrait.svg"
         },
         "midground": [
           {
             "kind": "image",
-            "asset": "layers/noodle-table-top-v1.webp",
+            "asset": "flat/layers/menu.svg",
+            "mobileAsset": "flat/layers/menu-portrait.svg",
+            "compactAsset": "flat/layers/menu-compact.svg",
             "desktop": {
-              "x": 768,
-              "y": 790,
-              "width": 1450
+              "x": 600,
+              "y": 310,
+              "width": 1200
             },
             "mobile": {
-              "x": 512,
-              "y": 1100,
-              "width": 1120
-            },
-            "tablet": {
-              "x": 512,
-              "y": 1100,
-              "width": 1220
+              "x": 300,
+              "y": 450,
+              "width": 600
             },
             "compact": {
-              "x": 1070,
-              "y": 576,
-              "width": 900
+              "x": 600,
+              "y": 190,
+              "width": 1200
             },
             "metadata": {
-              "master": "layers/noodle-table-top-v1.png",
-              "masterFormat": "PNG",
-              "role": "Empty shared tabletop plane behind seated children hands; front edge aligns with separate apron overlay",
-              "dimensions": {
-                "width": 1774,
-                "height": 887
-              },
-              "format": "WebP",
-              "alpha": true,
-              "prompt": "Transparent empty wide child-height table-top plane only; slightly perspective view, muted brown flat washes and few loose plank marks, imperfect wobbly ink line matching the generated foreground apron. No apron, legs, food, dishes, people, birds, room or text."
+              "role": "menu independent full-scene layer; landscape/portrait/compact share authored coordinates",
+              "authoringSource": "scene-flat-art.js"
             }
-          },
+          }
+        ],
+        "counter": [
           {
             "kind": "image",
-            "asset": "layers/menu-panels-v1.webp",
+            "asset": "flat/layers/counter.svg",
+            "mobileAsset": "flat/layers/counter-portrait.svg",
+            "compactAsset": "flat/layers/counter-compact.svg",
             "desktop": {
-              "x": 1300,
-              "y": 380,
-              "width": 280
+              "x": 600,
+              "y": 310,
+              "width": 1200
             },
             "mobile": {
-              "x": 820,
-              "y": 700,
-              "width": 260
+              "x": 300,
+              "y": 450,
+              "width": 600
             },
             "compact": {
-              "x": 1300,
-              "y": 600,
-              "width": 250
+              "x": 600,
+              "y": 190,
+              "width": 1200
             },
             "metadata": {
-              "role": "Three hand-painted illustrated menu panels composed on the back wall for the portrait noodle ordering and payment scenes",
-              "dimensions": {
-                "width": 1983,
-                "height": 793
-              },
-              "format": "WebP",
-              "alpha": true,
-              "prompt": "Create a horizontal transparent strip of three framed food-menu illustrations (noodles, dumplings, soup), each with a dark wood frame and warm paper background, matching the noodle-shop painting. No wall, no text, no people, no bird."
-            },
-            "tablet": {
-              "x": 920,
-              "y": 760,
-              "width": 220
+              "role": "counter independent full-scene layer; landscape/portrait/compact share authored coordinates",
+              "authoringSource": "scene-flat-art.js"
             }
           }
         ],
         "characters": [
-          "characters/an-noodle-seated-v1.webp",
-          "characters/xiaoyu-noodle-seated-v1.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/liu-neutral.svg",
+          "flat/characters/anNoodle-shy.svg",
+          "flat/characters/xiaoyuNoodle-neutral.svg"
         ],
         "foreground": [
           {
             "kind": "image",
-            "asset": "layers/noodle-table-apron-v1.webp",
+            "asset": "flat/layers/table-apron.svg",
+            "mobileAsset": "flat/layers/table-apron-portrait.svg",
+            "compactAsset": "flat/layers/table-apron-compact.svg",
             "desktop": {
-              "x": 768,
-              "y": 790,
-              "width": 1450
+              "x": 600,
+              "y": 310,
+              "width": 1200
             },
             "mobile": {
-              "x": 512,
-              "y": 1100,
-              "width": 1120
-            },
-            "tablet": {
-              "x": 512,
-              "y": 1100,
-              "width": 1220
+              "x": 300,
+              "y": 450,
+              "width": 600
             },
             "compact": {
-              "x": 1070,
-              "y": 576,
-              "width": 900
+              "x": 600,
+              "y": 190,
+              "width": 1200
             },
             "metadata": {
-              "master": "layers/noodle-table-apron-v1.png",
-              "masterFormat": "PNG",
-              "role": "Front apron of shared empty noodle table; foreground occlusion strip above child torsos but below faces/hands",
-              "dimensions": {
-                "width": 1774,
-                "height": 887
-              },
-              "format": "WebP",
-              "alpha": true,
-              "prompt": "Transparent shallow horizontal wooden front apron with matching hand-drawn outline, warm muted flat watercolor, simple imperfect strokes. Seam aligns to the separately generated table top; no table surface, legs, food, props, people, birds or text."
+              "role": "table-apron independent full-scene layer; landscape/portrait/compact share authored coordinates",
+              "authoringSource": "scene-flat-art.js"
             }
           }
         ],
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg",
+        "tabletop": [
+          {
+            "kind": "image",
+            "asset": "flat/layers/table-top.svg",
+            "mobileAsset": "flat/layers/table-top-portrait.svg",
+            "compactAsset": "flat/layers/table-top-compact.svg",
+            "desktop": {
+              "x": 600,
+              "y": 310,
+              "width": 1200
+            },
+            "mobile": {
+              "x": 300,
+              "y": 450,
+              "width": 600
+            },
+            "compact": {
+              "x": 600,
+              "y": 190,
+              "width": 1200
+            },
+            "metadata": {
+              "role": "table-top independent full-scene layer; landscape/portrait/compact share authored coordinates",
+              "authoringSource": "scene-flat-art.js"
+            }
+          }
+        ]
       },
       "fullStageActors": true
     },
     "hsk1.e01.liu-payment": {
       "background": "noodle-shop",
+      "counterOccluder": true,
       "actors": [
         {
           "character": "liu",
@@ -990,24 +914,41 @@
           "slot": "behind-counter",
           "desktop": {
             "left": 52,
-            "bottom": 40,
+            "bottom": 48,
             "width": 16
           },
           "mobile": {
-            "left": 84,
-            "bottom": 64,
-            "width": 16
+            "left": 38,
+            "bottom": 78,
+            "width": 20
           },
           "tablet": {
-            "left": 56,
-            "bottom": 64,
+            "left": 36,
+            "bottom": 65,
             "width": 19
           },
           "emotion": "kind",
           "compact": {
-            "left": 88,
-            "bottom": 22,
-            "width": 6
+            "left": 86,
+            "bottom": 58,
+            "width": 9
+          },
+          "sourcePosition": {
+            "desktop": {
+              "x": 1050,
+              "y": 365,
+              "width": 170
+            },
+            "mobile": {
+              "x": 440,
+              "y": 530,
+              "width": 165
+            },
+            "compact": {
+              "x": 1100,
+              "y": 245,
+              "width": 120
+            }
           }
         },
         {
@@ -1033,8 +974,25 @@
           "emotion": "careful",
           "compact": {
             "left": 50,
-            "bottom": 0,
+            "bottom": 18,
             "width": 18
+          },
+          "sourcePosition": {
+            "desktop": {
+              "x": 560,
+              "y": 450,
+              "width": 240
+            },
+            "mobile": {
+              "x": 165,
+              "y": 695,
+              "width": 210
+            },
+            "compact": {
+              "x": 560,
+              "y": 295,
+              "width": 140
+            }
           }
         },
         {
@@ -1060,13 +1018,30 @@
           "emotion": "chatting",
           "compact": {
             "left": 65,
-            "bottom": 0,
+            "bottom": 18,
             "width": 18
+          },
+          "sourcePosition": {
+            "desktop": {
+              "x": 880,
+              "y": 450,
+              "width": 240
+            },
+            "mobile": {
+              "x": 435,
+              "y": 695,
+              "width": 210
+            },
+            "compact": {
+              "x": 880,
+              "y": 295,
+              "width": 140
+            }
           }
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 5,
           "top": 28
@@ -1077,8 +1052,26 @@
         },
         "expression": "thinking",
         "compact": {
-          "left": 49,
-          "top": 0
+          "left": 43,
+          "top": 9
+        },
+        "flight": false,
+        "sourcePosition": {
+          "desktop": {
+            "x": 150,
+            "y": 409,
+            "width": 54
+          },
+          "mobile": {
+            "x": 100,
+            "y": 631,
+            "width": 54
+          },
+          "compact": {
+            "x": 550,
+            "y": 90,
+            "width": 44
+          }
         }
       },
       "hotspots": [
@@ -1099,163 +1092,174 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/noodle-shop-order-v6.webp",
-          "mobile": "backgrounds/mobile/mobile-noodle-shop-order-v5.webp"
+          "desktop": "flat/backgrounds/noodle-shop.svg",
+          "mobile": "flat/backgrounds/noodle-shop-portrait.svg"
         },
         "midground": [
           {
             "kind": "image",
-            "asset": "layers/noodle-table-top-v1.webp",
+            "asset": "flat/layers/menu.svg",
+            "mobileAsset": "flat/layers/menu-portrait.svg",
+            "compactAsset": "flat/layers/menu-compact.svg",
             "desktop": {
-              "x": 768,
-              "y": 790,
-              "width": 1450
+              "x": 600,
+              "y": 310,
+              "width": 1200
             },
             "mobile": {
-              "x": 512,
-              "y": 1100,
-              "width": 1120
-            },
-            "tablet": {
-              "x": 512,
-              "y": 1100,
-              "width": 1220
+              "x": 300,
+              "y": 450,
+              "width": 600
             },
             "compact": {
-              "x": 1070,
-              "y": 576,
-              "width": 900
+              "x": 600,
+              "y": 190,
+              "width": 1200
             },
             "metadata": {
-              "master": "layers/noodle-table-top-v1.png",
-              "masterFormat": "PNG",
-              "role": "Empty shared tabletop plane behind seated children hands; front edge aligns with separate apron overlay",
-              "dimensions": {
-                "width": 1774,
-                "height": 887
-              },
-              "format": "WebP",
-              "alpha": true,
-              "prompt": "Transparent empty wide child-height table-top plane only; slightly perspective view, muted brown flat washes and few loose plank marks, imperfect wobbly ink line matching the generated foreground apron. No apron, legs, food, dishes, people, birds, room or text."
+              "role": "menu independent full-scene layer; landscape/portrait/compact share authored coordinates",
+              "authoringSource": "scene-flat-art.js"
             }
-          },
+          }
+        ],
+        "counter": [
           {
             "kind": "image",
-            "asset": "layers/menu-panels-v1.webp",
+            "asset": "flat/layers/counter.svg",
+            "mobileAsset": "flat/layers/counter-portrait.svg",
+            "compactAsset": "flat/layers/counter-compact.svg",
             "desktop": {
-              "x": 1300,
-              "y": 380,
-              "width": 280
+              "x": 600,
+              "y": 310,
+              "width": 1200
             },
             "mobile": {
-              "x": 820,
-              "y": 700,
-              "width": 260
+              "x": 300,
+              "y": 450,
+              "width": 600
             },
             "compact": {
-              "x": 1300,
-              "y": 600,
-              "width": 250
+              "x": 600,
+              "y": 190,
+              "width": 1200
             },
             "metadata": {
-              "role": "Three hand-painted illustrated menu panels composed on the back wall for the portrait noodle ordering and payment scenes",
-              "dimensions": {
-                "width": 1983,
-                "height": 793
-              },
-              "format": "WebP",
-              "alpha": true,
-              "prompt": "Create a horizontal transparent strip of three framed food-menu illustrations (noodles, dumplings, soup), each with a dark wood frame and warm paper background, matching the noodle-shop painting. No wall, no text, no people, no bird."
-            },
-            "tablet": {
-              "x": 920,
-              "y": 760,
-              "width": 220
+              "role": "counter independent full-scene layer; landscape/portrait/compact share authored coordinates",
+              "authoringSource": "scene-flat-art.js"
             }
           }
         ],
         "characters": [
-          "characters/an-noodle-seated-v1.webp",
-          "characters/xiaoyu-noodle-seated-v1.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/liu-neutral.svg",
+          "flat/characters/anNoodle-shy.svg",
+          "flat/characters/xiaoyuNoodle-neutral.svg"
         ],
         "foreground": [
           {
             "kind": "image",
-            "asset": "layers/noodle-table-apron-v1.webp",
+            "asset": "flat/layers/table-apron.svg",
+            "mobileAsset": "flat/layers/table-apron-portrait.svg",
+            "compactAsset": "flat/layers/table-apron-compact.svg",
             "desktop": {
-              "x": 768,
-              "y": 790,
-              "width": 1450
+              "x": 600,
+              "y": 310,
+              "width": 1200
             },
             "mobile": {
-              "x": 512,
-              "y": 1100,
-              "width": 1120
-            },
-            "tablet": {
-              "x": 512,
-              "y": 1100,
-              "width": 1220
+              "x": 300,
+              "y": 450,
+              "width": 600
             },
             "compact": {
-              "x": 1070,
-              "y": 576,
-              "width": 900
+              "x": 600,
+              "y": 190,
+              "width": 1200
             },
             "metadata": {
-              "master": "layers/noodle-table-apron-v1.png",
-              "masterFormat": "PNG",
-              "role": "Front apron of shared empty noodle table; foreground occlusion strip above child torsos but below faces/hands",
-              "dimensions": {
-                "width": 1774,
-                "height": 887
-              },
-              "format": "WebP",
-              "alpha": true,
-              "prompt": "Transparent shallow horizontal wooden front apron with matching hand-drawn outline, warm muted flat watercolor, simple imperfect strokes. Seam aligns to the separately generated table top; no table surface, legs, food, props, people, birds or text."
+              "role": "table-apron independent full-scene layer; landscape/portrait/compact share authored coordinates",
+              "authoringSource": "scene-flat-art.js"
             }
           },
           {
             "kind": "image",
-            "asset": "layers/noodle-bowl-v3.webp",
-            "metadata": {
-              "role": "Single centered bowl of noodles for the order-served and price-check scene layers",
-              "dimensions": {
-                "width": 1254,
-                "height": 1254
-              },
-              "format": "WebP",
-              "alpha": true,
-              "prompt": "Edit the previous noodle cutout to keep one compact, centered, readable noodle bowl only. Remove side bowl, chopsticks and extra objects. Preserve hand-ink, warm muted watercolor, transparent background, clean alpha, no shadow.",
-              "master": "layers/noodle-bowl-v3.png",
-              "masterFormat": "PNG",
-              "bytes": 315878
-            },
-            "master": "layers/noodle-bowl-v3.png",
+            "asset": "flat/layers/bowl.svg",
+            "mobileAsset": "flat/layers/bowl-portrait.svg",
+            "compactAsset": "flat/layers/bowl-compact.svg",
             "desktop": {
-              "x": 760,
-              "y": 760,
-              "width": 145
+              "x": 600,
+              "y": 310,
+              "width": 1200
             },
             "mobile": {
-              "x": 512,
-              "y": 1000,
-              "width": 185
-            },
-            "tablet": {
-              "x": 512,
-              "y": 1085,
-              "width": 175
+              "x": 300,
+              "y": 450,
+              "width": 600
             },
             "compact": {
-              "x": 1070,
-              "y": 630,
-              "width": 160
+              "x": 600,
+              "y": 190,
+              "width": 1200
+            },
+            "metadata": {
+              "role": "bowl independent full-scene layer; landscape/portrait/compact share authored coordinates",
+              "authoringSource": "scene-flat-art.js"
+            }
+          },
+          {
+            "kind": "image",
+            "asset": "flat/layers/steam.svg",
+            "mobileAsset": "flat/layers/steam-portrait.svg",
+            "compactAsset": "flat/layers/steam-compact.svg",
+            "desktop": {
+              "x": 600,
+              "y": 310,
+              "width": 1200
+            },
+            "mobile": {
+              "x": 300,
+              "y": 450,
+              "width": 600
+            },
+            "compact": {
+              "x": 600,
+              "y": 190,
+              "width": 1200
+            },
+            "motion": "steam",
+            "metadata": {
+              "role": "steam independent full-scene layer; landscape/portrait/compact share authored coordinates",
+              "authoringSource": "scene-flat-art.js"
             }
           }
         ],
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg",
+        "tabletop": [
+          {
+            "kind": "image",
+            "asset": "flat/layers/table-top.svg",
+            "mobileAsset": "flat/layers/table-top-portrait.svg",
+            "compactAsset": "flat/layers/table-top-compact.svg",
+            "desktop": {
+              "x": 600,
+              "y": 310,
+              "width": 1200
+            },
+            "mobile": {
+              "x": 300,
+              "y": 450,
+              "width": 600
+            },
+            "compact": {
+              "x": 600,
+              "y": 190,
+              "width": 1200
+            },
+            "metadata": {
+              "role": "table-top independent full-scene layer; landscape/portrait/compact share authored coordinates",
+              "authoringSource": "scene-flat-art.js"
+            }
+          }
+        ]
       },
       "fullStageActors": true
     },
@@ -1296,7 +1300,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 45,
           "top": 3
@@ -1305,7 +1309,8 @@
           "left": 45,
           "top": 3
         },
-        "expression": "happy"
+        "expression": "happy",
+        "flight": true
       },
       "hotspots": [
         "street-lantern",
@@ -1325,16 +1330,17 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/evening-street-v3.webp",
-          "mobile": "backgrounds/mobile/mobile-evening-street-v3.webp"
+          "desktop": "flat/backgrounds/evening-street.svg",
+          "mobile": "flat/backgrounds/evening-street-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/an-listening.svg",
+          "flat/characters/xiaoyu-neutral.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       }
     },
     "lost-notebook": {
@@ -1358,7 +1364,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 45,
           "top": 3
@@ -1367,7 +1373,8 @@
           "left": 45,
           "top": 3
         },
-        "expression": "curious"
+        "expression": "curious",
+        "flight": true
       },
       "hotspots": [
         "lost-and-found-desk",
@@ -1387,15 +1394,16 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/classroom-v2.webp",
-          "mobile": "backgrounds/mobile/mobile-classroom-v2.webp"
+          "desktop": "flat/backgrounds/classroom.svg",
+          "mobile": "flat/backgrounds/classroom-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp"
+          "flat/characters/an-listening.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       }
     },
     "hsk1.e01.exam-introduction": {
@@ -1435,7 +1443,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 45,
           "top": 3
@@ -1444,7 +1452,8 @@
           "left": 45,
           "top": 3
         },
-        "expression": "listening"
+        "expression": "listening",
+        "flight": true
       },
       "hotspots": [],
       "desktop": {
@@ -1461,16 +1470,17 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/classroom-v2.webp",
-          "mobile": "backgrounds/mobile/mobile-classroom-v2.webp"
+          "desktop": "flat/backgrounds/classroom.svg",
+          "mobile": "flat/backgrounds/classroom-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/an-listening.svg",
+          "flat/characters/wang-neutral.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       }
     },
     "hsk1.e01.exam-price": {
@@ -1510,7 +1520,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 45,
           "top": 3
@@ -1519,7 +1529,8 @@
           "left": 45,
           "top": 3
         },
-        "expression": "thinking"
+        "expression": "thinking",
+        "flight": true
       },
       "hotspots": [],
       "desktop": {
@@ -1536,16 +1547,17 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/classroom-v2.webp",
-          "mobile": "backgrounds/mobile/mobile-classroom-v2.webp"
+          "desktop": "flat/backgrounds/classroom.svg",
+          "mobile": "flat/backgrounds/classroom-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/an-listening.svg",
+          "flat/characters/wang-neutral.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       }
     },
     "hsk1.e01.exam-order": {
@@ -1585,7 +1597,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 45,
           "top": 3
@@ -1594,7 +1606,8 @@
           "left": 45,
           "top": 3
         },
-        "expression": "happy"
+        "expression": "happy",
+        "flight": true
       },
       "hotspots": [],
       "desktop": {
@@ -1611,20 +1624,25 @@
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/classroom-v2.webp",
-          "mobile": "backgrounds/mobile/mobile-classroom-v2.webp"
+          "desktop": "flat/backgrounds/classroom.svg",
+          "mobile": "flat/backgrounds/classroom-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/an-listening.svg",
+          "flat/characters/wang-neutral.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       }
     }
   },
-  "sceneRenderer": "../scene-renderer.js",
+  "sceneRenderer": {
+    "source": "../scene-renderer.js",
+    "artSource": "../scene-flat-art.js",
+    "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a"
+  },
   "screenBreakpoints": {
     "backgroundPortrait": "viewport max-width:900px and orientation:portrait; independently composed portrait plate",
     "compositionPortrait": "scene width <690px and scene height >0.72 * scene width; faces below the dialogue",
@@ -1633,7 +1651,7 @@
   },
   "assetCatalog": {
     "characters/an-expressions-v3.webp": {
-      "role": "An character expression sheet; scene sprites for the protagonist",
+      "role": "Legacy An atlas v3; retained as a source/provenance asset, not used by active routes.",
       "dimensions": {
         "width": 1536,
         "height": 1024
@@ -1644,19 +1662,6 @@
       "master": "characters/an-expressions-v3.png",
       "masterFormat": "PNG",
       "bytes": 394906
-    },
-    "characters/sparrow-expressions-v2.webp": {
-      "role": "Single Sparrow mascot expression sheet; one cell per scene mood",
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "format": "WebP",
-      "alpha": true,
-      "prompt": "Create one transparent 3-column by 2-row sprite sheet for the single pale blue Chim Sẻ sparrow. Keep identical rounded silhouette, cream belly, dark ink contour and orange beak in all six cells; vary expression/gesture. No text, no background, no duplicate birds inside a cell.",
-      "master": "characters/sparrow-expressions-v2.png",
-      "masterFormat": "PNG",
-      "bytes": 360316
     },
     "characters/supporting-cast-v2.webp": {
       "role": "Five transparent supporting character sprites, ordered by the cast panel map",
@@ -2049,19 +2054,6 @@
       "masterFormat": "PNG",
       "bytes": 499456
     },
-    "characters/an-noodle-seated-v1.webp": {
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/an-noodle-seated-v1.png",
-      "role": "Seated Minh An expression sheet for the noodle-shop foreground, matching the approved boy model and clothing.",
-      "prompt": "3x2 transparent seated An expression sheet, same short tousled black hair, mustard hoodie, faded teal-blue backpack and 11-year-old boy proportions as the approved An sprite; shy, curious, thinking, awkwardly asking, gentle smile, listening. Slightly uneven dark ink, flat muted watercolor, warm paper grain; no props or labels.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 398434
-    },
     "characters/xiaoyu-noodle-seated-v1.webp": {
       "dimensions": {
         "width": 1254,
@@ -2140,6 +2132,19 @@
       "masterFormat": "PNG",
       "bytes": 1512950
     },
+    "characters/mother-expressions-v2.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/mother-expressions-v2.png",
+      "role": "Mother expression atlas refreshed to match the Chim Sẻ hand-ink and watercolor style; low bun, rust jacket, cream shirt and tote preserved.",
+      "prompt": "Use Chim Sẻ style source and An v4 as strict drawing references; preserve Mother identity from v1: adult Chinese woman, low dark bun, rust jacket, cream shirt, tote strap. 3x2 transparent atlas, six expressions in order neutral, gentle, speaking, laughing, concerned, thinking. Slightly uneven hand-ink contours, muted flat gouache/watercolor, restrained paper grain, clear expressive faces; no glow, vignette, background, labels or extra figures. Keep all art clear of cell boundaries.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 323654
+    },
     "characters/xiaoyu-expressions-v1.webp": {
       "dimensions": {
         "width": 1536,
@@ -2165,6 +2170,19 @@
       "format": "WebP",
       "masterFormat": "PNG",
       "bytes": 1343100
+    },
+    "characters/wang-expressions-v2.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/wang-expressions-v2.png",
+      "role": "Cô Vương expression atlas v2; same teacher identity and wardrobe, redrawn with broader hand-ink shapes and restrained watercolor to align with An v4 and the Chim Sẻ style source.",
+      "prompt": "Refinement of Wang v2 candidate, preserving the clean 3x2 layout and identity. Style anchors: Chim Se style source, An v4, Mother v2. Identity: Wang v1. Preserve the adult teacher's short rounded bob, round glasses, sage cardigan, cream blouse and brown notebook. Use broad simple hair masses with a few loose ink strokes, slightly uneven dark contours, flat muted watercolor, very restrained blush and texture. Keep six row-major expressions: neutral, smiling, speaking, thinking, worried, surprised. True alpha, safe transparent gutters, no backdrop, gradient, shadow, glow, labels or extra figures.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 1152660
     },
     "characters/liu-expressions-v1.webp": {
       "dimensions": {
@@ -2204,46 +2222,1659 @@
       "format": "WebP",
       "masterFormat": "PNG",
       "bytes": 1432176
+    },
+    "layers/noodle-table-apron-v2.webp": {
+      "dimensions": {
+        "width": 1774,
+        "height": 889
+      },
+      "alpha": true,
+      "master": "layers/noodle-table-apron-v2.png",
+      "role": "Deeper wooden table apron, aligned with the v1 tabletop for foreground body occlusion.",
+      "prompt": "Extend the matching front apron down to conceal the seated children below the table edge. Keep the top rim aligned to the tabletop, transparent background, warm imperfect hand ink and flat muted watercolor. No top surface, legs, food, people, birds or text.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 417482
+    },
+    "characters/an-expressions-v4.webp": {
+      "role": "Legacy An atlas v4; retained as a source/provenance asset after the v5 style and seam correction.",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": true,
+      "prompt": "Transparent 3x2 An atlas. Identity: art/reference/an-model-v1.png; line and color: art/reference/chim-se-style-source-v1.png. Same 11-year-old boy, child proportions, broad uneven black hair clumps, mustard hoodie and faded blue-green backpack straps. Row-major: listening, curious, confused/awkward, thinking, shy/sad, quiet relieved smile. Clear expressions through simple facial marks and gesture, slightly wobbly dark ink, flat muted watercolor, subtle paper grain, minimal shading. No dense hair/fabric hatch, gloss, background, borders, text, extra figures or birds.",
+      "master": "characters/an-expressions-v4.png",
+      "masterFormat": "PNG",
+      "bytes": 298662
+    },
+    "characters/xiaoyu-expressions-v2.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/xiaoyu-expressions-v2.png",
+      "source": "characters/xiaoyu-expressions-v2-source.png",
+      "role": "Tiểu Vũ standing expression atlas v2; identity preserved, line density and muted watercolor aligned to current Chim Sẻ character style.",
+      "prompt": "Use case: illustration-story\nAsset type: production sprite atlas candidate, six expression busts for a visual novel\nReferences: Chim Sẻ style source controls imperfect line and muted palette; An v4 controls simplified line density/texture; xiaoyu-v2 controls Tiểu Vũ identity, 11-year-old boy, short dark tousled hair, blue jacket, cream shirt, navy backpack straps.\nPrompt: Render exactly one 3-column by 2-row transparent atlas, six consistent chest-up views of the same boy at identical scale and angle. Broad uneven hair clumps, slight natural asymmetry, child proportions. Row-major: neutral listening with closed small mouth; warm shy smile; speaking with a small open mouth; laugh with crescent eyes; startled round mouth and lifted brows; thoughtful sideways glance with one hand holding a strap. Clear at 120–220 px sprite height. Simple children's storybook drawing, few confident but wobbly dark pen strokes, broad imperfect masses, flat opaque watercolor and extremely sparse paper texture. Exact 1536×1024 canvas, six equal 512×512 cells, transparent safety margins, no marks across seams. Muted sky blue jacket, cream shirt, charcoal hair, faded navy straps, warm skin. No text, borders, background, glow, shadow, hair strands, hatch, speckles, gloss, gradients, extra figures or birds.\n\nPost-generation layout normalization: each 512×512 generated cell was cropped, scaled uniformly to 448×448 with Lanczos and centered in a transparent 512×512 cell. This creates a 32 px alpha gutter without redrawing the character. Output atlas remains 1536×1024 RGBA.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 886502
+    },
+    "characters/xiaoyu-noodle-expressions-v2.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/xiaoyu-noodle-expressions-v2.png",
+      "source": "characters/xiaoyu-noodle-expressions-v2-source.png",
+      "role": "Seated Tiểu Vũ expression atlas v2; same face, broad hair masses, blue jacket and subdued ink/watercolor as standing v2, with hands above the shared tabletop.",
+      "prompt": "Use case: illustration-story\nAsset type: transparent seated character atlas for the Chim Sẻ noodle-shop visual novel scene\nReferences: new standing xiaoyu-expressions-v2 controls face identity, broad hair clumps, blue jacket, cream shirt, navy straps and ink style; Chim Sẻ style source controls line and palette; seated xiaoyu-noodle v1 controls pose only.\nPrompt: Make a matching 3-column by 2-row atlas of the same 11-year-old boy, seated at a shared table. Each chest-up sprite keeps the same seated shoulders and torso turn, elbows resting softly, hands just above the unseen tabletop. Keep the broad uneven dark hair clumps and face like the standing atlas. Six row-major expressions: attentive neutral closed mouth; shy friendly smile; speaking small open mouth; natural closed-eye laugh; surprised round mouth; thoughtful sideways glance with one hand gently near a strap. Imperfect dark ink, simple broad shapes, flat quiet watercolor and sparse paper grain. Exact 1536×1024 canvas, six equal 512×512 cells, centered figures with clear transparent margins. Sky-blue jacket, cream shirt, charcoal hair, faded navy straps, warm skin. No table, food, backdrop, text, labels, borders, glow, shadow, extra people or birds.\n\nPost-generation layout normalization: each 512×512 generated cell was cropped, scaled uniformly to 448×448 with Lanczos and centered in a transparent 512×512 cell. This creates a 32 px alpha gutter without redrawing the character. Output atlas remains 1536×1024 RGBA.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 947880
+    },
+    "characters/xiaoyu-noodle-expressions-v3.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/xiaoyu-noodle-expressions-v3.png",
+      "source": "characters/xiaoyu-noodle-expressions-v3-source.png",
+      "role": "Seated Tiểu Vũ expression atlas v3; hands rest on the unseen table, backpack set aside beside the stool outside the crop, face and hand-ink/watercolor style matched to standing v2.",
+      "prompt": "Use case: illustration-story\nAsset type: six-frame transparent seated character sprite sheet for the noodle-shop scene\nReferences: standing xiaoyu-expressions-v2 controls face, broad hair, blue jacket, cream shirt and ink style; Chim Sẻ style source controls line/palette; xiaoyu-noodle-expressions-v1 controls pose only.\nPrompt: Render exactly six expressions of the same 11-year-old boy seated at a table in a 3-column by 2-row sprite sheet. He has set his backpack beside the stool, outside the crop. In every frame both forearms extend down; both hands rest on the invisible tabletop at the lower edge of frame. Same arms, hands, shoulder pose, torso turn, clothing and scale in all cells; vary only facial expression and slight head angle. Do not hold his chest, touch shoulders or grip a strap. Row-major: neutral attentive closed mouth; small friendly smile; speaking subtle open mouth; closed-eye laugh; surprised round mouth; thoughtful sideways glance while fingers remain on table. Keep child identity, face and broad dark hair like the standing atlas. Simple imperfect storybook dark ink, broad shapes, flat muted watercolor, sparse paper grain. Exact 1536×1024 canvas; six equal 512×512 cells; centered, transparent margins. Sky-blue jacket, cream shirt, charcoal hair, warm skin. No table, food, background, labels, text, borders, glow, shadows, extra figures, bird or backpack.\n\nPost-generation layout normalization: each 512×512 generated cell was cropped, scaled uniformly to 448×448 with Lanczos and centered in a transparent 512×512 cell. This creates a 32 px alpha gutter without redrawing the character. Output atlas remains 1536×1024 RGBA.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 1022228
+    },
+    "characters/xiaoyu-noodle-expressions-v4.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/xiaoyu-noodle-expressions-v4.png",
+      "source": "characters/candidates/xiaoyu-noodle-expression-atlas-v1.png",
+      "role": "Owner-style seated Tiểu Vũ atlas for noodle ordering and payment; six consistent table poses and clearly distinct expressions.",
+      "prompt": "References: owner-approved Chim Sẻ An–Sẻ style source for broad imperfect ink, quiet flat watercolor and sparse texture; xiaoyu-v2 identity reference; the seated single-sprite pilot for pose. Transparent 3×2 atlas, row-major: attentive neutral, shy smile, speaking, laughing, surprised, thoughtful. Preserve the same 11-year-old boy, broad dark hair masses, blue jacket, cream shirt, scale, seated shoulders and hands resting at table edge. Keep expressions readable at 96–160px. No background, bird, food, text, glow or vignette. ECC passed packing/composite review; viewed in both noodle scenes at phone portrait, short phone landscape and desktop.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 968730
+    },
+    "characters/liu-expressions-v2.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/liu-expressions-v2.png",
+      "source": "characters/liu-expressions-v2-source.png",
+      "role": "Bà Lưu expression atlas v2; preserves the elderly noodle-shop owner identity, blue kerchief, cream blouse and navy apron, redrawn to match the current Chim Sẻ hand-ink and muted watercolor style.",
+      "prompt": "Use case: transparent six-expression story character atlas for the noodle-shop owner.\nReferences: liu-v2.png preserves identity and wardrobe only; art/reference/chim-se-style-source-v1.png controls line, color and everyday storybook feeling; an-expressions-v4.png controls simplified face marks and low line density.\n\nPrompt: Edit and redraw the existing 3-column by 2-row Bà Lưu atlas while keeping her exact elderly noodle-shop woman identity: round softly lined face, short silver hair, muted blue kerchief, cream short-sleeved blouse and plain navy apron. Same chest-up pose, scale, clothing and silhouette through every frame. Row-major expressions: open-eyed neutral with closed mouth; kind small closed-mouth smile; warm mild speaking face with small readable open mouth (not laughing); soft laugh with crescent eyes; curious with slightly raised brows and closed mouth; quietly determined, kind attentive eyes and closed mouth. Draw a hand-made children's story illustration with broad simple forms, slightly uneven dark ink contours, few loose hair strokes, mostly flat muted watercolor and very light grain inside the color shapes. Keep the texture restrained and shading minimal. No glow, gradient, vignette, background pixels, airbrushed blush, glossy highlights, patterned fabric, many hair strands, polished anime finish, text, labels, borders, bird or extra figures. True transparent background around every silhouette and a generous clear gutter between all cells.\n\nPost-generation layout normalization: crop each generated 512×512 cell, scale uniformly to 448×448 with Lanczos, and center on a 512×512 transparent cell. This adds a 32 px alpha gutter without redrawing the character. Runtime PNG master: 1536×1024 RGBA. Lossless WebP is encoded from BGRA to preserve RGBA pixels exactly.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 1064474
+    },
+    "characters/receptionist-expressions-v2.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/receptionist-expressions-v2.png",
+      "source": "characters/receptionist-expressions-v2-source.png",
+      "role": "School receptionist expression atlas v2; preserves low ponytail, no glasses, teal-gray jacket and cream blouse, redrawn to match the current Chim Sẻ hand-ink and muted watercolor style.",
+      "prompt": "Use case: transparent six-expression atlas for the school receptionist in the lost-notebook office branch.\nReferences: receptionist-expressions-v1.png and receptionist-v2.png preserve face/wardrobe identity only; art/reference/chim-se-style-source-v1.png controls line, color and everyday storybook feeling; an-expressions-v4.png controls simplified facial marks and low rendering density.\n\nPrompt: Redraw the receptionist as one adult Chinese woman with a low dark ponytail tied at the nape, no glasses, muted teal-gray jacket and cream blouse. Keep her distinct from cô Vương (short bob and glasses), Bà Lưu (elderly, blue kerchief and navy apron), and Mother (low bun and rust jacket). Render one exact 3-column by 2-row transparent atlas. Same chest-up pose, scale, outfit and silhouette in every cell. Row-major frame meanings: attentive neutral with closed mouth; warm welcoming small smile; gentle speaking with a small open mouth; listening with softened eyes and closed mouth; mildly puzzled with slightly raised brows; reassuring with a calm supportive smile. Change only the face and slight head angle. Use broad simple hair masses, a few loose marks, slightly uneven dark ink contours with varied pressure, flat quiet muted watercolor and very restrained inner shading. Keep the imperfect marks coherent and repeatable; do not render a polished portrait. No dense hair strands, glossy highlights, patterned fabric, airbrushed blush, gradients, glow, vignette, background pixels, shadow, text, labels, borders, props, bird, or extra figures. Keep every mark within its cell and leave generous true-alpha transparent gutters between cells.\n\nPost-generation layout normalization: crop each generated 512×512 cell, scale uniformly to 448×448 with Lanczos, and center on a 512×512 transparent cell. This creates a 32 px alpha gutter without redrawing. Runtime PNG master is 1536×1024 RGBA; lossless WebP is encoded from BGRA to preserve RGBA pixels exactly.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 982780
+    },
+    "characters/an-noodle-seated-v3.webp": {
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/an-noodle-seated-v3.png",
+      "source": "characters/an-noodle-seated-v3-shy-source.png",
+      "generatedSources": [
+        "characters/an-noodle-seated-v3-shy-source.png",
+        "characters/an-noodle-seated-v3-curious-source.png",
+        "characters/an-noodle-seated-v3-thinking-source.png",
+        "characters/an-noodle-seated-v3-awkward-source.png",
+        "characters/an-noodle-seated-v3-smile-source.png",
+        "characters/an-noodle-seated-v3-listening-source.png"
+      ],
+      "promptFile": "characters/an-noodle-seated-v3.prompt.txt",
+      "role": "Legacy seated An atlas v3; retained as a source/provenance asset after the v4 style refresh.",
+      "prompt": "Chim Sẻ — Minh An seated noodle-shop expression atlas v3\n\nReferences and roles\n- art/reference/an-model-v1.png and characters/an-expressions-v4.png: An's boy identity, child proportions, face, tousled dark hair, ochre hoodie and faded teal straps.\n- art/reference/chim-se-style-source-v1.png: imperfect dark ink, muted hand-painted palette and restrained texture.\n- characters/an-noodle-seated-v1.png: seated posture and hand placement only; do not copy its dense hair strands or heavy shading.\n- The approved neutral base below controls scale, face/shoulder geometry and hand/table baseline for the sibling frames.\n\nEvery frame is one independent transparent PNG, 1254x1254, with the same camera and seated pose. Preserve the complete sprite, keep a transparent safe margin on every side, use broad uneven hair locks, sparse pen marks, mostly flat muted watercolor, very restrained shading, and slight natural asymmetry. Do not add a background, glow, halo, cast shadow, table, food, writing, bird, or extra person. Do not idealize An.\n\nRow-major frame order and emotional direction\n0 shy — approved neutral base: closed mouth, sidelong/downcast attentive gaze, tucked shoulders; shy and observant.\n1 curious — one brow raised, eyes attentive toward friend, small open mouth; interested, not startled.\n2 thinking — eyes glance upward/sideways, one hand gently at chin, other hand rests at tabletop; reflective.\n3 awkward — gaze dips sideways, inner brows lift, small hesitant open mouth; unsure while asking.\n4 smile — small uneven closed-mouth relieved smile; warm, not a broad perfect grin.\n5 listening — gaze directed to the speaker, one brow slightly raised, modestly parted mouth; calm and receptive, distinct from shy.\n\nThe AI-generated source frames passed a visual review. Their union alpha>16 bounds fit inside one shared source crop at x=149,y=159,width=994,height=1069. Pack every frame with this same crop/scale into a 448x448 safe area, center on a 512x512 transparent cell (32px gutter), and place cells row-major in a 1536x1024 RGBA atlas. Preserve all six frame indices and existing runtime aliases.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 841948
+    },
+    "characters/an-expressions-v5.webp": {
+      "role": "Minh An expression atlas v5; selected flatter hand-ink pilot for all non-seated story scenes.",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": true,
+      "prompt": "Use case: illustration-story\nAsset type: transparent 3×2 character atlas for the Chim Sẻ narrative learning game\nPrimary request: six chest-up expression poses of the same ordinary 11-year-old Vietnamese boy Minh An, hand-inked everyday storybook style.\nSubject: soft round child face, short messy charcoal hair, mustard-yellow hoodie, faded blue-green backpack straps. Thoughtful and a little awkward, not a perfect hero.\nStyle: imperfect but coherent human pen drawing; slightly shaky dark ink outlines with varied width, broad simple shapes, flat muted watercolor fills, very little shading, nearly no gradients or brush texture, light paper grain only. Hair uses a small number of broad clumps and a few loose strokes. Keep facial marks simple and expressive, with natural asymmetry.\nComposition: exact 1536×1024 transparent canvas, 3 columns × 2 rows, six equal 512×512 cells. Same face, camera, head size, outfit and shoulder baseline. Row-major: neutral attentive with slight uncertainty; curious with one brow lifted; awkward with eyes down and aside; thinking with one hand at chin; shy with tucked shoulders; small uneven relieved smile. Plenty of transparent padding in every cell.\nConstraints: true alpha outside the figures, all marks inside each cell, expressions readable at sprite size, same identity and clothing in every pose.\nAvoid: polished/anime perfection, dense hair strands, cross-hatching, airbrushed blush, gradients, realistic skin detail, clothing texture marks, dramatic shadows, background, black matte, vignette, glow, halo, borders, text, labels, extra people, birds or props.\nBuilt-in ImageGen tool; generated as a style pilot without atlas references so the current rendering style would not dominate the simpler brief. The source PNG is served losslessly as WebP; cell order preserves v4 indices.",
+      "master": "characters/an-expressions-v5.png",
+      "masterFormat": "PNG",
+      "bytes": 213024
+    },
+    "characters/an-noodle-seated-v4.webp": {
+      "role": "Minh An seated noodle-shop expression atlas v4; six frames in the selected An v5 line and color style.",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha": true,
+      "master": "characters/an-noodle-seated-v4.png",
+      "source": "characters/an-noodle-seated-v4.png",
+      "generatedSources": [],
+      "promptFile": "characters/an-noodle-seated-v4.prompt.txt",
+      "prompt": "Chim Sẻ — Minh An seated noodle-shop expression atlas v4 style pilot\n\nGeneration method: built-in ImageGen, using art/characters/an-noodle-seated-v3.png as the pose, frame and hand-placement reference and art/characters/an-expressions-v5.png as the identity and simplified-linework reference.\n\nCanvas and layout: transparent RGBA 1536×1024; three columns by two rows, six 512×512 cells. Exact existing seated framing, shoulder baseline, torso turn and table-edge hand position. No table, food, room, other people, sparrow, labels or pseudo-writing.\n\nIdentity: Minh An, 11-year-old Vietnamese boy; tousled charcoal hair, round child face, mustard hoodie, faded blue-green backpack straps. Same face, size, outfit and pose in every cell.\n\nFrame order: 0 shy/listening, 1 curious, 2 thoughtful with hand at chin, 3 awkward, 4 small uneven smile, 5 speaking. Expressions are carried by eye direction, eyebrows, mouth and slight head angle, not body or outfit changes.\n\nStyle: follow An v5's broad, slightly imperfect ink lines, simplified hair clumps, quiet mostly-flat muted watercolor, minimal shading and sparse paper grain. Avoid the denser hair strokes, fabric marks, cheek airbrush, glow, gradients and polished anime finish of the earlier seated sheet. The existing v3 pose sheet was used only to preserve staging, not as the rendering authority.\n\nAlpha verification: checked the generated atlas and the lossless WebP at 1536×1024; all four-pixel internal row/column seams contain no alpha above 16. Keep this master/source and prompt alongside the served WebP.",
+      "format": "WebP",
+      "masterFormat": "PNG",
+      "bytes": 217500
+    },
+    "characters/sparrow-expressions-v3.webp": {
+      "role": "Single Sparrow mascot expression sheet; each pose normalized into a 32 px transparent gutter to prevent atlas edge clipping and bleed.",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": true,
+      "prompt": "Art was not redrawn. This v3 runtime atlas is a layout-normalized derivative of v2: each original 512×512 cell was uniformly scaled to 448×448 and centered on a transparent 512×512 cell. The 32 px safe gutter prevents wing/feather edges from touching or leaking across neighboring sprite crops. Frame order and expression identity are unchanged.",
+      "master": "characters/sparrow-expressions-v3.png",
+      "masterFormat": "PNG",
+      "bytes": 909680
+    },
+    "characters/xiaoyu-expressions-v3.webp": {
+      "role": "Tiểu Vũ standing six-expression atlas v3; aligned with the approved An–Sẻ ink and watercolor style and reviewed at scene scale.",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "WebP",
+      "alpha": true,
+      "master": "characters/xiaoyu-expressions-v3.png",
+      "masterFormat": "PNG",
+      "generatedSource": "characters/candidates/xiaoyu-expressions-v3-candidate.png",
+      "promptFile": "characters/xiaoyu-expressions-v3.prompt.txt",
+      "frames": {
+        "0": "neutral attentive",
+        "1": "shy crooked smile",
+        "2": "speaking",
+        "3": "gentle laugh",
+        "4": "surprised",
+        "5": "thoughtful holding strap"
+      },
+      "prompt": "Chim Sẻ · Tiểu Vũ standing expression atlas v3\n\nGeneration: ImageGen using the approved Chim Sẻ style source, An v5, and the reviewed Tiểu Vũ model pilot v3 as references. The v3 model pilot controls Xiao identity, blue jacket, cream shirt, backpack straps, proportions and pose language.\n\nCanvas: 1536×1024 transparent RGBA, six equal 512×512 cells, 3 columns × 2 rows. Keep full canvas and its 10 px outer alpha margin; no crop. Row-major mapping: 0 neutral attentive; 1 shy crooked smile; 2 speaking; 3 gentle laugh; 4 surprised; 5 thoughtful with hand on strap. Expression is carried by eyes, eyebrows, mouth and slight head angle; preserve identity, proportions, clothing and scale.\n\nStyle: broad, naturally imperfect dark ink; muted matte watercolor; sparse surface texture and shading; ordinary childlike features, not idealized. Keep strokes and emotional details legible at 96 px. No text, background, glow, extra figures or birds.\n\nECC review: model pilot v3 passed style/readability gate. Atlas v3 passed 96 px expression and alpha/seam gate; live scene composite was then checked on desktop and 390×844 portrait. Desktop scale matches An, mobile uses portrait classroom plate with separated actors and exactly one Sparrow. Candidate approved to replace standing Tiểu Vũ v2 in the story scenes.",
+      "bytes": 1214190
+    },
+    "flat/backgrounds/arrival-street.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/arrival-street.svg",
+      "masterFormat": "SVG",
+      "bytes": 1538,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/arrival-street-portrait.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/arrival-street-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 1214,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/school-gate.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/school-gate.svg",
+      "masterFormat": "SVG",
+      "bytes": 1712,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/school-gate-portrait.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/school-gate-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 1405,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/classroom.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/classroom.svg",
+      "masterFormat": "SVG",
+      "bytes": 742,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/classroom-portrait.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/classroom-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 777,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/noodle-shop.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/noodle-shop.svg",
+      "masterFormat": "SVG",
+      "bytes": 582,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/noodle-shop-portrait.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/noodle-shop-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 580,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/evening-street.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/evening-street.svg",
+      "masterFormat": "SVG",
+      "bytes": 1538,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/evening-street-portrait.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/evening-street-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 1214,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/school-office.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/school-office.svg",
+      "masterFormat": "SVG",
+      "bytes": 989,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/school-office-portrait.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/school-office-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 999,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/bedroom.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/bedroom.svg",
+      "masterFormat": "SVG",
+      "bytes": 726,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/bedroom-portrait.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/bedroom-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 715,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/classmates-attentive.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 160
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/classmates-attentive.svg",
+      "masterFormat": "SVG",
+      "bytes": 2265,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/an-listening.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/an-listening.svg",
+      "masterFormat": "SVG",
+      "bytes": 1270,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/an-neutral.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/an-neutral.svg",
+      "masterFormat": "SVG",
+      "bytes": 1270,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/an-curious.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/an-curious.svg",
+      "masterFormat": "SVG",
+      "bytes": 1300,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/an-awkward.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/an-awkward.svg",
+      "masterFormat": "SVG",
+      "bytes": 1283,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/an-confused.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/an-confused.svg",
+      "masterFormat": "SVG",
+      "bytes": 1283,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/an-thinking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/an-thinking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1344,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/an-shy.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/an-shy.svg",
+      "masterFormat": "SVG",
+      "bytes": 1278,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/an-sad.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/an-sad.svg",
+      "masterFormat": "SVG",
+      "bytes": 1278,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/an-smile.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/an-smile.svg",
+      "masterFormat": "SVG",
+      "bytes": 1237,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/an-determined.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/an-determined.svg",
+      "masterFormat": "SVG",
+      "bytes": 1237,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/sparrow-curious.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 96,
+        "height": 80
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/sparrow-curious.svg",
+      "masterFormat": "SVG",
+      "bytes": 849,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/sparrow-listening.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 96,
+        "height": 80
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/sparrow-listening.svg",
+      "masterFormat": "SVG",
+      "bytes": 846,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/sparrow-worried.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 96,
+        "height": 80
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/sparrow-worried.svg",
+      "masterFormat": "SVG",
+      "bytes": 844,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/sparrow-happy.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 96,
+        "height": 80
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/sparrow-happy.svg",
+      "masterFormat": "SVG",
+      "bytes": 810,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/sparrow-thinking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 96,
+        "height": 80
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/sparrow-thinking.svg",
+      "masterFormat": "SVG",
+      "bytes": 836,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/sparrow-wave.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 96,
+        "height": 80
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/sparrow-wave.svg",
+      "masterFormat": "SVG",
+      "bytes": 812,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/mother-neutral.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/mother-neutral.svg",
+      "masterFormat": "SVG",
+      "bytes": 1177,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/mother-gentle.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/mother-gentle.svg",
+      "masterFormat": "SVG",
+      "bytes": 1234,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/mother-speaking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/mother-speaking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1197,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/mother-laughing.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/mother-laughing.svg",
+      "masterFormat": "SVG",
+      "bytes": 1072,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/mother-concerned.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/mother-concerned.svg",
+      "masterFormat": "SVG",
+      "bytes": 1226,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/mother-thinking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/mother-thinking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1291,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyu-neutral.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyu-neutral.svg",
+      "masterFormat": "SVG",
+      "bytes": 1170,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyu-friendly.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyu-friendly.svg",
+      "masterFormat": "SVG",
+      "bytes": 1213,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyu-speaking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyu-speaking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1190,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyu-laughing.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyu-laughing.svg",
+      "masterFormat": "SVG",
+      "bytes": 1065,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyu-surprised.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyu-surprised.svg",
+      "masterFormat": "SVG",
+      "bytes": 1242,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyu-thoughtful.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyu-thoughtful.svg",
+      "masterFormat": "SVG",
+      "bytes": 1284,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/wang-neutral.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/wang-neutral.svg",
+      "masterFormat": "SVG",
+      "bytes": 1249,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/wang-smile.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/wang-smile.svg",
+      "masterFormat": "SVG",
+      "bytes": 1256,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/wang-speaking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/wang-speaking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1269,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/wang-thinking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/wang-thinking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1363,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/wang-worried.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/wang-worried.svg",
+      "masterFormat": "SVG",
+      "bytes": 1298,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/wang-surprised.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/wang-surprised.svg",
+      "masterFormat": "SVG",
+      "bytes": 1321,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/liu-neutral.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/liu-neutral.svg",
+      "masterFormat": "SVG",
+      "bytes": 1273,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/liu-smile.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/liu-smile.svg",
+      "masterFormat": "SVG",
+      "bytes": 1280,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/liu-speaking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/liu-speaking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1293,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/liu-laughing.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/liu-laughing.svg",
+      "masterFormat": "SVG",
+      "bytes": 1168,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/liu-curious.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/liu-curious.svg",
+      "masterFormat": "SVG",
+      "bytes": 1343,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/liu-determined.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/liu-determined.svg",
+      "masterFormat": "SVG",
+      "bytes": 1316,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/receptionist-neutral.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/receptionist-neutral.svg",
+      "masterFormat": "SVG",
+      "bytes": 1147,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/receptionist-welcoming.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/receptionist-welcoming.svg",
+      "masterFormat": "SVG",
+      "bytes": 1190,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/receptionist-speaking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/receptionist-speaking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1167,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/receptionist-listening.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/receptionist-listening.svg",
+      "masterFormat": "SVG",
+      "bytes": 1187,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/receptionist-puzzled.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/receptionist-puzzled.svg",
+      "masterFormat": "SVG",
+      "bytes": 1200,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/receptionist-reassuring.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 160,
+        "height": 185
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/receptionist-reassuring.svg",
+      "masterFormat": "SVG",
+      "bytes": 1037,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/anNoodle-shy.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/anNoodle-shy.svg",
+      "masterFormat": "SVG",
+      "bytes": 1299,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/anNoodle-listening.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/anNoodle-listening.svg",
+      "masterFormat": "SVG",
+      "bytes": 1299,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/anNoodle-curious.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/anNoodle-curious.svg",
+      "masterFormat": "SVG",
+      "bytes": 1321,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/anNoodle-thinking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/anNoodle-thinking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1308,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/anNoodle-awkward.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/anNoodle-awkward.svg",
+      "masterFormat": "SVG",
+      "bytes": 1304,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/anNoodle-smile.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/anNoodle-smile.svg",
+      "masterFormat": "SVG",
+      "bytes": 1258,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/anNoodle-speaking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/anNoodle-speaking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1271,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyuNoodle-neutral.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyuNoodle-neutral.svg",
+      "masterFormat": "SVG",
+      "bytes": 1191,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyuNoodle-friendly.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyuNoodle-friendly.svg",
+      "masterFormat": "SVG",
+      "bytes": 1234,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyuNoodle-speaking.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyuNoodle-speaking.svg",
+      "masterFormat": "SVG",
+      "bytes": 1211,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyuNoodle-laughing.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyuNoodle-laughing.svg",
+      "masterFormat": "SVG",
+      "bytes": 1086,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyuNoodle-surprised.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyuNoodle-surprised.svg",
+      "masterFormat": "SVG",
+      "bytes": 1263,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/characters/xiaoyuNoodle-thoughtful.svg": {
+      "role": "Native flat characters asset; Production cba551bd style",
+      "dimensions": {
+        "width": 120,
+        "height": 140
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/characters/xiaoyuNoodle-thoughtful.svg",
+      "masterFormat": "SVG",
+      "bytes": 1248,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/menu.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/menu.svg",
+      "masterFormat": "SVG",
+      "bytes": 563,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/menu-portrait.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/menu-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 557,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/counter.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/counter.svg",
+      "masterFormat": "SVG",
+      "bytes": 495,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/counter-portrait.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/counter-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 464,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/table-top.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/table-top.svg",
+      "masterFormat": "SVG",
+      "bytes": 363,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/table-top-portrait.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/table-top-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 352,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/table-apron.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/table-apron.svg",
+      "masterFormat": "SVG",
+      "bytes": 358,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/table-apron-portrait.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/table-apron-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 349,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/bowl.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/bowl.svg",
+      "masterFormat": "SVG",
+      "bytes": 567,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/bowl-portrait.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/bowl-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 565,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/steam.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/steam.svg",
+      "masterFormat": "SVG",
+      "bytes": 453,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/steam-portrait.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/steam-portrait.svg",
+      "masterFormat": "SVG",
+      "bytes": 451,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/arrival-street-compact.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/arrival-street-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 1585,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/bedroom-compact.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/bedroom-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 773,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/classroom-compact.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/classroom-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 789,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/evening-street-compact.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/evening-street-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 1585,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/noodle-shop-compact.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/noodle-shop-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 629,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/school-gate-compact.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/school-gate-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 1759,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/backgrounds/school-office-compact.svg": {
+      "role": "Native flat backgrounds asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": false,
+      "master": "flat/backgrounds/school-office-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 1036,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/bowl-compact.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/bowl-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 614,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/counter-compact.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/counter-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 542,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/menu-compact.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/menu-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 612,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/steam-compact.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/steam-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 500,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/table-apron-compact.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/table-apron-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 405,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "flat/layers/table-top-compact.svg": {
+      "role": "Native flat layers asset; Production cba551bd style",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "SVG",
+      "alpha": true,
+      "master": "flat/layers/table-top-compact.svg",
+      "masterFormat": "SVG",
+      "bytes": 410,
+      "authoringSource": "../scene-flat-art.js",
+      "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
     }
   },
   "spriteCharacters": {
     "classmates": {
-      "asset": "characters/classmates-pair-v1.webp",
-      "columns": 1,
-      "rows": 1,
+      "asset": "flat/characters/classmates-attentive.svg",
       "frames": {
         "attentive": 0
       },
       "face": [
-        0.08,
-        0.2,
-        0.94,
-        0.68
-      ]
+        0.05,
+        0.1,
+        0.95,
+        0.75
+      ],
+      "format": "svg",
+      "frameAssets": {
+        "attentive": "flat/characters/classmates-attentive.svg"
+      },
+      "frameCount": 1,
+      "metadata": {
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "archivedRaster": "characters/classmates-pair-v1.webp",
+        "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
+      }
     },
     "an": {
-      "asset": "characters/an-expressions-v3.webp",
-      "columns": 3,
-      "rows": 2,
+      "asset": "flat/characters/an-listening.svg",
       "frames": {
-        "shy": 0,
+        "listening": 0,
+        "neutral": 0,
         "curious": 1,
-        "thinking": 2,
-        "awkward": 3,
-        "smile": 4,
-        "listening": 5
+        "awkward": 2,
+        "confused": 2,
+        "thinking": 3,
+        "shy": 4,
+        "sad": 4,
+        "smile": 5,
+        "determined": 5
       },
       "face": [
-        0.25,
+        0.34,
         0.02,
-        0.85,
-        0.59
-      ]
+        0.66,
+        0.36
+      ],
+      "format": "svg",
+      "frameAssets": {
+        "listening": "flat/characters/an-listening.svg",
+        "neutral": "flat/characters/an-neutral.svg",
+        "curious": "flat/characters/an-curious.svg",
+        "awkward": "flat/characters/an-awkward.svg",
+        "confused": "flat/characters/an-confused.svg",
+        "thinking": "flat/characters/an-thinking.svg",
+        "shy": "flat/characters/an-shy.svg",
+        "sad": "flat/characters/an-sad.svg",
+        "smile": "flat/characters/an-smile.svg",
+        "determined": "flat/characters/an-determined.svg"
+      },
+      "frameCount": 6,
+      "metadata": {
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "archivedRaster": "characters/an-expressions-v5.webp",
+        "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
+      }
     },
     "sparrow": {
-      "asset": "characters/sparrow-expressions-v2.webp",
-      "columns": 3,
-      "rows": 2,
+      "asset": "flat/characters/sparrow-curious.svg",
       "frames": {
         "curious": 0,
         "listening": 1,
@@ -2253,16 +3884,30 @@
         "wave": 5
       },
       "face": [
-        0.12,
-        0.08,
-        0.88,
-        0.86
-      ]
+        0.18,
+        0.15,
+        0.82,
+        0.7
+      ],
+      "format": "svg",
+      "frameAssets": {
+        "curious": "flat/characters/sparrow-curious.svg",
+        "listening": "flat/characters/sparrow-listening.svg",
+        "worried": "flat/characters/sparrow-worried.svg",
+        "happy": "flat/characters/sparrow-happy.svg",
+        "thinking": "flat/characters/sparrow-thinking.svg",
+        "wave": "flat/characters/sparrow-wave.svg"
+      },
+      "frameCount": 6,
+      "metadata": {
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "archivedRaster": "characters/sparrow-expressions-v3.webp",
+        "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
+      }
     },
     "mother": {
-      "asset": "characters/mother-expressions-v1.webp",
-      "columns": 3,
-      "rows": 2,
+      "asset": "flat/characters/mother-neutral.svg",
       "frames": {
         "neutral": 0,
         "gentle": 1,
@@ -2272,28 +3917,30 @@
         "thinking": 5
       },
       "face": [
-        0.2,
-        0.12,
-        0.82,
-        0.6
+        0.34,
+        0.02,
+        0.66,
+        0.36
       ],
       "metadata": {
-        "master": "characters/mother-expressions-v1.png",
-        "masterFormat": "PNG",
-        "role": "An's mother expression atlas; same low bun, rust-brown jacket, cream shirt, olive trousers and tote.",
-        "dimensions": {
-          "width": 1536,
-          "height": 1024
-        },
-        "format": "WebP",
-        "alpha": true,
-        "prompt": "Transparent 3x2 six-frame mother atlas. Preserve adult Chinese mother identity, dark low bun, rust-brown jacket, cream shirt, olive trousers and canvas tote. Gentle neutral, reassuring smile, speaking softly, quietly amused, concerned and thoughtful. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters."
-      }
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "archivedRaster": "characters/mother-expressions-v2.webp",
+        "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
+      },
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/mother-neutral.svg",
+        "gentle": "flat/characters/mother-gentle.svg",
+        "speaking": "flat/characters/mother-speaking.svg",
+        "laughing": "flat/characters/mother-laughing.svg",
+        "concerned": "flat/characters/mother-concerned.svg",
+        "thinking": "flat/characters/mother-thinking.svg"
+      },
+      "frameCount": 6
     },
     "xiaoyu": {
-      "asset": "characters/xiaoyu-expressions-v1.webp",
-      "columns": 3,
-      "rows": 2,
+      "asset": "flat/characters/xiaoyu-neutral.svg",
       "frames": {
         "neutral": 0,
         "friendly": 1,
@@ -2303,28 +3950,30 @@
         "thoughtful": 5
       },
       "face": [
-        0.2,
-        0.1,
-        0.82,
-        0.58
+        0.34,
+        0.02,
+        0.66,
+        0.36
       ],
       "metadata": {
-        "master": "characters/xiaoyu-expressions-v1.png",
-        "masterFormat": "PNG",
-        "role": "Tiểu Vũ expression atlas; same 11-year-old boy, tousled dark hair, blue jacket, white shirt and backpack straps.",
-        "dimensions": {
-          "width": 1536,
-          "height": 1024
-        },
-        "format": "WebP",
-        "alpha": true,
-        "prompt": "Transparent 3x2 six-frame Tiểu Vũ atlas. Preserve the same 11-year-old Chinese boy, short tousled black hair, bright blue jacket, white shirt and dark-blue backpack straps. Shy neutral, friendly, speaking, natural laugh, surprised and thoughtful. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters."
-      }
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "archivedRaster": "characters/xiaoyu-expressions-v3.webp",
+        "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
+      },
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/xiaoyu-neutral.svg",
+        "friendly": "flat/characters/xiaoyu-friendly.svg",
+        "speaking": "flat/characters/xiaoyu-speaking.svg",
+        "laughing": "flat/characters/xiaoyu-laughing.svg",
+        "surprised": "flat/characters/xiaoyu-surprised.svg",
+        "thoughtful": "flat/characters/xiaoyu-thoughtful.svg"
+      },
+      "frameCount": 6
     },
     "wang": {
-      "asset": "characters/wang-expressions-v1.webp",
-      "columns": 3,
-      "rows": 2,
+      "asset": "flat/characters/wang-neutral.svg",
       "frames": {
         "neutral": 0,
         "smile": 1,
@@ -2334,28 +3983,30 @@
         "surprised": 5
       },
       "face": [
-        0.2,
-        0.1,
-        0.82,
-        0.58
+        0.34,
+        0.02,
+        0.66,
+        0.36
       ],
       "metadata": {
-        "master": "characters/wang-expressions-v1.png",
-        "masterFormat": "PNG",
-        "role": "Cô Vương expression atlas; same adult teacher, bob haircut, round glasses, sage jacket, cream blouse, dark skirt and brown book.",
-        "dimensions": {
-          "width": 1536,
-          "height": 1024
-        },
-        "format": "WebP",
-        "alpha": true,
-        "prompt": "Transparent 3x2 six-frame cô Vương atlas. Preserve the same adult Chinese teacher, short dark bob, round glasses, sage-green jacket, cream blouse, dark skirt and brown book. Calm attentive, encouraging smile, speaking, thoughtful, mildly worried and pleasantly surprised. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters."
-      }
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "archivedRaster": "characters/wang-expressions-v2.webp",
+        "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
+      },
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/wang-neutral.svg",
+        "smile": "flat/characters/wang-smile.svg",
+        "speaking": "flat/characters/wang-speaking.svg",
+        "thinking": "flat/characters/wang-thinking.svg",
+        "worried": "flat/characters/wang-worried.svg",
+        "surprised": "flat/characters/wang-surprised.svg"
+      },
+      "frameCount": 6
     },
     "liu": {
-      "asset": "characters/liu-expressions-v1.webp",
-      "columns": 3,
-      "rows": 2,
+      "asset": "flat/characters/liu-neutral.svg",
       "frames": {
         "neutral": 0,
         "smile": 1,
@@ -2365,28 +4016,30 @@
         "determined": 5
       },
       "face": [
-        0.2,
-        0.09,
-        0.83,
-        0.58
+        0.34,
+        0.02,
+        0.66,
+        0.36
       ],
       "metadata": {
-        "master": "characters/liu-expressions-v1.png",
-        "masterFormat": "PNG",
-        "role": "Bà Lưu expression atlas; same elderly noodle-shop owner, blue kerchief, cream blouse and navy apron.",
-        "dimensions": {
-          "width": 1536,
-          "height": 1024
-        },
-        "format": "WebP",
-        "alpha": true,
-        "prompt": "Transparent 3x2 six-frame bà Lưu atlas. Preserve the same elderly Chinese woman, round lined face, silver hair under a blue kerchief, cream blouse and dark navy apron. Kind open-eyed neutral with closed mouth, gentle smile, speaking warmly, soft laugh, curious and quietly determined. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters."
-      }
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "archivedRaster": "characters/liu-expressions-v2.webp",
+        "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
+      },
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/liu-neutral.svg",
+        "smile": "flat/characters/liu-smile.svg",
+        "speaking": "flat/characters/liu-speaking.svg",
+        "laughing": "flat/characters/liu-laughing.svg",
+        "curious": "flat/characters/liu-curious.svg",
+        "determined": "flat/characters/liu-determined.svg"
+      },
+      "frameCount": 6
     },
     "receptionist": {
-      "asset": "characters/receptionist-expressions-v1.webp",
-      "columns": 3,
-      "rows": 2,
+      "asset": "flat/characters/receptionist-neutral.svg",
       "frames": {
         "neutral": 0,
         "welcoming": 1,
@@ -2396,59 +4049,65 @@
         "reassuring": 5
       },
       "face": [
-        0.2,
-        0.1,
-        0.82,
-        0.58
+        0.34,
+        0.02,
+        0.66,
+        0.36
       ],
       "metadata": {
-        "master": "characters/receptionist-expressions-v1.png",
-        "masterFormat": "PNG",
-        "role": "School receptionist expression atlas; same adult woman with low ponytail, no glasses and muted teal-gray jacket.",
-        "dimensions": {
-          "width": 1536,
-          "height": 1024
-        },
-        "format": "WebP",
-        "alpha": true,
-        "prompt": "Transparent 3x2 six-frame school receptionist atlas. Preserve the same adult Chinese woman, low dark ponytail, no glasses, teal-gray jacket and cream blouse; distinct from cô Vương's bob and round glasses. Attentive neutral, warm welcome, speaking gently, listening, mildly puzzled and reassuring. Handmade imperfect ink, muted flat watercolor and fine paper grain; no text, backdrop or extra characters."
-      }
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "archivedRaster": "characters/receptionist-expressions-v2.webp",
+        "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
+      },
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/receptionist-neutral.svg",
+        "welcoming": "flat/characters/receptionist-welcoming.svg",
+        "speaking": "flat/characters/receptionist-speaking.svg",
+        "listening": "flat/characters/receptionist-listening.svg",
+        "puzzled": "flat/characters/receptionist-puzzled.svg",
+        "reassuring": "flat/characters/receptionist-reassuring.svg"
+      },
+      "frameCount": 6
     },
     "anNoodle": {
-      "asset": "characters/an-noodle-seated-v1.webp",
-      "columns": 3,
-      "rows": 2,
+      "asset": "flat/characters/anNoodle-shy.svg",
       "frames": {
         "shy": 0,
+        "listening": 0,
         "curious": 1,
         "thinking": 2,
         "awkward": 3,
         "smile": 4,
-        "listening": 5
+        "speaking": 5
       },
       "face": [
-        0.2,
-        0.18,
-        0.82,
-        0.7
+        0.32,
+        0.05,
+        0.7,
+        0.44
       ],
       "metadata": {
-        "master": "characters/an-noodle-seated-v1.png",
-        "masterFormat": "PNG",
-        "role": "Seated Minh An expression sheet for the noodle-shop foreground; same boy, hoodie and backpack as the approved standard sheet",
-        "dimensions": {
-          "width": 1536,
-          "height": 1024
-        },
-        "format": "WebP",
-        "alpha": true,
-        "prompt": "Precisely aligned 3x2 transparent sprite sheet. Same 11-year-old BOY as an-expressions-v3: short tousled black hair, round child face, mustard hoodie, faded teal-blue backpack. Same seated pose, shoulders slightly hunched, elbows/hands just above unseen table. Frames shy listening, curious looking toward friend, thinking with hand near chin, awkwardly asking, gentle relieved smile, focused listening. Wobbly dark ink, asymmetrical childlike marks, flat muted watercolor and fine paper grain; no table, food, props, extra characters or labels. Reference asset is generated master; see art/ART_DIRECTION.md."
-      }
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "archivedRaster": "characters/an-noodle-seated-v4.webp",
+        "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
+      },
+      "format": "svg",
+      "frameAssets": {
+        "shy": "flat/characters/anNoodle-shy.svg",
+        "listening": "flat/characters/anNoodle-listening.svg",
+        "curious": "flat/characters/anNoodle-curious.svg",
+        "thinking": "flat/characters/anNoodle-thinking.svg",
+        "awkward": "flat/characters/anNoodle-awkward.svg",
+        "smile": "flat/characters/anNoodle-smile.svg",
+        "speaking": "flat/characters/anNoodle-speaking.svg"
+      },
+      "frameCount": 6
     },
     "xiaoyuNoodle": {
-      "asset": "characters/xiaoyu-noodle-expressions-v1.webp",
-      "columns": 3,
-      "rows": 2,
+      "asset": "flat/characters/xiaoyuNoodle-neutral.svg",
       "frames": {
         "neutral": 0,
         "friendly": 1,
@@ -2458,23 +4117,27 @@
         "thoughtful": 5
       },
       "face": [
-        0.18,
-        0.1,
-        0.82,
-        0.58
+        0.32,
+        0.05,
+        0.7,
+        0.44
       ],
       "metadata": {
-        "master": "characters/xiaoyu-noodle-expressions-v1.png",
-        "masterFormat": "PNG",
-        "role": "Seated Tiểu Vũ expression atlas for the noodle-shop scenes; same blue jacket and child-height shared-table pose.",
-        "dimensions": {
-          "width": 1536,
-          "height": 1024
-        },
-        "format": "WebP",
-        "alpha": true,
-        "prompt": "Transparent 3x2 six-frame seated Tiểu Vũ atlas. Preserve his 11-year-old identity, tousled dark hair, blue jacket, white shirt, backpack straps, turn toward An and elbows/hands just above an unseen table. Attentive neutral, friendly smile, speaking, natural laugh, surprised and thoughtfully concerned. Handmade imperfect ink, muted flat watercolor and fine paper grain; no table, food, text, backdrop or extra characters."
-      }
+        "authoringSource": "scene-flat-art.js",
+        "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+        "archivedRaster": "characters/xiaoyu-noodle-expressions-v4.webp",
+        "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
+      },
+      "format": "svg",
+      "frameAssets": {
+        "neutral": "flat/characters/xiaoyuNoodle-neutral.svg",
+        "friendly": "flat/characters/xiaoyuNoodle-friendly.svg",
+        "speaking": "flat/characters/xiaoyuNoodle-speaking.svg",
+        "laughing": "flat/characters/xiaoyuNoodle-laughing.svg",
+        "surprised": "flat/characters/xiaoyuNoodle-surprised.svg",
+        "thoughtful": "flat/characters/xiaoyuNoodle-thoughtful.svg"
+      },
+      "frameCount": 6
     }
   },
   "auxiliaryScenes": {
@@ -2559,7 +4222,7 @@
         }
       },
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "desktop": {
           "left": 48,
           "top": 4
@@ -2568,7 +4231,8 @@
           "left": 67,
           "top": 4
         },
-        "expression": "curious"
+        "expression": "curious",
+        "flight": true
       },
       "hotspots": [
         "lost-property-tray",
@@ -2576,16 +4240,19 @@
       ],
       "layers": {
         "background": {
-          "desktop": "backgrounds/school-office-v2.webp",
-          "mobile": "backgrounds/mobile/mobile-school-office-v2.webp"
+          "desktop": "flat/backgrounds/school-office.svg",
+          "mobile": "flat/backgrounds/school-office-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp",
-          "characters/supporting-cast-v2.webp"
+          "flat/characters/an-listening.svg",
+          "flat/characters/receptionist-neutral.svg",
+          "flat/characters/xiaoyu-neutral.svg",
+          "flat/characters/wang-neutral.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       }
     },
     "intro.bedroom": {
@@ -2609,7 +4276,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "expression": "curious",
         "desktop": {
           "left": 2,
@@ -2618,19 +4285,21 @@
         "mobile": {
           "left": 2,
           "top": 12
-        }
+        },
+        "flight": true
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/bedroom-v3.webp",
-          "mobile": "backgrounds/mobile/mobile-bedroom-v3.webp"
+          "desktop": "flat/backgrounds/bedroom.svg",
+          "mobile": "flat/backgrounds/bedroom-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp"
+          "flat/characters/an-listening.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       },
       "hotspots": []
     },
@@ -2655,7 +4324,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "expression": "curious",
         "desktop": {
           "left": 2,
@@ -2664,19 +4333,21 @@
         "mobile": {
           "left": 2,
           "top": 12
-        }
+        },
+        "flight": true
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/classroom-v2.webp",
-          "mobile": "backgrounds/mobile/mobile-classroom-v2.webp"
+          "desktop": "flat/backgrounds/classroom.svg",
+          "mobile": "flat/backgrounds/classroom-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp"
+          "flat/characters/an-listening.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       },
       "hotspots": []
     },
@@ -2701,7 +4372,7 @@
         }
       ],
       "sparrow": {
-        "asset": "characters/sparrow-expressions-v2.webp",
+        "asset": "flat/characters/sparrow-curious.svg",
         "expression": "curious",
         "desktop": {
           "left": 2,
@@ -2710,22 +4381,30 @@
         "mobile": {
           "left": 2,
           "top": 12
-        }
+        },
+        "flight": true
       },
       "layers": {
         "background": {
-          "desktop": "backgrounds/arrival-street-v2.webp",
-          "mobile": "backgrounds/mobile/mobile-arrival-street-v2.webp"
+          "desktop": "flat/backgrounds/arrival-street.svg",
+          "mobile": "flat/backgrounds/arrival-street-portrait.svg"
         },
         "midground": null,
+        "counter": null,
         "characters": [
-          "characters/an-expressions-v3.webp"
+          "flat/characters/an-listening.svg"
         ],
         "foreground": null,
-        "sparrow": "characters/sparrow-expressions-v2.webp"
+        "sparrow": "flat/characters/sparrow-curious.svg"
       },
       "hotspots": []
     }
   },
-  "runtimeManifest": "../scene-manifest.js"
+  "runtimeManifest": "../scene-manifest.js",
+  "artMode": "production-flat",
+  "flatArt": {
+    "authority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
+    "authoringSource": "scene-flat-art.js",
+    "catalog": "flat/catalog.json"
+  }
 }

@@ -1,4 +1,4 @@
-/* Isolated spaced-review reducer. Never reads/writes HSK story or Intro save keys. */
+/* Isolated spaced-review reducer. Story evidence is read-only; only the review key is written. */
 var HSKReviewCore=(function(){"use strict";
  var KEY="hai-que-huong-review-v1",STAGES=[1,3,7,14];
  function dateOK(s){if(typeof s!=="string"||!/^\d{4}-\d\d-\d\d$/.test(s))return false;var d=new Date(s+"T12:00:00Z");return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===s}
@@ -26,6 +26,12 @@ var HSKReviewCore=(function(){"use strict";
   var count=0;while(count<10&&legacy.history[count]&&["correct","assisted"].includes(legacy.history[count].status))count++;
   return count;
  }
+ function storyRecord(raw){if(!raw||typeof raw!=="object"||Array.isArray(raw)||!["correct","assisted"].includes(raw.status))return null;return Object.freeze({status:raw.status,attempts:Number.isInteger(raw.attempts)?Math.min(100,Math.max(0,raw.attempts)):0,hint:raw.status==="assisted"||raw.hint===true})}
+ function combineProgress(legacy,branch){
+  var old=legacy&&legacy.v===3&&Array.isArray(legacy.history)?legacy.history:[],other=Array.isArray(branch)?branch:[];
+  return Object.freeze({v:3,history:Object.freeze(Array.from({length:10},function(_,i){return storyRecord(old[i])||storyRecord(other[i])}))});
+ }
+ function readStoryProgress(storage){function safe(key){try{return JSON.parse(storage.getItem(key)||"null")}catch(e){return null}}return combineProgress(safe("hai-que-huong-progress-v3"),safe("chimse-branch-learning-v1"))}
  function unlocked(item,legacy){return !!item&&Number.isInteger(item.after)&&completedPrefix(legacy)>item.after}
  function isDue(record,day){
   if(!record||record.status==="in-progress")return true;
@@ -84,6 +90,6 @@ var HSKReviewCore=(function(){"use strict";
  }
  function read(storage,data){try{return clean(JSON.parse(storage.getItem(KEY)||"null"),data)}catch(e){return initial()}}
  function write(storage,data,raw){try{storage.setItem(KEY,JSON.stringify(clean(raw,data)));return true}catch(e){return false}}
- var api={key:KEY,intervals:STAGES,initial:initial,clean:clean,plusDays:plusDays,completedPrefix:completedPrefix,unlocked:unlocked,isDue:isDue,queue:queue,report:report,act:act,read:read,write:write};
+ var api={key:KEY,intervals:STAGES,initial:initial,clean:clean,plusDays:plusDays,completedPrefix:completedPrefix,combineProgress:combineProgress,readStoryProgress:readStoryProgress,unlocked:unlocked,isDue:isDue,queue:queue,report:report,act:act,read:read,write:write};
  if(typeof module!=="undefined"&&module.exports)module.exports=api;return api;
 })();
