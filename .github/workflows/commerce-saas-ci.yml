@@ -17,6 +17,9 @@ on:
       - ".github/workflows/commerce-saas-ci.yml"
   workflow_dispatch:
 permissions: { contents: read }
+concurrency:
+  group: commerce-saas-gate-a-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   control-plane:
     runs-on: ubuntu-latest
