@@ -143,6 +143,8 @@ test('field registry covers 16 Puck component types and has no static default ID
     assert.ok(item.label);
     assert.equal('id' in item.defaultProps,false);
     assert.equal('kind' in item.defaultProps,false);
+    assert.equal(item.defaultProps.buttonLabel,'');
+    assert.equal(item.defaultProps.buttonUrl,'');
     assert.equal(item.defaultProps.variant,'cards');
     assert.equal(item.fields.body.type,'textarea');
   }
