@@ -191,7 +191,7 @@ export const builderSites = pgTable('builder_sites', {
 /** Append-only audit trail: previous versions remain available after edits/publishing. */
 export const builderSiteRevisions = pgTable('builder_site_revisions', {
   id: uuid('id').primaryKey(),
-  siteId: uuid('site_id').notNull().references(() => builderSites.id),
+  siteId: uuid('site_id').notNull().references(() => builderSites.id, { onDelete: 'cascade' }),
   teamId: integer('team_id').notNull().references(() => teams.id),
   actorId: integer('actor_id').notNull().references(() => users.id),
   version: integer('version').notNull(),
