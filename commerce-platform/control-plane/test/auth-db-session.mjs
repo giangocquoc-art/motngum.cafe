@@ -19,9 +19,9 @@ async function token(userId, version) {
     .setIssuedAt().setExpirationTime('1 hour')
     .sign(new TextEncoder().encode(secret));
 }
-async function check(path, jwt, expected) {
+async function check(path, jwt, expected, method = 'GET') {
   const res = await fetch(base + path, {
-    redirect: 'manual',
+    method, redirect: 'manual',
     headers: jwt ? { cookie: 'session=' + jwt } : {},
     cache: 'no-store',
   });
@@ -50,6 +50,28 @@ try {
   const teamJson = await res.json();
   assert.equal(teamJson.id, team.id);
   assert.equal(teamJson.teamMembers[0].user.id, user.id);
+
+  // Merchant creation is owner-scoped and fail-closed until the shared D1 service
+  // secret and explicit staging feature gate have been provisioned.
+  res = await check('/api/merchants', jwtV0, 200);
+  assert.equal((await res.json()).merchant, null);
+  await check('/api/merchants', null, 401);
+  await check('/api/merchants', jwtV0, 503, 'POST');
+
+  const merchantId = '31c6c50c-a33c-44ec-a550-c765e8d9be03';
+  await sql`INSERT INTO merchant_provisions (id,team_id,slug,display_name)
+    VALUES (${merchantId}, ${team.id}, 'ci-first-shop', 'CI First Shop')`;
+  res = await check('/api/merchants', jwtV0, 200);
+  const merchantData = await res.json();
+  assert.equal(merchantData.merchant.id, merchantId);
+  assert.equal(merchantData.merchant.state, 'requested');
+  assert.equal(merchantData.merchant.backendConnected, false);
+  let merchantUniqueEnforced = false;
+  try {
+    await sql`INSERT INTO merchant_provisions (id,team_id,slug,display_name)
+      VALUES ('81e0476d-1049-4021-8a69-d84df201d29f', ${team.id}, 'another-shop', 'Another Shop')`;
+  } catch (error) { merchantUniqueEnforced = error.code === '23505'; }
+  assert.equal(merchantUniqueEnforced, true, 'One merchant per team during initial staging');
 
   let uniqueEnforced = false;
   try {
