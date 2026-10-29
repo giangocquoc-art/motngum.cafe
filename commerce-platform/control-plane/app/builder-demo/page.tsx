@@ -235,6 +235,7 @@ export default function BuilderDemoPage() {
   const [cloudDirty,setCloudDirty]=useState(false);
   const [cloudWorking,setCloudWorking]=useState(false);
   const [publishedUrl,setPublishedUrl]=useState<string|null>(null);
+  const revisionRef=useRef(0);
   const undoRef=useRef<SiteDocument[]>([]);
   const redoRef=useRef<SiteDocument[]>([]);
   const dragRef=useRef<{id?:string;kind?:BlockKind}|null>(null);
@@ -300,15 +301,16 @@ export default function BuilderDemoPage() {
     if(next===doc)return;
     undoRef.current=[...undoRef.current.slice(-39),doc];
     redoRef.current=[];
+    revisionRef.current+=1;
     setDoc(next);setCloudDirty(true);setRevision(r=>r+1);
   }
   function undo() {
     const next=undoRef.current.pop();if(!next)return;
-    redoRef.current.push(doc);setDoc(next);setSelectedId(null);setCloudDirty(true);setRevision(r=>r+1);
+    redoRef.current.push(doc);revisionRef.current+=1;setDoc(next);setSelectedId(null);setCloudDirty(true);setRevision(r=>r+1);
   }
   function redo() {
     const next=redoRef.current.pop();if(!next)return;
-    undoRef.current.push(doc);setDoc(next);setSelectedId(null);setCloudDirty(true);setRevision(r=>r+1);
+    undoRef.current.push(doc);revisionRef.current+=1;setDoc(next);setSelectedId(null);setCloudDirty(true);setRevision(r=>r+1);
   }
   function modifyPage(blocks:Block[]) {
     commit({...doc,pages:doc.pages.map(p=>p.id===activePage.id?{...p,blocks}:p)});
@@ -415,6 +417,7 @@ export default function BuilderDemoPage() {
 
   async function saveCloud() {
     if(cloudWorking || !hydrated)return;
+    const savingRevision=revisionRef.current;
     setCloudWorking(true);setStatus('Đang lưu bản nháp vào PostgreSQL...');
     const route=cloudSiteId?'/api/sites/'+encodeURIComponent(cloudSiteId):'/api/sites';
     try{
@@ -429,7 +432,11 @@ export default function BuilderDemoPage() {
       }
       const id=cloudSiteId||data.site.id;
       setCloudSiteId(id);setCloudVersion(data.site.version);
-      setCloudDirty(false);setStatus('Đã lưu an toàn trên PostgreSQL, revision '+data.site.version+'.');
+      if(revisionRef.current===savingRevision){
+        setCloudDirty(false);setStatus('Đã lưu an toàn trên PostgreSQL, revision '+data.site.version+'.');
+      }else{
+        setCloudDirty(true);setStatus('Đã lưu một phiên bản, nhưng còn chỉnh sửa mới chưa lưu. Hãy nhấn Lưu lên cloud lần nữa.');
+      }
       if(!cloudSiteId)window.history.replaceState(null,'','/builder-demo?site='+encodeURIComponent(id));
     }catch(e){setStatus('Không thể lưu cloud: '+(e instanceof Error?e.message:'Lỗi không xác định'));}
     finally{setCloudWorking(false);}
