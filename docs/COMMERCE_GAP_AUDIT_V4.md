@@ -1,5 +1,8 @@
 # MOTNGUM COMMERCE — KIỂM TOÁN KIẾN TRÚC V4
 
+> **CẬP NHẬT 29/10/2026:** [COMMERCE_FLOW_AUDIT_V5.md](./COMMERCE_FLOW_AUDIT_V5.md) kiểm toán theo code và tài khoản triển khai thực tế. V5 phát hiện lỗi quyền nhân viên, checkout đổi session đăng nhập, lộ passwordHash trong API, cùng tình trạng hai project Vercel / env đặt sai project / Neon chưa migrate. Ưu tiên sửa blocker V5 trước khi mở SaaS công khai; V4 vẫn là kiểm toán kiến trúc tổng quát.
+
+
 > **BẢNG TRUY VẾT THỰC THI:** [COMMERCE_FEATURE_REGISTER_V4.csv](./COMMERCE_FEATURE_REGISTER_V4.csv), hiện liệt kê 60 hạng mục; tất cả chưa được triển khai hoặc đang bị chặn bởi yêu cầu tích hợp/giấy phép/kiểm chứng. Chỉ nâng trạng thái sau khi có kiểm thử và chứng cứ triển khai.
 
 Ngày rà soát: 29/10/2026. Trạng thái: tài liệu thiết kế, **chưa phải mã triển khai**.
