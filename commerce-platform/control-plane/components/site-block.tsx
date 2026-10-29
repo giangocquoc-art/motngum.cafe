@@ -1,3 +1,4 @@
+import './studio-template-effects.css';
 import type { CSSProperties } from 'react';
 import { ChevronDown, Image as ImageIcon } from 'lucide-react';
 import type { Block, ThemeDefinition } from '@/lib/builder/catalog';
@@ -98,6 +99,67 @@ export function BlockPreview({block,theme,navigate,base}: {block:Block;theme:The
     <div className="mt-6"><ActionLink block={block} navigate={navigate} base={base} inverse/></div>
   </section>;
   if (block.kind==='text') return <section className={'mx-auto py-10 @md:py-16 '+(variant==='minimal'?'max-w-[660px]':'max-w-4xl')}><div className={variant==='centered'?'text-center':''}>{title}{description}</div></section>;
+  // Native adaptation of shadcn/ui Card (MIT) in the shared renderer.
+  // All content remains plain strings in validated SiteDocument v2.
+  if(block.kind==='features' && variant==='cards')return <section
+    data-studio-pattern="shadcn-card" className="py-10 @md:py-16">
+    <div className="mb-7 flex flex-wrap items-center justify-between gap-3">{title}
+      <span className="rounded-full border px-3 py-1 text-xs font-semibold"
+        style={{borderColor:'var(--studio-border)',color:'var(--studio-muted)'}}>GIẢI PHÁP</span>
+    </div>
+    <div className="grid gap-4 @md:grid-cols-2 @lg:grid-cols-3">
+      {rows.map((parts,i)=><article key={i} data-slot="card"
+        className="flex flex-col gap-5 rounded-xl border px-6 py-7 shadow-sm transition-shadow hover:shadow-md"
+        style={{borderColor:'var(--studio-border)',backgroundColor:'var(--studio-surface)'}}>
+        <div data-slot="card-header" className="flex items-start justify-between gap-4">
+          <span className="text-xs font-semibold uppercase tracking-[.16em]"
+            style={{color:'var(--studio-muted)'}}>MODULE {String(i+1).padStart(2,'0')}</span>
+          <span className="flex size-8 items-center justify-center rounded-lg text-xs font-bold"
+            style={{backgroundColor:accent,color:foregroundOnAccent(accent)}}>✓</span>
+        </div>
+        <h3 data-slot="card-title" className="text-lg font-bold leading-snug">{parts[0]}</h3>
+        {parts[1]&&<p data-slot="card-description" className="text-sm leading-7 opacity-75">{parts[1]}</p>}
+      </article>)}
+    </div>
+  </section>;
+  // Magic UI BorderBeam motif (MIT), reimplemented without motion/react.
+  if(block.kind==='features' && variant==='banner')return <section
+    data-studio-pattern="magic-beam" className="py-9 @md:py-14">
+    <div className="mb-8">{title}<p className="mt-3 text-sm opacity-75">
+      Một ý tưởng rõ ràng luôn bắt đầu từ nội dung có trọng tâm.</p></div>
+    <div className="grid gap-5 @md:grid-cols-3">
+      {rows.map((parts,i)=><article key={i} className="studio-border-beam p-[2px]">
+        <div className="h-full rounded-[inherit] p-6" style={{backgroundColor:'var(--studio-surface)'}}>
+          <span className="text-xs font-bold uppercase tracking-widest"
+            style={{color:'var(--studio-accent)'}}>0{i+1} / STUDIO</span>
+          <h3 className="mt-5 text-xl font-bold">{parts[0]}</h3>
+          {parts[1]&&<p className="mt-4 text-sm leading-7 opacity-75">{parts[1]}</p>}
+        </div>
+      </article>)}
+    </div>
+  </section>;
+  // Start Bootstrap Agency timeline (MIT), normalized to services/list.
+  if(block.kind==='services' && variant==='list')return <section
+    data-studio-pattern="agency-timeline" className="py-10 @md:py-16">
+    <div className="mb-10 text-center">{title}</div>
+    <ol className="relative mx-auto max-w-4xl border-l-2 @md:border-l-0"
+      style={{borderColor:'var(--studio-border)'}}>
+      <div aria-hidden="true" className="absolute bottom-0 top-0 left-1/2 hidden w-px @md:block"
+        style={{backgroundColor:'var(--studio-border)'}}/>
+      {rows.map((parts,i)=><li key={i} className="relative mb-8 grid gap-4 pl-8 @md:grid-cols-[1fr_80px_1fr] @md:gap-6 @md:pl-0">
+        <div aria-hidden="true" className="absolute -left-[11px] top-3 flex size-5 items-center justify-center rounded-full @md:static @md:col-start-2 @md:row-start-1 @md:mx-auto @md:size-12"
+          style={{backgroundColor:accent,color:foregroundOnAccent(accent)}}>
+          <span className="hidden text-xs font-bold @md:inline">{String(i+1).padStart(2,'0')}</span>
+        </div>
+        <article className={'@md:row-start-1 '+(i%2===0?'@md:col-start-1 @md:text-right':'@md:col-start-3')}>
+          <span className="text-xs font-bold uppercase tracking-widest" style={{color:accent}}>
+            Giai đoạn {String(i+1).padStart(2,'0')}</span>
+          <h3 className="mt-2 text-lg font-bold">{parts[0]}</h3>
+          {parts[1]&&<p className="mt-3 text-sm leading-7 opacity-75">{parts[1]}</p>}
+        </article>
+      </li>)}
+    </ol>
+  </section>;
   if (block.kind==='features'||block.kind==='services'||block.kind==='products'||block.kind==='logos') {
     const list = rows.length?rows:[[block.title]];
     return <section className="py-9"><div className="mb-7">{title}</div>
