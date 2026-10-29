@@ -76,7 +76,7 @@ export function publishIssues(doc: SiteDocument): string[] {
     for (const block of page.blocks) {
       if (block.buttonUrl.startsWith('#page:') && !slugs.has(block.buttonUrl.slice(6)))
         problems.push('Liên kết tới trang không tồn tại: '+block.buttonUrl);
-      if (/hello@example\.com|0900 000 000|Điền địa chỉ|Thay nội dung của bạn|Đối tác 0[1-9]/i.test(block.body))
+      if (/hello@example\.com|0900 000 000|Điền địa chỉ|Thay nội dung của bạn|Đối tác 0[1-9]|Thay bằng nội dung sản phẩm|Thay đoạn này bằng|Chủ website bổ sung/i.test(block.body))
         problems.push('Trang '+page.title+' còn thông tin demo.');
       if (/120\+\|Khách hàng tin tưởng|15\+\|Dự án tiêu biểu|98%\|Phản hồi tích cực/.test(block.body))
         problems.push('Trang '+page.title+' còn số liệu minh họa.');
