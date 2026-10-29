@@ -15,7 +15,7 @@ import {
 
 const STORAGE = 'motngum.visual-builder-demo.v2';
 const LEGACY_STORAGE = 'motngum.visual-builder-demo.v1';
-const MAX_FILE = 256 * 1024;
+const MAX_FILE = 1024 * 1024;
 const MAX_PAGES = 12;
 const MAX_BLOCKS = 40;
 const MAX_TOTAL = 200;
@@ -210,7 +210,7 @@ function TemplateThumb({template}: {template:SiteTemplate}) {
       </div>
       {(template.layout==='split'||template.layout==='full'||template.layout==='banner')&&
         <div className={'overflow-hidden '+(template.layout==='split'?'':'absolute inset-0 -z-10 opacity-30')}>
-          <img src={template.heroImage} loading="lazy" alt="" className="h-full w-full object-cover"/>
+          <img src={template.heroImage.replace("?w=1400","?w=480&auto=format&fit=crop&q=65")} loading="lazy" alt="" className="h-full w-full object-cover"/>
         </div>}
     </div>
     <div className="absolute bottom-2 right-2 flex gap-1"><span className="size-2 rounded-full" style={{backgroundColor:t.primary}}/><span className="size-2 rounded-full" style={{backgroundColor:t.foreground}}/></div>
@@ -360,7 +360,7 @@ export default function BuilderDemoPage() {
   async function importJson(event:ChangeEvent<HTMLInputElement>) {
     const file=event.target.files?.[0];event.target.value='';
     if(!file)return;
-    if(file.size>MAX_FILE){setStatus('Tệp vượt giới hạn 256 KB.');return;}
+    if(file.size>MAX_FILE){setStatus('Tệp vượt giới hạn 1 MB.');return;}
     try {
       const raw=JSON.parse(await file.text());
       const next=validateDocument(raw)||migrateLegacy(raw);
@@ -459,9 +459,17 @@ export default function BuilderDemoPage() {
             <label className="block text-xs font-semibold">Bố cục<select value={activeBlock.variant} onChange={e=>patchBlock({variant:e.target.value as Block['variant']})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm">{BLOCK_VARIANTS.map(v=><option key={v} value={v}>{v}</option>)}</select></label>
             <label className="block text-xs font-semibold">Tiêu đề<input value={activeBlock.title} maxLength={160} onChange={e=>patchBlock({title:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
             <label className="block text-xs font-semibold">Nội dung / mỗi dòng một mục<textarea value={activeBlock.body} maxLength={2000} rows={6} onChange={e=>patchBlock({body:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
-            {(['hero','image','gallery','products'].includes(activeBlock.kind))&&<label className="block text-xs font-semibold">URL ảnh HTTPS<input value={activeBlock.imageUrl} maxLength={600} onChange={e=>patchBlock({imageUrl:safeImage(e.target.value)||''})} placeholder="https://..." className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>}
+            {(['hero','image','gallery','products'].includes(activeBlock.kind))&&<label className="block text-xs font-semibold">URL ảnh HTTPS<input key={activeBlock.id+'-image'} defaultValue={activeBlock.imageUrl} maxLength={600} onBlur={e=>{
+              const value=e.currentTarget.value.trim();
+              if(value!==''&&!safeImage(value)) {setStatus('URL hình ảnh phải bắt đầu bằng https:// hợp lệ.');e.currentTarget.value=activeBlock.imageUrl;return;}
+              if(value!==activeBlock.imageUrl)patchBlock({imageUrl:value});
+            }} placeholder="https://..." className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>}
             {(['hero','cta'].includes(activeBlock.kind))&&<><label className="block text-xs font-semibold">Chữ trên nút<input value={activeBlock.buttonLabel} maxLength={80} onChange={e=>patchBlock({buttonLabel:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
-              <label className="block text-xs font-semibold">Liên kết (https hoặc #page:slug)<input value={activeBlock.buttonUrl} maxLength={500} onChange={e=>patchBlock({buttonUrl:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label></>}
+              <label className="block text-xs font-semibold">Liên kết (https hoặc #page:slug)<input key={activeBlock.id+'-link'} defaultValue={activeBlock.buttonUrl} maxLength={500} onBlur={e=>{
+                const value=e.currentTarget.value.trim();
+                if(value!==''&&!safeLink(value)){setStatus('Liên kết chỉ nhận http(s), #anchor hoặc #page:slug.');e.currentTarget.value=activeBlock.buttonUrl;return;}
+                if(value!==activeBlock.buttonUrl)patchBlock({buttonUrl:value});
+              }} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label></>}
             <label className="flex items-center justify-between text-xs font-semibold">Màu nhấn khối<input type="color" value={activeBlock.accent} onChange={e=>patchBlock({accent:e.target.value})} className="size-10 cursor-pointer"/></label>
           </div>:<p className="text-xs text-slate-500">Chọn một khối trên canvas để chỉnh sửa nội dung, màu sắc và bố cục.</p>}
           <hr className="my-4"/>
