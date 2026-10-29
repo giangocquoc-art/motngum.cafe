@@ -230,6 +230,11 @@ export default function BuilderDemoPage() {
   const [hydrated,setHydrated]=useState(false);
   const [status,setStatus]=useState('Đang tải bản nháp...');
   const [revision,setRevision]=useState(0);
+  const [cloudSiteId,setCloudSiteId]=useState<string|null>(null);
+  const [cloudVersion,setCloudVersion]=useState<number|null>(null);
+  const [cloudDirty,setCloudDirty]=useState(false);
+  const [cloudWorking,setCloudWorking]=useState(false);
+  const [publishedUrl,setPublishedUrl]=useState<string|null>(null);
   const undoRef=useRef<SiteDocument[]>([]);
   const redoRef=useRef<SiteDocument[]>([]);
   const dragRef=useRef<{id?:string;kind?:BlockKind}|null>(null);
@@ -246,19 +251,45 @@ export default function BuilderDemoPage() {
   );
 
   useEffect(()=>{
-    try {
-      const raw=localStorage.getItem(STORAGE);
-      const existing=raw?validateDocument(JSON.parse(raw)):null;
-      if(existing){setDoc(existing);setPageId(existing.pages[0]?.id||'');setGallery(false);setStatus('Đã khôi phục bản nháp trong trình duyệt.');}
-      else {
-        const old=localStorage.getItem(LEGACY_STORAGE);
-        const migrated=old?migrateLegacy(JSON.parse(old)):null;
-        if(migrated){setDoc(migrated);setPageId(migrated.pages[0].id);setGallery(false);setStatus('Đã chuyển bản nháp cũ sang cấu trúc nhiều trang.');}
-        else if(raw) setStatus('Bản nháp lưu không hợp lệ; hãy chọn mẫu mới.');
-        else setStatus('Chọn một mẫu để bắt đầu thiết kế website.');
+    let cancelled=false;
+    async function load() {
+      const siteId=new URLSearchParams(window.location.search).get('site');
+      if(siteId) {
+        try {
+          const response=await fetch('/api/sites/'+encodeURIComponent(siteId),{cache:'no-store'});
+          const data=await response.json();
+          if(!response.ok)throw new Error(data.error||'Không thể mở dự án');
+          const stored=validateDocument(data.site?.document);
+          if(!stored)throw new Error('Dữ liệu website từ máy chủ không hợp lệ.');
+          if(cancelled)return;
+          setDoc(stored);setPageId(stored.pages[0].id);setGallery(false);
+          setCloudSiteId(data.site.id);setCloudVersion(data.site.version);setCloudDirty(false);
+          setPublishedUrl(data.site.publishedVersion?'/s/'+data.site.slug:null);
+          setStatus('Đã tải website từ PostgreSQL, revision '+data.site.version+'.');
+        }catch(e) {
+          if(!cancelled)setStatus('Không mở được website: '+(e instanceof Error?e.message:'Lỗi kết nối')+'. Bản local vẫn có thể xuất JSON.');
+        }finally{if(!cancelled)setHydrated(true);}
+        return;
       }
-    }catch{setStatus('Không đọc được bản lưu; hãy chọn mẫu hoặc nhập JSON.');}
-    setHydrated(true);
+      try {
+        const raw=localStorage.getItem(STORAGE);
+        const existing=raw?validateDocument(JSON.parse(raw)):null;
+        if(existing){
+          if(cancelled)return;
+          setDoc(existing);setPageId(existing.pages[0]?.id||'');setGallery(false);
+          setStatus('Đã khôi phục bản nháp trong trình duyệt.');
+        }else {
+          const old=localStorage.getItem(LEGACY_STORAGE);
+          const migrated=old?migrateLegacy(JSON.parse(old)):null;
+          if(migrated){if(cancelled)return;setDoc(migrated);setPageId(migrated.pages[0].id);setGallery(false);setStatus('Đã nâng cấp bản nháp v1.');}
+          else if(raw)setStatus('Bản nháp không hợp lệ; hãy nhập JSON hoặc chọn mẫu.');
+          else setStatus('Chọn một mẫu để bắt đầu thiết kế website.');
+        }
+      }catch{if(!cancelled)setStatus('Không đọc được bản lưu; hãy thử nhập JSON.');}
+      if(!cancelled)setHydrated(true);
+    }
+    void load();
+    return ()=>{cancelled=true;};
   },[]);
   useEffect(()=>{
     if(!hydrated)return;
@@ -269,15 +300,15 @@ export default function BuilderDemoPage() {
     if(next===doc)return;
     undoRef.current=[...undoRef.current.slice(-39),doc];
     redoRef.current=[];
-    setDoc(next);setRevision(r=>r+1);
+    setDoc(next);setCloudDirty(true);setRevision(r=>r+1);
   }
   function undo() {
     const next=undoRef.current.pop();if(!next)return;
-    redoRef.current.push(doc);setDoc(next);setSelectedId(null);setRevision(r=>r+1);
+    redoRef.current.push(doc);setDoc(next);setSelectedId(null);setCloudDirty(true);setRevision(r=>r+1);
   }
   function redo() {
     const next=redoRef.current.pop();if(!next)return;
-    undoRef.current.push(doc);setDoc(next);setSelectedId(null);setRevision(r=>r+1);
+    undoRef.current.push(doc);setDoc(next);setSelectedId(null);setCloudDirty(true);setRevision(r=>r+1);
   }
   function modifyPage(blocks:Block[]) {
     commit({...doc,pages:doc.pages.map(p=>p.id===activePage.id?{...p,blocks}:p)});
@@ -312,7 +343,7 @@ export default function BuilderDemoPage() {
     if(target){setPageId(target.id);setSelectedId(null);}else setStatus('Trang đích không tồn tại trong bản nháp.');
   }
   function applyTemplate(template:SiteTemplate) {
-    if(hydrated&&revision>0&&!window.confirm('Áp dụng mẫu sẽ thay thế website đang chỉnh sửa. Hãy xuất JSON nếu muốn sao lưu. Tiếp tục?'))return;
+    if(hydrated&&!gallery&&doc.pages.some(p=>p.blocks.length>0)&&!window.confirm('Áp dụng mẫu sẽ thay thế toàn bộ nội dung website. Hãy lưu cloud hoặc xuất JSON trước. Tiếp tục?'))return;
     const next=buildTemplateDocument(template);
     commit(next);setPageId(next.pages[0].id);setSelectedId(null);setGallery(false);setPreview(false);
     setStatus('Đã áp dụng mẫu '+template.name+' với 3 trang có thể chỉnh sửa.');
@@ -336,7 +367,13 @@ export default function BuilderDemoPage() {
   function changeSlug(raw:string) {
     const slug=slugify(raw);if(!slug)return;
     if(doc.pages.some(p=>p.slug===slug&&p.id!==activePage.id)){setStatus('Đường dẫn trang đã được dùng.');return;}
-    patchPage({slug});
+    const previous=activePage.slug;
+    if(previous===slug)return;
+    commit({...doc,pages:doc.pages.map(p=>({
+      ...p,
+      ...(p.id===activePage.id?{slug}:{}),
+      blocks:p.blocks.map(b=>b.buttonUrl==='#page:'+previous?{...b,buttonUrl:'#page:'+slug}:b)
+    }))});
   }
   function duplicatePage() {
     if(doc.pages.length>=MAX_PAGES||totalBlocks+activePage.blocks.length>MAX_TOTAL){setStatus('Không đủ dung lượng để nhân bản trang.');return;}
@@ -375,6 +412,46 @@ export default function BuilderDemoPage() {
     const next=buildTemplateDocument(SITE_TEMPLATES.find(t=>t.id===DEFAULT_TEMPLATE_ID)||SITE_TEMPLATES[0]);
     commit(next);setPageId(next.pages[0].id);setSelectedId(null);setGallery(true);
   }
+
+  async function saveCloud() {
+    if(cloudWorking || !hydrated)return;
+    setCloudWorking(true);setStatus('Đang lưu bản nháp vào PostgreSQL...');
+    const route=cloudSiteId?'/api/sites/'+encodeURIComponent(cloudSiteId):'/api/sites';
+    try{
+      const response=await fetch(route,{method:cloudSiteId?'PATCH':'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(cloudSiteId?{version:cloudVersion,document:doc}:{document:doc})});
+      const data=await response.json();
+      if(!response.ok){
+        if(response.status===409)throw new Error('Có thay đổi từ phiên khác hoặc tổ chức đã đổi. Không ghi đè; hãy sao lưu JSON và tải lại phiên bản mới.');
+        if(response.status===401)throw new Error('Cần đăng nhập. Bản nháp vẫn được giữ trong trình duyệt.');
+        throw new Error(data.error||'Lưu site thất bại');
+      }
+      const id=cloudSiteId||data.site.id;
+      setCloudSiteId(id);setCloudVersion(data.site.version);
+      setCloudDirty(false);setStatus('Đã lưu an toàn trên PostgreSQL, revision '+data.site.version+'.');
+      if(!cloudSiteId)window.history.replaceState(null,'','/builder-demo?site='+encodeURIComponent(id));
+    }catch(e){setStatus('Không thể lưu cloud: '+(e instanceof Error?e.message:'Lỗi không xác định'));}
+    finally{setCloudWorking(false);}
+  }
+  async function publishCloud() {
+    if(!cloudSiteId || cloudVersion===null || cloudDirty || cloudWorking) {
+      setStatus('Hãy lưu bản nháp lên cloud trước khi xuất bản.');return;
+    }
+    if(!window.confirm('Xuất bản snapshot lên URL staging? Website không nhận thanh toán. Tiếp tục?'))return;
+    setCloudWorking(true);
+    try{
+      const response=await fetch('/api/sites/'+encodeURIComponent(cloudSiteId)+'/publish',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({version:cloudVersion})
+      });
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.problems?.join(' · ')||data.error||'Không thể xuất bản');
+      setPublishedUrl(data.url);setStatus('Đã xuất bản snapshot revision '+data.version+' trên staging.');
+    }catch(e){setStatus('Publish bị chặn: '+(e instanceof Error?e.message:'Không xác định'));}
+    finally{setCloudWorking(false);}
+  }
+
   const canvasWidth=viewport==='mobile'?'390px':viewport==='tablet'?'768px':'1120px';
   const isEditing=!preview;
   return <div className="min-h-screen bg-slate-100 text-slate-900">
@@ -391,6 +468,13 @@ export default function BuilderDemoPage() {
           <button onClick={undo} disabled={!undoRef.current.length} title="Hoàn tác" aria-label="Hoàn tác" className="rounded-lg border p-2 disabled:opacity-30"><Undo2 size={17}/></button>
           <button onClick={redo} disabled={!redoRef.current.length} title="Làm lại" aria-label="Làm lại" className="rounded-lg border p-2 disabled:opacity-30"><Redo2 size={17}/></button>
           <button onClick={()=>setPreview(v=>!v)} className="inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm font-semibold"><Eye size={16}/>{preview?'Chỉnh sửa':'Xem trước'}</button>
+          <a href="/dashboard/sites" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold">Website của tôi</a>
+          {cloudSiteId&&<a href={'/dashboard/sites/'+cloudSiteId+'/preview'} className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold" target="_blank" rel="noopener noreferrer">Preview nháp</a>}
+          <button onClick={saveCloud} disabled={cloudWorking||!hydrated} className="inline-flex items-center gap-2 rounded-lg bg-amber-700 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
+            {cloudWorking?'Đang xử lý...':cloudDirty||!cloudSiteId?'Lưu lên cloud':'Đã lưu trên cloud'}
+          </button>
+          {cloudSiteId&&<button onClick={publishCloud} disabled={cloudWorking||cloudDirty} className="rounded-lg border border-slate-400 px-3 py-2 text-xs font-semibold disabled:opacity-50">Xuất bản staging</button>}
+          {publishedUrl&&<a href={publishedUrl} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-green-700 px-3 py-2 text-xs font-semibold text-green-900">Mở site công khai</a>}
           <button onClick={exportJson} className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white"><Download size={16}/>Xuất JSON</button>
         </div>
       </div>
@@ -459,13 +543,13 @@ export default function BuilderDemoPage() {
             <label className="block text-xs font-semibold">Bố cục<select value={activeBlock.variant} onChange={e=>patchBlock({variant:e.target.value as Block['variant']})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm">{BLOCK_VARIANTS.map(v=><option key={v} value={v}>{v}</option>)}</select></label>
             <label className="block text-xs font-semibold">Tiêu đề<input value={activeBlock.title} maxLength={160} onChange={e=>patchBlock({title:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
             <label className="block text-xs font-semibold">Nội dung / mỗi dòng một mục<textarea value={activeBlock.body} maxLength={2000} rows={6} onChange={e=>patchBlock({body:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
-            {(['hero','image','gallery','products'].includes(activeBlock.kind))&&<label className="block text-xs font-semibold">URL ảnh HTTPS<input key={activeBlock.id+'-image'} defaultValue={activeBlock.imageUrl} maxLength={600} onBlur={e=>{
+            {(['hero','image','gallery','products'].includes(activeBlock.kind))&&<label className="block text-xs font-semibold">URL ảnh HTTPS<input key={activeBlock.id+'-image-'+activeBlock.imageUrl} defaultValue={activeBlock.imageUrl} maxLength={600} onBlur={e=>{
               const value=e.currentTarget.value.trim();
               if(value!==''&&!safeImage(value)) {setStatus('URL hình ảnh phải bắt đầu bằng https:// hợp lệ.');e.currentTarget.value=activeBlock.imageUrl;return;}
               if(value!==activeBlock.imageUrl)patchBlock({imageUrl:value});
             }} placeholder="https://..." className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>}
             {(['hero','cta'].includes(activeBlock.kind))&&<><label className="block text-xs font-semibold">Chữ trên nút<input value={activeBlock.buttonLabel} maxLength={80} onChange={e=>patchBlock({buttonLabel:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
-              <label className="block text-xs font-semibold">Liên kết (https hoặc #page:slug)<input key={activeBlock.id+'-link'} defaultValue={activeBlock.buttonUrl} maxLength={500} onBlur={e=>{
+              <label className="block text-xs font-semibold">Liên kết (https hoặc #page:slug)<input key={activeBlock.id+'-link-'+activeBlock.buttonUrl} defaultValue={activeBlock.buttonUrl} maxLength={500} onBlur={e=>{
                 const value=e.currentTarget.value.trim();
                 if(value!==''&&!safeLink(value)){setStatus('Liên kết chỉ nhận http(s), #anchor hoặc #page:slug.');e.currentTarget.value=activeBlock.buttonUrl;return;}
                 if(value!==activeBlock.buttonUrl)patchBlock({buttonUrl:value});
@@ -476,7 +560,7 @@ export default function BuilderDemoPage() {
           <button onClick={()=>fileInput.current?.click()} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-xs hover:bg-slate-100"><FileJson size={16}/>Nhập website JSON</button>
           <input className="hidden" ref={fileInput} type="file" accept="application/json,.json" onChange={importJson}/>
           <button onClick={reset} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-xs hover:bg-slate-100"><RotateCcw size={16}/>Đặt lại mẫu</button>
-          <p className="mt-4 rounded-lg bg-slate-50 p-3 text-[11px] leading-5 text-slate-600">Lưu cục bộ trong trình duyệt. Chưa có tài khoản dự án, lưu cloud, upload ảnh, biểu mẫu thật hoặc xuất bản.</p>
+          <p className="mt-4 rounded-lg bg-slate-50 p-3 text-[11px] leading-5 text-slate-600">Trình duyệt có bản sao cục bộ. Dự án liên kết tài khoản có thể lưu thủ công lên PostgreSQL và phát hành snapshot staging; ảnh upload, form thật và thanh toán vẫn chưa bật.</p>
         </aside>}
       </div>
     </div>
