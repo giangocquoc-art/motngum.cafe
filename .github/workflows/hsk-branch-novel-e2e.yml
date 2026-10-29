@@ -1,0 +1,42 @@
+name: HSK Branching Novel Browser Smoke
+on:
+  pull_request:
+    paths:
+      - "hsk-story/duong-re/**"
+      - "hsk-story/e2e/branch-browser.cjs"
+      - "hsk-story/tests/branch-story.test.cjs"
+      - ".github/workflows/hsk-branch-novel-e2e.yml"
+permissions:
+  contents: read
+jobs:
+  chromium:
+    if: github.head_ref == 'experiment/hsk-an-branching-novel-20261029'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install isolated Playwright in temp directory
+        run: |
+          mkdir -p /tmp/an-branch-browser
+          npm install --prefix /tmp/an-branch-browser --no-save --ignore-scripts playwright@1.56.1
+          /tmp/an-branch-browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Serve only HSK public static files and test Chromium
+        env:
+          NODE_PATH: /tmp/an-branch-browser/node_modules
+          BRANCH_BASE_URL: http://127.0.0.1:4173/duong-re/
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory hsk-story >/tmp/an-branch-http.log 2>&1 &
+          for i in {1..30}; do if curl -fsS http://127.0.0.1:4173/duong-re/ >/dev/null; then break; fi; sleep 1; done
+          node hsk-story/e2e/branch-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hsk-branching-desktop-mobile
+          path: hsk-story/test-results-branch/*
+          if-no-files-found: ignore
+          retention-days: 7
