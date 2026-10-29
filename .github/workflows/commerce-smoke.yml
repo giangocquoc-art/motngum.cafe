@@ -1,0 +1,35 @@
+name: Cloudflare Commerce Edge Smoke Tests
+on:
+  push:
+    branches: [commerce-rebuild-2026-10]
+    paths: [commerce-platform/smoke.trigger]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify Cloudflare staging edge and readiness protection
+        shell: bash
+        env:
+          BASE: https://motngum-commerce-stage.nook-pshare.workers.dev
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 4 --retry-delay 3 "$BASE/health" -o /tmp/health.json
+          jq -e '.ok == true and .layer == "edge_registry" and .commerceReady == false' /tmp/health.json
+          curl --fail --silent --show-error "$BASE/api/status" -o /tmp/status.json
+          jq -e '.sourceCodeImported == true and .productionReady == false and .environment == "staging" and (.connectedCommerceEngines|type) == "number"' /tmp/status.json
+          curl --silent --show-error "$BASE/api/ready" -o /tmp/ready.json -w '%{http_code}' > /tmp/ready.code
+          test "$(cat /tmp/ready.code)" = "503"
+          jq -e '.ready == false' /tmp/ready.json
+          curl --silent --show-error "$BASE/api/tenant/resolve" -o /tmp/tenant.json -w '%{http_code}' > /tmp/tenant.code
+          test "$(cat /tmp/tenant.code)" = "404"
+          curl --silent --show-error -X POST "$BASE/api/status" -o /tmp/post.json -w '%{http_code}' > /tmp/post.code
+          test "$(cat /tmp/post.code)" = "405"
+          jq -e '.error == "read_only_staging"' /tmp/post.json
+          curl --fail --silent --show-error -D /tmp/headers.txt "$BASE/" -o /tmp/index.html
+          grep -qi 'x-frame-options: DENY' /tmp/headers.txt
+          grep -q 'Motngum Commerce Platform' /tmp/index.html
+          echo "PASS: Worker routing, D1 health, truthful readiness gate and denied writes."
