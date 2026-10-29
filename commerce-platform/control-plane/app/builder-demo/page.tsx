@@ -293,10 +293,17 @@ export default function BuilderDemoPage() {
     return ()=>{cancelled=true;};
   },[]);
   useEffect(()=>{
-    if(!hydrated)return;
+    if(!hydrated || cloudSiteId)return;
     try{localStorage.setItem(STORAGE,JSON.stringify(doc));setStatus('Đã tự lưu bản nháp trong trình duyệt · Chưa xuất bản.');}
     catch{setStatus('Không lưu được; hãy xuất tệp JSON để sao lưu.');}
-  },[doc,hydrated]);
+  },[doc,hydrated,cloudSiteId]);
+  useEffect(()=>{
+    // Cloud drafts are never written to the shared localStorage key across user accounts.
+    if(!cloudSiteId || !cloudDirty)return;
+    const warn=(event:BeforeUnloadEvent)=>{event.preventDefault();event.returnValue='';};
+    window.addEventListener('beforeunload',warn);
+    return ()=>window.removeEventListener('beforeunload',warn);
+  },[cloudSiteId,cloudDirty]);
   function commit(next:SiteDocument) {
     if(next===doc)return;
     undoRef.current=[...undoRef.current.slice(-39),doc];
