@@ -2,7 +2,7 @@ import { desc, and, eq, isNull } from 'drizzle-orm';
 import { db } from './drizzle';
 import { activityLogs, teamMembers, teams, users } from './schema';
 import { cookies } from 'next/headers';
-import { verifyToken } from '@/lib/auth/session';
+import { verifyToken, getSession } from '@/lib/auth/session';
 
 export async function getUser() {
   const sessionCookie = (await cookies()).get('session');
@@ -70,18 +70,26 @@ export async function updateTeamSubscription(
 }
 
 export async function getUserWithTeam(userId: number) {
-  const result = await db
-    .select({
-      user: users,
-      teamId: teamMembers.teamId
-    })
-    .from(users)
-    .leftJoin(teamMembers, eq(users.id, teamMembers.userId))
-    .where(eq(users.id, userId))
-    .limit(2);
+  const session = await getSession();
+  if (!session || session.user.id !== userId) return null;
+  const selected = await resolveSelectedTeamId(userId, session.activeTeamId);
+  if (!selected) return null;
+  const [member] = await db.select({ user: users, teamId: teamMembers.teamId })
+    .from(users).innerJoin(teamMembers, eq(users.id, teamMembers.userId))
+    .where(and(eq(users.id, userId), eq(teamMembers.teamId, selected))).limit(1);
+  return member ?? null;
+}
 
-  // Until activeTeamId is explicitly bound to the session, refuse ambiguous multi-team context.
-  return result.length === 1 && result[0].teamId !== null ? result[0] : null;
+/** No arbitrary first-team fallback: signed activeTeamId must still be a real membership. */
+async function resolveSelectedTeamId(userId: number, activeTeamId?: number): Promise<number | null> {
+  if (activeTeamId !== undefined) {
+    const [member] = await db.select({ id: teamMembers.teamId }).from(teamMembers)
+      .where(and(eq(teamMembers.userId, userId), eq(teamMembers.teamId, activeTeamId))).limit(1);
+    return member?.id ?? null;
+  }
+  const memberships = await db.select({ id: teamMembers.teamId }).from(teamMembers)
+    .where(eq(teamMembers.userId, userId)).limit(2);
+  return memberships.length === 1 ? memberships[0].id : null;
 }
 
 export async function getActivityLogs() {
@@ -111,11 +119,12 @@ export async function getTeamForUser() {
     return null;
   }
 
-  const selected = await db.select({ teamId: teamMembers.teamId })
-    .from(teamMembers).where(eq(teamMembers.userId, user.id)).limit(2);
-  if (selected.length !== 1) return null; // fail closed on no/ambiguous tenant
+  const session = await getSession();
+  if (!session || session.user.id !== user.id) return null;
+  const selectedTeamId = await resolveSelectedTeamId(user.id, session.activeTeamId);
+  if (!selectedTeamId) return null;
   const result = await db.query.teamMembers.findFirst({
-    where: and(eq(teamMembers.userId, user.id), eq(teamMembers.teamId, selected[0].teamId)),
+    where: and(eq(teamMembers.userId, user.id), eq(teamMembers.teamId, selectedTeamId)),
     with: {
       team: {
         with: {
