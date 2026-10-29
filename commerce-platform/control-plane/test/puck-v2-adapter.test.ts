@@ -5,6 +5,7 @@ import {
   buildTemplateDocument, createBlock, type SiteDocument, type SitePage
 } from '../lib/builder/catalog';
 import { studioPuckDefinitions, STUDIO_PUCK_FIELDS } from '../lib/builder/puck-fields';
+import { renameSitePage, countPageReferences, deleteSitePage, SitePageOperationError } from '../lib/builder/page-operations';
 import {
   applyPuckPage, PuckConversionError,
   puckWorkspaceToSite, siteToPuckWorkspace,
@@ -139,4 +140,39 @@ test('field registry covers 16 Puck component types and has no static default ID
     assert.equal(item.defaultProps.variant,'cards');
     assert.equal(item.fields.body.type,'textarea');
   }
+});
+
+test('page slug rename atomically rewrites cross-page CTA links and remains reversible via Puck',()=>{
+  const original=buildTemplateDocument(SITE_TEMPLATES[0]);
+  const destination=original.pages.find(page=>page.slug==='lien-he')!;
+  const before=JSON.stringify(original);
+  const refs=countPageReferences(original,destination.id);
+  assert.ok(refs>0,'fixture must contain inbound links');
+  const renamed=renameSitePage(original,destination.id,'ket-noi-moi');
+  assert.equal(renamed.pages.find(page=>page.id===destination.id)?.slug,'ket-noi-moi');
+  assert.equal(JSON.stringify(renamed).includes('#page:lien-he'),false);
+  assert.equal(renamed.pages.flatMap(page=>page.blocks).filter(block=>block.buttonUrl==='#page:ket-noi-moi').length >=refs,true);
+  assert.equal(JSON.stringify(original),before,'source site must not mutate');
+  assert.deepEqual(puckWorkspaceToSite(siteToPuckWorkspace(renamed)),renamed);
+  assert.throws(()=>renameSitePage(renamed,destination.id,renamed.pages[0].slug),
+    (error:unknown)=>error instanceof SitePageOperationError&&error.code==='duplicate_slug');
+});
+test('deleting a referenced page requires explicit destination and preserves all link targets',()=>{
+  const doc=buildTemplateDocument(SITE_TEMPLATES[0]);
+  const contact=doc.pages.find(page=>page.slug==='lien-he')!;
+  const about=doc.pages.find(page=>page.slug==='gioi-thieu')!;
+  assert.ok(countPageReferences(doc,contact.id)>0);
+  assert.throws(()=>deleteSitePage(doc,contact.id),
+    (error:unknown)=>error instanceof SitePageOperationError&&error.code==='replacement_required');
+  assert.throws(()=>deleteSitePage(doc,contact.id,contact.id),
+    (error:unknown)=>error instanceof SitePageOperationError&&error.code==='invalid_replacement');
+  const safe=deleteSitePage(doc,contact.id,about.id);
+  assert.equal(safe.pages.length,doc.pages.length-1);
+  assert.equal(JSON.stringify(safe).includes('#page:lien-he'),false);
+  const newLinks=safe.pages.flatMap(page=>page.blocks).filter(block=>block.buttonUrl==='#page:gioi-thieu');
+  assert.ok(newLinks.length>=countPageReferences(doc,contact.id));
+  assert.deepEqual(puckWorkspaceToSite(siteToPuckWorkspace(safe)),safe);
+  const onlyOne={...safe,pages:safe.pages.slice(0,1)};
+  assert.throws(()=>deleteSitePage(onlyOne,onlyOne.pages[0].id),
+    (error:unknown)=>error instanceof SitePageOperationError&&error.code==='last_page');
 });
