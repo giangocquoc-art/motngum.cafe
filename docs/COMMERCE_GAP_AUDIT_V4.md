@@ -1,4 +1,7 @@
 # MOTNGUM COMMERCE — KIỂM TOÁN KIẾN TRÚC V4
+
+> **BẢNG TRUY VẾT THỰC THI:** [COMMERCE_FEATURE_REGISTER_V4.csv](./COMMERCE_FEATURE_REGISTER_V4.csv), hiện liệt kê 60 hạng mục; tất cả chưa được triển khai hoặc đang bị chặn bởi yêu cầu tích hợp/giấy phép/kiểm chứng. Chỉ nâng trạng thái sau khi có kiểm thử và chứng cứ triển khai.
+
 Ngày rà soát: 29/10/2026. Trạng thái: tài liệu thiết kế, **chưa phải mã triển khai**.
 Hiệu lực: thay thế kết luận/giả định mâu thuẫn trong V1, V2 và V3. Các hạng mục đã đúng ở V2/V3 giữ nguyên và không tính lại là lỗi mới.
 
