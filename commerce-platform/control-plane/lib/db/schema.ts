@@ -7,6 +7,8 @@ import {
   integer,
   uniqueIndex,
   uuid,
+  jsonb,
+  index,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -166,3 +168,39 @@ export enum ActivityType {
   INVITE_TEAM_MEMBER = 'INVITE_TEAM_MEMBER',
   ACCEPT_INVITATION = 'ACCEPT_INVITATION',
 }
+
+
+/** Site builder documents are owned by a team, never by a browser's localStorage. */
+export const builderSites = pgTable('builder_sites', {
+  id: uuid('id').primaryKey(),
+  teamId: integer('team_id').notNull().references(() => teams.id),
+  createdBy: integer('created_by').notNull().references(() => users.id),
+  slug: varchar('slug', { length: 80 }).notNull().unique(),
+  title: varchar('title', { length: 120 }).notNull(),
+  draftDocument: jsonb('draft_document').notNull(),
+  draftVersion: integer('draft_version').notNull().default(1),
+  publishedDocument: jsonb('published_document'),
+  publishedVersion: integer('published_version'),
+  publishedAt: timestamp('published_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+}, table => [
+  index('builder_sites_team_idx').on(table.teamId),
+]);
+
+/** Append-only audit trail: previous versions remain available after edits/publishing. */
+export const builderSiteRevisions = pgTable('builder_site_revisions', {
+  id: uuid('id').primaryKey(),
+  siteId: uuid('site_id').notNull().references(() => builderSites.id),
+  teamId: integer('team_id').notNull().references(() => teams.id),
+  actorId: integer('actor_id').notNull().references(() => users.id),
+  version: integer('version').notNull(),
+  document: jsonb('document').notNull(),
+  action: varchar('action', { length: 16 }).notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, table => [
+  uniqueIndex('builder_site_revisions_version_unique').on(table.siteId, table.version),
+  index('builder_site_revisions_team_idx').on(table.teamId),
+]);
+
+export type BuilderSite = typeof builderSites.$inferSelect;
