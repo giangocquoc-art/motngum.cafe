@@ -6,6 +6,7 @@ import {
   FileJson, GripVertical, Image as ImageIcon, LayoutTemplate, Monitor, Paintbrush,
   PanelLeft, Plus, RotateCcw, Search, Smartphone, Tablet, Trash2, Undo2, Redo2, X
 } from 'lucide-react';
+import { BlockPreview, studioColors } from '@/components/site-block';
 import {
   BLOCK_KINDS, BLOCK_VARIANTS, DEFAULT_TEMPLATE_ID, KIND_LABELS,
   SITE_TEMPLATES, TEMPLATE_CATEGORIES, THEMES, buildTemplateDocument, createBlock, newId, themeById,
@@ -35,11 +36,6 @@ function safeExternal(value: string) {
 }
 function safeImage(value: string) {
   try { const u = new URL(value); return u.protocol === 'https:' ? u.toString() : null; } catch { return null; }
-}
-function foregroundOnAccent(hex: string) {
-  const h=hex.replace('#',''); if(!/^[a-f0-9]{6}$/i.test(h))return '#ffffff';
-  const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
-  return (r*299+g*587+b*114)/1000>160?'#17202b':'#ffffff';
 }
 function safeLink(value: string) {
   if (/^#page:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) return value;
@@ -107,94 +103,6 @@ function migrateLegacy(input: unknown): SiteDocument | null {
     version:2,title:old.title,themeId:'coffee',
     pages:[{id:newId(),title:'Trang chủ',slug:'trang-chu',blocks}]
   });
-}
-function templatePreviewColors(theme: ThemeDefinition): CSSProperties {
-  return {'--studio-accent':theme.primary,'--studio-foreground':theme.foreground,
-    '--studio-background':theme.background,'--studio-surface':theme.surface,
-    '--studio-border':theme.border,'--studio-muted':theme.muted,
-    '--studio-radius':theme.radius,'--studio-font':theme.font} as CSSProperties;
-}
-function ActionLink({block, navigate, inverse = false}: {block:Block; navigate:(slug:string)=>void; inverse?:boolean}) {
-  if (!block.buttonLabel) return null;
-  const href = safeLink(block.buttonUrl);
-  const className = 'inline-flex items-center justify-center px-5 py-3 text-sm font-semibold shadow-sm transition hover:opacity-85';
-  const style:CSSProperties = {borderRadius:'var(--studio-radius)',backgroundColor:inverse?'var(--studio-foreground)':'var(--studio-accent)',color:inverse?'var(--studio-background)':foregroundOnAccent(block.accent)};
-  if (!href) return <span className={className} style={style}>{block.buttonLabel}</span>;
-  if (href.startsWith('#page:')) return <button type="button" className={className} style={style} onClick={e=>{e.stopPropagation();navigate(href.slice(6));}}>{block.buttonLabel}</button>;
-  return <a className={className} style={style} href={href} target={href.startsWith('#')?undefined:'_blank'} rel={href.startsWith('#')?undefined:'noopener noreferrer'} onClick={e=>e.stopPropagation()}>{block.buttonLabel}</a>;
-}
-function ImageSurface({src,alt,large=false}: {src:string;alt:string;large?:boolean}) {
-  const valid = safeImage(src);
-  return valid
-    ? <img src={valid} alt={alt} loading="lazy" referrerPolicy="no-referrer" className={'w-full object-cover '+(large?'min-h-[260px] max-h-[460px]':'h-44 @md:h-64')}/>
-    : <div className={'flex items-center justify-center bg-gradient-to-br from-stone-100 via-gray-50 to-amber-100 text-sm text-stone-500 '+(large?'min-h-[260px]':'h-44')}><ImageIcon size={24} className="mr-2"/>Thêm hình ảnh HTTPS</div>;
-}
-function BlockPreview({block,theme,navigate}: {block:Block;theme:ThemeDefinition;navigate:(slug:string)=>void}) {
-  const accent = block.accent || theme.primary;
-  const variant = block.variant;
-  const isFull = variant==='full' || variant==='banner';
-  const common:CSSProperties={borderRadius:'var(--studio-radius)'};
-  const title = <h2 className={'font-bold tracking-tight '+(block.kind==='hero'?'text-3xl @md:text-5xl @lg:text-6xl':'text-2xl @md:text-3xl')}>{block.title}</h2>;
-  const description = <p className="mt-4 max-w-2xl whitespace-pre-line text-sm leading-7 opacity-80 @md:text-base">{block.body}</p>;
-  const action = <div className="mt-6"><ActionLink block={block} navigate={navigate}/></div>;
-  const rows = parseRows(block.body);
-  if(block.kind==='hero') {
-    return <section className={'relative overflow-hidden '+(variant==='minimal'?'py-20 @md:py-32':'min-h-[260px]')} style={{...common,backgroundColor:variant==='minimal'?'transparent':accent,color:variant==='minimal'?'var(--studio-foreground)':(isFull&&safeImage(block.imageUrl)?'#ffffff':foregroundOnAccent(accent))}}>
-      {isFull && safeImage(block.imageUrl) && <><div className="absolute inset-0" style={{backgroundImage:'linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20)),url("'+safeImage(block.imageUrl)+'")',backgroundSize:'cover',backgroundPosition:'center'}}/><div className="absolute inset-0 bg-black/10"/></>}
-      {variant==='split' ? <div className="relative grid min-h-[340px] @md:grid-cols-2">
-        <div className="flex flex-col items-start justify-center p-7 @md:p-12">{title}{description}{action}</div>
-        <div className="overflow-hidden"><ImageSurface src={block.imageUrl} alt={block.title} large/></div>
-      </div> : <div className={'relative mx-auto flex max-w-4xl flex-col px-7 py-14 @md:px-14 @md:py-24 '+(variant==='centered'||variant==='cards'?'items-center text-center':'items-start')}>
-        <div className="mb-5 inline-flex rounded-full border border-current/40 px-3 py-1 text-xs uppercase tracking-[.2em]">Motngum Studio</div>
-        {title}{description}{action}
-      </div>}
-    </section>;
-  }
-  if (block.kind==='image') return <section className="overflow-hidden py-5" style={common}><ImageSurface src={block.imageUrl} alt={block.title} large/><div className="p-5"><h2 className="text-2xl font-bold">{block.title}</h2>{description}</div></section>;
-  if (block.kind==='gallery') {
-    const all=[block.imageUrl,...block.body.split('\n').map(x=>x.trim())].filter((u):u is string=>!!safeImage(u));
-    const images=[...new Set(all)].slice(0,8);
-    return <section className="py-10"><div className="mb-6">{title}<p className="mt-3 text-sm opacity-70">Những khoảnh khắc nổi bật</p></div>
-      <div className="grid grid-cols-2 gap-2 @md:grid-cols-3">
-      {(images.length?images:['']).map((src,i)=><div key={i} className="overflow-hidden" style={common}>
-        <div className="relative h-32 @md:h-52 overflow-hidden"><ImageSurface src={src} alt={block.title+' '+(i+1)}/></div>
-      </div>)}
-      </div>
-    </section>;
-  }
-  if (block.kind==='cta') return <section className="my-8 px-6 py-14 text-center @md:py-20" style={{...common,backgroundColor:accent,color:foregroundOnAccent(accent)}}>
-    {title}<p className="mx-auto mt-4 max-w-xl whitespace-pre-line opacity-90">{block.body}</p>
-    <div className="mt-6"><ActionLink block={block} navigate={navigate} inverse/></div>
-  </section>;
-  if (block.kind==='text') return <section className={'mx-auto py-10 @md:py-16 '+(variant==='minimal'?'max-w-[660px]':'max-w-4xl')}><div className={variant==='centered'?'text-center':''}>{title}{description}</div></section>;
-  if (block.kind==='features'||block.kind==='services'||block.kind==='products'||block.kind==='logos') {
-    const list = rows.length?rows:[[block.title]];
-    return <section className="py-9"><div className="mb-7">{title}</div>
-      <div className={'grid gap-3 '+(variant==='list'?'grid-cols-1':'grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3')}>
-        {list.map((parts,i)=><div key={i} className={'overflow-hidden border p-5 '+(variant==='minimal'?'border-transparent !px-0':'')} style={{...common,borderColor:'var(--studio-border)',backgroundColor:variant==='minimal'?'transparent':'var(--studio-surface)'}}>
-          {block.kind==='products'&&<div className="mb-4 overflow-hidden" style={common}><ImageSurface src={block.imageUrl} alt={parts[0]}/></div>}
-          {block.kind!=='logos'&&block.kind!=='products'&&<div className="mb-3 flex size-10 items-center justify-center rounded-full text-sm font-bold" style={{backgroundColor:accent,color:foregroundOnAccent(accent)}}>{String(i+1).padStart(2,'0')}</div>}
-          <h3 className="font-semibold">{parts[0]}</h3>{parts[1]&&<p className="mt-2 text-sm opacity-70">{parts[1]}</p>}
-        </div>)}
-      </div>
-    </section>;
-  }
-  if (block.kind==='stats') return <section className="py-9"><div className="mb-8">{title}</div><div className="grid grid-cols-2 gap-5 @md:grid-cols-3">{rows.map((p,i)=><div key={i} className="border-l-4 pl-4" style={{borderColor:accent}}><div className="text-3xl font-extrabold @md:text-5xl">{p[0]}</div><p className="mt-2 text-sm opacity-70">{p[1]}</p></div>)}</div></section>;
-  if (block.kind==='pricing'||block.kind==='testimonials'||block.kind==='team') return <section className="py-10"><div className="mb-7">{title}</div>
-    <div className="grid gap-4 @md:grid-cols-3">{rows.map((p,i)=><div key={i} className="border p-6" style={{...common,borderColor:'var(--studio-border)',backgroundColor:'var(--studio-surface)'}}>
-      {block.kind==='testimonials'&&<div className="mb-4 text-lg" style={{color:accent}}>★★★★★</div>}
-      <h3 className="text-lg font-bold">{p[0]}</h3><p className="mt-4 text-sm leading-7 opacity-75">{p[1]||''}</p>
-      {p[2]&&<p className="mt-5 border-t pt-4 text-sm font-semibold" style={{borderColor:'var(--studio-border)'}}>{p[2]}</p>}
-    </div>)}</div></section>;
-  if (block.kind==='faq') return <section className="mx-auto max-w-4xl py-12">{title}<div className="mt-8 divide-y" style={{borderColor:'var(--studio-border)'}}>
-    {rows.map((p,i)=><details key={i} className="group py-5"><summary className="flex cursor-pointer list-none items-center justify-between font-semibold">{p[0]}<ChevronDown size={18}/></summary><p className="pt-3 text-sm leading-7 opacity-70">{p[1]||''}</p></details>)}
-  </div></section>;
-  if (block.kind==='contact') return <section className="my-10 grid gap-7 border p-7 @md:grid-cols-2 @md:p-10" style={{...common,borderColor:'var(--studio-border)',backgroundColor:'var(--studio-surface)'}}>
-    <div>{title}<p className="mt-5 whitespace-pre-line text-sm leading-8 opacity-75">{block.body}</p></div>
-    <div className="rounded-xl border p-6 text-sm" style={{borderColor:'var(--studio-border)'}}><p className="font-bold">Liên hệ trực tiếp</p><p className="mt-3 opacity-70">Thông tin ở bên trái là dữ liệu mẫu. Hãy thay bằng thông tin thật trước khi phát hành.</p></div>
-  </section>;
-  if(block.kind==='newsletter') return <section className="my-10 px-7 py-12 text-center" style={{...common,backgroundColor:'var(--studio-surface)',border:'1px solid var(--studio-border)'}}>{title}<p className="mx-auto mt-3 max-w-xl text-sm opacity-75">{block.body}</p><p className="mt-4 text-xs opacity-60">Chức năng đăng ký nhận tin chưa kết nối máy chủ.</p></section>;
-  return null;
 }
 function TemplateThumb({template}: {template:SiteTemplate}) {
   const t=themeById(template.theme);
@@ -540,7 +448,7 @@ export default function BuilderDemoPage() {
             <span className="px-2 text-xs text-slate-500">{viewport==='mobile'?'390 px':viewport==='tablet'?'768 px':'Desktop'}</span>
           </div>
           <div className="overflow-x-auto pb-5">
-            <div className="@container mx-auto overflow-hidden border shadow-lg transition-[width] duration-200" style={{...templatePreviewColors(theme),width:canvasWidth,maxWidth:'100%',backgroundColor:'var(--studio-background)',color:'var(--studio-foreground)',fontFamily:'var(--studio-font)',borderColor:'var(--studio-border)',borderRadius:'var(--studio-radius)'}}>
+            <div className="@container mx-auto overflow-hidden border shadow-lg transition-[width] duration-200" style={{...studioColors(theme),width:canvasWidth,maxWidth:'100%',backgroundColor:'var(--studio-background)',color:'var(--studio-foreground)',fontFamily:'var(--studio-font)',borderColor:'var(--studio-border)',borderRadius:'var(--studio-radius)'}}>
               <div className="flex flex-wrap items-center justify-between gap-3 border-b px-5 py-5 @md:px-10" style={{borderColor:'var(--studio-border)'}}>
                 <button onClick={()=>navigate(doc.pages[0].slug)} className="text-lg font-bold tracking-tight">{doc.title||'Website của tôi'}</button>
                 <nav className="flex flex-wrap gap-2 @md:gap-5">{doc.pages.map(p=><button key={p.id} onClick={()=>navigate(p.slug)} className={'text-xs @md:text-sm '+(p.id===activePage.id?'font-bold underline underline-offset-8':'opacity-70 hover:opacity-100')}>{p.title}</button>)}</nav>
@@ -611,7 +519,7 @@ export default function BuilderDemoPage() {
             <div className="my-4 overflow-hidden rounded-lg border border-slate-200"><TemplateThumb template={currentTemplate}/></div>
             <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-700">Trang chủ thực tế từ mẫu</p>
             <div className="h-56 overflow-y-auto rounded-lg border border-slate-200 bg-white">
-              <div className="@container" style={{...templatePreviewColors(themeById(currentTemplate.theme)),backgroundColor:'var(--studio-background)',color:'var(--studio-foreground)',fontFamily:'var(--studio-font)',fontSize:'12px'}}>
+              <div className="@container" style={{...studioColors(themeById(currentTemplate.theme)),backgroundColor:'var(--studio-background)',color:'var(--studio-foreground)',fontFamily:'var(--studio-font)',fontSize:'12px'}}>
                 <div className="border-b px-4 py-3 text-sm font-bold" style={{borderColor:'var(--studio-border)'}}>{currentTemplate.name}</div>
                 <div className="px-3">{candidateDocument.pages[0].blocks.slice(0,3).map(b=><div key={b.id}><BlockPreview block={b} theme={themeById(currentTemplate.theme)} navigate={()=>{}}/></div>)}</div>
               </div>
