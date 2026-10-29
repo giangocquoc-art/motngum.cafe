@@ -90,6 +90,8 @@ jobs:
             test "$code" = "$wanted" || { echo "Unexpected $path status: $code"; cat /tmp/response.json; exit 1; }
           }
           check_code /builder-demo 200
+          check_code /api/sites 401
+          check_code /s/never-published 404
           check_code /api/user 401
           check_code /api/team 401
           check_code /api/stripe/checkout 404
@@ -113,6 +115,9 @@ jobs:
       - name: Verify real signed-cookie JWT revocation, scoped membership and PostgreSQL unique index
         working-directory: commerce-platform/control-plane
         run: node test/auth-db-session.mjs
+      - name: Builder two-tenant site lifecycle E2E
+        working-directory: commerce-platform/control-plane
+        run: node test/builder-site-e2e.mjs
       - name: Block unsafe default demo seed
         run: |
           set -euo pipefail
