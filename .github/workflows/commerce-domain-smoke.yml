@@ -1,0 +1,27 @@
+name: Commerce Custom Domain Smoke
+on:
+  push:
+    branches: [commerce-rebuild-2026-10]
+    paths: [commerce-platform/domain-smoke.trigger]
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  verify-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Verify Cloudflare DNS, SSL, Worker and D1 routing
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=https://commerce-preview.motngum.cafe
+          for i in $(seq 1 20); do
+            if curl --connect-timeout 10 --max-time 20 --fail --silent --show-error "$base/health" > /tmp/health.json; then break; fi
+            sleep 4
+          done
+          jq -e '.ok==true and .commerceReady==false' /tmp/health.json
+          curl --fail --silent --show-error "$base/api/status" > /tmp/status.json
+          jq -e '.productionReady==false and .merchantCount==0 and .connectedCommerceEngines==0' /tmp/status.json
+          curl --silent --show-error "$base/api/ready" -o /tmp/notready.json -w '%{http_code}' > /tmp/notready.code
+          test "$(cat /tmp/notready.code)" = "503"
+          echo "PASS Cloudflare custom domain -> Worker -> D1, real commerce correctly blocked."
