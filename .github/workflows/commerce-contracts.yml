@@ -1,0 +1,20 @@
+name: Commerce Multi-Tenant Contract Tests
+on:
+  push:
+    branches: [commerce-rebuild-2026-10]
+    paths: [commerce-platform/contracts.trigger]
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: commerce-rebuild-2026-10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify 100 simultaneous tenant connections and cross-tenant protections
+        run: npm --prefix commerce-platform/packages/tenant-contract test
