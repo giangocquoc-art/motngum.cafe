@@ -503,13 +503,13 @@ export default function BuilderDemoPage() {
           </button>
           {cloudSiteId&&<button onClick={publishCloud} disabled={cloudWorking||cloudDirty} className="rounded-lg border border-slate-400 px-3 py-2 text-xs font-semibold disabled:opacity-50">Xuất bản staging</button>}
           {publishedUrl&&<a href={publishedUrl} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-green-700 px-3 py-2 text-xs font-semibold text-green-900">Mở site công khai</a>}
-          {publishedUrl&&<button onClick={unpublishCloud} disabled={cloudWorking} className="rounded-lg border border-red-300 px-3 py-2 text-xs font-semibold text-red-700 disabled:opacity-40">Gỡ xuất bản</button>
+          {publishedUrl&&<button onClick={unpublishCloud} disabled={cloudWorking} className="rounded-lg border border-red-300 px-3 py-2 text-xs font-semibold text-red-700 disabled:opacity-40">Gỡ xuất bản</button>}
           <button onClick={exportJson} className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white"><Download size={16}/>Xuất JSON</button>
         </div>
       </div>
     </header>
     <div className="mx-auto max-w-[1750px] px-3 py-3 @md:px-5">
-      <div role="status" aria-live="polite" className="mb-3 rounded-lg bg-white px-4 py-2 text-xs text-slate-600">{status} Đang xem bản thử nghiệm, không có nút xuất bản hoặc thu tiền.</div>
+      <div role="status" aria-live="polite" className="mb-3 rounded-lg bg-white px-4 py-2 text-xs text-slate-600">{status} Đang sử dụng staging; chỉ phát hành snapshot trong phạm vi URL thử nghiệm, không nhận đơn hàng hoặc thu tiền.</div>
       <div className={'grid items-start gap-4 '+(isEditing?'xl:grid-cols-[270px_minmax(0,1fr)_270px]':'')}>
         {isEditing&&<aside className="overflow-hidden rounded-xl border border-slate-200 bg-white xl:sticky xl:top-24">
           <div className="grid grid-cols-4 border-b border-slate-200 text-[11px] font-semibold">
