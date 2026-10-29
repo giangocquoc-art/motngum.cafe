@@ -14,6 +14,7 @@ import {
 } from '../lib/builder/puck-adapter';
 
 const deepCopy = <T,>(x: T): T => structuredClone(x);
+const legacySeed = SITE_TEMPLATES.find(t=>t.id==='maison-cafe')!;
 const errorCode = (fn: () => unknown, expected: string) =>
   assert.throws(fn, (error: unknown) => error instanceof PuckConversionError && error.code === expected);
 
@@ -58,7 +59,7 @@ test('all 16 kinds × 8 layouts × 8 themes round-trip with Vietnamese/Unicode a
   }
 });
 test('save of one Puck page cannot change the metadata, sibling pages or persisted input', () => {
-  const source = buildTemplateDocument(SITE_TEMPLATES[0]);
+  const source = buildTemplateDocument(legacySeed);
   const snapshot = deepCopy(source);
   const workspace = siteToPuckWorkspace(source);
   workspace.pages[1].data.content[0].props.body = 'Cập nhật riêng cho trang giới thiệu';
@@ -77,7 +78,7 @@ test('save of one Puck page cannot change the metadata, sibling pages or persist
   errorCode(() => applyPuckPage(source, 'does-not-exist', workspace.pages[0].data), 'page_not_found');
 });
 test('rejects unknown Puck components, custom props, missing fields and nested regions', () => {
-  const source=buildTemplateDocument(SITE_TEMPLATES[0]);
+  const source=buildTemplateDocument(legacySeed);
   const basis=siteToPuckWorkspace(source);
   const mutations: Array<[string, (copy: typeof basis) => void]> = [
     ['unknown_component_0', d => { (d.pages[0].data.content[0] as any).type='InjectedWidget'; }],
@@ -105,7 +106,7 @@ test('rejects unknown Puck components, custom props, missing fields and nested r
   assert.deepEqual(puckWorkspaceToSite(basis),source);
 });
 test('accepts an empty Puck root props object but rejects nonempty root props', () => {
-  const doc=buildTemplateDocument(SITE_TEMPLATES[0]);
+  const doc=buildTemplateDocument(legacySeed);
   const data=siteToPuckWorkspace(doc);
   (data.pages[0].data.root as any).props={};
   assert.deepEqual(puckWorkspaceToSite(data),doc);
@@ -116,7 +117,7 @@ test('accepts an empty Puck root props object but rejects nonempty root props', 
   errorCode(() => puckWorkspaceToSite(data),'unsupported_root_fields');
 });
 test('Puck block ordering changes only in selected page and cannot exceed limits', () => {
-  const doc=buildTemplateDocument(SITE_TEMPLATES[0]);
+  const doc=buildTemplateDocument(legacySeed);
   const payload=siteToPuckWorkspace(doc);
   payload.pages[0].data.content.reverse();
   const edited=applyPuckPage(doc,doc.pages[0].id,payload.pages[0].data);
@@ -148,7 +149,7 @@ test('field registry covers 16 Puck component types and has no static default ID
 });
 
 test('page slug rename atomically rewrites cross-page CTA links and remains reversible via Puck',()=>{
-  const original=buildTemplateDocument(SITE_TEMPLATES[0]);
+  const original=buildTemplateDocument(legacySeed);
   const destination=original.pages.find(page=>page.slug==='lien-he')!;
   const before=JSON.stringify(original);
   const refs=countPageReferences(original,destination.id);
@@ -163,7 +164,7 @@ test('page slug rename atomically rewrites cross-page CTA links and remains reve
     (error:unknown)=>error instanceof SitePageOperationError&&error.code==='duplicate_slug');
 });
 test('deleting a referenced page requires explicit destination and preserves all link targets',()=>{
-  const doc=buildTemplateDocument(SITE_TEMPLATES[0]);
+  const doc=buildTemplateDocument(legacySeed);
   const contact=doc.pages.find(page=>page.slug==='lien-he')!;
   const about=doc.pages.find(page=>page.slug==='gioi-thieu')!;
   assert.ok(countPageReferences(doc,contact.id)>0);
@@ -183,7 +184,7 @@ test('deleting a referenced page requires explicit destination and preserves all
 });
 
 test('C3 page creation, naming, order and duplication preserve immutable v2 and distinct block IDs',()=>{
-  const source=buildTemplateDocument(SITE_TEMPLATES[0]),before=structuredClone(source);
+  const source=buildTemplateDocument(legacySeed),before=structuredClone(source);
   const added=addSitePage(source,'Hồ sơ công ty','ho-so-cong-ty');
   assert.equal(added.pages.length,source.pages.length+1);
   assert.equal(added.pages.at(-1)?.slug,'ho-so-cong-ty');
@@ -210,7 +211,7 @@ test('C3 page creation, naming, order and duplication preserve immutable v2 and 
     (e:unknown)=>e instanceof SitePageOperationError&&e.code==='page_boundary');
 });
 test('C4 editor site limits fail closed without mutating source',()=>{
-  let doc=buildTemplateDocument(SITE_TEMPLATES[0]);
+  let doc=buildTemplateDocument(legacySeed);
   for(let i=doc.pages.length;i<12;i++)
     doc=addSitePage(doc,'Trang '+i,'trang-'+i);
   assert.equal(doc.pages.length,12);
