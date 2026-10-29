@@ -194,12 +194,44 @@ try{
   await drawer.waitFor({state:'visible'});
   await rootZone.waitFor({state:'visible'});
   const beforeDrag=(await saved()).draft_document.pages.find(p=>p.slug==='gioi-thieu').blocks.length;
-  await drawer.dragTo(rootZone,{timeout:15000,force:true});
-  await until(async()=>{
+  const from=await drawer.boundingBox(),to=await rootZone.boundingBox();
+  assert.ok(from&&to,'Puck drawer and iframe root dropzone must have actual screen bounds');
+  console.log('Puck DnD geometry',JSON.stringify({from,to}));
+  await drawer.dragTo(rootZone,{timeout:15000,
+    sourcePosition:{x:Math.min(40,from.width/2),y:from.height/2},
+    targetPosition:{x:to.width/2,y:Math.min(to.height-12,Math.max(24,to.height-55))}});
+  let inserted=false;
+  for(let attempt=0;attempt<20;attempt++){
     const row=await saved();
-    return row.draft_document.pages.find(p=>p.slug==='gioi-thieu').blocks.length===
-      beforeDrag+1;
-  },'Puck drag/drop inside actual iframe autosaved');
+    if(row.draft_document.pages.find(p=>p.slug==='gioi-thieu').blocks.length===beforeDrag+1){
+      inserted=true;break;
+    }
+    await new Promise(resolve=>setTimeout(resolve,200));
+  }
+  if(!inserted){
+    // dnd-kit uses pointer movement thresholds and crossing the iframe.
+    // If Playwright's direct drag events miss them, simulate a slow physical
+    // pointer gesture with multiple intermediate moves, not a fabricated API.
+    await page.mouse.move(from.x+Math.min(40,from.width/2),from.y+from.height/2);
+    await page.mouse.down();
+    await page.mouse.move(from.x+75,from.y+from.height/2+20,{steps:8});
+    await page.mouse.move(to.x+to.width/2,to.y+Math.min(to.height-12,Math.max(24,to.height-55)),{steps:35});
+    await page.mouse.up();
+  }
+  try{
+    await until(async()=>{
+      const row=await saved();
+      return row.draft_document.pages.find(p=>p.slug==='gioi-thieu').blocks.length===
+        beforeDrag+1;
+    },'Puck drag/drop inside actual iframe autosaved',9000);
+  }catch(error){
+    const row=await saved();
+    console.error('Puck DnD failure diagnostics',JSON.stringify({
+      beforeDrag,blocks:row.draft_document.pages.map(p=>({slug:p.slug,length:p.blocks.length})),
+      notices:await page.locator('[role="alert"],[role="status"]').allTextContents()
+    }));
+    throw error;
+  }
   const dragged=(await saved()).draft_document.pages.find(p=>p.slug==='gioi-thieu').blocks;
   assert.equal(dragged.at(-1).buttonUrl,'');
   assert.equal(new Set(dragged.map(block=>block.id)).size,dragged.length);
