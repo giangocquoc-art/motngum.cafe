@@ -199,7 +199,7 @@ try{
   console.log('Puck DnD geometry',JSON.stringify({from,to}));
   await drawer.dragTo(rootZone,{timeout:15000,
     sourcePosition:{x:Math.min(40,from.width/2),y:from.height/2},
-    targetPosition:{x:to.width/2,y:Math.min(to.height-12,Math.max(24,to.height-55))}});
+    targetPosition:{x:to.width/2,y:Math.max(30,Math.min(125,to.height/2))}});
   let inserted=false;
   for(let attempt=0;attempt<20;attempt++){
     const row=await saved();
@@ -215,7 +215,7 @@ try{
     await page.mouse.move(from.x+Math.min(40,from.width/2),from.y+from.height/2);
     await page.mouse.down();
     await page.mouse.move(from.x+75,from.y+from.height/2+20,{steps:8});
-    await page.mouse.move(to.x+to.width/2,to.y+Math.min(to.height-12,Math.max(24,to.height-55)),{steps:35});
+    await page.mouse.move(to.x+to.width/2,to.y+Math.max(30,Math.min(125,to.height/2)),{steps:35});
     await page.mouse.up();
   }
   try{
