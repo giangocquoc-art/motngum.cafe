@@ -107,6 +107,9 @@ test('accepts an empty Puck root props object but rejects nonempty root props', 
   const data=siteToPuckWorkspace(doc);
   (data.pages[0].data.root as any).props={};
   assert.deepEqual(puckWorkspaceToSite(data),doc);
+  // Actual Puck 0.24 injects synthetic root.props.id='root' during initialization.
+  (data.pages[0].data.root as any).props={id:'root'};
+  assert.deepEqual(puckWorkspaceToSite(data),doc);
   (data.pages[0].data.root as any).props={branding:'unknown'};
   errorCode(() => puckWorkspaceToSite(data),'unsupported_root_fields');
 });
