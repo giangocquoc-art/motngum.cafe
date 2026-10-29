@@ -143,8 +143,10 @@ export default function BuilderDemoPage() {
   const [cloudVersion,setCloudVersion]=useState<number|null>(null);
   const [cloudDirty,setCloudDirty]=useState(false);
   const [cloudWorking,setCloudWorking]=useState(false);
+  const [autoSaveBlocked,setAutoSaveBlocked]=useState(false);
   const [publishedUrl,setPublishedUrl]=useState<string|null>(null);
   const revisionRef=useRef(0);
+  const saveInFlightRef=useRef(false);
   const undoRef=useRef<SiteDocument[]>([]);
   const redoRef=useRef<SiteDocument[]>([]);
   const dragRef=useRef<{id?:string;kind?:BlockKind}|null>(null);
@@ -174,7 +176,7 @@ export default function BuilderDemoPage() {
           if(cancelled)return;
           setDoc(stored);setPageId(stored.pages[0].id);setGallery(false);
           setCloudSiteId(data.site.id);setCloudVersion(data.site.version);setCloudDirty(false);
-          setDraftMode('cloud');
+          setDraftMode('cloud');setAutoSaveBlocked(false);
           setPublishedUrl(data.site.publishedVersion?'/s/'+data.site.slug:null);
           setStatus('Đã tải website từ PostgreSQL, revision '+data.site.version+'.');
         }catch(e) {
@@ -214,6 +216,15 @@ export default function BuilderDemoPage() {
     window.addEventListener('beforeunload',warn);
     return ()=>window.removeEventListener('beforeunload',warn);
   },[cloudSiteId,cloudDirty]);
+  // Cloud saves are debounced and serialized. A failed write never starts
+  // repeated retries or silently overwrites an independently edited revision.
+  useEffect(()=>{
+    if(!hydrated || draftMode!=='cloud'||!cloudSiteId||cloudVersion===null ||
+       !cloudDirty||cloudWorking||autoSaveBlocked)return;
+    const timer=window.setTimeout(()=>{void saveCloud();},1600);
+    return ()=>window.clearTimeout(timer);
+  },[doc,hydrated,draftMode,cloudSiteId,cloudVersion,cloudDirty,cloudWorking,autoSaveBlocked]);
+
   function commit(next:SiteDocument) {
     if(next===doc)return;
     undoRef.current=[...undoRef.current.slice(-39),doc];
@@ -333,7 +344,8 @@ export default function BuilderDemoPage() {
   }
 
   async function saveCloud() {
-    if(cloudWorking || !hydrated || (draftMode!=='local' && draftMode!=='cloud'))return;
+    if(saveInFlightRef.current || cloudWorking || !hydrated || (draftMode!=='local' && draftMode!=='cloud'))return;
+    saveInFlightRef.current=true;
     const savingRevision=revisionRef.current;
     setCloudWorking(true);setStatus('Đang lưu bản nháp vào PostgreSQL...');
     const route=cloudSiteId?'/api/sites/'+encodeURIComponent(cloudSiteId):'/api/sites';
@@ -348,15 +360,15 @@ export default function BuilderDemoPage() {
         throw new Error(data.error||'Lưu site thất bại');
       }
       const id=cloudSiteId||data.site.id;
-      setCloudSiteId(id);setCloudVersion(data.site.version);setDraftMode('cloud');
+      setCloudSiteId(id);setCloudVersion(data.site.version);setDraftMode('cloud');setAutoSaveBlocked(false);
       if(revisionRef.current===savingRevision){
         setCloudDirty(false);setStatus('Đã lưu an toàn trên PostgreSQL, revision '+data.site.version+'.');
       }else{
         setCloudDirty(true);setStatus('Đã lưu một phiên bản, nhưng còn chỉnh sửa mới chưa lưu. Hãy nhấn Lưu lên cloud lần nữa.');
       }
       if(!cloudSiteId)window.history.replaceState(null,'','/builder-demo?site='+encodeURIComponent(id));
-    }catch(e){setStatus('Không thể lưu cloud: '+(e instanceof Error?e.message:'Lỗi không xác định'));}
-    finally{setCloudWorking(false);}
+    }catch(e){setAutoSaveBlocked(true);setStatus('Tự lưu đã tạm dừng: '+(e instanceof Error?e.message:'Lỗi không xác định')+'. Nhấn Lưu lên cloud để thử lại sau khi xử lý.');}
+    finally{saveInFlightRef.current=false;setCloudWorking(false);}
   }
   async function publishCloud() {
     if(!cloudSiteId || cloudVersion===null || cloudDirty || cloudWorking) {
@@ -426,7 +438,7 @@ export default function BuilderDemoPage() {
           <a href="/dashboard/sites" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold">Website của tôi</a>
           {cloudSiteId&&<a href={'/dashboard/sites/'+cloudSiteId+'/preview'} className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold" target="_blank" rel="noopener noreferrer">Preview nháp</a>}
           <button onClick={saveCloud} disabled={cloudWorking||!hydrated} className="inline-flex items-center gap-2 rounded-lg bg-amber-700 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
-            {cloudWorking?'Đang xử lý...':cloudDirty||!cloudSiteId?'Lưu lên cloud':'Đã lưu trên cloud'}
+            {cloudWorking?'Đang lưu...':autoSaveBlocked?'Thử lưu lại':cloudDirty||!cloudSiteId?'Lưu lên cloud':'Đã lưu trên cloud'}
           </button>
           {cloudSiteId&&<button onClick={publishCloud} disabled={cloudWorking||cloudDirty} className="rounded-lg border border-slate-400 px-3 py-2 text-xs font-semibold disabled:opacity-50">Xuất bản staging</button>}
           {publishedUrl&&<a href={publishedUrl} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-green-700 px-3 py-2 text-xs font-semibold text-green-900">Mở site công khai</a>}
@@ -516,7 +528,7 @@ export default function BuilderDemoPage() {
           <button onClick={()=>fileInput.current?.click()} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-xs hover:bg-slate-100"><FileJson size={16}/>Nhập website JSON</button>
           <input className="hidden" ref={fileInput} type="file" accept="application/json,.json" onChange={importJson}/>
           <button onClick={reset} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-xs hover:bg-slate-100"><RotateCcw size={16}/>Đặt lại mẫu</button>
-          <p className="mt-4 rounded-lg bg-slate-50 p-3 text-[11px] leading-5 text-slate-600">Trình duyệt có bản sao cục bộ. Dự án liên kết tài khoản có thể lưu thủ công lên PostgreSQL và phát hành snapshot staging; ảnh upload, form thật và thanh toán vẫn chưa bật.</p>
+          <p className="mt-4 rounded-lg bg-slate-50 p-3 text-[11px] leading-5 text-slate-600">Bản nháp cục bộ lưu trên trình duyệt; website liên kết tài khoản sẽ tự lưu lên PostgreSQL sau khi dừng chỉnh sửa. Nếu có xung đột, tự lưu sẽ dừng để bảo vệ dữ liệu. Ảnh upload, form và thanh toán chưa bật.</p>
         </aside>}
       </div>
     </div>
