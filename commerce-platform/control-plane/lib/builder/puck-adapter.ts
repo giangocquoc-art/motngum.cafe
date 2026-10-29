@@ -112,14 +112,19 @@ export function siteToPuckWorkspace(input: unknown): PuckWorkspace {
 function puckDataToBlocks(value: unknown): Block[] {
   if (!record(value)) return reject('invalid_puck_data');
   if (!Array.isArray(value.content)) return reject('missing_content');
-  // Puck can represent an empty root either as {} or {props:{}}.
-  // A populated root must still be rejected because v2 has no root fields.
+  // Puck 0.24 injects a reserved root.props.id='root' via toComponent().
+  // It is internal editor metadata, not a site field. No other root data may
+  // pass through v2 because the v2 site schema cannot store it safely.
   if (!record(value.root)) return reject('unsupported_root_fields');
   const rootKeys=Object.keys(value.root);
-  if (rootKeys.length > 0 &&
-      !(rootKeys.length === 1 && rootKeys[0] === 'props' &&
-        record(value.root.props) && Object.keys(value.root.props).length === 0))
-    return reject('unsupported_root_fields');
+  if (rootKeys.length > 0) {
+    if (rootKeys.length !== 1 || rootKeys[0] !== 'props' || !record(value.root.props))
+      return reject('unsupported_root_fields');
+    const props=value.root.props;
+    if (Object.keys(props).length > 1 ||
+        (Object.keys(props).length === 1 && props.id !== 'root'))
+      return reject('unsupported_root_fields');
+  }
   if (value.zones !== undefined &&
       (!record(value.zones) || Object.keys(value.zones).length !== 0))
     return reject('nested_zones_not_supported_in_v2');
