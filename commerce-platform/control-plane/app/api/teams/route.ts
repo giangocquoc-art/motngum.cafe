@@ -1,3 +1,4 @@
+import { sameOriginRequest } from '@/lib/auth/origin';
 import { and, eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/drizzle';
@@ -25,8 +26,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   const user = await getUser();
   if (!user) return json({ error: 'authentication_required' }, 401);
-  const origin = request.headers.get('origin');
-  if (!origin || origin !== request.nextUrl.origin) return json({ error: 'same_origin_required' }, 403);
+  if (!sameOriginRequest(request)) return json({ error: 'same_origin_required' }, 403);
   const contentType = request.headers.get('content-type') || '';
   if (!contentType.startsWith('application/json')) return json({ error: 'json_required' }, 415);
   if (Number(request.headers.get('content-length') ?? 0) > 512) return json({ error: 'payload_too_large' }, 413);
