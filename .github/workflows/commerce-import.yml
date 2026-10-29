@@ -1,0 +1,64 @@
+name: Import pinned open-source commerce foundations
+on:
+  push:
+    branches: [commerce-rebuild-2026-10]
+    paths:
+      - "commerce-platform/bootstrap.trigger"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: commerce-bootstrap
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout isolated integration branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          ref: commerce-rebuild-2026-10
+      - name: Import pinned upstream repositories (MIT)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p commerce-platform
+          work="$(mktemp -d)"
+          git clone --filter=blob:none --no-checkout https://github.com/medusajs/dtc-starter.git "$work/dtc"
+          git -C "$work/dtc" checkout --detach 6965d8ac4185740c521a2b26855258ea20817b8e
+          test "$(git -C "$work/dtc" rev-parse HEAD)" = "6965d8ac4185740c521a2b26855258ea20817b8e"
+          git clone --filter=blob:none --no-checkout https://github.com/nextjs/saas-starter.git "$work/saas"
+          git -C "$work/saas" checkout --detach 6e33e58b1e553a41fe22e6b941a7229a002de361
+          test "$(git -C "$work/saas" rev-parse HEAD)" = "6e33e58b1e553a41fe22e6b941a7229a002de361"
+          test -f "$work/dtc/LICENSE"
+          test -f "$work/saas/LICENSE"
+          test ! -d commerce-platform/commerce
+          test ! -d commerce-platform/control-plane
+          mkdir -p commerce-platform/commerce commerce-platform/control-plane
+          tar -C "$work/dtc" --exclude=.git --exclude=node_modules -cf - . | tar -C commerce-platform/commerce -xf -
+          tar -C "$work/saas" --exclude=.git --exclude=node_modules -cf - . | tar -C commerce-platform/control-plane -xf -
+          printf '%s\n' 'Upstream imported: Medusa DTC and Next.js SaaS Starter at pinned commits.'
+          test -f commerce-platform/commerce/apps/backend/medusa-config.ts
+          test -f commerce-platform/commerce/apps/storefront/package.json
+          test -f commerce-platform/control-plane/package.json
+      - name: Protect against source secrets or demo production credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --short | head -25
+          test -f commerce-platform/commerce/LICENSE
+          test -f commerce-platform/control-plane/LICENSE
+          # Starter examples have demonstration users and payment setup; do not deploy these to production.
+          printf '%s\n' "Source is imported only. Production enablement remains blocked until removing demo seeds, adding tenant isolation and testing PSPs."
+      - name: Commit imported source into isolated integration branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add commerce-platform/commerce commerce-platform/control-plane
+          git diff --cached --quiet && exit 0
+          git commit -m "feat(commerce): vendor pinned Medusa DTC and Next.js SaaS foundations"
+          git push origin HEAD:commerce-rebuild-2026-10
