@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { BlockPreview, studioColors } from '@/components/site-block';
 import { validateSiteDocument } from '@/lib/builder/validation';
+import { countPageReferences, deleteSitePage, renameSitePage } from '@/lib/builder/page-operations';
 import {
   BLOCK_KINDS, BLOCK_VARIANTS, DEFAULT_TEMPLATE_ID, KIND_LABELS,
   SITE_TEMPLATES, TEMPLATE_CATEGORIES, THEMES, buildTemplateDocument, createBlock, newId, themeById,
@@ -252,15 +253,17 @@ export default function BuilderDemoPage() {
     commit({...doc,pages:doc.pages.map(p=>p.id===activePage.id?{...p,...patch}:p)});
   }
   function changeSlug(raw:string) {
-    const slug=slugify(raw);if(!slug)return;
-    if(doc.pages.some(p=>p.slug===slug&&p.id!==activePage.id)){setStatus('Đường dẫn trang đã được dùng.');return;}
-    const previous=activePage.slug;
-    if(previous===slug)return;
-    commit({...doc,pages:doc.pages.map(p=>({
-      ...p,
-      ...(p.id===activePage.id?{slug}:{}),
-      blocks:p.blocks.map(b=>b.buttonUrl==='#page:'+previous?{...b,buttonUrl:'#page:'+slug}:b)
-    }))});
+    const slug=slugify(raw);
+    if(!slug)return;
+    try {
+      const next=renameSitePage(doc,activePage.id,slug);
+      if(next.pages.some((page,i)=>page.slug!==doc.pages[i].slug)) {
+        commit(next);
+        setStatus('Đã cập nhật đường dẫn trang và liên kết nội bộ đang trỏ tới trang này.');
+      }
+    } catch {
+      setStatus('Không thể đổi đường dẫn: trùng slug hoặc định dạng không hợp lệ.');
+    }
   }
   function duplicatePage() {
     if(doc.pages.length>=MAX_PAGES||totalBlocks+activePage.blocks.length>MAX_TOTAL){setStatus('Không đủ dung lượng để nhân bản trang.');return;}
@@ -271,9 +274,32 @@ export default function BuilderDemoPage() {
   }
   function deletePage() {
     if(doc.pages.length===1){setStatus('Cần giữ ít nhất một trang.');return;}
-    if(!window.confirm('Xóa trang '+activePage.title+' và toàn bộ nội dung?'))return;
-    commit({...doc,pages:doc.pages.filter(p=>p.id!==activePage.id)});
-    setPageId(doc.pages.find(p=>p.id!==activePage.id)?.id||'');setSelectedId(null);
+    const alternatives=doc.pages.filter(page=>page.id!==activePage.id);
+    let replacementId:string|undefined;
+    const incoming=countPageReferences(doc,activePage.id);
+    if(incoming>0) {
+      const answer=window.prompt(
+        'Trang này đang được '+incoming+' nút CTA ở trang khác trỏ tới.\n'+
+        'Để không tạo liên kết hỏng, nhập slug trang thay thế:\n'+
+        alternatives.map(page=>page.slug+' ('+page.title+')').join('\n'),
+        alternatives[0].slug
+      );
+      if(answer===null)return;
+      const replacement=alternatives.find(page=>page.slug===answer.trim());
+      if(!replacement){setStatus('Slug thay thế không hợp lệ; trang chưa bị xóa.');return;}
+      replacementId=replacement.id;
+    }
+    if(!window.confirm('Xóa trang '+activePage.title+' và toàn bộ nội dung?'+
+      (incoming>0?' Các nút đang liên kết sẽ được chuyển sang trang thay thế.':'')))return;
+    try {
+      const next=deleteSitePage(doc,activePage.id,replacementId);
+      commit(next);
+      setPageId(next.pages[0].id);
+      setSelectedId(null);
+      setStatus('Đã xóa trang'+(incoming>0?' và cập nhật '+incoming+' liên kết nội bộ.':'.'));
+    } catch {
+      setStatus('Không thể xóa trang mà không bảo toàn liên kết.');
+    }
   }
   function exportJson() {
     const blob=new Blob([JSON.stringify(doc,null,2)],{type:'application/json'});
