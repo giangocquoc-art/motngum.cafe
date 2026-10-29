@@ -66,7 +66,7 @@ test("Helping the classroom sparrow with Xiao Yu depends on prior friendship his
  const friend=go(CARE,"day2-bird"),solo=go(WONDER,"day2-bird");
  assert.ok(E.availableOptions(D.byId["day2-bird"],friend).some(o=>o.id==="bird-with-friend"));
  assert.ok(!E.availableOptions(D.byId["day2-bird"],solo).some(o=>o.id==="bird-with-friend"));
- assert.ok(E.conditionText(D.byId["day2-bird"],friend).join(" ").includes("bức tranh"));
+ assert.ok(E.conditionText(D.byId["day2-bird"],friend).join(" ").toLowerCase().includes("tranh chim sẻ"));
  assert.equal(E.step(solo,"bird-with-friend").ok,false);
 });
 test("Every authorized choice updates memory/relationships without treating Chinese fluency as character morality",()=>{
