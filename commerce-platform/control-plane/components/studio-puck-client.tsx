@@ -224,6 +224,7 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
         key={activePageId+'-'+document.themeId}
         config={config}
         data={pageData}
+        ui={{plugin:{current:'fields'}}}
         headerTitle={'Motngum Studio / '+activePage.title}
         headerPath={'/'+slug+'/'+activePage.slug}
         onChange={data=>editPuck(activePageId,data)}
