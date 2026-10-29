@@ -79,11 +79,15 @@ jobs:
             test "$code" = "$wanted" || { echo "Unexpected $path status: $code"; cat /tmp/response.json; exit 1; }
           }
           check_code /api/user 401
+          check_code /api/team 401
           check_code /api/stripe/checkout 404
           check_code /api/stripe/webhook 404 POST
           check_code /api/health 200
           jq -e '.infrastructureOk == true and .postgres == "connected" and .edge == "connected" and .commerceReady == false' /tmp/response.json
           echo "PASS: auth endpoint private, Stripe endpoints disabled, Next.js live."
+      - name: Verify real signed-cookie JWT revocation, scoped membership and PostgreSQL unique index
+        working-directory: commerce-platform/control-plane
+        run: node test/auth-db-session.mjs
       - name: Block unsafe default demo seed
         run: |
           set -euo pipefail
