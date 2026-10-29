@@ -2,6 +2,23 @@ const {test}=require("node:test"),assert=require("node:assert/strict"),fs=requir
 const root=path.resolve(__dirname,"..");
 function code(f){return fs.readFileSync(path.join(root,f),"utf8")}
 function load(f){const sandbox={module:{exports:{}}};vm.runInNewContext(code(f),sandbox);return sandbox.module.exports}
+test("phone introduction keeps the main audio action readable",()=>{
+ const css=code("readability.css");
+ assert.match(css,/@media \(max-width: 690px\)[\s\S]*?\.intro-screen \.hear\s*\{[^}]*min-height:\s*40px[^}]*font-size:\s*12px/s);
+ assert.match(css,/\.intro-screen \.book-nav button\s*\{[^}]*min-height:\s*40px[^}]*font-size:\s*12px/s,
+  "page navigation uses the actual parent structure and keeps a 40px hit area");
+ assert.match(css,/\.intro-screen \.source-details a\s*\{[^}]*min-height:\s*32px[^}]*font-size:\s*12px/s,
+  "expanded source links remain readable and easy to tap");
+ assert.match(code("intro.css"),/@media\(max-width:690px\)[\s\S]*?\.intro-screen \.brand small\{display:none\}/,
+  "the narrow intro header keeps the product name inside its fixed-height bar");
+ assert.match(code("intro.css"),/\.intro-screen>\.topbar \.source-details\[open\]\{position:absolute!important;top:calc\(100% \+ 5px\)!important;right:9px!important;bottom:auto!important;max-height:calc\(100dvh - 64px\)!important\}/,
+  "the open source note stays below the header and can use the available viewport height");
+});
+test("home review entry reads as a clear secondary action",()=>{
+ const css=code("readability.css");
+ assert.match(css,/\.sparrow-hero \.review-entry-button\s*\{[^}]*min-height:\s*44px[^}]*font-size:\s*14px\s*!important/s,
+  "the review link should be visibly secondary but large enough to read and tap");
+});
 const D=load("intro-data.js"),C=load("intro-core.js");
 const ids=[...code("nhap-mon.html").matchAll(/id="([^"]+)"/g)].map(m=>m[1]);
 function boot(store={}){
@@ -26,6 +43,7 @@ test("Intro story is navigable and saves progress without touching HSK1 storage"
  let t=boot(storage),e=t.e;
  assert.equal(e.position.textContent,"TRANG 01 / 09");
  assert.equal(e.interactive.children[0].children.length,4);
+ assert.equal(e.interactive.children[0].children[0].children[1].textContent,"Chạm","unseen characters use a short one-word action so mobile options do not wrap into clipped cards");
  e.interactive.children[0].children[0].click();
  assert.deepEqual(saved(t).discovered,["人"]);
  assert.equal(e.mainGlyph.textContent,"人");assert.equal(e.mainPinyin.textContent,"rén");
@@ -77,8 +95,31 @@ test("Intro four low-stakes visual guesses can be played through and revisited",
  assert.equal(saved(t).quizIndex,4);
  e.nextBtn.click();
  assert.equal(e.position.textContent,"TRANG 09 / 09");assert.equal(saved(t).finished,true);
- assert.ok(e.interactive.children[0].children.some(x=>x.href==="/?play=hsk1"));
+ assert.match(e.nextBtn.textContent,/HSK 1/);e.nextBtn.click();assert.equal(t.window.location.href,"/?play=hsk1");
  e.backBtn.click();assert.equal(e.position.textContent,"TRANG 08 / 09");
+});
+test("Intro ending teaches the phrase shown in the scene instead of a different lesson",()=>{
+ const t=boot(),e=t.e;for(let i=0;i<7;i++)e.nextBtn.click();for(let i=0;i<4;i++)e.nextBtn.click();e.nextBtn.click();
+ const card=e.interactive.children.find(x=>x.className==="finish-card");assert.ok(card);
+ const phrase=card.children.find(x=>x.className==="ending-phrase");
+ assert.equal(phrase.children[0].textContent,"明天见！");
+ assert.equal(phrase.children[1].textContent,"Míngtiān jiàn!");
+ assert.equal(phrase.children[2].textContent,"Hẹn gặp ngày mai!");
+ const parts=card.children.find(x=>x.className==="ending-breakdown");
+ assert.deepEqual(parts.children.map(x=>x.children.map(y=>y.textContent)),[["明天","míngtiān","ngày mai"],["见","jiàn","gặp lại"]]);
+ assert.match(card.children.find(x=>x.className==="ending-use").textContent,/tạm biệt.*gặp lại ngày mai/);
+ assert.equal(e.learningTitle.textContent,"Hẹn gặp ngày mai");
+ assert.equal(e.interactionLabel.textContent,"");
+ assert.match(D.stages[8].tip,/cùng An bước tiếp vào ngày đầu đến trường/);
+ assert.doesNotMatch(card.textContent,/你好吗|我很好|好 \(hǎo\)/,"the ending must teach the phrase shown in its scene");
+});
+test("Visual-guess recap speaks gently without turning the story into a score panel",()=>{
+ const t=boot(),e=t.e;for(let i=0;i<7;i++)e.nextBtn.click();
+ for(let i=0;i<D.quizzes.length;i++){const q=D.quizzes[i];e.interactive.children.find(x=>x.className==="quiz-choices").children[q.answer].click();e.nextBtn.click()}
+ assert.equal(e.position.textContent,"TRANG 08 / 09");
+ assert.match(e.interactive.children[0].textContent,/An khép trang sổ lại/);
+ assert.doesNotMatch(e.interactive.children[0].textContent,/nhận ra ngay \d|bỏ qua \d|đậu\/rớt/);
+ assert.equal(e.interactive.children[1].textContent,"Thử lại mấy chữ này ↻");
 });
 test("Intro reset affects only independent introduction key, never the HSK save",()=>{
  const t=boot({"hai-que-huong-progress-v3":"existing-hsk1"});
@@ -129,7 +170,7 @@ test("Intro review-only action restarts guesses without resetting story discover
 test("Gate3B: optional Hanzi curiosity can be bypassed without loading archaic meanings or changing page count",()=>{
  const t=boot(),e=t.e;for(let i=0;i<6;i++)e.nextBtn.click();
  assert.equal(saved(t).step,6);assert.equal(saved(t).curiosityOpen,false);
- assert.equal(e.mainGlyph.textContent,"女");
+ assert.equal(e.mainGlyph.textContent,"安");
  assert.equal(e.interactive.children.find(x=>x.className==="curiosity-details"),undefined);
  e.nextBtn.click();
  assert.equal(saved(t).step,7);assert.equal(saved(t).legendRead,false);
@@ -148,7 +189,7 @@ test("Gate3B: curiosity opens/closes returning to the same page, retaining progr
  panel.children[panel.children.length-1].click();
  assert.equal(saved(t).curiosityOpen,false);
  assert.equal(saved(t).step,6);
- assert.equal(e.mainGlyph.textContent,"女");
+ assert.equal(e.mainGlyph.textContent,"安");
  assert.equal(store["hai-que-huong-progress-v3"],"preserved-hsk1");
  e.interactive.children[1].click();
  const reopened=boot(store);

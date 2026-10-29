@@ -1552,3 +1552,29 @@ summary:focus-visible,
     overflow: visible;
   }
 }
+
+/* The ending teaches the sentence shown in the scene and needs less panel space. */
+.intro-screen .intro-learning .interactive:has(.ending-breakdown) { flex: 0 0 auto; overflow: visible; }
+@media (min-width: 691px) and (min-height: 621px) {
+  .intro-screen .intro-learning:has(.ending-breakdown) { flex-basis: clamp(300px, 34dvh, 320px); }
+}
+
+@media (max-width: 690px) and (min-height: 621px) {
+  .intro-screen .intro-learning:has(.ending-breakdown) { flex-basis: clamp(260px, 31dvh, 285px); }
+}
+
+@media (orientation: landscape) and (max-height: 420px) {
+  .intro-screen .intro-learning:has(.ending-breakdown) { flex-basis: 168px; }
+  .intro-screen .intro-learning:has(.ending-breakdown) .finish-card { padding: 4px 8px; }
+  .intro-screen .intro-learning .ending-phrase { gap: 1px 5px; }
+  .intro-screen .intro-learning .ending-phrase strong { font-size: 16px; }
+  .intro-screen .intro-learning .ending-phrase span { font-size: 11px; }
+  .intro-screen .intro-learning .ending-phrase b { font-size: 12px; }
+  .intro-screen .intro-learning .ending-breakdown { gap: 5px; margin-top: 3px; }
+  .intro-screen .intro-learning .ending-word { min-width: 94px; padding: 3px 6px; gap: 0 5px; }
+  .intro-screen .intro-learning .ending-word strong { font-size: 18px; }
+  .intro-screen .intro-learning .ending-word span,
+  .intro-screen .intro-learning .ending-word small { font-size: 10px; }
+  .intro-screen .intro-learning .ending-use { margin-top: 3px; font-size: 10px; }
+  .intro-screen .intro-learning .recap-story { padding: 4px 7px; font-size: 9px; }
+}

@@ -116,9 +116,8 @@ function renderLegend(root){
 function renderQuiz(root){
  var qi=state.quizIndex;
  if(qi>=Data.quizzes.length){
-  var recap=Core.recap(state,Data.quizzes);
-  root.appendChild(el("div","finish-card","Bạn nhận ra ngay "+recap.recognized+" chữ · đã xem giải thích "+recap.practiced+" chữ · bỏ qua "+recap.skipped+" chữ"+(recap.older?" · "+recap.older+" câu từ bản lưu cũ":"")+". Không có đậu/rớt; quan trọng là muốn khám phá tiếp."));
-  root.appendChild(button("↻ Đoán lại bốn chữ (không xóa tiến độ truyện)",function(){change(Core.review(state),"Được rồi! Lần này bạn thử dựa vào hình chữ mà nhớ lại nhé.")},"secondary"));
+  root.appendChild(el("p","recap-story","An khép trang sổ lại. Có chữ cậu nhận ra ngay, có chữ cần gặp thêm vài lần. Mai nếu quên, cậu có thể mở sổ xem lại."));
+  root.appendChild(button("Thử lại mấy chữ này ↻",function(){change(Core.review(state),"Mình thử lại nhé. Cứ nhìn hình chữ trước, chưa nhớ cũng không sao.")},"secondary"));
   return;
  }
  var q=Data.quizzes[qi],picked=state.quizResults[q.id],hasAnswer=Object.prototype.hasOwnProperty.call(state.quizResults,q.id);
@@ -131,9 +130,15 @@ function renderQuiz(root){
 }
 function renderEnding(root){
  var card=el("div","finish-card");
- card.appendChild(el("p","ending-meaning","好 (hǎo) nghĩa là “ổn, tốt”. Mẹ hỏi An: 你好吗？ (Nǐ hǎo ma?) — “Con khỏe không?”"));
- var example=el("div","ending-example"),han=el("strong","","我很好。"),reading=el("span","","Wǒ hěn hǎo. · Con ổn ạ.");
- han.lang="zh-CN";example.appendChild(el("small","","An đáp:"));example.appendChild(han);example.appendChild(reading);card.appendChild(example);
+ var phrase=el("div","ending-phrase"),han=el("strong","","明天见！");
+ han.lang="zh-CN";phrase.appendChild(han);phrase.appendChild(el("span","","Míngtiān jiàn!"));phrase.appendChild(el("b","","Hẹn gặp ngày mai!"));card.appendChild(phrase);
+ var parts=el("div","ending-breakdown");
+ [["明天","míngtiān","ngày mai"],["见","jiàn","gặp lại"]].forEach(function(word){
+  var item=el("div","ending-word"),glyph=el("strong","",word[0]);glyph.lang="zh-CN";
+  item.appendChild(glyph);item.appendChild(el("span","",word[1]));item.appendChild(el("small","",word[2]));parts.appendChild(item);
+ });
+ card.appendChild(parts);
+ card.appendChild(el("p","ending-use","Dùng khi tạm biệt người sẽ gặp lại ngày mai."));
  root.appendChild(card);
 }
 function updateNav(stage){
@@ -150,6 +155,9 @@ function render(){
  $("chapterType").textContent="TRANG SỔ · "+String(state.step+1).padStart(2,"0");
  $("scenePlace").textContent=stage.scene;$("storyHeading").textContent=stage.label;
  $("narrative").textContent=stage.narrative;$("storyTip").textContent=stage.tip;
+ $("learningKicker").textContent=stage.kind==="ending"?"MỘT CÂU AN MANG THEO":"MỘT TRANG TRONG CUỐN SỔ";
+ $("learningTitle").textContent=stage.kind==="ending"?"Hẹn gặp ngày mai":"Khám phá cùng An";
+ $("interactionLabel").textContent=stage.kind==="ending"?"":"✳ KHÁM PHÁ";
  $("inkLabel").textContent=stage.scene.toUpperCase();
  topGlyph(stage);
  $("interactive").replaceChildren();
