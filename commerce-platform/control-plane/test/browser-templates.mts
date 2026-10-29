@@ -8,8 +8,14 @@ import {mkdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import postgres from 'postgres';
 import {SignJWT} from 'jose';
-import {SITE_TEMPLATES,buildTemplateDocument} from '../lib/builder/catalog';
-import {publishIssues,validateSiteDocument} from '../lib/builder/validation';
+// The Next app is a CommonJS TS workspace. Load its module exports through
+// the default namespace when executing this standalone ESM .mts test in Node.
+const catalogNs=await import('../lib/builder/catalog');
+const catalog=(catalogNs as typeof catalogNs & {default?:typeof catalogNs}).default ?? catalogNs;
+const {SITE_TEMPLATES,buildTemplateDocument}=catalog;
+const validationNs=await import('../lib/builder/validation');
+const validation=(validationNs as typeof validationNs & {default?:typeof validationNs}).default ?? validationNs;
+const {publishIssues,validateSiteDocument}=validation;
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE!);
 const axeModule=await import(process.env.AXE_MODULE!);
 const AxeBuilder=axeModule.default;
