@@ -58,6 +58,9 @@ html,body.chimse-review{width:100%;height:100%;min-height:0;margin:0;overflow:hi
  .book-header .eyebrow,.book-caption{display:none}.book h2{font-size:15px}.zh{font-size:21px;margin:1px 0}.question{margin:2px 0 4px}.options{gap:3px}.options button{min-height:30px;padding:4px;font-size:8px}
  .actions{margin-top:3px}.actions button,.foot-actions button{min-height:28px;padding:4px 6px}.notice{font-size:8px;margin:2px 0}
 }
+@media(max-height:420px){
+ .review-screen:has(.book.is-empty) .opening>p:not(.eyebrow){display:none}
+}
 @media(prefers-reduced-motion:reduce){.review-screen *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 /* Winning art rules follow the legacy layout rules so the page uses real plates. */
