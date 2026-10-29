@@ -38,6 +38,7 @@ jobs:
           node hsk-story/e2e/branch-visit-order-browser.cjs
           node hsk-story/e2e/branch-reply-refresh-browser.cjs
           node hsk-story/e2e/branch-feedback-refresh-browser.cjs
+          node hsk-story/e2e/branch-rewind-draft-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
