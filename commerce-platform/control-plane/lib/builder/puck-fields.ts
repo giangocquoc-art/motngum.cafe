@@ -1,6 +1,6 @@
 /**
- * Puck-compatible field definitions, kept independent of @puckeditor/core
- * until the editor package and its pnpm lockfile are installed together.
+ * Puck-compatible field definitions shared by the adapter and the pinned
+ * @puckeditor/core UI, independent from its runtime types.
  * These fields correspond exactly to the persisted SiteDocument v2 Block.
  */
 import {
@@ -35,7 +35,9 @@ export const STUDIO_PUCK_FIELDS = {
  */
 export function studioPuckDefinitions(themeId:ThemeId='coffee') {
   return Object.fromEntries(BLOCK_KINDS.map((kind:BlockKind)=>{
-    const {id:_,kind:__, ...defaultProps}=createBlock(kind,themeId);
+    const {id:_,kind:__, ...seed}=createBlock(kind,themeId);
+    // Inserting a block must never create a dangling CTA to a deleted page.
+    const defaultProps={...seed,buttonLabel:'',buttonUrl:''};
     return [kind,{
       label:KIND_LABELS[kind],
       fields:STUDIO_PUCK_FIELDS,
