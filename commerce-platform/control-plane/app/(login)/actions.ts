@@ -168,27 +168,18 @@ export const updatePassword = validatedActionWithUser(
 
     if (!isPasswordValid) {
       return {
-        currentPassword,
-        newPassword,
-        confirmPassword,
         error: 'Current password is incorrect.'
       };
     }
 
     if (currentPassword === newPassword) {
       return {
-        currentPassword,
-        newPassword,
-        confirmPassword,
         error: 'New password must be different from the current password.'
       };
     }
 
     if (confirmPassword !== newPassword) {
       return {
-        currentPassword,
-        newPassword,
-        confirmPassword,
         error: 'New password and confirmation password do not match.'
       };
     }
