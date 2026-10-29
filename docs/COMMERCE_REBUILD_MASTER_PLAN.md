@@ -1,4 +1,8 @@
-# MOTNGUM COMMERCE PLATFORM — MASTER INTEGRATION PLAN
+# MOTNGUM COMMERCE PLATFORM — MASTER INTEGRATION PLAN (V1 — SUPERSEDED)
+
+> **CHÚ Ý — BẢN V1 ĐÃ ĐƯỢC KIỂM TOÁN VÀ THAY THẾ BỞI V2 (29/10/2026).**
+> Xem [COMMERCE_GAP_AUDIT_V2.md](./COMMERCE_GAP_AUDIT_V2.md). Không triển khai trực tiếp theo P0–P7 ở dưới trước khi hoàn thành các gate G0–G8 trong V2. V1 còn thiếu SaaS multi-tenancy/merchant onboarding, subscriptions, CMS/site builder, store domains, tenant security, marketplace integration, licensing và legal compliance. Vercel team hiện Hobby, không được dùng cho hoạt động thương mại; dùng thử riêng phi thương mại được. Không sao chép mã vercel/platforms trước khi xác minh quyền sử dụng.
+
 Date: 2026-10-29
 Target: https://motngum.cafe
 Scope: replace apex and www storefront with functional multichannel commerce platform inspired by Haravan. Prioritize correct business logic and reuse of existing OSS; cosmetic/UI work is out of scope.
