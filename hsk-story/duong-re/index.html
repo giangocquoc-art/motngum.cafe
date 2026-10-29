@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="./style.css">
 <script src="./branch-data.js" defer></script>
 <script src="./branch-engine.js" defer></script>
+<script src="./branch-art.js" defer></script>
 <script src="./branch-ui.js" defer></script>
 </head>
 <body>
@@ -35,7 +36,7 @@
     <div class="story-card">
       <div class="story-topline"><span id="actLabel">CHƯƠNG 01</span><span id="progressLabel">CẢNH 01</span></div>
       <h2 id="sceneTitle">Ngày đầu tiên, trời vừa tạnh</h2>
-      <div class="speaker" id="speaker">Mẹ</div>
+      <div class="speaker-line"><div id="speakerPortrait" class="speaker-portrait" aria-hidden="true"></div><div><div class="speaker" id="speaker">Mẹ</div><div class="emotion-caption" id="emotionCaption">Bình tĩnh</div></div></div>
       <p class="narration" id="narration"></p>
       <div id="echoes" class="echoes" aria-live="polite"></div>
       <div class="choice-heading"><span id="choiceHeading">An sẽ làm gì?</span><small>Không có điểm đúng/sai cho tính cách.</small></div>
@@ -51,7 +52,7 @@
     <button class="reset" id="restartBtn" type="button">↺ Chơi lại từ đầu bằng một An khác</button>
   </aside>
   </div>
-  <section class="journal" id="journalPanel" hidden aria-label="Sổ tay quyết định"><div class="journal-head"><div><p class="overline">NHỮNG DẤU MỰC KHÔNG MẤT</p><h2>Sổ tay của An</h2></div><button type="button" class="quiet-btn" id="closeJournal">Đóng ×</button></div><p>Chỉ những quyết định bạn đã thực sự đưa ra mới được ghi lại. Những điều chưa sống qua không xuất hiện ở đây.</p><ol id="journalList"></ol></section>
+  <section class="journal" id="journalPanel" hidden aria-label="Sổ tay quyết định"><div class="journal-head"><div><p class="overline">NHỮNG DẤU MỰC KHÔNG MẤT</p><h2>Sổ tay của An</h2></div><button type="button" class="quiet-btn" id="closeJournal">Đóng ×</button></div><p>Chỉ những quyết định bạn đã thực sự đưa ra mới được ghi lại. Bạn có thể quay lại một lựa chọn cũ để thử tuyến khác; các quyết định <strong>sau lựa chọn ấy</strong> trong ngoại truyện sẽ được thay thế, không ảnh hưởng HSK chính.</p><ol id="journalList"></ol></section>
   <footer class="footer"><span>HAI QUÊ HƯƠNG · MỘT THỬ NGHIỆM KỂ CHUYỆN</span><span>Tiến độ độc lập · Không thay thế nhánh chính · Không cấp chứng chỉ HSK</span></footer>
 </main>
 </body>
