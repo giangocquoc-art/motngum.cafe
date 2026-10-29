@@ -99,6 +99,73 @@ try{
   assert.equal(errors.length,0,'Page-switch runtime errors: '+errors.join('; '));
   console.log('PASS Puck browser: switching to second page does not rewrite sibling blocks');
 
+  // Full multi-page authoring with actual Puck + real revisioned PostgreSQL writes.
+  async function dialogs(answers,action){
+    const pending=[...answers];
+    const handler=dialog=>{
+      const answer=pending.shift();
+      if(answer===undefined)throw Error('Unexpected editor dialog '+dialog.type());
+      void dialog.accept(answer);
+    };
+    page.on('dialog',handler);
+    try{await action();}finally{page.off('dialog',handler);}
+    assert.equal(pending.length,0,'All requested prompts/confirms must appear');
+  }
+  await dialogs(['ket-noi'],async()=>page.getByRole('button',{name:'Đổi slug'}).click());
+  await until(async()=>{
+    const d=(await saved()).draft_document;
+    return d.pages[1].slug==='ket-noi'&&d.pages[0].blocks[0].buttonUrl==='#page:ket-noi';
+  },'page slug and inbound CTA rewrite');
+  console.log('PASS Puck browser: slug rename rewrites cross-page CTA in PostgreSQL');
+
+  await dialogs(['Kết nối thực tế'],async()=>page.getByRole('button',{name:'Đổi tên'}).click());
+  await until(async()=>(await saved()).draft_document.pages[1].title==='Kết nối thực tế',
+    'page title persisted without rewriting slug');
+  await dialogs(['Giới thiệu','gioi-thieu'],
+    async()=>page.getByRole('button',{name:'Thêm trang'}).click());
+  await until(async()=>(await saved()).draft_document.pages.length===3,'new page persisted');
+  const withNew=await saved();
+  assert.equal(withNew.draft_document.pages[2].slug,'gioi-thieu');
+  assert.equal(withNew.draft_document.pages[2].blocks.length,0);
+  assert.equal(new Set(withNew.draft_document.pages.map(p=>p.id)).size,3);
+  console.log('PASS Puck browser: create a blank new page without sample/demo data');
+
+  await page.getByRole('button',{name:/Kết nối thực tế \/ket-noi/}).click();
+  await dialogs(['ket-noi-copy'],async()=>page.getByRole('button',{name:'Nhân bản trang'}).click());
+  await until(async()=> (await saved()).draft_document.pages.length===4,
+    'duplicate page with unique IDs');
+  const copied=(await saved()).draft_document;
+  assert.equal(copied.pages[2].slug,'ket-noi-copy');
+  assert.notEqual(copied.pages[1].id,copied.pages[2].id);
+  assert.notEqual(copied.pages[1].blocks[0].id,copied.pages[2].blocks[0].id);
+  await page.getByRole('button',{name:'↑ Đưa lên'}).click();
+  await until(async()=> (await saved()).draft_document.pages[1].slug==='ket-noi-copy',
+    'reorder page without changing blocks');
+  console.log('PASS Puck browser: duplicate + reorder preserves unique component IDs');
+
+  await page.getByRole('button',{name:/Kết nối thực tế \/ket-noi/}).click();
+  await dialogs(['gioi-thieu',''],async()=>page.getByRole('button',{name:'Xóa trang'}).click());
+  await until(async()=>{
+    const d=(await saved()).draft_document;
+    return d.pages.length===3 && !d.pages.some(p=>p.slug==='ket-noi') &&
+      d.pages[0].blocks[0].buttonUrl==='#page:gioi-thieu';
+  },'delete linked page with explicit CTA replacement');
+  console.log('PASS Puck browser: deleting a referenced page redirects CTA and keeps 3 valid pages');
+
+  await until(async()=>(await page.getByRole('button',{name:'Đã lưu'}).isVisible()).valueOf(),
+    'saved before publish');
+  await dialogs([''],async()=>{
+    await page.locator('[data-studio="puck"]').getByRole('button',{name:/publish|xuất bản/i}).first().click();
+  });
+  await until(async()=>{
+    const [entry]=await sql.unsafe('SELECT published_version FROM builder_sites WHERE id=$1',[id]);
+    return typeof entry?.published_version==='number';
+  },'owner publish snapshot');
+  const snapshot=await page.request.get('/s/'+slug);
+  assert.equal(snapshot.status(),200);
+  assert.match(await snapshot.text(),/Puck kiểm thử thật|Tiêu đề đã sửa trực tiếp bằng Puck/);
+  console.log('PASS Puck browser: owner publish after CAS saves immutable public snapshot');
+
   // A URL containing another tenant's site UUID must not disclose its draft,
   // even when the visitor is logged in to a valid unrelated organization.
   const outsider=await sql.unsafe('INSERT INTO users(email,password_hash,role) VALUES ($1,$2,$3) RETURNING id',
