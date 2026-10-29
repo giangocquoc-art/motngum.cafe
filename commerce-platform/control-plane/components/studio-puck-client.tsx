@@ -6,7 +6,7 @@ import { createMotngumPuckConfig } from '@/components/studio-puck-config';
 import {
   applyPuckPage, PuckConversionError, siteToPuckWorkspace
 } from '@/lib/builder/puck-adapter';
-import { THEMES, type SiteDocument, type ThemeId } from '@/lib/builder/catalog';
+import { BLOCK_KINDS, KIND_LABELS, THEMES, createBlock, type BlockKind, type SiteDocument, type ThemeId } from '@/lib/builder/catalog';
 import { MAX_SITE_BLOCKS, MAX_SITE_TOTAL_BLOCKS } from '@/lib/builder/validation';
 import {
   addSitePage, countPageReferences, deleteSitePage, duplicateSitePage,
@@ -36,6 +36,7 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
   const [notice,setNotice]=useState('Đang chỉnh sửa bản nháp với Puck · Chưa xuất bản.');
   const [activePageId,setActivePageId]=useState(initialDocument.pages[0].id);
   const [puckEpoch,setPuckEpoch]=useState(0);
+  const [quickKind,setQuickKind]=useState<BlockKind>('text');
   const [publishedUrl,setPublishedUrl]=useState<string|null>(null);
   const canPublish=role==='owner';
   const activePage=document.pages.find(page=>page.id===activePageId)||document.pages[0];
@@ -251,6 +252,21 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
       selectLast:true,message:'Đã xóa trang, bảo toàn liên kết nội bộ và đang lưu revision mới.'
     });
   }
+  function quickInsertBlock(){
+    if(!canInsert){setNotice('Đã đạt hạn mức 40 khối/trang hoặc 200 khối/site.');return;}
+    void mutatePages(doc=>{
+      const target=doc.pages.find(page=>page.id===activePage.id);
+      const total=doc.pages.reduce((count,page)=>count+page.blocks.length,0);
+      if(!target||target.blocks.length>=MAX_SITE_BLOCKS||total>=MAX_SITE_TOTAL_BLOCKS)
+        throw new SitePageOperationError('block_limit');
+      // Accessible alternative to drag/drop, sharing the same v2 registry.
+      // New blocks have no fake CTA target; explicit user input is required.
+      const block={...createBlock(quickKind,doc.themeId),buttonLabel:'',buttonUrl:''};
+      return {...doc,pages:doc.pages.map(page=>page.id===target.id?
+        {...page,blocks:[...page.blocks,block]}:page)};
+    },{remount:true,message:'Đã thêm khối '+KIND_LABELS[quickKind]+'. Dùng Fields để sửa nội dung.'});
+  }
+
   function reorderPage(direction:-1|1){
     void mutatePages(doc=>moveSitePage(doc,activePage.id,direction),{
       message:'Đã thay đổi thứ tự trang; trang đầu tiên là trang chủ.'
@@ -340,6 +356,19 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
       <span className="ml-auto text-xs text-slate-600" aria-live="polite">
         {document.pages.length}/12 trang · {activePage.blocks.length}/40 khối trong trang · {totalBlocks}/200 khối toàn site
       </span>
+    </div>
+    <div className="flex flex-wrap items-center gap-2 border-b bg-white px-4 py-2" role="group" aria-label="Thêm khối không cần kéo thả">
+      <label htmlFor="studio-quick-block" className="text-xs font-semibold text-slate-800">Chọn khối</label>
+      <select id="studio-quick-block" aria-label="Loại khối thêm nhanh" value={quickKind}
+        onChange={event=>setQuickKind(event.target.value as BlockKind)}
+        className="max-w-xs rounded-lg border bg-white px-2 py-2 text-xs">
+        {BLOCK_KINDS.map(kind=><option key={kind} value={kind}>{KIND_LABELS[kind]}</option>)}
+      </select>
+      <button type="button" onClick={quickInsertBlock} disabled={blocked||!canInsert}
+        className="rounded-lg border border-amber-700 px-3 py-2 text-xs font-semibold text-amber-800 disabled:opacity-40">
+        + Thêm khối vào trang
+      </button>
+      <span className="text-xs text-slate-500">Dùng Puck để kéo-thả; nút này hỗ trợ thao tác bàn phím và thiết bị cảm ứng.</span>
     </div>
     {!canInsert&&<p role="status" className="bg-amber-100 px-4 py-2 text-xs text-amber-900">
       Đã đạt giới hạn block. Hãy xóa bớt block trước khi kéo thêm hoặc nhân bản.</p>}
