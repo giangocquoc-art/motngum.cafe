@@ -142,10 +142,8 @@ export function BlockPreview({block,theme,navigate,base}: {block:Block;theme:The
   if(block.kind==='services' && variant==='list')return <section
     data-studio-pattern="agency-timeline" className="py-10 @md:py-16">
     <div className="mb-10 text-center">{title}</div>
-    <ol className="relative mx-auto max-w-4xl border-l-2 @md:border-l-0"
+    <ol className="studio-agency-timeline relative mx-auto max-w-4xl border-l-2 @md:border-l-0"
       style={{borderColor:'var(--studio-border)'}}>
-      <div aria-hidden="true" className="absolute bottom-0 top-0 left-1/2 hidden w-px @md:block"
-        style={{backgroundColor:'var(--studio-border)'}}/>
       {rows.map((parts,i)=><li key={i} className="relative mb-8 grid gap-4 pl-8 @md:grid-cols-[1fr_80px_1fr] @md:gap-6 @md:pl-0">
         <div aria-hidden="true" className="absolute -left-[11px] top-3 flex size-5 items-center justify-center rounded-full @md:static @md:col-start-2 @md:row-start-1 @md:mx-auto @md:size-12"
           style={{backgroundColor:accent,color:foregroundOnAccent(accent)}}>
