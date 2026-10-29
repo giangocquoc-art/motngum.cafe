@@ -95,6 +95,9 @@ function TeamMembersSkeleton() {
 
 function TeamMembers() {
   const { data: teamData } = useSWR<TeamDataWithMembers>('/api/team', fetcher);
+  const { data: signedInUser } = useSWR<Pick<User, 'id'>>('/api/user', fetcher);
+  const canManage = !!teamData?.teamMembers?.some(m => m.user.id === signedInUser?.id && m.role === 'owner');
+  const ownerCount = teamData?.teamMembers?.filter(m => m.role === 'owner').length ?? 0;
   const [removeState, removeAction, isRemovePending] = useActionState<
     ActionState,
     FormData
@@ -124,7 +127,7 @@ function TeamMembers() {
       </CardHeader>
       <CardContent>
         <ul className="space-y-4">
-          {teamData.teamMembers.map((member, index) => (
+          {teamData.teamMembers.map((member) => (
             <li key={member.id} className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <Avatar>
@@ -153,7 +156,7 @@ function TeamMembers() {
                   </p>
                 </div>
               </div>
-              {index > 1 ? (
+              {canManage && (member.role !== 'owner' || ownerCount > 1) ? (
                 <form action={removeAction}>
                   <input type="hidden" name="memberId" value={member.id} />
                   <Button
@@ -189,7 +192,8 @@ function InviteTeamMemberSkeleton() {
 
 function InviteTeamMember() {
   const { data: user } = useSWR<User>('/api/user', fetcher);
-  const isOwner = user?.role === 'owner';
+  const { data: team } = useSWR<TeamDataWithMembers>('/api/team', fetcher);
+  const isOwner = !!team?.teamMembers?.some(m => m.user.id === user?.id && m.role === 'owner');
   const [inviteState, inviteAction, isInvitePending] = useActionState<
     ActionState,
     FormData
