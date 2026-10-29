@@ -35,6 +35,6 @@ export function createMotngumPuckConfig(themeId: ThemeId): Config {
         </div>
       ),
     }];
-  })) as Config['components'];
+  })) as unknown as Config['components'];
   return {components};
 }
