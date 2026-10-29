@@ -1,9 +1,9 @@
 const test=require("node:test");const assert=require("node:assert/strict");const fs=require("node:fs");const path=require("node:path");
-const data=require("../duong-re/branch-data.js");const E=require("../duong-re/branch-engine.js");
+const vm=require("node:vm");const sandbox={};sandbox.globalThis=sandbox;vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../duong-re/branch-data.js"),"utf8"),sandbox,{filename:"branch-data.js"});vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../duong-re/branch-engine.js"),"utf8"),sandbox,{filename:"branch-engine.js"});const data=sandbox.AnBranchStory;const E=sandbox.AnBranchEngine;
 function act(s,id){const r=E.step(s,id);assert.equal(r.ok,true,id+": "+r.error);return r.state;}
 function passage(s){return act(s,"next");}
 function play(choices){let s=E.fresh();while(!s.done){let n=data.byId[s.node];if(n.kind==="passage"){s=passage(s);continue;}const id=choices[n.id]||n.options[0].id;s=act(s,id);}return s;}
-test("full graph connected, no loops, every route retains canonical story landmarks",()=>{const r=E.validate();assert.deepEqual(r.errors,[]);assert.equal(r.branchNodes,8);assert.equal(r.decisionSequences,4374);assert.equal(r.nodeCount,23);});
+test("full graph connected, no loops, every route retains canonical story landmarks",()=>{const r=E.validate();assert.deepEqual(Array.from(r.errors),[]);assert.equal(r.branchNodes,8);assert.equal(r.decisionSequences,4374);assert.equal(r.nodeCount,23);});
 test("all three personality outcomes are available through independent decision paths",()=>{
 const brave=play({"arrival":"look-around","school-gate":"ask-friend","lost-diary":"teacher-search","staff-office":"say-clearly","canteen":"sit-friend","noodle-order":"mild","walk-home":"tell-mother","night":"write-promise"});
 const care=play({"arrival":"hold-mother","school-gate":"ask-friend","lost-diary":"friend-search","staff-office":"say-simple","canteen":"help-liu","noodle-order":"share-bowl","walk-home":"invite-friend","night":"write-people"});
