@@ -166,6 +166,26 @@ try{
   assert.match(await snapshot.text(),/Puck kiểm thử thật|Tiêu đề đã sửa trực tiếp bằng Puck/);
   console.log('PASS Puck browser: owner publish after CAS saves immutable public snapshot');
 
+  const priorPublished=await sql.unsafe('SELECT published_document FROM builder_sites WHERE id=$1',[id]);
+  const publishedDocument=structuredClone(priorPublished[0].published_document);
+  await page.getByRole('button',{name:/Giới thiệu \/gioi-thieu/}).click();
+  await page.getByRole('combobox',{name:'Loại khối thêm nhanh'}).selectOption('text');
+  await page.getByRole('button',{name:'Thêm khối vào trang'}).click();
+  await until(async()=>{
+    const site=await saved();
+    return site.draft_document.pages.find(p=>p.slug==='gioi-thieu')?.blocks.length===1;
+  },'keyboard-accessible quick block insert');
+  const afterQuick=(await saved()).draft_document;
+  const block=afterQuick.pages.find(p=>p.slug==='gioi-thieu').blocks[0];
+  assert.equal(block.kind,'text');
+  assert.equal(block.buttonUrl,'');
+  assert.equal(block.buttonLabel,'');
+  const [pubAfter]=await sql.unsafe('SELECT published_document FROM builder_sites WHERE id=$1',[id]);
+  assert.deepEqual(pubAfter.published_document,publishedDocument,
+    'unsaved new Puck block must never retroactively modify a published snapshot');
+  console.log('PASS Puck browser: accessible quick-insert autosaves new block and published snapshot stays immutable');
+
+
   // A URL containing another tenant's site UUID must not disclose its draft,
   // even when the visitor is logged in to a valid unrelated organization.
   const outsider=await sql.unsafe('INSERT INTO users(email,password_hash,role) VALUES ($1,$2,$3) RETURNING id',
