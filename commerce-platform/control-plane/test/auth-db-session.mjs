@@ -73,6 +73,40 @@ try {
   } catch (error) { merchantUniqueEnforced = error.code === '23505'; }
   assert.equal(merchantUniqueEnforced, true, 'One merchant per team during initial staging');
 
+  // A second owner, team and merchant must be isolated from the first.
+  const [secondOwner] = await sql`INSERT INTO users (email,password_hash,role)
+    VALUES ('ci-owner-two@sample.invalid','ci-hash-not-used','owner') RETURNING id`;
+  const [secondTeam] = await sql`INSERT INTO teams (name)
+    VALUES ('CI second independent team') RETURNING id`;
+  await sql`INSERT INTO team_members (user_id, team_id, role)
+    VALUES (${secondOwner.id},${secondTeam.id},'owner')`;
+  const secondMerchantId = 'ac7f976a-6a2e-4882-b680-b56a9bacce5c';
+  await sql`INSERT INTO merchant_provisions (id,team_id,slug,display_name)
+    VALUES (${secondMerchantId},${secondTeam.id},'ci-second-shop','CI Second Shop')`;
+  const ownerTwoJwt = await token(secondOwner.id, 0);
+  res = await check('/api/merchants', ownerTwoJwt, 200);
+  const secondMerchant = (await res.json()).merchant;
+  assert.equal(secondMerchant.id, secondMerchantId);
+  assert.notEqual(secondMerchant.id, merchantId);
+  assert.equal(secondMerchant.slug, 'ci-second-shop');
+  res = await check('/api/merchants', jwtV0, 200);
+  assert.equal((await res.json()).merchant.id, merchantId);
+  // A team member can inspect their own merchant, but cannot bypass the disabled write gate.
+  const [staff] = await sql`INSERT INTO users (email,password_hash,role)
+    VALUES ('ci-staff@sample.invalid','ci-hash-not-used','member') RETURNING id`;
+  await sql`INSERT INTO team_members (user_id, team_id, role)
+    VALUES (${staff.id},${team.id},'member')`;
+  const staffJwt = await token(staff.id, 0);
+  res = await check('/api/merchants', staffJwt, 200);
+  assert.equal((await res.json()).merchant.id, merchantId);
+  await check('/api/merchants', staffJwt, 503, 'POST');
+  // Until explicit tenant selection ships, fail closed on multi-team staff.
+  await sql`INSERT INTO team_members (user_id, team_id, role)
+    VALUES (${staff.id},${secondTeam.id},'member')`;
+  await check('/api/team', staffJwt, 409);
+  await check('/api/merchants', staffJwt, 409);
+  console.log('PASS: two teams/two merchants isolated, staff limited to own team, multi-team ambiguity denied.');
+
   let uniqueEnforced = false;
   try {
     await sql`INSERT INTO team_members (user_id, team_id, role) VALUES (${user.id},${team.id},'owner')`;
