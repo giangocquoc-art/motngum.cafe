@@ -63,7 +63,8 @@ try{
   assert.equal(res.status(),200);
   await page.locator('[data-studio="puck"]').waitFor();
   await page.getByRole('heading',{name:/Puck Studio/}).first().waitFor();
-  await page.getByText('Puck kiểm thử thật').first().waitFor();
+  // Puck's canvas is iframe-backed by default; Playwright must enter that frame.
+  await page.frameLocator('#preview-frame').getByText('Puck kiểm thử thật').first().waitFor();
   assert.equal(errors.length,0,'Puck renderer emitted unexpected browser errors: '+errors.join('; '));
   console.log('PASS Puck browser: authenticated team site opens Puck v0.24 runtime with real draft');
 
