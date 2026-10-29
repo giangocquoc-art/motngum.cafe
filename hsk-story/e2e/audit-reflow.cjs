@@ -1,0 +1,3 @@
+const fs=require('node:fs'),path=require('node:path'),Module=require('node:module');
+const source=path.resolve('e2e/browser-smoke.cjs');let code=fs.readFileSync(source,'utf8');const start=code.indexOf('const devices=['),end=code.indexOf(';',start);if(start<0||end<0)throw Error('Missing device table');code=code.slice(0,start)+`const devices=[{name:'small-phone',viewport:{width:320,height:568},isMobile:true,hasTouch:true},{name:'reflow-200',viewport:{width:640,height:400}},{name:'short-landscape',viewport:{width:640,height:360}}]`+code.slice(end);
+const compiled=new Module(source,module);compiled.filename=source;compiled.paths=Module._nodeModulePaths(path.dirname(source));compiled._compile(code,source);
