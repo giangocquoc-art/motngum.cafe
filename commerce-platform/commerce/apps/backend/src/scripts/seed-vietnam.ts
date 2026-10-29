@@ -33,29 +33,31 @@ export default async function seedVietnam({ container }: ExecArgs) {
   })
   if (stores.length !== 1) throw new Error("Expected exactly one tenant store; do not seed a multi-merchant shared backend")
   const store = stores[0]
-  const currencies = (store.supported_currencies || [])
-    .filter(c => c.currency_code !== "vnd")
-    .map(c => ({ currency_code: c.currency_code, is_default: false }))
+  const currencies: { currency_code: string, is_default: boolean }[] = []
+  for (const c of store.supported_currencies || []) {
+    if (!c?.currency_code || c.currency_code === "vnd") continue
+    currencies.push({ currency_code: c.currency_code, is_default: false })
+  }
   await updateStoreCurrencies(container).run({
     input: { store_id: store.id, supported_currencies: [...currencies, { currency_code: "vnd", is_default: true }] }
   })
 
   const { data: regions } = await query.graph({ entity: "region", fields: ["id", "name", "currency_code"] })
-  let vietnam = regions.find(r => r.name === "Việt Nam" && r.currency_code === "vnd")
-  if (!vietnam) {
+  let vietnamId: string | undefined = regions.find(r => r.name === "Việt Nam" && r.currency_code === "vnd")?.id
+  if (!vietnamId) {
     const { result } = await createRegionsWorkflow(container).run({
       input: { regions: [{ name: "Việt Nam", currency_code: "vnd", countries: ["vn"], payment_providers: ["pp_system_default"] }] }
     })
-    vietnam = result[0]
+    vietnamId = result[0]?.id
   }
-  if (!vietnam) throw new Error("Failed to create Vietnam region")
+  if (!vietnamId) throw new Error("Failed to create Vietnam region")
 
   const { data: taxes } = await query.graph({ entity: "tax_region", fields: ["id", "country_code"] })
   if (!taxes.some(t => t.country_code === "vn")) {
     await createTaxRegionsWorkflow(container).run({ input: [{ country_code: "vn", provider_id: "tp_system" }] })
   }
   await updateStoresWorkflow(container).run({
-    input: { selector: { id: store.id }, update: { default_region_id: vietnam.id } }
+    input: { selector: { id: store.id }, update: { default_region_id: vietnamId } }
   })
   logger.info("Vietnam region configured using VND; live payment, tax rates and shipping integrations are NOT configured.")
 }
