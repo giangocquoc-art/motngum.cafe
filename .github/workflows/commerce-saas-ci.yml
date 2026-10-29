@@ -91,6 +91,19 @@ jobs:
           check_code /api/stripe/webhook 404 POST
           check_code /api/health 200
           jq -e '.infrastructureOk == true and .postgres == "connected" and .edge == "connected" and .commerceReady == false' /tmp/response.json
+          # This endpoint remains protected by a secret; a request without the
+          # secret must NEVER provision merchants, even if the Worker has been updated.
+          cf_health="$(curl -sS -o /tmp/cf-health.json -w '%{http_code}' https://commerce-preview.motngum.cafe/health)"
+          test "$cf_health" = 200
+          jq -e '.ok == true and .commerceReady == false' /tmp/cf-health.json
+          cf_provision="$(curl -sS -X POST -H 'Content-Type: application/json' \
+            --data '{"id":"d46d8ebc-3b48-4f48-bb3c-8e5f3c870a7b","slug":"must-not-provision","display_name":"Must Not Provision"}' \
+            -o /tmp/cf-provision.json -w '%{http_code}' \
+            https://commerce-preview.motngum.cafe/internal/merchants)"
+          test "$cf_provision" = 401 -o "$cf_provision" = 503
+          cf_status="$(curl -sS -o /tmp/cf-status.json -w '%{http_code}' https://commerce-preview.motngum.cafe/api/status)"
+          test "$cf_status" = 200
+          jq -e '.merchantCount == 0 and .productionReady == false' /tmp/cf-status.json
           echo "PASS: auth endpoint private, Stripe endpoints disabled, Next.js live."
       - name: Verify real signed-cookie JWT revocation, scoped membership and PostgreSQL unique index
         working-directory: commerce-platform/control-plane
