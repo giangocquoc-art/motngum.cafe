@@ -143,11 +143,15 @@ export const signUp = validatedAction(signUpSchema, async (data) => {
 });
 
 export async function signOut() {
-  const user = await getUser();
-  if (!user) return;
-  const userWithTeam = await getUserWithTeam(user.id);
-  await logActivity(userWithTeam?.teamId, user.id, ActivityType.SIGN_OUT);
-  (await cookies()).delete('session');
+  // Clear locally even when Postgres or audit logging is unavailable.
+  try {
+    const user = await getUser();
+    if (user) {
+      const member = await getUserWithTeam(user.id);
+      await logActivity(member?.teamId, user.id, ActivityType.SIGN_OUT);
+    }
+  } catch { /* audit is best effort; logout must always complete */ }
+  finally { (await cookies()).delete('session'); }
 }
 
 const updatePasswordSchema = z.object({
@@ -190,7 +194,7 @@ export const updatePassword = validatedActionWithUser(
     await Promise.all([
       db
         .update(users)
-        .set({ passwordHash: newPasswordHash })
+        .set({ passwordHash: newPasswordHash, sessionVersion: sql`session_version + 1`, updatedAt: new Date() })
         .where(eq(users.id, user.id)),
       logActivity(userWithTeam?.teamId, user.id, ActivityType.UPDATE_PASSWORD)
     ]);
@@ -227,6 +231,7 @@ export const deleteAccount = validatedActionWithUser(
     await db
       .update(users)
       .set({
+        sessionVersion: sql`session_version + 1`,
         deletedAt: sql`CURRENT_TIMESTAMP`,
         email: sql`CONCAT(email, '-', id, '-deleted')` // Ensure email uniqueness
       })
