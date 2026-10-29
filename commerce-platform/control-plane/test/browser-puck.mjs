@@ -186,6 +186,25 @@ try{
   console.log('PASS Puck browser: accessible quick-insert autosaves new block and published snapshot stays immutable');
 
 
+  // Actual Puck DnD: move a drawer component across the iframe boundary to
+  // the root drop zone, then verify the inserted block is saved through CAS.
+  await page.getByText('Blocks',{exact:true}).first().click();
+  const drawer=page.locator('[data-testid="drawer-item:text"]').first();
+  const rootZone=page.frameLocator('#preview-frame').locator('[data-puck-dropzone]').first();
+  await drawer.waitFor({state:'visible'});
+  await rootZone.waitFor({state:'visible'});
+  const beforeDrag=(await saved()).draft_document.pages.find(p=>p.slug==='gioi-thieu').blocks.length;
+  await drawer.dragTo(rootZone,{timeout:15000,force:true});
+  await until(async()=>{
+    const row=await saved();
+    return row.draft_document.pages.find(p=>p.slug==='gioi-thieu').blocks.length===
+      beforeDrag+1;
+  },'Puck drag/drop inside actual iframe autosaved');
+  const dragged=(await saved()).draft_document.pages.find(p=>p.slug==='gioi-thieu').blocks;
+  assert.equal(dragged.at(-1).buttonUrl,'');
+  assert.equal(new Set(dragged.map(block=>block.id)).size,dragged.length);
+  console.log('PASS Puck browser: real cross-iframe drawer drag/drop persists unique block with no dangling CTA');
+
   // A URL containing another tenant's site UUID must not disclose its draft,
   // even when the visitor is logged in to a valid unrelated organization.
   const outsider=await sql.unsafe('INSERT INTO users(email,password_hash,role) VALUES ($1,$2,$3) RETURNING id',
