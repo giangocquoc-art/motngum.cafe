@@ -1,6 +1,6 @@
 // Real Chromium editor acceptance; isolated fixture API, no real accounts or deployments.
 import assert from 'node:assert/strict';
-import { chromium } from 'playwright';
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base='http://127.0.0.1:3000';
 const doc={version:2,title:'Browser Fixture',themeId:'coffee',pages:[
   {id:'page-home',slug:'trang-chu',title:'Trang chủ',blocks:[
