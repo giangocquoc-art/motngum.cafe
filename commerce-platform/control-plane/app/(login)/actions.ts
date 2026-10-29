@@ -19,7 +19,6 @@ import {
 import { comparePasswords, hashPassword, setSession } from '@/lib/auth/session';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { createCheckoutSession } from '@/lib/payments/stripe';
 import { getUser, getUserWithTeam } from '@/lib/db/queries';
 import {
   validatedAction,
@@ -85,17 +84,12 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
     };
   }
 
-  await Promise.all([
-    setSession(foundUser),
-    logActivity(foundTeam?.id, foundUser.id, ActivityType.SIGN_IN)
-  ]);
-
-  const redirectTo = formData.get('redirect') as string | null;
-  if (redirectTo === 'checkout' && process.env.ENABLE_PLATFORM_BILLING === 'true') {
-    const priceId = formData.get('priceId') as string;
-    return createCheckoutSession({ team: foundTeam, priceId });
-  }
-
+  await setSession(foundUser);
+  // Audit-log availability must not affect the authentication result.
+  try { await logActivity(foundTeam?.id, foundUser.id, ActivityType.SIGN_IN); }
+  catch { /* sign-in succeeds; backend monitoring should report audit failures */ }
+  // Never begin a billable checkout based solely on a login form's submitted priceId.
+  // Billing must be a separate authenticated, allowlisted action.
   redirect('/dashboard');
 });
 
@@ -270,14 +264,15 @@ const updateAccountSchema = z.object({
 export const updateAccount = validatedActionWithUser(
   updateAccountSchema,
   async (data, _, user) => {
-    const { name, email } = data;
+    const { name } = data;
+    const email = data.email.trim().toLowerCase();
+    if (email !== user.email.toLowerCase()) {
+      return { error: 'Changing an account email requires verification. Keep the current address until email verification is available.' };
+    }
+    await db.update(users).set({ name, updatedAt: new Date() }).where(eq(users.id, user.id));
     const userWithTeam = await getUserWithTeam(user.id);
-
-    await Promise.all([
-      db.update(users).set({ name, email }).where(eq(users.id, user.id)),
-      logActivity(userWithTeam?.teamId, user.id, ActivityType.UPDATE_ACCOUNT)
-    ]);
-
+    try { await logActivity(userWithTeam?.teamId, user.id, ActivityType.UPDATE_ACCOUNT); }
+    catch { /* account profile update already committed */ }
     return { name, success: 'Account updated successfully.' };
   }
 );
