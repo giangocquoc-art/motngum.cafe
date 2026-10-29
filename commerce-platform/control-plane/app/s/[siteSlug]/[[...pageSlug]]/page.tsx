@@ -19,8 +19,10 @@ async function findPublic(siteSlug:string) {
 export async function generateMetadata({params}:Params):Promise<Metadata> {
   const {siteSlug,pageSlug}=await params;
   const doc=await findPublic(siteSlug);
-  const page=doc?.pages.find(p=>p.slug===(pageSlug?.[0]||doc.pages[0].slug));
-  return {title:page?page.title+' | '+doc!.title:'Website chưa được xuất bản',
+  if(!doc || (pageSlug && pageSlug.length>1))notFound();
+  const page=doc.pages.find(p=>p.slug===(pageSlug?.[0]||doc.pages[0].slug));
+  if(!page)notFound();
+  return {title:page.title+' | '+doc.title,
     description:page?.blocks.find(b=>b.kind==='text'||b.kind==='hero')?.body.slice(0,150),
     robots:{index:false,follow:false}};
 }
