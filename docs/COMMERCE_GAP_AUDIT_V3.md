@@ -1,4 +1,7 @@
 # KIỂM TOÁN LẦN 3 — V3: INTEGRATION GAPS, MONEY FLOW, AND PRODUCTION GATES
+
+> **V4 LÀ BẢN KIỂM TOÁN MỚI NHẤT:** [COMMERCE_GAP_AUDIT_V4.md](./COMMERCE_GAP_AUDIT_V4.md) và [Feature Register 60 tính năng](./COMMERCE_FEATURE_REGISTER_V4.csv). V3 là tài liệu lịch sử; nếu có mâu thuẫn, ưu tiên V4.
+
 Date: 2026-10-29
 Status: architecture amendment, NOT a deployed system.
 Supersedes contradictory portions of `COMMERCE_REBUILD_MASTER_PLAN.md` and supplements `COMMERCE_GAP_AUDIT_V2.md`.
