@@ -7,6 +7,11 @@ import {
   applyPuckPage, PuckConversionError, siteToPuckWorkspace
 } from '@/lib/builder/puck-adapter';
 import { THEMES, type SiteDocument, type ThemeId } from '@/lib/builder/catalog';
+import { MAX_SITE_BLOCKS, MAX_SITE_TOTAL_BLOCKS } from '@/lib/builder/validation';
+import {
+  addSitePage, countPageReferences, deleteSitePage, duplicateSitePage,
+  moveSitePage, normalizePageSlug, renameSitePage, renameSitePageTitle, SitePageOperationError
+} from '@/lib/builder/page-operations';
 import { validateSiteDocument } from '@/lib/builder/validation';
 
 type Props={
@@ -30,9 +35,12 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
   const [saving,setSaving]=useState(false);
   const [notice,setNotice]=useState('Đang chỉnh sửa bản nháp với Puck · Chưa xuất bản.');
   const [activePageId,setActivePageId]=useState(initialDocument.pages[0].id);
+  const [puckEpoch,setPuckEpoch]=useState(0);
   const [publishedUrl,setPublishedUrl]=useState<string|null>(null);
   const canPublish=role==='owner';
   const activePage=document.pages.find(page=>page.id===activePageId)||document.pages[0];
+  const totalBlocks=document.pages.reduce((total,page)=>total+page.blocks.length,0);
+  const canInsert=activePage.blocks.length<MAX_SITE_BLOCKS&&totalBlocks<MAX_SITE_TOTAL_BLOCKS;
 
   const config=useMemo(()=>createMotngumPuckConfig(document.themeId),[document.themeId]);
   const pageData=useMemo(()=>{
@@ -40,7 +48,7 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
     return workspace.pages.find(page=>page.id===activePage.id)!.data as Data;
     // Puck owns its page session until page/theme is explicitly switched;
     // do not replace its data prop on every keystroke.
-  },[activePage.id, document.themeId]);
+  },[activePage.id, document.themeId, puckEpoch]);
 
   const commit=useCallback((next:SiteDocument)=>{
     const validated=validateSiteDocument(next);
@@ -68,11 +76,14 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
     }
   },[commit]);
 
-  const flush=useCallback(async (manual=false):Promise<boolean>=>{
+  const flush:(manual?:boolean)=>Promise<boolean>=useCallback(async (manual=false):Promise<boolean>=>{
     if(pendingSave.current){
       const previous=await pendingSave.current;
       if(!previous)return false;
       if(!dirtyRef.current)return true;
+      // Another caller is saving a newer local revision: join its in-flight
+      // request rather than issuing two PATCHes for the same CAS version.
+      return flush(manual);
     }
     if(!dirtyRef.current)return true;
     if(blockedRef.current && !manual)return false;
@@ -158,6 +169,94 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
     commit({...previous,themeId});
   }
 
+  async function mutatePages(
+    change:(source:SiteDocument)=>SiteDocument,
+    options?:{selectLast?:boolean;selectNew?:boolean;remount?:boolean;message?:string}
+  ){
+    // Never switch or mutate navigation while the remote base revision is stale.
+    if(!(await saveAll(false))){
+      setNotice('Còn bản nháp chưa lưu hoặc có xung đột. Xuất JSON và xử lý trước khi sửa cấu trúc trang.');
+      return;
+    }
+    try{
+      const before=documentRef.current;
+      const next=change(before);
+      if(!commit(next))return;
+      if(options?.selectNew){
+        const ids=new Set(before.pages.map(page=>page.id));
+        const added=next.pages.find(page=>!ids.has(page.id));
+        if(added)setActivePageId(added.id);
+      }
+      if(options?.selectLast)setActivePageId(next.pages[0].id);
+      if(options?.remount)setPuckEpoch(epoch=>epoch+1);
+      setNotice(options?.message||'Đã thay đổi cấu trúc trang; đang tự lưu vào PostgreSQL.');
+    }catch(error){
+      const code=error instanceof SitePageOperationError?error.code:'unknown';
+      setNotice('Không thể cập nhật trang: '+code+'. Bản nháp hiện tại không bị thay đổi.');
+    }
+  }
+
+  function addPage(){
+    const title=window.prompt('Tên trang mới (tối đa 80 ký tự):','Trang mới');
+    if(title===null)return;
+    if(!title.trim()){setNotice('Tên trang không được để trống.');return;}
+    const suggested=normalizePageSlug(title);
+    const slug=window.prompt('Đường dẫn trang mới (slug):',suggested);
+    if(slug===null)return;
+    void mutatePages(doc=>addSitePage(doc,title,normalizePageSlug(slug)),{
+      selectNew:true,message:'Đã thêm trang mới. Thêm block trong bảng Puck ở dưới.'
+    });
+  }
+  function renamePageTitle(){
+    const title=window.prompt('Đổi tên trang:',activePage.title);
+    if(title===null)return;
+    void mutatePages(doc=>renameSitePageTitle(doc,activePage.id,title),{
+      message:'Đã đổi tên trang, đường dẫn vẫn giữ nguyên.'
+    });
+  }
+  function renamePageSlug(){
+    const slug=window.prompt('Đổi đường dẫn trang (mọi CTA liên quan sẽ tự cập nhật):',activePage.slug);
+    if(slug===null)return;
+    void mutatePages(doc=>renameSitePage(doc,activePage.id,normalizePageSlug(slug)),{
+      remount:true,message:'Đã đổi slug và cập nhật toàn bộ CTA nội bộ; dữ liệu đang tự lưu.'
+    });
+  }
+  function duplicatePage(){
+    const proposed=normalizePageSlug(activePage.slug+'-copy');
+    const slug=window.prompt('Đường dẫn bản sao:',proposed);
+    if(slug===null)return;
+    void mutatePages(doc=>duplicateSitePage(doc,activePage.id,normalizePageSlug(slug)),{
+      selectNew:true,message:'Đã nhân bản trang với ID mới cho mọi block.'
+    });
+  }
+  function removePage(){
+    if(documentRef.current.pages.length<2){setNotice('Website phải có ít nhất một trang.');return;}
+    const source=documentRef.current;
+    const refs=countPageReferences(source,activePage.id);
+    let replacementId:string|undefined;
+    if(refs>0){
+      const alternatives=source.pages.filter(p=>p.id!==activePage.id);
+      const slug=window.prompt(
+        'Có '+refs+' liên kết trỏ đến trang này. Nhập slug trang thay thế:\n'
+          + alternatives.map(p=>p.slug).join(', '),alternatives[0].slug
+      );
+      if(slug===null)return;
+      const target=alternatives.find(p=>p.slug===slug.trim());
+      if(!target){setNotice('Chưa chọn slug thay thế hợp lệ, không xóa trang.');return;}
+      replacementId=target.id;
+    }
+    if(!window.confirm('Xóa trang '+activePage.title+' và toàn bộ block của trang?'+
+      (refs>0?' Các CTA cũ sẽ chuyển đến trang thay thế.':'')))return;
+    void mutatePages(doc=>deleteSitePage(doc,activePage.id,replacementId),{
+      selectLast:true,message:'Đã xóa trang, bảo toàn liên kết nội bộ và đang lưu revision mới.'
+    });
+  }
+  function reorderPage(direction:-1|1){
+    void mutatePages(doc=>moveSitePage(doc,activePage.id,direction),{
+      message:'Đã thay đổi thứ tự trang; trang đầu tiên là trang chủ.'
+    });
+  }
+
   async function publish(data:Data) {
     if(!canPublish){setNotice('Chỉ chủ tổ chức mới được xuất bản.');return;}
     editPuck(activePageId,data);
@@ -192,7 +291,7 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
     <header className="sticky top-0 z-30 flex flex-wrap items-center gap-3 border-b bg-white px-4 py-3">
       <div className="mr-auto">
         <h1 className="text-base font-bold text-slate-900">Puck Studio · {document.title}</h1>
-        <p className="text-xs text-slate-500">Editor thử nghiệm (Gate C2) · SiteDocument v2 · revision {versionRef.current}</p>
+        <p className="text-xs text-slate-500">Editor thử nghiệm (Gate C3/C4) · SiteDocument v2 · revision {versionRef.current}</p>
       </div>
       <label htmlFor="studio-puck-theme" className="text-xs font-semibold text-slate-700">Theme</label>
       <select id="studio-puck-theme" aria-label="Chọn theme" value={document.themeId}
@@ -219,12 +318,34 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
       </button>)}
       <span className="ml-auto text-xs text-slate-500">{dirty?'Có thay đổi chưa lưu':'Đồng bộ với cloud'}</span>
     </nav>
+    <div className="flex flex-wrap items-center gap-2 border-b bg-slate-50 px-4 py-3" role="group" aria-label="Quản lý trang trong Puck">
+      <button type="button" onClick={addPage} disabled={blocked||document.pages.length>=12}
+        className="rounded-lg border border-amber-600 px-3 py-2 text-xs font-semibold disabled:opacity-40">+ Thêm trang</button>
+      <button type="button" onClick={renamePageTitle} disabled={blocked}
+        className="rounded-lg border px-3 py-2 text-xs font-semibold disabled:opacity-40">Đổi tên</button>
+      <button type="button" onClick={renamePageSlug} disabled={blocked}
+        className="rounded-lg border px-3 py-2 text-xs font-semibold disabled:opacity-40">Đổi slug</button>
+      <button type="button" onClick={duplicatePage} disabled={blocked||document.pages.length>=12}
+        className="rounded-lg border px-3 py-2 text-xs font-semibold disabled:opacity-40">Nhân bản trang</button>
+      <button type="button" onClick={()=>reorderPage(-1)} disabled={blocked||document.pages[0].id===activePage.id}
+        className="rounded-lg border px-3 py-2 text-xs font-semibold disabled:opacity-40">↑ Đưa lên</button>
+      <button type="button" onClick={()=>reorderPage(1)} disabled={blocked||document.pages.at(-1)?.id===activePage.id}
+        className="rounded-lg border px-3 py-2 text-xs font-semibold disabled:opacity-40">↓ Đưa xuống</button>
+      <button type="button" onClick={removePage} disabled={blocked||document.pages.length<2}
+        className="rounded-lg border border-rose-300 px-3 py-2 text-xs font-semibold text-rose-900 disabled:opacity-40">Xóa trang</button>
+      <span className="ml-auto text-xs text-slate-600" aria-live="polite">
+        {document.pages.length}/12 trang · {activePage.blocks.length}/40 khối trong trang · {totalBlocks}/200 khối toàn site
+      </span>
+    </div>
+    {!canInsert&&<p role="status" className="bg-amber-100 px-4 py-2 text-xs text-amber-900">
+      Đã đạt giới hạn block. Hãy xóa bớt block trước khi kéo thêm hoặc nhân bản.</p>}
     <div className="min-h-[700px]" data-studio="puck">
       <Puck
-        key={activePageId+'-'+document.themeId}
+        key={activePageId+'-'+document.themeId+'-'+puckEpoch}
         config={config}
         data={pageData}
         ui={{plugin:{current:'fields'}}}
+        permissions={{insert:canInsert,duplicate:canInsert}}
         headerTitle={'Motngum Studio / '+activePage.title}
         headerPath={'/'+slug+'/'+activePage.slug}
         onChange={data=>editPuck(activePageId,data)}
