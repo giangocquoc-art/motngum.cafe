@@ -1,7 +1,7 @@
 import { compare, hash } from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
-import { NewUser } from '@/lib/db/schema';
+import { User } from '@/lib/db/schema';
 
 function sessionKey(): Uint8Array {
   const secret = process.env.AUTH_SECRET;
@@ -24,6 +24,7 @@ export async function comparePasswords(
 type SessionData = {
   user: { id: number };
   expires: string;
+  version: number;
 };
 
 export async function signToken(payload: SessionData) {
@@ -38,19 +39,23 @@ export async function verifyToken(input: string) {
   const { payload } = await jwtVerify(input, sessionKey(), {
     algorithms: ['HS256'],
   });
+  if (!payload.user || typeof (payload.user as { id?: unknown }).id !== 'number' ||
+      typeof payload.version !== 'number' || !Number.isSafeInteger(payload.version) || payload.version < 0 ||
+      typeof payload.expires !== 'string') throw new Error('Invalid session claims');
   return payload as SessionData;
 }
 
 export async function getSession() {
   const session = (await cookies()).get('session')?.value;
   if (!session) return null;
-  return await verifyToken(session);
+  try { return await verifyToken(session); } catch { return null; }
 }
 
-export async function setSession(user: NewUser) {
+export async function setSession(user: User) {
   const expiresInOneDay = new Date(Date.now() + 24 * 60 * 60 * 1000);
   const session: SessionData = {
-    user: { id: user.id! },
+    user: { id: user.id },
+    version: user.sessionVersion,
     expires: expiresInOneDay.toISOString(),
   };
   const encryptedSession = await signToken(session);
