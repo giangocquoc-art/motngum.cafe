@@ -280,27 +280,31 @@ const removeTeamMemberSchema = z.object({
 export const removeTeamMember = validatedActionWithUser(
   removeTeamMemberSchema,
   async (data, _, user) => {
+    // A request must select an explicit active team once multi-org support is enabled.
     const currentMembership = await getUserWithTeam(user.id);
     if (!currentMembership?.teamId) return { error: 'No active team' };
     const teamId = currentMembership.teamId;
-    const actor = await db.select({ role: teamMembers.role }).from(teamMembers)
-      .where(and(eq(teamMembers.userId, user.id), eq(teamMembers.teamId, teamId))).limit(1);
-    if (actor[0]?.role !== 'owner') return { error: 'Only team owners can manage membership.' };
 
-    // Serialize removal against all membership changes using a row lock.
-    return await db.transaction(async (tx) => {
+    return db.transaction(async (tx) => {
+      // Lock team before authorization AND mutation to prevent a TOCTOU race.
       await tx.execute(sql`SELECT id FROM teams WHERE id = ${teamId} FOR UPDATE`);
-      const target = await tx.select({ role: teamMembers.role }).from(teamMembers)
+      const [actor] = await tx.select({ role: teamMembers.role }).from(teamMembers)
+        .where(and(eq(teamMembers.userId, user.id), eq(teamMembers.teamId, teamId))).limit(1);
+      if (actor?.role !== 'owner') return { error: 'Only team owners can manage membership.' };
+      const [target] = await tx.select({ role: teamMembers.role, userId: teamMembers.userId }).from(teamMembers)
         .where(and(eq(teamMembers.id, data.memberId), eq(teamMembers.teamId, teamId))).limit(1);
-      if (!target[0]) return { error: 'Member not found in your team.' };
-      if (target[0].role === 'owner') {
+      if (!target) return { error: 'Member not found in your team.' };
+      if (target.role === 'owner') {
         const [owners] = await tx.select({ count: sql<number>`count(*)::integer` })
-          .from(teamMembers)
-          .where(and(eq(teamMembers.teamId, teamId), eq(teamMembers.role, 'owner')));
+          .from(teamMembers).where(and(eq(teamMembers.teamId, teamId), eq(teamMembers.role, 'owner')));
         if ((owners?.count ?? 0) <= 1) return { error: 'Cannot remove the last team owner.' };
       }
       await tx.delete(teamMembers)
         .where(and(eq(teamMembers.id, data.memberId), eq(teamMembers.teamId, teamId)));
+      // Invalidate the removed staff member's existing sessions.
+      await tx.update(users)
+        .set({ sessionVersion: sql`session_version + 1`, updatedAt: new Date() })
+        .where(eq(users.id, target.userId));
       await tx.insert(activityLogs).values({ teamId, userId: user.id, action: ActivityType.REMOVE_TEAM_MEMBER });
       return { success: 'Team member removed successfully' };
     });
