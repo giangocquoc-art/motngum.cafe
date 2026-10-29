@@ -2,7 +2,7 @@
 (function(){"use strict";
 if(typeof HSKIntroContent==="undefined"||typeof HSKIntroCore==="undefined"||HSKIntroContent.validate().length){document.body.textContent="Không tải được dữ liệu tập nhập môn.";return;}
 var Data=HSKIntroContent,Core=HSKIntroCore,$=function(id){return document.getElementById(id)};
-var state=read(),last=Data.stages.length-1,feedback="",curiosityIndex=0;
+var state=read(),last=Data.stages.length-1,feedback="",curiosityIndex=0,endingMeaningChoice=null;
 function read(){try{return Core.clean(JSON.parse(localStorage.getItem(Core.key)||"null"))}catch(e){return Core.initial()}}
 function save(){try{localStorage.setItem(Core.key,JSON.stringify(state));$("saveStatus").textContent="Đã giữ trang này trên máy"}catch(e){$("saveStatus").textContent="Trình duyệt không lưu được — vẫn có thể tiếp tục"}if(typeof window.CustomEvent==="function"&&typeof window.dispatchEvent==="function")window.dispatchEvent(new window.CustomEvent("chimse-progress-changed",{detail:{area:"intro",value:Core.clean(state)}}))}
 function el(tag,cls,text){var node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node}
@@ -131,14 +131,26 @@ function renderQuiz(root){
 function renderEnding(root){
  var card=el("div","finish-card");
  var phrase=el("div","ending-phrase"),han=el("strong","","明天见！");
- han.lang="zh-CN";phrase.appendChild(han);phrase.appendChild(el("span","","Míngtiān jiàn!"));phrase.appendChild(el("b","","Hẹn gặp ngày mai!"));card.appendChild(phrase);
- var parts=el("div","ending-breakdown");
- [["明天","míngtiān","ngày mai"],["见","jiàn","gặp lại"]].forEach(function(word){
-  var item=el("div","ending-word"),glyph=el("strong","",word[0]);glyph.lang="zh-CN";
-  item.appendChild(glyph);item.appendChild(el("span","",word[1]));item.appendChild(el("small","",word[2]));parts.appendChild(item);
- });
- card.appendChild(parts);
- card.appendChild(el("p","ending-use","Dùng khi tạm biệt người sẽ gặp lại ngày mai."));
+ han.lang="zh-CN";phrase.appendChild(han);phrase.appendChild(el("span","","Míngtiān jiàn!"));
+ if(endingMeaningChoice!==null)phrase.appendChild(el("b","","Hẹn gặp ngày mai!"));
+ card.appendChild(phrase);
+ if(endingMeaningChoice===null){
+  card.appendChild(el("p","ending-question","Mẹ vừa nói câu này. Mẹ muốn nhắn An điều gì?"));
+  var choices=el("div","quiz-choices ending-choices");
+  ["Hẹn gặp ngày mai","Xin chào","Cảm ơn"].forEach(function(answer,index){
+   choices.appendChild(button(answer,function(){endingMeaningChoice=index;render()} ,"quiz-choice"));
+  });
+  card.appendChild(choices);
+ }else{
+  var parts=el("div","ending-breakdown");
+  [["明天","míngtiān","ngày mai"],["见","jiàn","gặp lại"]].forEach(function(word){
+   var item=el("div","ending-word"),glyph=el("strong","",word[0]);glyph.lang="zh-CN";
+   item.appendChild(glyph);item.appendChild(el("span","",word[1]));item.appendChild(el("small","",word[2]));parts.appendChild(item);
+  });
+  card.appendChild(parts);
+  card.appendChild(el("p",endingMeaningChoice===0?"good ending-answer":"again ending-answer",endingMeaningChoice===0?
+   "Đúng rồi! 明天 là ngày mai, 见 là gặp lại. Dùng câu này khi chào tạm biệt.":"Chưa đúng. 明天见！ là “Hẹn gặp ngày mai”; 你好 là “Xin chào”, 谢谢 là “Cảm ơn”."));
+ }
  root.appendChild(card);
 }
 function updateNav(stage){

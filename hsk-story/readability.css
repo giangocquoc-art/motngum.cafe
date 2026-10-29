@@ -844,7 +844,9 @@ summary:focus-visible,
    Its details are already named in the dialogue, so the repeated kicker can
    drop out when the stage is too shallow for a vertical stack. */
 @media (orientation: landscape) and (max-height: 420px) {
-  .intro-screen .intro-learning:has(.finish-card) { flex-basis: 155px; }
+  .intro-screen .intro-learning:has(.finish-card):not(:has(.ending-choices)):not(:has(.ending-breakdown)) { flex-basis: 155px; }
+  .intro-screen .intro-learning:has(.ending-choices),
+  .intro-screen .intro-learning:has(.ending-breakdown) { flex-basis: 176px; }
   .intro-screen .intro-scene .glyph-frame {
     top: 8px !important;
     right: 8px !important;
@@ -1553,19 +1555,27 @@ summary:focus-visible,
   }
 }
 
-/* The ending teaches the sentence shown in the scene and needs less panel space. */
+/* The ending teaches the sentence shown in the scene and uses a single compact recall step. */
+.intro-screen .intro-learning .interactive:has(.ending-choices),
 .intro-screen .intro-learning .interactive:has(.ending-breakdown) { flex: 0 0 auto; overflow: visible; }
 @media (min-width: 691px) and (min-height: 621px) {
+  .intro-screen .intro-learning:has(.ending-choices),
   .intro-screen .intro-learning:has(.ending-breakdown) { flex-basis: clamp(300px, 34dvh, 320px); }
 }
 
 @media (max-width: 690px) and (min-height: 621px) {
+  .intro-screen .intro-learning:has(.ending-choices),
   .intro-screen .intro-learning:has(.ending-breakdown) { flex-basis: clamp(260px, 31dvh, 285px); }
 }
 
 @media (orientation: landscape) and (max-height: 420px) {
-  .intro-screen .intro-learning:has(.ending-breakdown) { flex-basis: 168px; }
-  .intro-screen .intro-learning:has(.ending-breakdown) .finish-card { padding: 4px 8px; }
+  .intro-screen .intro-learning:has(.ending-choices),
+  .intro-screen .intro-learning:has(.ending-breakdown) { flex-basis: 176px; }
+  .intro-screen .intro-learning:has(.ending-choices) .finish-card,
+  .intro-screen .intro-learning:has(.ending-breakdown) .finish-card { padding: 3px 5px; }
+  .intro-screen .intro-learning .ending-question { margin: 1px 0 0; font-size: 12px; line-height: 1.2; }
+  .intro-screen .intro-learning .ending-choices { margin-top: 2px; gap: 5px; }
+  .intro-screen .intro-learning .ending-choices .quiz-choice { min-height: 44px; padding: 4px 5px; font-size: 12px; line-height: 1.2; text-align: center; }
   .intro-screen .intro-learning .ending-phrase { gap: 1px 5px; }
   .intro-screen .intro-learning .ending-phrase strong { font-size: 16px; }
   .intro-screen .intro-learning .ending-phrase span { font-size: 11px; }
@@ -1575,6 +1585,17 @@ summary:focus-visible,
   .intro-screen .intro-learning .ending-word strong { font-size: 18px; }
   .intro-screen .intro-learning .ending-word span,
   .intro-screen .intro-learning .ending-word small { font-size: 10px; }
-  .intro-screen .intro-learning .ending-use { margin-top: 3px; font-size: 10px; }
   .intro-screen .intro-learning .recap-story { padding: 4px 7px; font-size: 9px; }
+}
+
+/* On mobile in landscape, keep the dialogue clear of An's sprite and the
+   sentence card while preserving the face in the narrow scene strip. */
+@media (orientation: landscape) and (max-height: 420px) and (max-width: 690px) {
+  .intro-screen .intro-scene-meta { display: none; }
+  .intro-screen .intro-dialogue { top: 4px; left: 6px; width: 44%; padding: 3px 6px; }
+  .intro-screen .intro-dialogue .eyebrow { display: none; }
+  .intro-screen .intro-dialogue h1 { margin-bottom: 2px; font-size: 12px; }
+  .intro-screen .intro-dialogue > p:last-child { font-size: 11px; line-height: 1.15; }
+  .intro-screen .intro-scene .glyph-frame { top: 8px !important; right: 6px !important; width: min(36%, 170px) !important; }
+  .intro-screen .intro-scene .main-glyph { font-size: 28px; }
 }

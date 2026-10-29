@@ -104,14 +104,30 @@ test("Intro ending teaches the phrase shown in the scene instead of a different 
  const phrase=card.children.find(x=>x.className==="ending-phrase");
  assert.equal(phrase.children[0].textContent,"明天见！");
  assert.equal(phrase.children[1].textContent,"Míngtiān jiàn!");
- assert.equal(phrase.children[2].textContent,"Hẹn gặp ngày mai!");
- const parts=card.children.find(x=>x.className==="ending-breakdown");
+ assert.equal(phrase.children.length,2,"show the translation after the learner makes a meaning choice");
+ assert.match(D.stages[8].narrative,/Mẹ.*“明天见！”/);
+ const question=card.children.find(x=>x.className==="ending-question");
+ assert.match(question.textContent,/Mẹ vừa nói câu này/);
+ const choices=card.children.find(x=>x.className==="quiz-choices ending-choices");
+ assert.deepEqual(choices.children.map(x=>x.textContent),["Hẹn gặp ngày mai","Xin chào","Cảm ơn"]);
+ choices.children[0].click();
+ const answered=e.interactive.children.find(x=>x.className==="finish-card");
+ assert.equal(answered.children.find(x=>x.className==="ending-phrase").children[2].textContent,"Hẹn gặp ngày mai!");
+ const parts=answered.children.find(x=>x.className==="ending-breakdown");
  assert.deepEqual(parts.children.map(x=>x.children.map(y=>y.textContent)),[["明天","míngtiān","ngày mai"],["见","jiàn","gặp lại"]]);
- assert.match(card.children.find(x=>x.className==="ending-use").textContent,/tạm biệt.*gặp lại ngày mai/);
+ assert.match(answered.children.find(x=>x.className==="good ending-answer").textContent,/明天.*ngày mai.*见.*gặp lại/);
  assert.equal(e.learningTitle.textContent,"Hẹn gặp ngày mai");
  assert.equal(e.interactionLabel.textContent,"");
- assert.match(D.stages[8].tip,/cùng An bước tiếp vào ngày đầu đến trường/);
- assert.doesNotMatch(card.textContent,/你好吗|我很好|好 \(hǎo\)/,"the ending must teach the phrase shown in its scene");
+ assert.match(D.stages[8].tip,/明天 là ngày mai.*见 là gặp lại/);
+ assert.doesNotMatch(answered.textContent,/你好吗|我很好|好 \(hǎo\)/,"the ending must teach the phrase shown in its scene");
+});
+test("Intro ending gently corrects a wrong meaning choice without adding score data",()=>{
+ const t=boot(),e=t.e;for(let i=0;i<7;i++)e.nextBtn.click();for(let i=0;i<4;i++)e.nextBtn.click();e.nextBtn.click();
+ const choices=e.interactive.children.find(x=>x.className==="finish-card").children.find(x=>x.className==="quiz-choices ending-choices");
+ choices.children[1].click();
+ const card=e.interactive.children.find(x=>x.className==="finish-card");
+ assert.match(card.children.find(x=>x.className==="again ending-answer").textContent,/明天见.*Hẹn gặp ngày mai/);
+ assert.deepEqual(Object.keys(saved(t).quizResults),["forest","crowd","mother","bright"],"ending recall is not folded into the low-stakes character guesses");
 });
 test("Visual-guess recap speaks gently without turning the story into a score panel",()=>{
  const t=boot(),e=t.e;for(let i=0;i<7;i++)e.nextBtn.click();
