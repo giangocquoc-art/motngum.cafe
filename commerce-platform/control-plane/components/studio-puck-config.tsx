@@ -36,5 +36,15 @@ export function createMotngumPuckConfig(themeId: ThemeId): Config {
       ),
     }];
   })) as unknown as Config['components'];
-  return {components};
+  // Group the 16 blocks for faster discovery; this is the existing core
+  // component registry, not a second library of templates.
+  return {
+    components,
+    categories:{
+      intro:{title:'Khởi đầu & giới thiệu',components:['hero','text','image','cta','features']},
+      showcase:{title:'Trưng bày nội dung',components:['gallery','services','team','logos']},
+      credibility:{title:'Uy tín & thông tin',components:['stats','testimonials','faq']},
+      commerce:{title:'Thương mại & tương tác',components:['products','pricing','contact','newsletter']}
+    }
+  } as Config;
 }
