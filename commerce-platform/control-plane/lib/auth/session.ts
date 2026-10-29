@@ -25,6 +25,7 @@ type SessionData = {
   user: { id: number };
   expires: string;
   version: number;
+  activeTeamId?: number;
 };
 
 export async function signToken(payload: SessionData) {
@@ -41,7 +42,10 @@ export async function verifyToken(input: string) {
   });
   if (!payload.user || typeof (payload.user as { id?: unknown }).id !== 'number' ||
       typeof payload.version !== 'number' || !Number.isSafeInteger(payload.version) || payload.version < 0 ||
-      typeof payload.expires !== 'string') throw new Error('Invalid session claims');
+      typeof payload.expires !== 'string' ||
+      (payload.activeTeamId !== undefined &&
+       (typeof payload.activeTeamId !== 'number' || !Number.isSafeInteger(payload.activeTeamId) || payload.activeTeamId <= 0))
+  ) throw new Error('Invalid session claims');
   return payload as SessionData;
 }
 
@@ -51,11 +55,12 @@ export async function getSession() {
   try { return await verifyToken(session); } catch { return null; }
 }
 
-export async function setSession(user: User) {
+export async function setSession(user: User, activeTeamId?: number) {
   const expiresInOneDay = new Date(Date.now() + 24 * 60 * 60 * 1000);
   const session: SessionData = {
     user: { id: user.id },
     version: user.sessionVersion,
+    ...(activeTeamId ? { activeTeamId } : {}),
     expires: expiresInOneDay.toISOString(),
   };
   const encryptedSession = await signToken(session);
