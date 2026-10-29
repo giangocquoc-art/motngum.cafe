@@ -29,7 +29,7 @@ The existing GitHub Actions workflow is the minimum gate:
 - **Still needed:** browser checks for page link/rename/delete flows, template switch/cancel, keyboard controls, accessibility and all interactive dialogs.
 - **Covered:** mocked network failure, conflicting revision and failed cloud load. **Still needed:** expired JWT and crash/close-before-save recovery using browser test fixtures.
 - Screenshot comparison of editor preview and public page across desktop/tablet/mobile.
-- Migrate editor to pinned Puck core with v2 data migration and a shared component registry.
+- **Implemented as an opt-in parallel route:** Puck core pinned to 0.24.0, shared 16-block registry, v2 adapter, tenant-scoped editor and PostgreSQL CAS autosave. **Still required:** safe default-editor cutover and mobile/touch/accessibility visual acceptance.
 - Media upload adapter, quotas/storage plan, verified asset licenses, functional forms and SEO/domain workflows.
 - Load test and cache/publication invalidation; verify cross-tenant access under concurrent requests.
 - Stable maintained Next.js release and hosting with acceptable commercial terms before production.
@@ -46,3 +46,9 @@ Staging deployment is postponed by project decision. Passing GitHub CI is not pr
 - HTTP + DB E2E: `test/builder-site-e2e.mjs`, including nine malformed v2 documents and tenant isolation.
 - Editor now imports server's canonical `validateSiteDocument`, with duplicate validator removed. See `docs/STUDIO_V2_PUCK_CONTRACT.md` for future Puck adapter requirements.
 - These prove baseline behavior, NOT complete visual/mobile-touch user acceptance.
+
+## Gate C2 actual runtime
+- `/dashboard/sites/[siteId]/puck` is an opt-in Puck editor protected by the existing session and active team; existing `/builder-demo` stays as rollback.
+- App lockfile pins Puck 0.24.0 transitive dependencies. Temporary lock generation workflow with write permission was removed.
+- Real Chromium test `test/browser-puck.mjs` checks loading actual database content, editing field/theme, CAS autosave, page isolation, and denying access from an unrelated organization.
+- No Vercel rollout is authorized at this gate.
