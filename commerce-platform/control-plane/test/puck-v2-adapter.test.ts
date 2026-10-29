@@ -5,7 +5,8 @@ import {
   buildTemplateDocument, createBlock, type SiteDocument, type SitePage
 } from '../lib/builder/catalog';
 import { studioPuckDefinitions, STUDIO_PUCK_FIELDS } from '../lib/builder/puck-fields';
-import { renameSitePage, countPageReferences, deleteSitePage, SitePageOperationError } from '../lib/builder/page-operations';
+import { addSitePage, renameSitePageTitle, duplicateSitePage, moveSitePage, normalizePageSlug,
+  renameSitePage, countPageReferences, deleteSitePage, SitePageOperationError } from '../lib/builder/page-operations';
 import {
   applyPuckPage, PuckConversionError,
   puckWorkspaceToSite, siteToPuckWorkspace,
@@ -178,4 +179,42 @@ test('deleting a referenced page requires explicit destination and preserves all
   const onlyOne={...safe,pages:safe.pages.slice(0,1)};
   assert.throws(()=>deleteSitePage(onlyOne,onlyOne.pages[0].id),
     (error:unknown)=>error instanceof SitePageOperationError&&error.code==='last_page');
+});
+
+test('C3 page creation, naming, order and duplication preserve immutable v2 and distinct block IDs',()=>{
+  const source=buildTemplateDocument(SITE_TEMPLATES[0]),before=structuredClone(source);
+  const added=addSitePage(source,'Hồ sơ công ty','ho-so-cong-ty');
+  assert.equal(added.pages.length,source.pages.length+1);
+  assert.equal(added.pages.at(-1)?.slug,'ho-so-cong-ty');
+  assert.deepEqual(source,before);
+  const rename=renameSitePageTitle(added,added.pages.at(-1)!.id,'Giới thiệu doanh nghiệp');
+  assert.equal(rename.pages.at(-1)?.title,'Giới thiệu doanh nghiệp');
+  assert.equal(rename.pages.at(-1)?.slug,'ho-so-cong-ty');
+  const copied=duplicateSitePage(rename,source.pages[0].id,'trang-chu-copy');
+  assert.equal(copied.pages.length,5);
+  assert.deepEqual(copied.pages[1].blocks.map(b=>({...b,id:null})),
+    source.pages[0].blocks.map(b=>({...b,id:null})));
+  const uniqueIds=copied.pages.flatMap(p=>p.blocks.map(b=>b.id));
+  assert.equal(new Set(uniqueIds).size,uniqueIds.length);
+  assert.equal(new Set(copied.pages.map(p=>p.id)).size,copied.pages.length);
+  const moved=moveSitePage(copied,copied.pages[1].id,-1);
+  assert.equal(moved.pages[0].slug,'trang-chu-copy');
+  assert.deepEqual(puckWorkspaceToSite(siteToPuckWorkspace(moved)),moved);
+  assert.equal(normalizePageSlug('Giới thiệu Đà Nẵng!'),'gioi-thieu-da-nang');
+  assert.throws(()=>addSitePage(source,'Tác giả',source.pages[0].slug),
+    (e:unknown)=>e instanceof SitePageOperationError&&e.code==='duplicate_slug');
+  assert.throws(()=>renameSitePageTitle(source,source.pages[0].id,'  '),
+    (e:unknown)=>e instanceof SitePageOperationError&&e.code==='invalid_title');
+  assert.throws(()=>moveSitePage(source,source.pages[0].id,-1),
+    (e:unknown)=>e instanceof SitePageOperationError&&e.code==='page_boundary');
+});
+test('C4 editor site limits fail closed without mutating source',()=>{
+  let doc=buildTemplateDocument(SITE_TEMPLATES[0]);
+  for(let i=doc.pages.length;i<12;i++)
+    doc=addSitePage(doc,'Trang '+i,'trang-'+i);
+  assert.equal(doc.pages.length,12);
+  assert.throws(()=>addSitePage(doc,'Quá giới hạn','qua-gioi-han'),
+    (e:unknown)=>e instanceof SitePageOperationError&&e.code==='page_limit');
+  assert.throws(()=>duplicateSitePage(doc,doc.pages[0].id,'copy'),
+    (e:unknown)=>e instanceof SitePageOperationError&&e.code==='page_limit');
 });
