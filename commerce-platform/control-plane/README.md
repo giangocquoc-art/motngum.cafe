@@ -46,17 +46,19 @@ Use the included setup script to create your `.env` file:
 pnpm db:setup
 ```
 
-Run the database migrations and seed the database with a default user and team:
+Run database migrations first:
 
 ```bash
 pnpm db:migrate
-pnpm db:seed
 ```
 
-This will create the following user and team:
+**Motngum security patch:** The original default user/password and automatic Stripe test plan creation have been removed. Seeding is disabled by default and forbidden in production. For a disposable **local development environment only**, explicitly supply:
 
-- User: `test@test.com`
-- Password: `admin123`
+```bash
+ALLOW_LOCAL_SEED=true SEED_USER_EMAIL=your-local-test@example.invalid SEED_USER_PASSWORD=generate-a-unique-strong-password pnpm db:seed
+```
+
+This does not configure merchant payment providers or create a production merchant.
 
 You can also create new users through the `/sign-up` route.
 
