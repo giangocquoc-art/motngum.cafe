@@ -4,6 +4,7 @@ import {
   BLOCK_KINDS, BLOCK_VARIANTS, SITE_TEMPLATES, THEMES,
   buildTemplateDocument, createBlock, type SiteDocument, type SitePage
 } from '../lib/builder/catalog';
+import { studioPuckDefinitions, STUDIO_PUCK_FIELDS } from '../lib/builder/puck-fields';
 import {
   applyPuckPage, PuckConversionError,
   puckWorkspaceToSite, siteToPuckWorkspace,
@@ -122,4 +123,20 @@ test('Puck block ordering changes only in selected page and cannot exceed limits
     payload.pages[0].data.content.push(item);
   }
   errorCode(() => applyPuckPage(doc,doc.pages[0].id,payload.pages[0].data),'invalid_v2_document');
+});
+
+test('field registry covers 16 Puck component types and has no static default IDs',()=>{
+  const schema=studioPuckDefinitions();
+  assert.deepEqual(Object.keys(schema),BLOCK_KINDS);
+  assert.deepEqual(Object.keys(STUDIO_PUCK_FIELDS),
+    ['title','body','variant','imageUrl','buttonLabel','buttonUrl','accent']);
+  assert.deepEqual(STUDIO_PUCK_FIELDS.variant.options.map(x=>x.value),BLOCK_VARIANTS);
+  for(const kind of BLOCK_KINDS){
+    const item=schema[kind];
+    assert.ok(item.label);
+    assert.equal('id' in item.defaultProps,false);
+    assert.equal('kind' in item.defaultProps,false);
+    assert.equal(item.defaultProps.variant,'cards');
+    assert.equal(item.fields.body.type,'textarea');
+  }
 });
