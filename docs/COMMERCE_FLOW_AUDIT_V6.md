@@ -1,5 +1,8 @@
 # MOTNGUM COMMERCE — GATE A V6 POST-FIX FLOW AUDIT (2026-10-29)
 
+> **TRẠNG THÁI SỬA V6:** [COMMERCE_V6_REMEDIATION_STATUS.md](./COMMERCE_V6_REMEDIATION_STATUS.md) — CI tự động, JWT revocation, kiểm thử PostgreSQL/JWT thật, Neon journal đã đồng bộ. Bản Vercel Preview của mã mới nhất vẫn chưa deploy được vì quota miễn phí; onboarding merchant/Medusa còn thiếu. V6 dưới đây là kiểm toán tại thời điểm phát hiện, không phải danh sách lỗi còn nguyên.
+
+
 Scope: actual source at `commerce-rebuild-2026-10`, CI results, connected Vercel team, Neon preview database and Cloudflare D1. Earlier V5 vulnerabilities already mitigated (specific notes below); this audit distinguishes newly exposed or unverified flaws rather than double counting.
 
 ## Executive verdict
