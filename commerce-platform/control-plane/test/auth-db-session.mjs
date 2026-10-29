@@ -105,6 +105,47 @@ try {
     VALUES (${staff.id},${secondTeam.id},'member')`;
   await check('/api/team', staffJwt, 409);
   await check('/api/merchants', staffJwt, 409);
+  // Explicit team selection must be signed into the cookie ONLY after server-side membership check.
+  const forbidden = await fetch(base + '/api/teams', {
+    method: 'POST', headers: { cookie: 'session=' + staffJwt,
+      origin: base, 'content-type': 'application/json' },
+    body: JSON.stringify({ teamId: 999999 })
+  });
+  assert.equal(forbidden.status, 403);
+  const crossOrigin = await fetch(base + '/api/teams', {
+    method: 'POST', headers: { cookie: 'session=' + staffJwt,
+      origin: 'https://attacker.invalid', 'content-type': 'application/json' },
+    body: JSON.stringify({ teamId: secondTeam.id })
+  });
+  assert.equal(crossOrigin.status, 403);
+  const teamSelection = await fetch(base + '/api/teams', {
+    method: 'POST', headers: { cookie: 'session=' + staffJwt,
+      origin: base, 'content-type': 'application/json' },
+    body: JSON.stringify({ teamId: secondTeam.id })
+  });
+  assert.equal(teamSelection.status, 200);
+  assert.equal((await teamSelection.json()).activeTeamId, secondTeam.id);
+  const selectedCookie = teamSelection.headers.get('set-cookie')?.match(/session=([^;]+)/)?.[1];
+  assert.ok(selectedCookie, 'signed tenant-specific session must be returned');
+  const response = await fetch(base + '/api/merchants', {
+    headers: { cookie: 'session=' + selectedCookie }, cache: 'no-store'
+  });
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).merchant.id, secondMerchantId);
+  const firstTeamSelection = await fetch(base + '/api/teams', {
+    method: 'POST', headers: { cookie: 'session=' + selectedCookie,
+      origin: base, 'content-type': 'application/json' },
+    body: JSON.stringify({ teamId: team.id })
+  });
+  assert.equal(firstTeamSelection.status, 200);
+  const firstTeamCookie = firstTeamSelection.headers.get('set-cookie')?.match(/session=([^;]+)/)?.[1];
+  assert.ok(firstTeamCookie);
+  const firstTeamResponse = await fetch(base + '/api/merchants', {
+    headers: { cookie: 'session=' + firstTeamCookie }, cache: 'no-store'
+  });
+  assert.equal(firstTeamResponse.status, 200);
+  assert.equal((await firstTeamResponse.json()).merchant.id, merchantId);
+  console.log('PASS: team switch requires membership+same-origin, signed session isolates both merchants.');
   console.log('PASS: two teams/two merchants isolated, staff limited to own team, multi-team ambiguity denied.');
 
   let uniqueEnforced = false;
