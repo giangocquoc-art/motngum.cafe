@@ -1,0 +1,32 @@
+name: Commerce Container Packaging
+on:
+  push:
+    branches: [commerce-rebuild-2026-10]
+    paths: [commerce-platform/docker.trigger]
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      POSTGRES_PASSWORD: ci_only_not_real
+      JWT_SECRET: ci_only_not_real_jwt
+      COOKIE_SECRET: ci_only_not_real_cookie
+      STORE_CORS: https://commerce-preview.motngum.cafe
+      ADMIN_CORS: https://commerce-preview.motngum.cafe
+      AUTH_CORS: https://commerce-preview.motngum.cafe
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: commerce-rebuild-2026-10
+          sparse-checkout: commerce-platform
+          sparse-checkout-cone-mode: false
+      - name: Verify compose configuration has no missing required variables
+        run: docker compose -f commerce-platform/compose.staging.yml config --quiet
+      - name: Build Medusa backend container from pinned source
+        run: docker build --progress=plain --tag motngum-medusa-staging:test -f commerce-platform/commerce/Dockerfile.motngum commerce-platform/commerce
+      - name: Verify backend executable
+        run: |
+          docker image inspect motngum-medusa-staging:test >/dev/null
+          echo "PASS: Dockerized Medusa backend image built."
