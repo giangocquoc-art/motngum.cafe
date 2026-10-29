@@ -117,8 +117,9 @@ export const signUp = validatedAction(signUpSchema, async (data) => {
     return { error: 'Invitation enrollment is temporarily disabled pending secure one-time tokens.' };
   }
   const passwordHash = await hashPassword(password);
+  let createdUser: User;
   try {
-    const createdUser = await db.transaction(async (tx) => {
+    createdUser = await db.transaction(async (tx) => {
       const [createdUser] = await tx.insert(users)
         .values({ email, passwordHash, role: 'owner' }).returning();
       if (!createdUser) throw new Error('Could not create user');
@@ -134,10 +135,14 @@ export const signUp = validatedAction(signUpSchema, async (data) => {
       ]);
       return createdUser;
     });
-    // The session must not be issued before the transaction commits.
-    await setSession(createdUser);
   } catch {
     return { error: 'Could not create this account. Please verify the email is not already registered.' };
+  }
+  // The account is already committed: a cookie failure must never be described as a failed registration.
+  try {
+    await setSession(createdUser);
+  } catch {
+    return { error: 'Account created successfully, but sign-in could not finish. Please sign in with your new account.' };
   }
   redirect('/dashboard');
 });
@@ -147,6 +152,10 @@ export async function signOut() {
   try {
     const user = await getUser();
     if (user) {
+      // Invalidate ALL previously issued JWTs for this user, including stolen copies.
+      await db.update(users)
+        .set({ sessionVersion: sql`session_version + 1`, updatedAt: new Date() })
+        .where(eq(users.id, user.id));
       const member = await getUserWithTeam(user.id);
       await logActivity(member?.teamId, user.id, ActivityType.SIGN_OUT);
     }
