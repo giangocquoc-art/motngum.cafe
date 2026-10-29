@@ -1,5 +1,8 @@
 # KIỂM TOÁN KẾ HOẠCH TÍCH HỢP — V2 (29/10/2026)
 
+> **BẢN CẬP NHẬT MỚI NHẤT:** [COMMERCE_GAP_AUDIT_V3.md](./COMMERCE_GAP_AUDIT_V3.md) — bổ sung dòng tiền, hosting/domain, chính xác hóa reservation Medusa, GitHub upgrades, Puck/MedusaPOS và gate G0–G9. V2 là tư liệu kiểm toán trước đó; nếu có mâu thuẫn, ưu tiên V3.
+
+
 > Tài liệu bổ sung và **hiệu chỉnh bắt buộc** cho `docs/COMMERCE_REBUILD_MASTER_PLAN.md`. Nhiệm vụ: sản phẩm SaaS nhiều nhà bán kiểu Haravan tại `motngum.cafe`, không phải chỉ một website bán lẻ. Không ưu tiên giao diện, không tái sử dụng sản phẩm cũ, nhưng không phá các subdomain/dịch vụ ngoài phạm vi.
 
 ## 0. Kết luận kỹ thuật
