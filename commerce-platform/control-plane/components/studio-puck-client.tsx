@@ -257,9 +257,11 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
     });
   }
 
-  async function publish(data:Data) {
+  async function publish(data?:Data) {
     if(!canPublish){setNotice('Chỉ chủ tổ chức mới được xuất bản.');return;}
-    editPuck(activePageId,data);
+    // Puck's built-in publish supplies its current canvas Data. The explicit
+    // Studio toolbar publish uses the already validated onChange document.
+    if(data)editPuck(activePageId,data);
     if(blockedRef.current)return;
     if(!(await saveAll(false)))return;
     if(!window.confirm('Xuất bản snapshot revision '+versionRef.current+' trên staging? Không kích hoạt thanh toán.'))return;
@@ -303,6 +305,8 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
         disabled={saving} className="rounded-lg bg-amber-700 px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">
         {saving?'Đang lưu...':blocked?'Thử lưu lại':dirty?'Lưu bản nháp':'Đã lưu'}
       </button>
+      {canPublish&&<button type="button" onClick={()=>{void publish();}} disabled={saving||blocked}
+        className="rounded-lg border border-green-700 px-3 py-2 text-xs font-semibold text-green-800 disabled:opacity-40">Xuất bản staging</button>}
       <button type="button" onClick={exportJson} className="rounded-lg border px-3 py-2 text-xs font-semibold">Xuất JSON dự phòng</button>
       <a className="rounded-lg border px-3 py-2 text-xs font-semibold" href={'/dashboard/sites/'+siteId+'/preview'} target="_blank" rel="noopener noreferrer">Xem bản nháp</a>
       {publishedUrl&&<a href={publishedUrl} className="text-xs font-semibold text-green-800" target="_blank" rel="noopener noreferrer">Xem bản đã xuất bản</a>}
