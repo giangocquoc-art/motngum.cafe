@@ -1,0 +1,20 @@
+{
+  "name": "motngum-commerce-stage",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-10-29",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "motngum-commerce-staging",
+      "database_id": "3ecf7f1f-4083-47de-a162-15d973bbe06e"
+    }
+  ]
+}
