@@ -97,6 +97,10 @@ try{
       .withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
     const severe=resultAxe.violations.filter((v:{impact:string})=>
       ['critical','serious'].includes(v.impact));
+    if(severe.length)console.error('WCAG details',site.source,JSON.stringify(
+      severe.map((v:{id:string,nodes:Array<{target:string[],failureSummary?:string}>})=>({
+        rule:v.id,nodes:v.nodes.slice(0,5).map(n=>({target:n.target,reason:n.failureSummary}))
+      }))));
     assert.deepEqual(severe.map((v:{id:string,impact:string})=>[v.id,v.impact]),[],
       'Severe WCAG A/AA violations in '+site.source);
     console.log('PASS WCAG severe/critical '+site.source);
