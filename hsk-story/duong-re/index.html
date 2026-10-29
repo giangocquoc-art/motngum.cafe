@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5eddb">
+<meta name="description" content="Hai quê hương — ngoại truyện phân nhánh: những lựa chọn khiến Minh An lớn lên theo nhiều cách khác nhau. Bản thử nghiệm độc lập.">
+<title>Ngày đầu của An · Ngoại truyện phân nhánh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+<script src="./branch-data.js" defer></script>
+<script src="./branch-engine.js" defer></script>
+<script src="./branch-ui.js" defer></script>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<header class="topbar">
+  <a class="brand" href="../index.html" aria-label="Về Hai quê hương"><span class="seal">乡</span><span>两个故乡<small>HAI QUÊ HƯƠNG · BẢN THỬ</small></span></a>
+  <div class="topnav"><span class="prototype-tag">NHÁNH ĐỘC LẬP · CHƯA PHẢI BẢN CHÍNH</span><button type="button" class="quiet-btn" id="journalToggle" aria-expanded="false" aria-controls="journalPanel">Sổ tay của An <span aria-hidden="true">↗</span></button></div>
+</header>
+<main class="layout">
+  <section class="page-heading" aria-labelledby="pageTitle"><p class="overline">NGOẠI TRUYỆN TƯƠNG TÁC · EPISODE 01</p><h1 id="pageTitle">Ngày đầu của <em>Minh An</em></h1><p>Không có một An duy nhất. Mỗi câu nói, lời nhờ giúp đỡ và hành động nhỏ đều để lại dấu vết trong con người An.</p></section>
+  <div class="game-grid">
+  <section class="main-story" aria-label="Câu chuyện">
+    <div class="stage" id="stage" data-place="station" role="img" aria-label="Phông cảnh 2D minh họa Thành Đô và nhân vật Minh An">
+       <div class="sun"></div><div class="cloud cloud-one"></div><div class="cloud cloud-two"></div>
+       <div class="building building-one"></div><div class="building building-two"></div><div class="roof"></div><div class="hill"></div><div class="ground"></div>
+       <div class="tree"><span></span></div><div class="window"></div>
+       <div class="paper-label" id="placeLabel">THÀNH ĐÔ · NGÀY THỨ NHẤT</div>
+       <div class="person mother-art" aria-hidden="true"><svg viewBox="0 0 100 170"><path d="M25 90 Q12 117 19 150 L80 150 Q86 119 72 89 Z" fill="#ad886f"/><path d="M37 67 L64 66 L70 100 L28 100Z" fill="#e7d8bb"/><path d="M30 41 Q26 11 50 10 Q73 10 72 44 L66 78 L33 76Z" fill="#333c36"/><ellipse cx="50" cy="53" rx="24" ry="30" fill="#ebbf9f"/><path d="M25 38 Q19 5 48 9 Q78 7 74 52 Q64 29 48 28 Q40 44 25 38Z" fill="#303630"/><path d="M39 53 l2 1 M57 54 l2 1 M45 64q6 5 12-1" stroke="#3a2924" fill="none" stroke-width="2"/><path d="M25 90 l-12 52 M74 91 l12 48 M33 149v18 M69 149v18" stroke="#40352f" stroke-width="11" stroke-linecap="round"/><path d="M25 90 Q12 117 19 150 L80 150 Q86 119 72 89 Z" stroke="#40352f" stroke-width="2" fill="none"/><path d="M9 163h25 M62 163h26" stroke="#3c3732" stroke-width="8" stroke-linecap="round"/></svg></div>
+       <div class="person an-art" aria-hidden="true"><svg viewBox="0 0 100 170"><path d="M23 87 Q12 112 21 134 L80 134 Q86 110 73 88 Z" fill="#e5a05c"/><path d="M30 39 Q20 12 49 8 Q78 10 72 47 L71 80 L29 80 Z" fill="#2b3435"/><ellipse cx="50" cy="50" rx="25" ry="29" fill="#edc4a3"/><path d="M24 37 Q18 8 49 8 Q80 8 73 48 Q66 22 55 25 Q43 30 24 37Z" fill="#2d3232"/><path d="M40 53l2 1 M58 53l2 1 M45 64q6 5 11-1" stroke="#4b332e" stroke-width="2" fill="none"/><path d="M23 87 Q12 112 21 134 L80 134 Q86 110 73 88 Z" stroke="#443934" stroke-width="2" fill="none"/><path d="M30 136 l-2 31 M68 135l2 32" stroke="#3e656e" stroke-width="14"/><path d="M25 165h22 M59 165h23" stroke="#f2eadc" stroke-width="8" stroke-linecap="round"/><path d="M26 90L13 120 M73 91L85 119" stroke="#e5a05c" stroke-width="12" stroke-linecap="round"/><path d="M26 90L13 120 M73 91L85 119" stroke="#49372c" stroke-width="1.5" fill="none"/></svg></div>
+       <div class="stage-note"><span id="sceneLocation">Bến xe</span><span>✳ Mỗi lựa chọn để lại một dấu vết</span></div>
+    </div>
+    <div class="story-card">
+      <div class="story-topline"><span id="actLabel">CHƯƠNG 01</span><span id="progressLabel">CẢNH 01</span></div>
+      <h2 id="sceneTitle">Ngày đầu tiên, trời vừa tạnh</h2>
+      <div class="speaker" id="speaker">Mẹ</div>
+      <p class="narration" id="narration"></p>
+      <div id="echoes" class="echoes" aria-live="polite"></div>
+      <div class="choice-heading"><span id="choiceHeading">An sẽ làm gì?</span><small>Không có điểm đúng/sai cho tính cách.</small></div>
+      <div id="choices" class="choices"></div>
+      <form id="typedForm" class="typed-form" autocomplete="off"><label for="typedAnswer">Hoặc tự viết câu trả lời bằng chữ Hán</label><div class="typed-row"><input id="typedAnswer" name="answer" type="text" maxlength="90" lang="zh-CN" placeholder="Ví dụ: 我想看看。" spellcheck="false"><button type="submit">Nói ↗</button></div><small>Nhận một số cách nói đã biên tập, chưa phải AI tự do. Nếu chưa gõ được chữ Hán, hãy chọn lời thoại phía trên.</small><p class="input-message" id="inputMessage" role="status"></p></form>
+      <div class="controls"><button type="button" class="text-toggle" id="pinyinToggle" aria-pressed="true">Ẩn Pinyin</button><button type="button" class="text-toggle" id="translationToggle" aria-pressed="true">Ẩn lời dịch</button><button type="button" class="text-toggle" id="voiceToggle">Nghe câu thoại ↗</button></div>
+    </div>
+  </section>
+  <aside class="sidebar" aria-label="Nhân vật An">
+    <div class="side-card"><p class="overline">CHÂN DUNG ĐANG HÌNH THÀNH</p><h3>Một An do bạn lựa chọn</h3><p class="side-explain">Không phải điểm đạo đức hay khả năng tiếng Trung. Đây là những khuynh hướng An bộc lộ qua câu chuyện.</p><div id="traits"></div></div>
+    <div class="side-card"><p class="overline">NHỮNG NGƯỜI AN ĐÃ GẶP</p><h3>Quan hệ & ký ức</h3><div id="relationships"></div></div>
+    <div class="side-card aside-tip"><span>✳</span><p>Quyển sổ mẹ trao sẽ luôn trở về với An, nhưng cách An tìm nó và người ở bên khi ấy là do bạn chọn.</p></div>
+    <button class="reset" id="restartBtn" type="button">↺ Chơi lại từ đầu bằng một An khác</button>
+  </aside>
+  </div>
+  <section class="journal" id="journalPanel" hidden aria-label="Sổ tay quyết định"><div class="journal-head"><div><p class="overline">NHỮNG DẤU MỰC KHÔNG MẤT</p><h2>Sổ tay của An</h2></div><button type="button" class="quiet-btn" id="closeJournal">Đóng ×</button></div><p>Chỉ những quyết định bạn đã thực sự đưa ra mới được ghi lại. Những điều chưa sống qua không xuất hiện ở đây.</p><ol id="journalList"></ol></section>
+  <footer class="footer"><span>HAI QUÊ HƯƠNG · MỘT THỬ NGHIỆM KỂ CHUYỆN</span><span>Tiến độ độc lập · Không thay thế nhánh chính · Không cấp chứng chỉ HSK</span></footer>
+</main>
+</body>
+</html>
