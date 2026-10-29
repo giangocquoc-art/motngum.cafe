@@ -137,7 +137,7 @@ jobs:
           node /tmp/motngum-browser/node_modules/playwright/cli.js install --with-deps chromium
           node test/browser-builder.mjs
           node test/browser-puck.mjs
-          node /tmp/motngum-puck-contract/node_modules/tsx/dist/cli.mjs test/browser-templates.ts
+          node /tmp/motngum-puck-contract/node_modules/tsx/dist/cli.mjs test/browser-templates.mts
       - name: Upload Studio screenshot and visual acceptance evidence
         if: always()
         uses: actions/upload-artifact@v4
