@@ -3,6 +3,8 @@ var HSKFutureActs=(function(){"use strict";
 var acts=[
   {
     "level": 2,
+    "playable": false,
+    "planningStatus": "story-outline-only; no HSK 3.0 target items mapped or verified",
     "id": "hsk2.first-friend",
     "title": "Người bạn đầu tiên",
     "theme": "Tin tưởng nhau bằng những lời thường ngày",
@@ -66,6 +68,8 @@ var acts=[
   },
   {
     "level": 3,
+    "playable": false,
+    "planningStatus": "story-outline-only; no HSK 3.0 target items mapped or verified",
     "id": "hsk3.spring-promise",
     "title": "Hội chợ mùa xuân",
     "theme": "Hai nền văn hóa gặp nhau qua việc làm chung",
@@ -130,6 +134,8 @@ var acts=[
   },
   {
     "level": 4,
+    "playable": false,
+    "planningStatus": "story-outline-only; no HSK 3.0 target items mapped or verified",
     "id": "hsk4.change-season",
     "title": "Khi mọi chuyện thay đổi",
     "theme": "Lắng nghe những lý do mà mình không đồng ý",
@@ -194,6 +200,8 @@ var acts=[
   },
   {
     "level": 5,
+    "playable": false,
+    "planningStatus": "story-outline-only; no HSK 3.0 target items mapped or verified",
     "id": "hsk5.two-homes",
     "title": "Hai quê hương",
     "theme": "Định nghĩa thuộc về khi ta có hai nơi để nhớ",
@@ -255,9 +263,59 @@ var acts=[
         "resolution": "Đánh giá nội bộ theo hai rubric khác nhau, khép lại câu chuyện"
       }
     ]
+  },
+  {
+    "level": 6,
+    "id": "hsk6.letters-we-leave",
+    "title": "Những điều An muốn gửi lại",
+    "theme": "Nhìn lại những nơi và con người đã cùng làm nên câu chuyện của An",
+    "planningStatus": "story-outline-only; no HSK 3.0 target items mapped or verified",
+    "playable": false,
+    "episodes": [
+      {
+        "id": "old-streets",
+        "title": "Con phố trong quyển sổ",
+        "setting": "Phố cũ ở Thành Đô",
+        "conflict": "An muốn ghi lại một nơi đã đổi khác nhưng ký ức của mọi người không hoàn toàn giống nhau",
+        "functions": ["tổng hợp nhiều góc nhìn", "đối chiếu lời kể với ghi chép"],
+        "choice": "An chọn hỏi thêm một người hay giữ lại điều mình chưa chắc",
+        "callback": "Những dòng ghi chép từ ngày đầu tiên",
+        "resolution": "An đánh dấu rõ đâu là điều mình biết và đâu là điều còn cần hỏi"
+      },
+      {
+        "id": "three-voices",
+        "title": "Ba cách nhớ một ngày",
+        "setting": "Nhà An, lớp học và quán bà Lưu",
+        "conflict": "Mẹ, Tiểu Vũ và bà Lưu nhớ ba chi tiết khác nhau về một buổi chiều",
+        "functions": ["kể lại có chọn lọc", "làm rõ nguồn thông tin"],
+        "choice": "An chọn cách sắp xếp những lời kể để không làm mất tiếng nói riêng",
+        "callback": "Những người An từng học cách lắng nghe",
+        "resolution": "Bản ghi giữ lại khác biệt thay vì ép mọi người thành một câu chuyện duy nhất"
+      },
+      {
+        "id": "open-letter",
+        "title": "Một lá thư chưa gửi",
+        "setting": "Phòng An vào buổi tối",
+        "conflict": "An viết về điều mình còn phân vân mà chưa biết ai sẽ đọc",
+        "functions": ["xây dựng lập luận dài", "tự sửa bản thảo theo phản hồi"],
+        "choice": "An quyết định điều gì nên nói thẳng và điều gì cần thêm dẫn chứng",
+        "callback": "Quyển sổ đã theo An qua nhiều lần bắt đầu lại",
+        "resolution": "An giữ lại một bản nháp còn mở để tiếp tục sửa"
+      },
+      {
+        "id": "sparrow-window",
+        "title": "Cửa sổ còn mở",
+        "setting": "Cửa sổ nhìn xuống khu phố",
+        "conflict": "An phải chọn cách kể câu chuyện của mình mà không nói thay người khác",
+        "functions": ["tổng hợp", "trình bày quan điểm có giới hạn", "tự đánh giá điều còn thiếu"],
+        "choice": "An chọn kết thúc bằng một câu trả lời hay một câu hỏi còn để ngỏ",
+        "callback": "Sẻ đã lắng nghe từ trang đầu tiên",
+        "resolution": "Khép lại một chặng truyện, không tuyên bố đạt chuẩn hay chứng nhận HSK"
+      }
+    ]
   }
 ];
-function validate(){var errors=[],ids=new Set();if(acts.length!==4)errors.push("Expected HSK2–5 drafts");acts.forEach(function(a,i){if(a.level!==i+2||a.episodes.length<4)errors.push("Incomplete level "+(i+2));a.episodes.forEach(function(e){var id=a.id+"."+e.id;if(ids.has(id))errors.push("Duplicate episode");ids.add(id);if(!e.conflict||!e.choice||!e.callback||!e.resolution||!e.functions.length)errors.push("Missing story learning contract "+id)})});return errors}
+function validate(){var errors=[],ids=new Set();if(acts.length!==5)errors.push("Expected HSK2–6 drafts");acts.forEach(function(a,i){if(a.level!==i+2||a.episodes.length<4)errors.push("Incomplete level "+(i+2));if(a.playable!==false)errors.push("Future act must remain non-playable "+a.level);a.episodes.forEach(function(e){var id=a.id+"."+e.id;if(ids.has(id))errors.push("Duplicate episode");ids.add(id);if(!e.conflict||!e.choice||!e.callback||!e.resolution||!e.functions.length)errors.push("Missing story learning contract "+id)})});return errors}
 function byLevel(level){return acts.find(a=>a.level===level)||null}
-var api={version:"draft-v1",status:"NOT PLAYABLE / PENDING HSK3 official mapping and Mandarin review",acts:acts,validate:validate,byLevel:byLevel};if(typeof module!=="undefined"&&module.exports)module.exports=api;return api;
+var api={version:"draft-v2",status:"NOT PLAYABLE / STORY THEMES ONLY / PENDING HSK 3.0 ITEM MAPPING AND MANDARIN REVIEW",acts:acts,validate:validate,byLevel:byLevel};if(typeof module!=="undefined"&&module.exports)module.exports=api;return api;
 })();

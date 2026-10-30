@@ -69,19 +69,44 @@ test("V10 skip, historic save and tampered result do not fabricate mastery",()=>
  assert.equal(forged.status,"pending");
  assert.equal(forged.results[0].result,"unassessed");
 });
-test("V10 traceability blueprint exposes missing proof instead of fabricated HSK1 certification",()=>{
+test("V17 versioned blueprint maps six levels and exposes unverified coverage",()=>{
  assert.deepEqual(Array.from(B.validate(K,C,S,E)),[]);
  const report=B.report();
  assert.equal(report.certifiedHSK1Coverage,false);
  assert.equal(report.officiallyVerifiedObjectives,0);
+ assert.equal(report.officiallyVerifiedItems,0);
+ assert.equal(report.levelsInScope,6);
+ assert.equal(report.plannedLevels,5);
  assert.ok(report.awaitingMandarinReview>0);
  assert.equal(B.source.publisherPage,"https://www.chinesetest.cn/syllabus");
+ assert.equal(B.source.published,"2025-11");
+ assert.equal(B.source.effective,"2026-07");
+ assert.match(B.source.url,/hsk\.cn-bj\.ufileos\.com\/3\.0\//);
+ assert.deepEqual(Array.from(B.levels,x=>x.level),[1,2,3,4,5,6]);
+ assert.deepEqual(Array.from(B.levels,x=>x.verifiedOfficialItems),[0,0,0,0,0,0]);
+ assert.deepEqual(Array.from(B.levels,x=>[x.sourcePages.tasks,x.sourcePages.topics,x.sourcePages.vocabulary,x.sourcePages.characters,x.sourcePages.grammar]),[[2,56,77,353,383],[6,58,84,355,386],[11,60,89,356,389],[18,63,102,358,392],[29,66,127,361,395],[37,69,167,364,398]]);
+ assert.ok(B.levels.slice(1).every(x=>x.storyStatus==="planned"&&x.teacherSignoff==="PENDING"));
 });
-test("V13–V16 four drafted acts remain explicitly non-playable, with coherent episodic stakes",()=>{
+test("V17 stable objective IDs point to the unchanged ten lesson/checkpoint scenes",()=>{
+ const expected={"greeting":[0,1],"introduce-self":[1,2,7],"student-identity":[2,3,7],"numbers":[3],"order-noodles":[4,5,9],"price":[5,8],"gratitude":[5],"farewell":[6]};
+ assert.equal(K.scenes.length,10);
+ for(const objective of B.objectives){
+  assert.deepEqual(Array.from(objective.curriculumSceneIds),expected[objective.id]);
+  assert.equal(objective.sourceLevel,1);
+  assert.equal(objective.teacherSignoff,"PENDING");
+  assert.deepEqual(Array.from(objective.officialItemIds),[]);
+ }
+ const mapped=new Set(B.objectives.flatMap(x=>Array.from(x.curriculumSceneIds)));
+ assert.deepEqual(Array.from(mapped).sort((a,b)=>a-b),[0,1,2,3,4,5,6,7,8,9]);
+});
+test("V13–V17 five drafted acts remain non-playable through HSK 3.0 level 6",()=>{
  assert.deepEqual(Array.from(F.validate()),[]);
- assert.deepEqual(Array.from(F.acts,x=>x.level),[2,3,4,5]);
- assert.equal(F.acts.reduce((n,x)=>n+x.episodes.length,0),16);
+ assert.deepEqual(Array.from(F.acts,x=>x.level),[2,3,4,5,6]);
+ assert.ok(F.acts.every(x=>x.playable===false&&x.planningStatus.includes("no HSK 3.0 target items mapped")));
+ assert.equal(F.acts.reduce((n,x)=>n+x.episodes.length,0),20);
  assert.ok(F.byLevel(5).episodes.some(e=>e.id==="graduation"));
+ assert.equal(F.byLevel(6).id,"hsk6.letters-we-leave");
+ assert.equal(F.byLevel(6).episodes.length,4);
  assert.ok(F.status.includes("NOT PLAYABLE"));
 });
 
