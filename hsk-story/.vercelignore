@@ -22,6 +22,8 @@ tests/
 e2e/
 test-results/
 .sites-runtime/
+hsk30-syllabus-inventory.json
+future-branch-decisions.json
 *.md
 
 # Private layout review scaffolding is not part of the product.

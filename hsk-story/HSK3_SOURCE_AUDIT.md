@@ -1,6 +1,6 @@
 # HSK 3.0 curriculum source map (2025 edition)
 
-**Status: traceability pilot; no claim of full HSK coverage, exam readiness, or certification.** This map records official section anchors and the current story plan. It does not copy the syllabus or mark individual Chim Sẻ items as verified.
+**Status: complete level 1–6 source locator inventory; partial instructional crosswalk; no claim of full HSK coverage, exam readiness, or certification.** The inventory records stable IDs, printed pages, source hashes, and official section totals without copying the syllabus tables. It does not mark Chim Sẻ objectives as verified.
 
 ## Edition and source
 
@@ -24,17 +24,33 @@ Each page number is the section's starting page. These are locators for teacher 
 | 5 | 29 · 66 · 127 · 361 · 395 | Hai quê hương | Six curated story-spine candidates; candidate vocabulary rows and grammar/character locators recorded; item match and educator review pending |
 | 6 | 37 · 69 · 167 · 364 · 398 | Những điều An muốn gửi lại | Six curated story-spine candidates; candidate vocabulary rows and grammar/character locators recorded; item match and educator review pending |
 
+## Complete source locator inventory
+
+`hsk30-syllabus-inventory.json` covers all five official sections for HSK 3.0 levels 1–6. It stores stable task, topic-row, vocabulary-row, recognition-character, and grammar-page IDs with printed-page locators and SHA-256 source checks; it does not reproduce the source lists. The pypdf zero-based page index is the printed page plus 2; the PDF's one-based page number is the printed page plus 3.
+
+| HSK level | Tasks | Topic tiers 1 / 2 / 3 | Vocabulary rows | Recognition characters | Grammar pages |
+| --- | ---: | --- | ---: | ---: | ---: |
+| 1 | 15 | 5 / 15 / 30 | 300 | 246 | 3 |
+| 2 | 17 | 5 / 18 / 34 | 200 | 125 | 3 |
+| 3 | 22 | 6 / 22 / 54 | 500 | 284 | 3 |
+| 4 | 30 | 7 / 31 / 77 | 1,000 | 441 | 3 |
+| 5 | 28 | 7 / 29 / 72 | 1,600 | 431 | 3 |
+| 6 | 24 | 7 / 25 / 68 | 1,800 | 413 | 2 |
+| **Total** | **136** | **37 / 140 / 335** | **5,400** | **1,940** | **17** |
+
+Topic tier totals are read from the printed page footers; merged topic rows retain row IDs but do not receive guessed parents. The official grammar tables provide no item IDs or row total, so the inventory gives page locators and hashes while grammar rows await visual normalization. The full locator inventory is not an instructional sequence or an item-level objective crosswalk.
+
 ## Objective registry and release state
 
-The registry contains eight HSK1 candidate goals linked to the existing ten lesson/checkpoint records, plus six curated story-spine candidates for each of HSK2–6. Each future candidate includes vocabulary serials and exact printed pages checked against `candidate-source-index.json`, target-level grammar entries with page locators, and every candidate Hanzi's recognition-list level, ordinal, and printed page. Task/topic cues, planned practice skills, exam-section references, prerequisites, episode intro/reuse/checkpoint links, and hint policy are also recorded. These are traceable candidate references, **not an exhaustive HSK vocabulary/objective inventory or a teacher-approved match**.
+The registry contains eight HSK1 candidate goals linked to the existing ten lesson/checkpoint records, plus six curated story-spine candidates for each of HSK2–6. Each future candidate includes vocabulary serials and exact printed pages checked against `candidate-source-index.json`, target-level grammar entries with page locators, and every candidate Hanzi's recognition-list level, ordinal, and printed page. Candidate references link to stable IDs in the full locator inventory. Task/topic cues, planned practice skills, exam-section references, prerequisites, episode intro/reuse/checkpoint links, and hint policy are also recorded. These candidates are **not a complete instructional map or teacher-approved match**.
 
-`candidate-source-index.json` is a checked-in extraction fixture for the pinned official PDF. It records 78 unique vocabulary row references, 151 per-level character locators, and 46 target-level grammar entry locators. Validators compare candidate content against this independent fixture, including the exact row word/Pinyin/page, character list ordinal/page, and target-level grammar source/page. The fixture improves traceability but does not replace human review of task/topic alignment, grammar use in dialogue, Pinyin, glosses, or instructional suitability.
+`candidate-source-index.json` is a focused extraction fixture for the pinned official PDF. It records 78 selected vocabulary row references, 151 per-level character locators, and 46 target-level grammar entry locators. Validators compare candidate content against this independent fixture, including the selected row Hanzi/Pinyin/page, character-list ordinal/page, and target-level grammar source/page. The fixture improves traceability but does not replace human review of task/topic alignment, grammar use in dialogue, Pinyin, glosses, or instructional suitability.
 
 Each objective carries a stable ID, level, topic, candidate task, prerequisite IDs, five section locators, item-review status for each component, candidate language content, story practice stages, hint rules, and educator sign-off. A component may later be marked `reviewed-match` only when exact official item IDs are recorded; `reviewed-no-match` records a reviewed gap without claiming a match. A level remains locked until its objectives, language content, practice sequence, official mapping, and educator review are complete.
 
-The current pilot has eight candidate goals and zero verified official items. All eight have authored introduction, later reuse, and recall opportunities. Some reuse/checkpoint activities live in optional spaced review rather than the mandatory story route; these are editorial opportunities, not evidence of full HSK1 coverage. HSK2–6 now have candidate word rows and structures sourced from the pinned PDF, but no official item IDs, educator sign-off, authored assessments, or playable content. All remain locked.
+The current pilot has eight candidate goals and zero verified official items. All eight have authored introduction, later reuse, and recall opportunities. Some reuse/checkpoint activities live in optional spaced review rather than the mandatory story route; these are editorial opportunities, not evidence of full HSK1 coverage. HSK2–6 now have authored branch treatments and six candidate learning strands per level, but no approved item crosswalks, educator sign-off, authored assessments, or playable content. All remain locked.
 
-Future objective stages are ordered as introduction in context, later reuse, and a separate independent recall beat. The recall beat may be a distinct assessment beat inside the capstone episode; it must follow the story interaction and use a non-revealing prompt. No branch may skip a shared learning objective.
+Future objective stages are ordered as introduction in context, later reuse, and a separate independent recall beat. The recall beat may be a distinct assessment beat inside the capstone episode; it must follow the story interaction and use a non-revealing prompt. `future-branch-decisions.json` records two authored options for each of the 20 future episodes: each has its own reaction, stored memory value and later callback, then rejoins before the same six candidate learning anchors for its level. These 40 branch beats are narrative drafts; the levels remain locked and no branch may skip a shared learning objective.
 
 ## Existing level 1 objective crosswalk
 
@@ -54,7 +70,7 @@ The labels below are authored lesson goals. Their HSK 3.0 page references are ca
 ## Verification gaps
 
 - Level 1: map each authored objective to exact official rows/items across all five syllabus components; confirm the Chinese, Pinyin, Vietnamese glosses, accepted variants, difficulty, and scene sequencing with a qualified Mandarin/HSK educator. The three in-story checkpoints and optional review cards are formative tasks, not official exam items.
-- Levels 2–6: six curated story-spine candidates per level are not a complete syllabus inventory. Verify every candidate row, Chinese form, Pinyin, Vietnamese gloss, grammar structure, topic/task relationship, character list, and skill activity with a qualified educator; then expand the map to the level's complete planned learning objectives and record exact reviewed crosswalks before authoring playable lessons.
+- Levels 2–6: the source locator inventory is complete, but six curated story-spine candidates per level are not a complete set of instructional objectives. Visually normalize grammar entries and topic hierarchy; verify every candidate row, Chinese form, Pinyin, Vietnamese gloss, grammar structure, topic/task relationship, character list, and skill activity with a qualified educator; then expand the crosswalk to the level's complete planned learning objectives before authoring playable lessons.
 - Exam section references are separated from Chim Sẻ practice claims: the current official pages list listening/reading for levels 1–2 and listening/reading/writing for levels 3–6. The app has no validated native listening, speaking, handwriting, or exam-grade writing evidence.
 - Do not infer listening or speaking proficiency from browser TTS or speech recognition; no validated native recordings, pronunciation rubric, or handwriting evidence is established here.
 - Keep story choice outcomes separate from learning evidence. Lesson completion is not HSK readiness or a certificate.

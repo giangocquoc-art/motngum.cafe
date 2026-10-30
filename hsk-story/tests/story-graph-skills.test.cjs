@@ -145,7 +145,8 @@ test("V17 all six levels have stable objectives, ordered story stages, and no fa
  }
 });
 test("future candidate vocabulary, grammar, and characters resolve to independent PDF item locators",()=>{
- const index=B.candidateSourceIndex,all=B.makeFutureObjectives(F);
+ const index=B.candidateSourceIndex,inventory=B.syllabusInventory,all=B.makeFutureObjectives(F);
+ const inventoryIds=new Set([...inventory.vocabulary,...Object.values(inventory.characters).flat(),...Object.values(inventory.grammarPages).flat()].map(item=>item.id));
  assert.equal(index.sourceUrl,B.source.url);
  assert.equal(Object.keys(index.vocabularyRows).length,78);
  assert.equal(Object.values(index.characterRefsByTargetLevel).reduce((sum,chars)=>sum+Object.keys(chars).length,0),151);
@@ -156,13 +157,18 @@ test("future candidate vocabulary, grammar, and characters resolve to independen
   for(const word of objective.candidateContent.vocabulary){
    const ref=index.vocabularyRows[objective.level+":"+word.candidateRowNumber];
    assert.deepEqual([word.hanzi,word.pinyin,word.printedPage],[ref.hanzi,ref.pinyin,ref.printedPage]);
+   const inventoryRef=objective.candidateSourceRefs.vocabulary.candidateRows.find(item=>item.rowNumber===word.candidateRowNumber);
+   assert.equal(inventoryRef.sourceInventoryId,"hsk30:vocab:"+String(word.candidateRowNumber).padStart(4,"0"));assert.ok(inventoryIds.has(inventoryRef.sourceInventoryId));
   }
   for(const grammar of objective.candidateContent.grammar){
    assert.ok(index.grammarEntries.some(ref=>ref.level===objective.level&&ref.pattern===grammar.pattern&&ref.printedPage===grammar.printedPage),objective.id+" cites a target-level grammar item");
+   const inventoryRef=objective.candidateSourceRefs.grammar.candidateEntries.find(item=>item.candidateId===grammar.candidateId);
+   assert.equal(inventoryRef.sourcePageId,"hsk30:l"+objective.level+":grammar:p"+grammar.printedPage);assert.ok(inventoryIds.has(inventoryRef.sourcePageId));
   }
   for(const ref of objective.candidateSourceRefs.characters.candidateItems){
    const expected=index.characterRefsByTargetLevel[objective.level][ref.character];
    assert.deepEqual([ref.characterLevel,ref.ordinal,ref.printedPage,ref.relation],[expected.characterLevel,expected.ordinal,expected.printedPage,expected.relation]);
+   assert.equal(ref.sourceInventoryId,"hsk30:l"+expected.characterLevel+":hanzi:"+String(expected.ordinal).padStart(3,"0"));assert.ok(inventoryIds.has(ref.sourceInventoryId));
   }
  }
 });
@@ -205,12 +211,51 @@ test("V17 reviewed mappings can be recorded without making incomplete HSK1 relea
 test("V13–V17 five drafted acts remain non-playable through HSK 3.0 level 6",()=>{
  assert.deepEqual(Array.from(F.validate()),[]);
  assert.deepEqual(Array.from(F.acts,x=>x.level),[2,3,4,5,6]);
- assert.ok(F.acts.every(x=>x.playable===false&&x.planningStatus.includes("no HSK 3.0 target items mapped")));
+ assert.ok(F.acts.every(x=>x.playable===false&&x.planningStatus.includes("exact official item matches")&&x.planningStatus.includes("pending")));
  assert.equal(F.acts.reduce((n,x)=>n+x.episodes.length,0),20);
  assert.ok(F.byLevel(5).episodes.some(e=>e.id==="graduation"));
  assert.equal(F.byLevel(6).id,"hsk6.letters-we-leave");
  assert.equal(F.byLevel(6).episodes.length,4);
  assert.ok(F.status.includes("NOT PLAYABLE"));
+});
+test("future story decisions have distinct authored reactions, memory, callbacks, and shared learning anchors",()=>{
+ const allBranchScenes=new Set();
+ for(const act of F.acts){
+  const plan=B.futurePlans.find(item=>item.level===act.level);
+  assert.deepEqual(Array.from(act.commonLearningAnchorIds),Array.from(plan.objectives,item=>item.id));
+  assert.equal(act.episodes.length,4);
+  const positions=new Map(act.episodes.map((episode,index)=>[episode.id,index]));
+  for(const episode of act.episodes){
+   const decision=episode.decision,choices=decision.choices;
+   assert.ok(choices.length>=2,act.id+"/"+episode.id);
+   assert.deepEqual(Array.from(decision.sharedLearningAnchorIds),Array.from(act.commonLearningAnchorIds));
+   assert.deepEqual(Array.from(episode.learningAnchorIds),Array.from(plan.objectives.filter(objective=>objective.episode===episode.id),objective=>objective.id));
+   assert.equal(new Set(choices.map(option=>option.id)).size,choices.length);
+   assert.equal(new Set(choices.map(option=>option.branchSceneId)).size,choices.length);
+   assert.equal(new Set(choices.map(option=>option.reaction)).size,choices.length);
+   assert.equal(new Set(choices.map(option=>option.memory.value)).size,choices.length);
+   assert.equal(new Set(choices.map(option=>option.laterConsequence.text)).size,choices.length);
+   assert.equal(new Set(choices.map(option=>option.memory.key)).size,1);
+   for(const option of choices){
+    assert.ok(!allBranchScenes.has(option.branchSceneId));allBranchScenes.add(option.branchSceneId);
+    assert.equal(option.joinsAtSceneId,decision.convergenceSceneId);
+    assert.ok(positions.get(option.laterConsequence.episodeId)>=positions.get(episode.id));
+   }
+  }
+ }
+ const episode=F.acts[0].episodes[0],option=episode.decision.choices[0],original=option.joinsAtSceneId;
+ try{option.joinsAtSceneId="broken-rejoin";assert.ok(F.validate().some(message=>message.includes("shared scene")));}
+ finally{option.joinsAtSceneId=original;}
+ assert.deepEqual(Array.from(F.validate()),[]);
+});
+test("source inventory captures the whole official level 1–6 corpus while instructional matching stays pending",()=>{
+ const report=B.report(K,F),sourceInventory=report.sourceInventory;
+ assert.equal(report.completeSourceInventory,true);
+ assert.equal(report.fullSyllabusInventoryComplete,false);
+ assert.equal(report.objectiveCrosswalkComplete,false);
+ assert.deepEqual(JSON.parse(JSON.stringify(sourceInventory.totals)),{tasks:136,topicsByTier:[37,140,335],vocabulary:5400,recognitionCharacters:1940,grammarPages:17,grammarItemCount:null});
+ assert.equal(sourceInventory.topicHierarchyStatus.includes("without inferred parent links"),true);
+ assert.equal(sourceInventory.grammarNormalizationStatus.includes("visual normalization"),true);
 });
 
 test("Gate3B world clues connect beginner Hanzi to already-visited real scenes without HSK points",()=>{

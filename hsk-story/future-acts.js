@@ -4,7 +4,7 @@ var acts=[
   {
     "level": 2,
     "playable": false,
-    "planningStatus": "story-outline-only; no HSK 3.0 target items mapped or verified",
+    "planningStatus": "story-outline-only; candidate objectives have source locators, but exact official item matches and educator review are pending",
     "id": "hsk2.first-friend",
     "title": "Người bạn đầu tiên",
     "theme": "Tin tưởng nhau bằng những lời thường ngày",
@@ -69,7 +69,7 @@ var acts=[
   {
     "level": 3,
     "playable": false,
-    "planningStatus": "story-outline-only; no HSK 3.0 target items mapped or verified",
+    "planningStatus": "story-outline-only; candidate objectives have source locators, but exact official item matches and educator review are pending",
     "id": "hsk3.spring-promise",
     "title": "Hội chợ mùa xuân",
     "theme": "Hai nền văn hóa gặp nhau qua việc làm chung",
@@ -135,7 +135,7 @@ var acts=[
   {
     "level": 4,
     "playable": false,
-    "planningStatus": "story-outline-only; no HSK 3.0 target items mapped or verified",
+    "planningStatus": "story-outline-only; candidate objectives have source locators, but exact official item matches and educator review are pending",
     "id": "hsk4.change-season",
     "title": "Khi mọi chuyện thay đổi",
     "theme": "Lắng nghe những lý do mà mình không đồng ý",
@@ -201,7 +201,7 @@ var acts=[
   {
     "level": 5,
     "playable": false,
-    "planningStatus": "story-outline-only; no HSK 3.0 target items mapped or verified",
+    "planningStatus": "story-outline-only; candidate objectives have source locators, but exact official item matches and educator review are pending",
     "id": "hsk5.two-homes",
     "title": "Hai quê hương",
     "theme": "Định nghĩa thuộc về khi ta có hai nơi để nhớ",
@@ -269,7 +269,7 @@ var acts=[
     "id": "hsk6.letters-we-leave",
     "title": "Những điều An muốn gửi lại",
     "theme": "Nhìn lại những nơi và con người đã cùng làm nên câu chuyện của An",
-    "planningStatus": "story-outline-only; no HSK 3.0 target items mapped or verified",
+    "planningStatus": "story-outline-only; candidate objectives have source locators, but exact official item matches and educator review are pending",
     "playable": false,
     "episodes": [
       {
@@ -315,7 +315,59 @@ var acts=[
     ]
   }
 ];
-function validate(){var errors=[],ids=new Set();if(acts.length!==5)errors.push("Expected HSK2–6 drafts");acts.forEach(function(a,i){if(a.level!==i+2||a.episodes.length<4)errors.push("Incomplete level "+(i+2));if(a.playable!==false)errors.push("Future act must remain non-playable "+a.level);a.episodes.forEach(function(e){var id=a.id+"."+e.id;if(ids.has(id))errors.push("Duplicate episode");ids.add(id);if(!e.conflict||!e.choice||!e.callback||!e.resolution||!e.functions.length)errors.push("Missing story learning contract "+id)})});return errors}
+var branchDrafts=typeof require==="function"?require("./future-branch-decisions.json"):null;
+var blueprintPlans=typeof require==="function"?require("./learning-blueprint.js").futurePlans:null;
+function attachBranchDrafts(){
+ if(!branchDrafts||!blueprintPlans)return;
+ acts.forEach(function(act){
+  var draft=branchDrafts.acts[act.id],plan=blueprintPlans.find(function(item){return item.level===act.level;});
+  if(!draft||!plan)return;
+  act.commonLearningAnchorIds=draft.commonLearningAnchorIds.slice();
+  act.episodes.forEach(function(episode){
+   var decision=draft.decisions[episode.id];
+   if(!decision)return;
+   episode.learningAnchorIds=plan.objectives.filter(function(objective){return objective.episode===episode.id;}).map(function(objective){return objective.id;});
+   episode.decision=JSON.parse(JSON.stringify(decision));
+   episode.decision.sharedLearningAnchorIds=act.commonLearningAnchorIds.slice();
+  });
+ });
+}
+attachBranchDrafts();
+function validate(){
+ var errors=[],ids=new Set(),branchSceneIds=new Set();
+ if(acts.length!==5)errors.push("Expected HSK2–6 drafts");
+ if(!branchDrafts||branchDrafts.schemaVersion!==1||!blueprintPlans)errors.push("Authored future branch draft or common learning map is unavailable");
+ acts.forEach(function(a,i){
+  var plan=blueprintPlans&&blueprintPlans.find(function(item){return item.level===a.level;}),draft=branchDrafts&&branchDrafts.acts[a.id];
+  if(a.level!==i+2||a.episodes.length!==4)errors.push("Incomplete level "+(i+2));
+  if(a.playable!==false)errors.push("Future act must remain non-playable "+a.level);
+  if(!plan||!draft||JSON.stringify(a.commonLearningAnchorIds)!==JSON.stringify(plan.objectives.map(function(item){return item.id;})))errors.push("Future act anchors do not match the common objective plan: "+a.level);
+  var episodeOrder=new Map(a.episodes.map(function(episode,index){return [episode.id,index];}));
+  a.episodes.forEach(function(e){
+   var id=a.id+"."+e.id,decision=e.decision;
+   if(ids.has(id))errors.push("Duplicate episode");ids.add(id);
+   if(!e.conflict||!e.choice||!e.callback||!e.resolution||!e.functions.length)errors.push("Missing story learning contract "+id);
+   var expectedIntroductions=plan?plan.objectives.filter(function(objective){return objective.episode===e.id;}).map(function(objective){return objective.id;}):[];
+   if(JSON.stringify(e.learningAnchorIds||[])!==JSON.stringify(expectedIntroductions))errors.push("Episode intro anchors do not match the objective map: "+id);
+   if(!decision||!decision.id||!decision.convergenceSceneId||!Array.isArray(decision.choices)||decision.choices.length<2)errors.push("Missing structured story decision "+id);
+   if(!decision)return;
+   if(JSON.stringify(decision.sharedLearningAnchorIds)!==JSON.stringify(a.commonLearningAnchorIds))errors.push("Decision does not rejoin before every common learning anchor: "+id);
+   var optionIds=new Set(),memoryKeys=new Set(),memoryValues=new Set(),reactions=new Set(),consequences=new Set();
+   decision.choices.forEach(function(option){
+    if(!option.id||optionIds.has(option.id)||!option.label||!option.branchSceneId||!option.reaction||!option.memory||!option.memory.key||!option.memory.value||!option.laterConsequence||!option.laterConsequence.sceneId||!option.laterConsequence.text)errors.push("Malformed story branch option: "+id);
+    optionIds.add(option.id);
+    if(branchSceneIds.has(option.branchSceneId)||option.branchSceneId===decision.convergenceSceneId)errors.push("Duplicate or converged branch scene: "+option.branchSceneId);branchSceneIds.add(option.branchSceneId);
+    if(option.joinsAtSceneId!==decision.convergenceSceneId)errors.push("Branch does not converge at the shared scene: "+id+"/"+option.id);
+    memoryKeys.add(option.memory.key);memoryValues.add(option.memory.value);reactions.add(option.reaction);consequences.add(option.laterConsequence.text);
+    var laterIndex=episodeOrder.get(option.laterConsequence.episodeId),currentIndex=episodeOrder.get(e.id);
+    if(laterIndex===undefined||laterIndex<currentIndex||option.laterConsequence.sceneId===option.branchSceneId)errors.push("Story consequence points to a missing or earlier beat: "+id+"/"+option.id);
+   });
+   if(memoryKeys.size!==1||memoryValues.size!==decision.choices.length||reactions.size!==decision.choices.length||consequences.size!==decision.choices.length)errors.push("Story options need distinct memory values, reactions, and later consequences: "+id);
+  });
+  if(draft&&Object.keys(draft.decisions).length!==a.episodes.length)errors.push("Every future episode needs one authored decision: "+a.level);
+ });
+ return errors;
+}
 function byLevel(level){return acts.find(a=>a.level===level)||null}
-var api={version:"draft-v2",status:"NOT PLAYABLE / STORY THEMES ONLY / PENDING HSK 3.0 ITEM MAPPING AND MANDARIN REVIEW",acts:acts,validate:validate,byLevel:byLevel};if(typeof module!=="undefined"&&module.exports)module.exports=api;return api;
+var api={version:"draft-v3",status:"NOT PLAYABLE / BRANCHES AUTHORED / PENDING HSK 3.0 ITEM MAPPING AND MANDARIN REVIEW",acts:acts,branchDrafts:branchDrafts,validate:validate,byLevel:byLevel};if(typeof module!=="undefined"&&module.exports)module.exports=api;return api;
 })();

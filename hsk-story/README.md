@@ -6,13 +6,13 @@ Nguồn chuẩn: [hướng hiện hành từ chat](docs/CHIM_SE_DIRECTION.md), [
 
 ## Phạm vi hiện tại
 
-9 trang Nhập môn; tập HSK1 demo gồm 7 cảnh luyện và 3 checkpoint, tìm sổ, hai lựa chọn truyện; 23 mục ôn mở theo cảnh đã hoàn thành. Bản đồ HSK 3.0 bậc 1–6 hiện là lộ trình: bậc 1 mới có nội dung pilot, bậc 2–6 mới là khung truyện, chưa ánh xạ đủ từng mục và chưa được giáo viên duyệt. Không phải toàn bộ đại cương, chứng chỉ hay đánh giá phát âm/thanh điệu. Xem [bản đối chiếu HSK 3.0](HSK3_SOURCE_AUDIT.md) và [blueprint](learning-blueprint.js).
+9 trang Nhập môn; tập HSK1 demo gồm 7 cảnh luyện và 3 checkpoint, tìm sổ, hai lựa chọn truyện; 23 mục ôn mở theo cảnh đã hoàn thành. Bản đồ HSK 3.0 bậc 1–6 hiện có bộ định vị nguồn cho cả năm hợp phần; bậc 1 mới có nội dung pilot, bậc 2–6 có mạch truyện và 40 lựa chọn nhánh ở trạng thái bản thảo chưa mở chơi. Crosswalk mục tiêu học, chuẩn hóa bảng ngữ pháp/chủ đề, nội dung bài tập và duyệt của giáo viên vẫn còn thiếu. Đây không phải tuyên bố bao phủ HSK, chứng chỉ hay đánh giá phát âm/thanh điệu. Xem [bản đối chiếu HSK 3.0](HSK3_SOURCE_AUDIT.md) và [blueprint](learning-blueprint.js).
 
 ## Chạy và kiểm tra
 
 Phục vụ thư mục hsk-story qua static HTTP server để chơi truyện. Không mở bằng file:// vì URL tài sản đi từ root. Backend /api/ai/tutor cần Vercel development hoặc deployment và secret server; xem [AI_SETUP.md](AI_SETUP.md). .env được Git bỏ qua; .env.example là mẫu trống.
 
-Từ thư mục repo: `node --test hsk-story/tests/*.test.cjs`. Unit tests không thay cho browser QA. Gate e2e/browser-smoke.cjs cần Playwright và Chromium/Edge; kỳ vọng phải khớp sản phẩm thật và kiểm tra cả nội dung con bị cắt.
+Từ thư mục repo: `node --test hsk-story/tests/*.test.cjs`. Để tái tạo bộ định vị nguồn, cài `hsk-story/scripts/requirements-hsk30-inventory.txt`, tải PDF chính thức theo URL trong script, rồi chạy `python hsk-story/scripts/extract-hsk30-inventory.py <pdf> hsk-story/hsk30-syllabus-inventory.json`. Script lưu ID, trang và hash; không chép các bảng nguồn. Unit tests không thay cho browser QA. Gate e2e/browser-smoke.cjs cần Playwright và Chromium/Edge; kỳ vọng phải khớp sản phẩm thật và kiểm tra cả nội dung con bị cắt.
 
 ## Tranh, dữ liệu và triển khai
 

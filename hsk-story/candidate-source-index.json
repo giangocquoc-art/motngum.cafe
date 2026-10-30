@@ -1,7 +1,7 @@
 {
   "edition": "HSK 3.0 · 2025-11 syllabus",
   "sourceUrl": "https://hsk.cn-bj.ufileos.com/3.0/%E6%96%B0%E7%89%88HSK%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B21219.pdf",
-  "pageConvention": "Official printed page; PDF page index is printed page + 3.",
+  "pageConvention": "pypdf zero-based page index = printed page + 2; PDF one-based page number = printed page + 3.",
   "extractionDate": "2026-10-30",
   "vocabularyRows": {
     "2:306": {

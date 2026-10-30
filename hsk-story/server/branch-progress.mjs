@@ -16,7 +16,7 @@ export function sanitizeSnapshot(raw) {
   if (JSON.stringify(replay.path) !== JSON.stringify(path)) throw invalid();
   const learning = raw.learning.map(item => {
     if (item === null) return null;
-    if (!plain(item) || !['correct', 'assisted'].includes(item.status) || !Number.isInteger(item.attempts) || item.attempts < 0 || item.attempts > 100 || typeof item.hint !== 'boolean' || (item.status === 'assisted' && !item.hint)) throw invalid();
+    if (!plain(item) || !['correct', 'assisted', 'skipped'].includes(item.status) || !Number.isInteger(item.attempts) || item.attempts < 0 || item.attempts > 100 || typeof item.hint !== 'boolean' || (item.status === 'assisted' && !item.hint)) throw invalid();
     return { status: item.status, attempts: item.attempts, hint: item.hint };
   });
   let draft = null;
