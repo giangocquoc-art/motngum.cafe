@@ -14,6 +14,57 @@ test("Two-day graph has no cycles, dead nodes, missing links or shortcuts around
  assert.ok(v.structuralPaths>4000);assert.equal(D.scenes.filter(x=>x.kind==="ending").length,1);
  assert.equal(D.byId.epilogue.kind,"milestone");
 });
+test("Every authored choice has a unique reply and a journal-visible persisted consequence",()=>{
+ const choices=D.scenes.flatMap(s=>s.kind==="choice"?s.options:[]),replies=new Set(),ids=new Set();
+ assert.ok(choices.length>0);
+ for(const option of choices){
+  assert.ok(!ids.has(option.id),"choice IDs are globally unique: "+option.id);ids.add(option.id);
+  const key=E.normalize(option.reply).toLocaleLowerCase("vi");
+  assert.ok(key,"authored reply is non-empty: "+option.id);
+  assert.ok(!replies.has(key),"immediate replies are unique: "+option.id);replies.add(key);
+  assert.equal(option.consequence.kind,"journal");
+  assert.equal(option.consequence.text,option.memory);
+  assert.ok(option.memory.trim().length>=12,"specific memory for "+option.id);
+ }
+});
+test("Graph validation rejects duplicate replies, mandatory-anchor shortcuts, and conditional route fallbacks",()=>{
+ const option=D.byId.arrival.options[0],reply=option.reply,destination=option.to;
+ const route=D.byId["day2-arrival"],fallback=route.routes.at(-1),fallbackRequirement=fallback.requires;
+ try{
+  option.reply=D.byId.arrival.options[1].reply;
+  assert.ok(E.validate().errors.some(x=>x.includes("Duplicate immediate reply")));
+  option.reply=reply;option.to="day2-epilogue";
+  assert.ok(E.validate().errors.some(x=>x.includes("Canonical stage can be skipped school-gate")));
+  option.to=destination;fallback.requires={flag:"invite-friend"};
+  assert.ok(E.validate().errors.some(x=>x.includes("Route requires unconditional fallback day2-arrival")));
+ }finally{option.reply=reply;option.to=destination;fallback.requires=fallbackRequirement;}
+ assert.deepEqual(Array.from(E.validate().errors),[]);
+});
+test("Every available choice keeps its authored consequence through save replay and decision rewind",()=>{
+ const witnessed=new Map();
+ for(const profile of [BRAVE,CARE,WONDER]){
+  let state=E.fresh(),guard=0;
+  while(!state.done){
+   if(++guard>60)throw Error("Loop at "+state.node);
+   const scene=D.byId[state.node];
+   if(scene.kind==="choice")for(const option of E.availableOptions(scene,state))if(!witnessed.has(option.id))witnessed.set(option.id,{state,option});
+   const selected=scene.kind==="choice"?(profile[scene.id]||E.availableOptions(scene,state)[0]?.id):"next";
+   assert.ok(selected,"Profile has no open route at "+state.node);state=next(state,selected);
+  }
+ }
+ const all=D.scenes.flatMap(s=>s.kind==="choice"?s.options:[]);
+ assert.equal(JSON.stringify(Array.from(witnessed.keys()).sort()),JSON.stringify(Array.from(all,o=>o.id).sort()),"every authored option is reachable in at least one reviewed profile");
+ for(const {state,option} of witnessed.values()){
+  const result=E.step(state,option.id);assert.equal(result.ok,true);
+  const saved=E.load(E.exportSave(result.state)),entry=saved.journal.at(-1);
+  assert.equal(entry.choice,option.id);assert.equal(entry.reply,option.reply);
+  assert.deepEqual(entry.consequence,option.consequence);assert.equal(entry.memory,option.memory);
+  const rewound=E.load(E.exportSave(state));assert.deepEqual(rewound,state);
+  assert.equal(rewound.journal.some(item=>item.choice===option.id),false);
+  const replayed=next(rewound,option.id);
+  assert.deepEqual(replayed.journal.at(-1),entry,"rewinding then replaying rebuilds the same authored consequence");
+ }
+});
 test("Three distinct An personalities arise from different coherent two-day playthroughs",()=>{
  const b=go(BRAVE),c=go(CARE),w=go(WONDER);
  assert.equal(b.node,"day2-epilogue");assert.equal(b.done,true);

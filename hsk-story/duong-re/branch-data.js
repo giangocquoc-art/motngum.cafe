@@ -1,6 +1,6 @@
 /* A self-contained non-canonical narrative experiment. Main's HSK progress is never touched. */
 (function(root,factory){"use strict";var api=factory();if(typeof module!=="undefined"&&module.exports)module.exports=api;root.AnBranchStory=api;})(typeof globalThis!=="undefined"?globalThis:this,function(){"use strict";
-function C(id,zh,py,vi,to,traits,relationships,memory,reply,aliases){return {id:id,zh:zh,py:py,vi:vi,to:to,traits:traits||{},relationships:relationships||{},memory:memory,reply:reply,aliases:aliases||[]};}
+function C(id,zh,py,vi,to,traits,relationships,memory,reply,aliases){return {id:id,zh:zh,py:py,vi:vi,to:to,traits:traits||{},relationships:relationships||{},memory:memory,consequence:{kind:"journal",text:memory},reply:reply,aliases:aliases||[]};}
 function N(id,place,title,speaker,story,options,echoes){return {id:id,kind:"choice",place:place,title:title,speaker:speaker,story:story,options:options,echoes:echoes||[]};}
 function P(id,place,title,speaker,story,to,echoes){return {id:id,kind:"passage",place:place,title:title,speaker:speaker,story:story,to:to,echoes:echoes||[]};}
 var scenes=[

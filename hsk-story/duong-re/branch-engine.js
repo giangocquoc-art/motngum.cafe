@@ -17,7 +17,7 @@ if(scene.kind==="passage"||scene.kind==="milestone"||scene.kind==="route"){
 }else {chosen=availableOptions(scene,state).find(function(x){return x.id===choiceId;});if(!chosen)return {ok:false,error:"Lựa chọn chưa mở hoặc không tồn tại trong cảnh này."};link=chosen.to;}
 if(!data.byId[link])return {ok:false,error:"Mạch truyện bị thiếu liên kết."};
 var next={version:1,node:link,path:state.path.concat([{at:scene.id,choice:choiceId}]),traits:Object.assign({},state.traits),relationships:Object.assign({},state.relationships),flags:Object.assign({},state.flags),journal:state.journal.slice(),done:data.byId[link].kind==="ending"};
-if(chosen){addDelta(next.traits,chosen.traits,TRAITS);addDelta(next.relationships,chosen.relationships,RELATIONS);next.flags[chosen.id]=true;next.journal.push({scene:scene.id,choice:chosen.id,zh:chosen.zh,vi:chosen.vi,memory:chosen.memory,reply:chosen.reply});}
+if(chosen){addDelta(next.traits,chosen.traits,TRAITS);addDelta(next.relationships,chosen.relationships,RELATIONS);next.flags[chosen.id]=true;next.journal.push({scene:scene.id,choice:chosen.id,zh:chosen.zh,vi:chosen.vi,memory:chosen.memory,consequence:{kind:chosen.consequence.kind,text:chosen.consequence.text},reply:chosen.reply});}
 return {ok:true,state:next,reply:chosen?chosen.reply:null};}
 function load(value){var obj;try{obj=typeof value==="string"?JSON.parse(value):value;}catch(e){return fresh();}if(!obj||obj.version!==1||!Array.isArray(obj.path))return fresh();var state=fresh();for(var i=0;i<obj.path.length&&i<50;i++){var item=obj.path[i];if(!item||item.at!==state.node||typeof item.choice!=="string")break;var moved=step(state,item.choice);if(!moved.ok)break;state=moved.state;}return state;}
 function exportSave(state){return JSON.stringify({version:1,path:state.path});}
@@ -49,7 +49,7 @@ if(state.flags["liu-menu"])extra.push("Một câu hỏi về thực đơn hôm q
 return {key:main,name:endings[main].name,subtitle:endings[main].subtitle,story:endings[main].story,closest:REL_NAMES[best],extra:extra,traits:state.traits,relationships:state.relationships};
 }
 function validate(){
- var errors=[],ids=new Set(),visited=new Set(),visiting=new Set(),branchNodes=0;
+ var errors=[],ids=new Set(),choiceIds=new Set(),replyOwners=new Map(),memoryOwners=new Map(),visited=new Set(),visiting=new Set(),branchNodes=0;
  data.scenes.forEach(function(s){
   if(ids.has(s.id))errors.push("Duplicate node "+s.id);ids.add(s.id);
   if(!s.story||!s.title||!s.place||!s.speaker)errors.push("Missing narrative "+s.id);
@@ -59,7 +59,17 @@ function validate(){
    var local=new Set(),spoken=new Map(),unconditional=0;
    s.options.forEach(function(o){
     if(local.has(o.id))errors.push("Duplicate choice "+s.id);local.add(o.id);
+    if(choiceIds.has(o.id))errors.push("Duplicate global choice id "+o.id);choiceIds.add(o.id);
     if(!o.vi||!o.zh||!o.py||!o.memory||!o.reply)errors.push("Incomplete choice "+o.id);
+    if(!o.consequence||o.consequence.kind!=="journal"||o.consequence.text!==o.memory||normalize(o.consequence.text).length<12)errors.push("Missing authored journal consequence "+o.id);
+    var replyKey=normalize(o.reply).toLocaleLowerCase("vi"),memoryKey=normalize(o.memory).toLocaleLowerCase("vi");
+    if(!replyKey)errors.push("Empty immediate reply "+o.id);
+    else if(replyOwners.has(replyKey))errors.push("Duplicate immediate reply "+replyOwners.get(replyKey)+" / "+o.id);
+    else replyOwners.set(replyKey,o.id);
+    if(!memoryKey)errors.push("Empty persisted memory "+o.id);
+    else if(memoryOwners.has(memoryKey))errors.push("Duplicate authored memory "+memoryOwners.get(memoryKey)+" / "+o.id);
+    else memoryOwners.set(memoryKey,o.id);
+    if(["languageScore","mastery","morality","goodness"].some(function(k){return Object.prototype.hasOwnProperty.call(o,k);}))errors.push("Choice must not score language mastery or morality "+o.id);
     [o.zh].concat(o.aliases||[]).forEach(function(t){var n=normalize(t);if(spoken.has(n)&&spoken.get(n)!==o.id)errors.push("Ambiguous input "+s.id);spoken.set(n,o.id);});
     if(!o.requires)unconditional++;
     if(!o.traits&&!o.relationships)errors.push("Choice without effects "+o.id);
@@ -78,12 +88,21 @@ function validate(){
  dfs(data.start);
  data.scenes.forEach(function(s){if(!visited.has(s.id))errors.push("Unreachable "+s.id);});
  var required=["school-gate","lost-diary","staff-office","canteen","noodle-order","walk-home","night","epilogue","day2-arrival","day2-breakfast","day2-bird","day2-liu","day2-night"];
- function reachesEndingWithout(excluded){
-  var seen=new Set(),stack=[data.start];while(stack.length){var id=stack.pop();if(id===excluded||seen.has(id))continue;seen.add(id);
+ function endingReachableWithout(start,excluded){
+  var seen=new Set(),stack=[start];while(stack.length){var id=stack.pop();if(id===excluded||seen.has(id))continue;seen.add(id);
    var node=data.byId[id];if(!node)continue;if(node.kind==="ending")return true;edges(node).forEach(function(n){stack.push(n);});
   }return false;
  }
+ function reachesEndingWithout(excluded){
+  return endingReachableWithout(data.start,excluded);
+ }
  required.forEach(function(x){if(reachesEndingWithout(x))errors.push("Canonical stage can be skipped "+x);});
+ var sceneOrder=new Map(data.scenes.map(function(s,i){return [s.id,i];}));
+ data.scenes.filter(function(s){return s.kind==="choice";}).forEach(function(s){
+  var nextAnchor=required.find(function(id){return sceneOrder.get(id)>sceneOrder.get(s.id);});
+  if(!nextAnchor)return;
+  s.options.forEach(function(o){if(endingReachableWithout(o.to,nextAnchor))errors.push("Choice route can skip next mandatory stage "+s.id+" / "+o.id+" → "+nextAnchor);});
+ });
  var countCache=new Map();
  function countPaths(id){if(countCache.has(id))return countCache.get(id);var s=data.byId[id];if(!s)return 0;var n=s.kind==="ending"?1:edges(s).reduce(function(sum,to){return sum+countPaths(to);},0);countCache.set(id,n);return n;}
  var structuralPaths=errors.length?0:countPaths(data.start);
