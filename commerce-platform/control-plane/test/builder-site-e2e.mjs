@@ -54,6 +54,9 @@ try {
     d=>{d.version=99;},
     d=>{d.pages[0].blocks[0].accent='not-a-color';},
     d=>{d.pages[0].blocks[0].body='x'.repeat(2001);},
+    d=>{d.metadata={seo:'should not be silently stripped'};},
+    d=>{d.pages[0].layout={columns:3};},
+    d=>{d.pages[0].blocks[0].fontSize=24;},
     d=>{d.pages=[];}
   ]) {
     const bad=structuredClone(doc);mutate(bad);
