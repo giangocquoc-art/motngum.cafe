@@ -6,6 +6,7 @@ import { builderSites, builderSiteRevisions } from '@/lib/db/schema';
 import { studioContext, mayEdit, siteIdValid } from '@/lib/builder/site-context';
 import { readStudioBody, studioReply } from '@/lib/builder/http';
 import { validateSiteDocument } from '@/lib/builder/validation';
+import { studioRateLimit } from '@/lib/builder/rate-limit';
 
 export const dynamic='force-dynamic';
 export const runtime='nodejs';
@@ -40,6 +41,10 @@ export async function PATCH(request:NextRequest,{params}:RouteProps) {
   const version=value?.version;
   if(!document || !Number.isSafeInteger(version) || typeof version!=='number' || version<1)
     return studioReply({error:'invalid_version_or_document'},422);
+  try{
+    if(!await studioRateLimit(ctx.team.id,ctx.user.id,'studio:save'))
+      return studioReply({error:'rate_limited',retryAfterSeconds:60},429);
+  }catch{return studioReply({error:'rate_limit_unavailable'},503);}
   try {
     const result=await db.transaction(async tx=>{
       const [updated]=await tx.update(builderSites)
