@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Users, Settings, Shield, Activity, Menu, Store } from 'lucide-react';
+import { Users, Settings, Shield, Activity, Menu, Store, LayoutTemplate } from 'lucide-react';
 
 export default function DashboardLayout({
   children
@@ -17,6 +17,7 @@ export default function DashboardLayout({
   const navItems = [
     { href: '/dashboard', icon: Users, label: 'Team' },
     { href: '/dashboard/commerce', icon: Store, label: 'Cửa hàng' },
+    { href: '/dashboard/sites', icon: LayoutTemplate, label: 'Website của tôi' },
     { href: '/dashboard/general', icon: Settings, label: 'General' },
     { href: '/dashboard/activity', icon: Activity, label: 'Activity' },
     { href: '/dashboard/security', icon: Shield, label: 'Security' }

@@ -1,0 +1,552 @@
+'use client';
+
+import { useEffect, useRef, useState, type ChangeEvent, type CSSProperties, type DragEvent } from 'react';
+import {
+  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, ChevronDown, Copy, Download, Eye,
+  FileJson, GripVertical, Image as ImageIcon, LayoutTemplate, Monitor, Paintbrush,
+  PanelLeft, Plus, RotateCcw, Search, Smartphone, Tablet, Trash2, Undo2, Redo2, X
+} from 'lucide-react';
+import { BlockPreview, studioColors } from '@/components/site-block';
+import { validateSiteDocument } from '@/lib/builder/validation';
+import { countPageReferences, deleteSitePage, renameSitePage } from '@/lib/builder/page-operations';
+import {
+  BLOCK_KINDS, BLOCK_VARIANTS, DEFAULT_TEMPLATE_ID, KIND_LABELS,
+  SITE_TEMPLATES, TEMPLATE_CATEGORIES, THEMES, buildTemplateDocument, createBlock, newId, themeById,
+  type Block, type BlockKind, type SiteCategory, type SiteDocument, type SitePage,
+  type SiteTemplate, type ThemeDefinition, type ThemeId
+} from '@/lib/builder/catalog';
+
+const STORAGE = 'motngum.visual-builder-demo.v2';
+const LEGACY_STORAGE = 'motngum.visual-builder-demo.v1';
+const MAX_FILE = 1024 * 1024;
+const MAX_PAGES = 12;
+const MAX_BLOCKS = 40;
+const MAX_TOTAL = 200;
+type Viewport = 'desktop' | 'tablet' | 'mobile';
+type Sidebar = 'templates' | 'blocks' | 'pages' | 'themes';
+type LegacyBlock = Omit<Block, 'variant'>;
+
+function slugify(input: string) {
+  return input.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g,'d').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,50);
+}
+function safeExternal(value: string) {
+  try {
+    const parsed = new URL(value);
+    return (parsed.protocol === 'https:' || parsed.protocol === 'http:') ? parsed.toString() : null;
+  } catch { return null; }
+}
+function safeImage(value: string) {
+  try { const u = new URL(value); return u.protocol === 'https:' ? u.toString() : null; } catch { return null; }
+}
+function safeLink(value: string) {
+  if (/^#page:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) return value;
+  if (/^#[A-Za-z0-9_-]+$/.test(value)) return value;
+  return safeExternal(value);
+}
+function parseRows(body: string, max = 6): string[][] {
+  return body.split('\n').map(x => x.trim()).filter(Boolean).slice(0,max).map(x=>x.split('|').map(part=>part.trim().slice(0,300)));
+}
+function migrateLegacy(input: unknown): SiteDocument | null {
+  if (!input || typeof input !== 'object') return null;
+  const old = input as {version?:unknown; title?:unknown; blocks?:unknown};
+  if (old.version !== 1 || typeof old.title !== 'string' || !Array.isArray(old.blocks) || old.blocks.length > MAX_BLOCKS) return null;
+  const blocks = old.blocks.map((raw:LegacyBlock) => {
+    if (!raw || typeof raw !== 'object' || !BLOCK_KINDS.includes(raw.kind)) return null;
+    return {...raw,variant:'cards',imageUrl:safeImage(raw.imageUrl||'')||'',
+      buttonUrl:safeLink(raw.buttonUrl||'')||''};
+  });
+  if (blocks.some(x=>x === null)) return null;
+  return validateSiteDocument({
+    version:2,title:old.title,themeId:'coffee',
+    pages:[{id:newId(),title:'Trang chủ',slug:'trang-chu',blocks}]
+  });
+}
+function TemplateThumb({template}: {template:SiteTemplate}) {
+  const t=themeById(template.theme);
+  return <div className="relative aspect-[16/10] overflow-hidden rounded-lg" style={{backgroundColor:t.background,color:t.foreground}}>
+    <div className="flex items-center justify-between border-b px-3 py-2 text-[8px]" style={{borderColor:t.border}}><b>{template.name}</b><span>● ● ●</span></div>
+    <div className={'grid h-[82%] '+(template.layout==='split'?'grid-cols-2':'grid-cols-1')}>
+      <div className={'flex flex-col justify-center p-3 '+(template.layout==='centered'?'items-center text-center':'')}>
+        <div className="mb-2 h-1 w-10 rounded-full" style={{backgroundColor:t.primary}}/>
+        <p className="line-clamp-2 text-[11px] font-bold leading-tight">{template.tagline}</p>
+        <div className="mt-2 h-[3px] w-3/4 rounded-full opacity-30" style={{backgroundColor:t.foreground}}/>
+        <div className="mt-1 h-[3px] w-1/2 rounded-full opacity-30" style={{backgroundColor:t.foreground}}/>
+        <div className="mt-3 h-2 w-11 rounded-sm" style={{backgroundColor:t.primary}}/>
+      </div>
+      {(template.layout==='split'||template.layout==='full'||template.layout==='banner')&&
+        <div className={'overflow-hidden '+(template.layout==='split'?'':'absolute inset-0 -z-10 opacity-30')}>
+          <img src={template.heroImage.replace("?w=1400","?w=480&auto=format&fit=crop&q=65")} loading="lazy" alt="" className="h-full w-full object-cover"/>
+        </div>}
+    </div>
+    <div className="absolute bottom-2 right-2 flex gap-1"><span className="size-2 rounded-full" style={{backgroundColor:t.primary}}/><span className="size-2 rounded-full" style={{backgroundColor:t.foreground}}/></div>
+  </div>;
+}
+export default function BuilderDemoPage() {
+  const [doc,setDoc]=useState<SiteDocument>(()=>buildTemplateDocument(SITE_TEMPLATES.find(t=>t.id===DEFAULT_TEMPLATE_ID)||SITE_TEMPLATES[0]));
+  const [pageId,setPageId]=useState<string>('');
+  const [selectedId,setSelectedId]=useState<string|null>(null);
+  const [sidebar,setSidebar]=useState<Sidebar>('templates');
+  const [category,setCategory]=useState<SiteCategory|'Tất cả'>('Tất cả');
+  const [query,setQuery]=useState('');
+  const [gallery,setGallery]=useState(true);
+  const [candidate,setCandidate]=useState<string>(DEFAULT_TEMPLATE_ID);
+  const [viewport,setViewport]=useState<Viewport>('desktop');
+  const [preview,setPreview]=useState(false);
+  const [hydrated,setHydrated]=useState(false);
+  const [draftMode,setDraftMode]=useState<'loading'|'local'|'cloud'|'load-error'>('loading');
+  const [status,setStatus]=useState('Đang tải bản nháp...');
+  const [revision,setRevision]=useState(0);
+  const [cloudSiteId,setCloudSiteId]=useState<string|null>(null);
+  const [cloudVersion,setCloudVersion]=useState<number|null>(null);
+  const [cloudDirty,setCloudDirty]=useState(false);
+  const [cloudWorking,setCloudWorking]=useState(false);
+  const [autoSaveBlocked,setAutoSaveBlocked]=useState(false);
+  const [publishedUrl,setPublishedUrl]=useState<string|null>(null);
+  const [publishedVersion,setPublishedVersion]=useState<number|null>(null);
+  const revisionRef=useRef(0);
+  const saveInFlightRef=useRef(false);
+  const undoRef=useRef<SiteDocument[]>([]);
+  const redoRef=useRef<SiteDocument[]>([]);
+  const dragRef=useRef<{id?:string;kind?:BlockKind}|null>(null);
+  const fileInput=useRef<HTMLInputElement>(null);
+  const theme=themeById(doc.themeId);
+  const activePage=doc.pages.find(p=>p.id===pageId)||doc.pages[0];
+  const activeBlock=activePage?.blocks.find(b=>b.id===selectedId)||null;
+  const totalBlocks=doc.pages.reduce((n,p)=>n+p.blocks.length,0);
+  const currentTemplate=SITE_TEMPLATES.find(t=>t.id===candidate)||SITE_TEMPLATES[0];
+  const candidateDocument=buildTemplateDocument(currentTemplate);
+  const galleryMatches=SITE_TEMPLATES.filter(t=>
+    (category==='Tất cả'||t.category===category)&&
+    (t.name+' '+t.description+' '+t.category).toLocaleLowerCase('vi').includes(query.trim().toLocaleLowerCase('vi'))
+  );
+
+  useEffect(()=>{
+    let cancelled=false;
+    async function load() {
+      const siteId=new URLSearchParams(window.location.search).get('site');
+      if(siteId) {
+        try {
+          const response=await fetch('/api/sites/'+encodeURIComponent(siteId),{cache:'no-store'});
+          const data=await response.json();
+          if(!response.ok)throw new Error(data.error||'Không thể mở dự án');
+          const stored=validateSiteDocument(data.site?.document);
+          if(!stored)throw new Error('Dữ liệu website từ máy chủ không hợp lệ.');
+          if(cancelled)return;
+          setDoc(stored);setPageId(stored.pages[0].id);setGallery(false);
+          setCloudSiteId(data.site.id);setCloudVersion(data.site.version);setCloudDirty(false);
+          setDraftMode('cloud');setAutoSaveBlocked(false);
+          setPublishedUrl(data.site.publishedVersion?'/s/'+data.site.slug:null);
+          setPublishedVersion(data.site.publishedVersion??null);
+          setStatus('Đã tải website từ PostgreSQL, revision '+data.site.version+'.');
+        }catch(e) {
+          if(!cancelled){setDraftMode('load-error');setStatus('Không mở được website cloud: '+(e instanceof Error?e.message:'Lỗi kết nối')+'. Không có bản nháp nào bị ghi đè.');}
+        }finally{if(!cancelled)setHydrated(true);}
+        return;
+      }
+      try {
+        const raw=localStorage.getItem(STORAGE);
+        const existing=raw?validateSiteDocument(JSON.parse(raw)):null;
+        if(existing){
+          if(cancelled)return;
+          setDoc(existing);setPageId(existing.pages[0]?.id||'');setGallery(false);
+          setStatus('Đã khôi phục bản nháp trong trình duyệt.');
+        }else {
+          const old=localStorage.getItem(LEGACY_STORAGE);
+          const migrated=old?migrateLegacy(JSON.parse(old)):null;
+          if(migrated){if(cancelled)return;setDoc(migrated);setPageId(migrated.pages[0].id);setGallery(false);setStatus('Đã nâng cấp bản nháp v1.');}
+          else if(raw)setStatus('Bản nháp không hợp lệ; hãy nhập JSON hoặc chọn mẫu.');
+          else setStatus('Chọn một mẫu để bắt đầu thiết kế website.');
+        }
+      }catch{if(!cancelled)setStatus('Không đọc được bản lưu; hãy thử nhập JSON.');}
+      if(!cancelled){setDraftMode('local');setHydrated(true);}
+    }
+    void load();
+    return ()=>{cancelled=true;};
+  },[]);
+  useEffect(()=>{
+    if(!hydrated || draftMode!=='local')return;
+    try{localStorage.setItem(STORAGE,JSON.stringify(doc));setStatus('Đã tự lưu bản nháp trong trình duyệt · Chưa xuất bản.');}
+    catch{setStatus('Không lưu được; hãy xuất tệp JSON để sao lưu.');}
+  },[doc,hydrated,draftMode]);
+  useEffect(()=>{
+    // Cloud drafts are never written to the shared localStorage key across user accounts.
+    if(!cloudSiteId || !cloudDirty)return;
+    const warn=(event:BeforeUnloadEvent)=>{event.preventDefault();event.returnValue='';};
+    window.addEventListener('beforeunload',warn);
+    return ()=>window.removeEventListener('beforeunload',warn);
+  },[cloudSiteId,cloudDirty]);
+  // Cloud saves are debounced and serialized. A failed write never starts
+  // repeated retries or silently overwrites an independently edited revision.
+  useEffect(()=>{
+    if(!hydrated || draftMode!=='cloud'||!cloudSiteId||cloudVersion===null ||
+       !cloudDirty||cloudWorking||autoSaveBlocked)return;
+    const timer=window.setTimeout(()=>{void saveCloud();},1600);
+    return ()=>window.clearTimeout(timer);
+  },[doc,hydrated,draftMode,cloudSiteId,cloudVersion,cloudDirty,cloudWorking,autoSaveBlocked]);
+
+  function commit(next:SiteDocument) {
+    if(next===doc)return;
+    undoRef.current=[...undoRef.current.slice(-39),doc];
+    redoRef.current=[];
+    revisionRef.current+=1;
+    setDoc(next);setCloudDirty(true);setRevision(r=>r+1);
+  }
+  function undo() {
+    const next=undoRef.current.pop();if(!next)return;
+    redoRef.current.push(doc);revisionRef.current+=1;setDoc(next);setSelectedId(null);setCloudDirty(true);setRevision(r=>r+1);
+  }
+  function redo() {
+    const next=redoRef.current.pop();if(!next)return;
+    undoRef.current.push(doc);revisionRef.current+=1;setDoc(next);setSelectedId(null);setCloudDirty(true);setRevision(r=>r+1);
+  }
+  function modifyPage(blocks:Block[]) {
+    commit({...doc,pages:doc.pages.map(p=>p.id===activePage.id?{...p,blocks}:p)});
+  }
+  function patchBlock(patch:Partial<Block>) {
+    if(!activeBlock)return;
+    modifyPage(activePage.blocks.map(b=>b.id===activeBlock.id?{...b,...patch}:b));
+  }
+  function addBlock(kind:BlockKind,index=activePage.blocks.length) {
+    if(activePage.blocks.length>=MAX_BLOCKS||totalBlocks>=MAX_TOTAL){setStatus('Đã đạt giới hạn 40 khối/trang hoặc 200 khối/site.');return;}
+    const b=createBlock(kind,doc.themeId);
+    const blocks=[...activePage.blocks];blocks.splice(Math.max(0,Math.min(index,blocks.length)),0,b);
+    modifyPage(blocks);setSelectedId(b.id);
+  }
+  function moveBlock(id:string,to:number) {
+    const blocks=[...activePage.blocks],from=blocks.findIndex(b=>b.id===id);
+    if(from<0||to<0||to>=blocks.length||from===to)return;
+    const [block]=blocks.splice(from,1);blocks.splice(to,0,block);modifyPage(blocks);
+  }
+  function dropAt(event:DragEvent<HTMLElement>,index:number) {
+    event.preventDefault();const source=dragRef.current;dragRef.current=null;
+    if(!source)return;
+    if(source.kind){addBlock(source.kind,index);return;}
+    if(source.id){const from=activePage.blocks.findIndex(b=>b.id===source.id);if(from<0)return;
+      moveBlock(source.id,from<index?index-1:index);}
+  }
+  function startDrag(event:DragEvent<HTMLElement>,source:{id?:string;kind?:BlockKind}) {
+    dragRef.current=source;event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain','motngum-block');
+  }
+  function navigate(slug:string) {
+    const target=doc.pages.find(p=>p.slug===slug);
+    if(target){setPageId(target.id);setSelectedId(null);}else setStatus('Trang đích không tồn tại trong bản nháp.');
+  }
+  function applyTemplate(template:SiteTemplate) {
+    if(hydrated&&(cloudSiteId || revision>0 || !gallery)&&doc.pages.some(p=>p.blocks.length>0)&&!window.confirm('Áp dụng mẫu sẽ thay thế toàn bộ nội dung website. Hãy lưu cloud hoặc xuất JSON trước. Tiếp tục?'))return;
+    const next=buildTemplateDocument(template);
+    commit(next);setPageId(next.pages[0].id);setSelectedId(null);setGallery(false);setPreview(false);
+    setStatus('Đã áp dụng mẫu '+template.name+' với 3 trang có thể chỉnh sửa.');
+  }
+  function changeTheme(themeId:ThemeId) {
+    if(themeId===doc.themeId)return;
+    const old=themeById(doc.themeId).primary,next=themeById(themeId).primary;
+    commit({...doc,themeId,pages:doc.pages.map(p=>({...p,blocks:p.blocks.map(b=>({...b,accent:b.accent===old?next:b.accent}))}))});
+  }
+  function addPage() {
+    if(doc.pages.length>=MAX_PAGES){setStatus('Tối đa 12 trang cho một website thử nghiệm.');return;}
+    const base='trang-moi';let slug=base,n=2;
+    while(doc.pages.some(p=>p.slug===slug))slug=base+'-'+n++;
+    const p:SitePage={id:newId(),title:'Trang mới',slug,blocks:[createBlock('hero',doc.themeId,'minimal'),createBlock('text',doc.themeId,'minimal')]};
+    commit({...doc,pages:[...doc.pages,p]});setPageId(p.id);setSelectedId(null);setSidebar('pages');
+  }
+  function patchPage(patch:Partial<SitePage>) {
+    if(!activePage)return;
+    commit({...doc,pages:doc.pages.map(p=>p.id===activePage.id?{...p,...patch}:p)});
+  }
+  function changeSlug(raw:string) {
+    const slug=slugify(raw);
+    if(!slug)return;
+    try {
+      const next=renameSitePage(doc,activePage.id,slug);
+      if(next.pages.some((page,i)=>page.slug!==doc.pages[i].slug)) {
+        commit(next);
+        setStatus('Đã cập nhật đường dẫn trang và liên kết nội bộ đang trỏ tới trang này.');
+      }
+    } catch {
+      setStatus('Không thể đổi đường dẫn: trùng slug hoặc định dạng không hợp lệ.');
+    }
+  }
+  function duplicatePage() {
+    if(doc.pages.length>=MAX_PAGES||totalBlocks+activePage.blocks.length>MAX_TOTAL){setStatus('Không đủ dung lượng để nhân bản trang.');return;}
+    let slug=activePage.slug+'-copy',n=2;
+    while(doc.pages.some(p=>p.slug===slug))slug=activePage.slug+'-copy-'+n++;
+    const p={...activePage,id:newId(),title:activePage.title+' (bản sao)',slug,blocks:activePage.blocks.map(b=>({...b,id:newId()}))};
+    commit({...doc,pages:[...doc.pages,p]});setPageId(p.id);setSelectedId(null);
+  }
+  function deletePage() {
+    if(doc.pages.length===1){setStatus('Cần giữ ít nhất một trang.');return;}
+    const alternatives=doc.pages.filter(page=>page.id!==activePage.id);
+    let replacementId:string|undefined;
+    const incoming=countPageReferences(doc,activePage.id);
+    if(incoming>0) {
+      const answer=window.prompt(
+        'Trang này đang được '+incoming+' nút CTA ở trang khác trỏ tới.\n'+
+        'Để không tạo liên kết hỏng, nhập slug trang thay thế:\n'+
+        alternatives.map(page=>page.slug+' ('+page.title+')').join('\n'),
+        alternatives[0].slug
+      );
+      if(answer===null)return;
+      const replacement=alternatives.find(page=>page.slug===answer.trim());
+      if(!replacement){setStatus('Slug thay thế không hợp lệ; trang chưa bị xóa.');return;}
+      replacementId=replacement.id;
+    }
+    if(!window.confirm('Xóa trang '+activePage.title+' và toàn bộ nội dung?'+
+      (incoming>0?' Các nút đang liên kết sẽ được chuyển sang trang thay thế.':'')))return;
+    try {
+      const next=deleteSitePage(doc,activePage.id,replacementId);
+      commit(next);
+      setPageId(next.pages[0].id);
+      setSelectedId(null);
+      setStatus('Đã xóa trang'+(incoming>0?' và cập nhật '+incoming+' liên kết nội bộ.':'.'));
+    } catch {
+      setStatus('Không thể xóa trang mà không bảo toàn liên kết.');
+    }
+  }
+  function exportJson() {
+    const blob=new Blob([JSON.stringify(doc,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='motngum-'+(slugify(doc.title)||'site')+'-v2.json';document.body.appendChild(a);a.click();a.remove();
+    window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  async function importJson(event:ChangeEvent<HTMLInputElement>) {
+    const file=event.target.files?.[0];event.target.value='';
+    if(!file)return;
+    if(file.size>MAX_FILE){setStatus('Tệp vượt giới hạn 1 MB.');return;}
+    try {
+      const raw=JSON.parse(await file.text());
+      const next=validateSiteDocument(raw)||migrateLegacy(raw);
+      if(!next)throw new Error('invalid format');
+      if(!window.confirm('Nhập JSON sẽ thay thế website hiện tại. Tiếp tục?'))return;
+      commit(next);setPageId(next.pages[0].id);setSelectedId(null);setGallery(false);
+      setStatus('Đã nhập website hợp lệ ('+next.pages.length+' trang).');
+    }catch{setStatus('Không thể nhập JSON: sai phiên bản, cấu trúc hoặc đường dẫn không an toàn.');}
+  }
+  function reset() {
+    if(!window.confirm('Khôi phục website sẽ thay thế bản nháp. Tiếp tục?'))return;
+    const next=buildTemplateDocument(SITE_TEMPLATES.find(t=>t.id===DEFAULT_TEMPLATE_ID)||SITE_TEMPLATES[0]);
+    commit(next);setPageId(next.pages[0].id);setSelectedId(null);setGallery(true);
+  }
+
+  async function saveCloud() {
+    if(saveInFlightRef.current || cloudWorking || !hydrated || (draftMode!=='local' && draftMode!=='cloud'))return;
+    saveInFlightRef.current=true;
+    const savingRevision=revisionRef.current;
+    setCloudWorking(true);setStatus('Đang lưu bản nháp vào PostgreSQL...');
+    const route=cloudSiteId?'/api/sites/'+encodeURIComponent(cloudSiteId):'/api/sites';
+    try{
+      const response=await fetch(route,{method:cloudSiteId?'PATCH':'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(cloudSiteId?{version:cloudVersion,document:doc}:{document:doc})});
+      const data=await response.json();
+      if(!response.ok){
+        if(response.status===409)throw new Error('Có thay đổi từ phiên khác hoặc tổ chức đã đổi. Không ghi đè; hãy sao lưu JSON và tải lại phiên bản mới.');
+        if(response.status===401)throw new Error('Cần đăng nhập. Bản nháp vẫn được giữ trong trình duyệt.');
+        throw new Error(data.error||'Lưu site thất bại');
+      }
+      const id=cloudSiteId||data.site.id;
+      setCloudSiteId(id);setCloudVersion(data.site.version);setDraftMode('cloud');setAutoSaveBlocked(false);
+      if(revisionRef.current===savingRevision){
+        setCloudDirty(false);setStatus('Đã lưu an toàn trên PostgreSQL, revision '+data.site.version+'.');
+      }else{
+        setCloudDirty(true);setStatus('Đã lưu một phiên bản, nhưng còn chỉnh sửa mới chưa lưu. Hãy nhấn Lưu lên cloud lần nữa.');
+      }
+      if(!cloudSiteId)window.history.replaceState(null,'','/builder-demo?site='+encodeURIComponent(id));
+    }catch(e){setAutoSaveBlocked(true);setStatus('Tự lưu đã tạm dừng: '+(e instanceof Error?e.message:'Lỗi không xác định')+'. Nhấn Lưu lên cloud để thử lại sau khi xử lý.');}
+    finally{saveInFlightRef.current=false;setCloudWorking(false);}
+  }
+  async function publishCloud() {
+    if(!cloudSiteId || cloudVersion===null || cloudDirty || cloudWorking) {
+      setStatus('Hãy lưu bản nháp lên cloud trước khi xuất bản.');return;
+    }
+    if(!window.confirm('Xuất bản snapshot lên URL staging? Website không nhận thanh toán. Tiếp tục?'))return;
+    setCloudWorking(true);
+    try{
+      const response=await fetch('/api/sites/'+encodeURIComponent(cloudSiteId)+'/publish',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({version:cloudVersion})
+      });
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.problems?.join(' · ')||data.error||'Không thể xuất bản');
+      setPublishedUrl(data.url);setPublishedVersion(data.version);setStatus('Đã xuất bản snapshot revision '+data.version+' trên staging.');
+    }catch(e){setStatus('Publish bị chặn: '+(e instanceof Error?e.message:'Không xác định'));}
+    finally{setCloudWorking(false);}
+  }
+
+  async function unpublishCloud() {
+    if(!cloudSiteId||cloudWorking||publishedVersion===null)return;
+    if(!window.confirm('Gỡ website khỏi URL staging công khai? Bản nháp vẫn được giữ.'))return;
+    setCloudWorking(true);
+    try{
+      const response=await fetch('/api/sites/'+encodeURIComponent(cloudSiteId)+'/unpublish',{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({publishedVersion})});
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.error||'Không thể gỡ xuất bản');
+      setPublishedUrl(null);setPublishedVersion(null);setStatus('Đã gỡ website khỏi URL công khai. Bản nháp được giữ trên PostgreSQL.');
+    }catch(e){setStatus('Không thể gỡ: '+(e instanceof Error?e.message:'Lỗi không xác định'));}
+    finally{setCloudWorking(false);}
+  }
+
+  // Never show a default editable document when the URL refers to a cloud site
+  // whose server response failed. Otherwise that document could be saved as real data.
+  if(draftMode==='loading')return <div className="flex min-h-screen items-center justify-center bg-slate-100 p-8 text-sm text-slate-700"
+    role="status">Đang xác thực và tải bản nháp...</div>;
+  if(draftMode==='load-error')return <div className="flex min-h-screen items-center justify-center bg-slate-100 p-6">
+    <div className="max-w-lg rounded-xl border bg-white p-7 shadow-sm" role="alert">
+      <h1 className="text-xl font-bold text-slate-900">Không thể mở website trên cloud</h1>
+      <p className="mt-3 text-sm leading-7 text-slate-700">{status}</p>
+      <p className="mt-3 text-sm text-slate-600">Trình chỉnh sửa đã được khóa để bảo vệ bản nháp. Nếu bạn đang có bản nháp cục bộ, có thể mở riêng bằng liên kết bên dưới.</p>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <button type="button" onClick={()=>window.location.reload()} className="rounded-lg bg-amber-700 px-4 py-2 text-sm font-semibold text-white">Thử tải lại</button>
+        <a href="/builder-demo" className="rounded-lg border px-4 py-2 text-sm font-semibold">Mở bản nháp cục bộ</a>
+        <a href="/dashboard/sites" className="rounded-lg border px-4 py-2 text-sm font-semibold">Về Website của tôi</a>
+      </div>
+    </div>
+  </div>;
+
+  const canvasWidth=viewport==='mobile'?'390px':viewport==='tablet'?'768px':'1120px';
+  const isEditing=!preview;
+  return <div className="min-h-screen bg-slate-100 text-slate-900">
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 px-3 py-3 backdrop-blur @md:px-5">
+      <div className="mx-auto flex max-w-[1750px] flex-wrap items-center justify-between gap-3">
+        <div><div className="flex items-center gap-2"><LayoutTemplate size={19} className="text-amber-700"/><b>Motngum Studio</b><span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">DEMO</span></div>
+          <p className="text-xs text-slate-500">Dựng website từ template · 24 mẫu · 8 theme</p></div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button onClick={()=>setGallery(true)} className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-slate-50"><LayoutTemplate size={16}/>Chọn mẫu</button>
+          <div className="flex items-center rounded-lg border border-slate-200">
+            {([['desktop',Monitor],['tablet',Tablet],['mobile',Smartphone]] as const).map(([key,Icon])=>
+              <button key={key} aria-label={'Xem '+key} title={'Xem '+key} onClick={()=>setViewport(key)} className={'p-2 '+(viewport===key?'bg-amber-100 text-amber-800':'text-slate-500')}><Icon size={17}/></button>)}
+          </div>
+          <button onClick={undo} disabled={!undoRef.current.length} title="Hoàn tác" aria-label="Hoàn tác" className="rounded-lg border p-2 disabled:opacity-30"><Undo2 size={17}/></button>
+          <button onClick={redo} disabled={!redoRef.current.length} title="Làm lại" aria-label="Làm lại" className="rounded-lg border p-2 disabled:opacity-30"><Redo2 size={17}/></button>
+          <button onClick={()=>setPreview(v=>!v)} className="inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm font-semibold"><Eye size={16}/>{preview?'Chỉnh sửa':'Xem trước'}</button>
+          <a href="/dashboard/sites" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold">Website của tôi</a>
+          {cloudSiteId&&<a href={'/dashboard/sites/'+cloudSiteId+'/preview'} className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold" target="_blank" rel="noopener noreferrer">Preview nháp</a>}
+          <button onClick={saveCloud} disabled={cloudWorking||!hydrated} className="inline-flex items-center gap-2 rounded-lg bg-amber-700 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
+            {cloudWorking?'Đang lưu...':autoSaveBlocked?'Thử lưu lại':cloudDirty||!cloudSiteId?'Lưu lên cloud':'Đã lưu trên cloud'}
+          </button>
+          {cloudSiteId&&<button onClick={publishCloud} disabled={cloudWorking||cloudDirty} className="rounded-lg border border-slate-400 px-3 py-2 text-xs font-semibold disabled:opacity-50">Xuất bản staging</button>}
+          {publishedUrl&&<a href={publishedUrl} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-green-700 px-3 py-2 text-xs font-semibold text-green-900">Mở site công khai</a>}
+          {publishedUrl&&<button onClick={unpublishCloud} disabled={cloudWorking} className="rounded-lg border border-red-300 px-3 py-2 text-xs font-semibold text-red-700 disabled:opacity-40">Gỡ xuất bản</button>}
+          <button onClick={exportJson} className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white"><Download size={16}/>Xuất JSON</button>
+        </div>
+      </div>
+    </header>
+    <div className="mx-auto max-w-[1750px] px-3 py-3 @md:px-5">
+      <div role="status" aria-live="polite" className="mb-3 rounded-lg bg-white px-4 py-2 text-xs text-slate-600">{status} Đang sử dụng staging; chỉ phát hành snapshot trong phạm vi URL thử nghiệm, không nhận đơn hàng hoặc thu tiền.</div>
+      <div className={'grid items-start gap-4 '+(isEditing?'xl:grid-cols-[270px_minmax(0,1fr)_270px]':'')}>
+        {isEditing&&<aside className="overflow-hidden rounded-xl border border-slate-200 bg-white xl:sticky xl:top-24">
+          <div className="grid grid-cols-4 border-b border-slate-200 text-[11px] font-semibold">
+            {([['templates','Mẫu',LayoutTemplate],['blocks','Khối',PanelLeft],['pages','Trang',FileJson],['themes','Theme',Paintbrush]] as const).map(([tab,label,Icon])=><button key={tab} onClick={()=>setSidebar(tab)} className={'flex flex-col items-center gap-1 px-1 py-3 '+(sidebar===tab?'border-b-2 border-amber-600 bg-amber-50 text-amber-900':'text-slate-600 hover:bg-slate-50')}><Icon size={17}/>{label}</button>)}
+          </div>
+          <div className="max-h-[75vh] overflow-auto p-3">
+            {sidebar==='templates'&&<><p className="mb-3 text-sm font-bold">Kho giao diện · 24 mẫu</p><button onClick={()=>setGallery(true)} className="mb-3 w-full rounded-lg bg-amber-700 px-3 py-2 text-sm font-semibold text-white">Mở thư viện và xem trước</button>
+              <div className="space-y-2">{SITE_TEMPLATES.filter(t=>t.category==='Cửa hàng'||t.category==='Portfolio').slice(0,6).map(t=>
+                <button key={t.id} onClick={()=>{setCandidate(t.id);setGallery(true);}} className="w-full rounded-lg border p-2 text-left hover:border-amber-400"><TemplateThumb template={t}/><p className="mt-2 text-xs font-semibold">{t.name}</p></button>)}</div></>}
+            {sidebar==='blocks'&&<><p className="mb-2 text-sm font-bold">Thư viện 16 thành phần</p><p className="mb-3 text-xs text-slate-500">Kéo vào vùng chấm hoặc nhấp để thêm cuối trang.</p>
+              <div className="grid grid-cols-1 gap-2">{BLOCK_KINDS.map(kind=><button key={kind} draggable onDragStart={e=>startDrag(e,{kind})} onDragEnd={()=>dragRef.current=null} onClick={()=>addBlock(kind)} className="flex w-full cursor-grab items-center justify-between rounded-lg border border-slate-200 p-3 text-left text-xs hover:border-amber-500 hover:bg-amber-50"><span>{KIND_LABELS[kind]}</span><Plus size={15}/></button>)}</div></>}
+            {sidebar==='pages'&&<><div className="mb-3 flex items-center justify-between"><b className="text-sm">Các trang ({doc.pages.length}/{MAX_PAGES})</b><button onClick={addPage} title="Thêm trang" className="rounded-lg bg-amber-700 p-2 text-white"><Plus size={17}/></button></div>
+              <div className="space-y-2">{doc.pages.map(p=><button key={p.id} onClick={()=>{setPageId(p.id);setSelectedId(null)}} className={'flex w-full items-center justify-between rounded-lg border px-3 py-3 text-left text-sm '+(p.id===activePage.id?'border-amber-400 bg-amber-50 font-semibold':'border-slate-200')}><span>{p.title}</span><span className="text-[10px] text-slate-500">/{p.slug}</span></button>)}</div>
+              <hr className="my-4"/><b className="text-sm">Thiết lập trang</b>
+              <label className="mt-3 block text-xs">Tên trang<input className="mt-1 w-full rounded-lg border px-3 py-2 text-sm" maxLength={80} value={activePage.title} onChange={e=>patchPage({title:e.target.value||' '})}/></label>
+              <label className="mt-3 block text-xs">Đường dẫn slug<input className="mt-1 w-full rounded-lg border px-3 py-2 text-sm" value={activePage.slug} onChange={e=>changeSlug(e.target.value)} /></label>
+              <div className="mt-4 flex gap-2"><button onClick={duplicatePage} className="flex items-center gap-1 rounded-lg border p-2 text-xs"><Copy size={14}/>Nhân bản</button><button onClick={deletePage} className="flex items-center gap-1 rounded-lg border p-2 text-xs text-red-700"><Trash2 size={14}/>Xóa trang</button></div>
+            </>}
+            {sidebar==='themes'&&<><b className="text-sm">Giao diện toàn website</b><p className="my-2 text-xs text-slate-500">Thay màu chủ đạo, nền, bề mặt, góc bo và typography trên mọi trang.</p>
+              <div className="space-y-2">{THEMES.map(t=><button key={t.id} onClick={()=>changeTheme(t.id)} className={'w-full rounded-lg border p-3 text-left '+(t.id===doc.themeId?'border-amber-500 bg-amber-50':'border-slate-200')}>
+                <div className="flex items-center gap-2"><span className="size-7 rounded-full border" style={{backgroundColor:t.primary}}/><span className="size-7 rounded-full border" style={{backgroundColor:t.background}}/><b className="text-sm">{t.name}</b>{t.id===doc.themeId&&<Check size={16} className="ml-auto text-amber-700"/>}</div><p className="mt-2 text-xs text-slate-600">{t.mood}</p>
+              </button>)}</div></>}
+          </div>
+        </aside>}
+        <main className="min-w-0">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white p-2">
+            <div className="flex max-w-full flex-wrap items-center gap-1 overflow-auto">{doc.pages.map(p=><button key={p.id} onClick={()=>navigate(p.slug)} className={'rounded-md px-3 py-1.5 text-xs '+(p.id===activePage.id?'bg-slate-900 font-semibold text-white':'text-slate-600 hover:bg-slate-100')}>{p.title}</button>)}</div>
+            <span className="px-2 text-xs text-slate-500">{viewport==='mobile'?'390 px':viewport==='tablet'?'768 px':'Desktop'}</span>
+          </div>
+          <div className="overflow-x-auto pb-5">
+            <div className="@container mx-auto overflow-hidden border shadow-lg transition-[width] duration-200" style={{...studioColors(theme),width:canvasWidth,maxWidth:'100%',backgroundColor:'var(--studio-background)',color:'var(--studio-foreground)',fontFamily:'var(--studio-font)',borderColor:'var(--studio-border)',borderRadius:'var(--studio-radius)'}}>
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b px-5 py-5 @md:px-10" style={{borderColor:'var(--studio-border)'}}>
+                <button onClick={()=>navigate(doc.pages[0].slug)} className="text-lg font-bold tracking-tight">{doc.title||'Website của tôi'}</button>
+                <nav className="flex flex-wrap gap-2 @md:gap-5">{doc.pages.map(p=><button key={p.id} onClick={()=>navigate(p.slug)} className={'text-xs @md:text-sm '+(p.id===activePage.id?'font-bold underline underline-offset-8':'opacity-70 hover:opacity-100')}>{p.title}</button>)}</nav>
+              </div>
+              <div className="px-3 pb-2 @md:px-7">
+                {activePage.blocks.map((block,index)=><div key={block.id}>
+                  {isEditing&&<div onDragOver={e=>e.preventDefault()} onDrop={e=>dropAt(e,index)} aria-label={'Thả khối ở vị trí '+(index+1)} className="my-1 flex h-5 items-center justify-center rounded-lg border border-dashed border-transparent text-[10px] text-transparent hover:border-amber-500 hover:bg-amber-100 hover:text-amber-900">Thả tại đây</div>}
+                  <section draggable={isEditing} onDragStart={e=>startDrag(e,{id:block.id})} onDragEnd={()=>dragRef.current=null} onClick={()=>isEditing&&setSelectedId(block.id)} className={'relative '+(isEditing?'cursor-pointer border-2 border-transparent hover:border-amber-300 '+(selectedId===block.id?'!border-amber-500':''):'')}>
+                    {isEditing&&<div className="absolute right-1 top-1 z-20 flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 font-sans text-slate-800 shadow-lg">
+                      <GripVertical size={15} className="cursor-grab"/><button title="Lên" onClick={e=>{e.stopPropagation();moveBlock(block.id,index-1)}} disabled={index===0} className="rounded p-1 disabled:opacity-20"><ArrowUp size={15}/></button>
+                      <button title="Xuống" onClick={e=>{e.stopPropagation();moveBlock(block.id,index+1)}} disabled={index===activePage.blocks.length-1} className="rounded p-1 disabled:opacity-20"><ArrowDown size={15}/></button>
+                      <button title="Nhân bản" onClick={e=>{e.stopPropagation();if(activePage.blocks.length>=MAX_BLOCKS||totalBlocks>=MAX_TOTAL)return;const arr=[...activePage.blocks];const copy={...block,id:newId()};arr.splice(index+1,0,copy);modifyPage(arr);setSelectedId(copy.id)}} className="rounded p-1"><Copy size={15}/></button>
+                      <button title="Xóa" onClick={e=>{e.stopPropagation();modifyPage(activePage.blocks.filter(b=>b.id!==block.id));if(selectedId===block.id)setSelectedId(null)}} className="rounded p-1 text-red-600"><Trash2 size={15}/></button>
+                    </div>}
+                    <BlockPreview block={block} theme={theme} navigate={navigate}/>
+                  </section>
+                </div>)}
+                {isEditing&&<div onDragOver={e=>e.preventDefault()} onDrop={e=>dropAt(e,activePage.blocks.length)} className="my-4 rounded-xl border-2 border-dashed border-slate-300 px-4 py-7 text-center font-sans text-xs text-slate-500 hover:border-amber-500 hover:bg-amber-50"><Plus size={18} className="mx-auto mb-2"/>Thả một khối vào cuối trang</div>}
+              </div>
+              <footer className="mt-7 flex flex-wrap items-center justify-between gap-3 border-t px-6 py-7 text-xs opacity-70 @md:px-10" style={{borderColor:'var(--studio-border)'}}><span>© {new Date().getFullYear()} {doc.title}</span><span>Thiết kế bằng Motngum Studio · Bản nháp</span></footer>
+            </div>
+          </div>
+        </main>
+        {isEditing&&<aside className="rounded-xl border border-slate-200 bg-white p-4 xl:sticky xl:top-24">
+          <h2 className="mb-4 text-sm font-bold">Thuộc tính thiết kế</h2>
+          <label className="mb-4 block text-xs font-semibold">Tên website<input value={doc.title} maxLength={120} onChange={e=>commit({...doc,title:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
+          {activeBlock?<div className="space-y-3">
+            <div className="rounded-lg bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">{KIND_LABELS[activeBlock.kind]}</div>
+            <label className="block text-xs font-semibold">Bố cục<select value={activeBlock.variant} onChange={e=>patchBlock({variant:e.target.value as Block['variant']})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm">{BLOCK_VARIANTS.map(v=><option key={v} value={v}>{v}</option>)}</select></label>
+            <label className="block text-xs font-semibold">Tiêu đề<input value={activeBlock.title} maxLength={160} onChange={e=>patchBlock({title:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
+            <label className="block text-xs font-semibold">Nội dung / mỗi dòng một mục<textarea value={activeBlock.body} maxLength={2000} rows={6} onChange={e=>patchBlock({body:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
+            {(['hero','image','gallery','products'].includes(activeBlock.kind))&&<label className="block text-xs font-semibold">URL ảnh HTTPS<input key={activeBlock.id+'-image-'+activeBlock.imageUrl} defaultValue={activeBlock.imageUrl} maxLength={600} onBlur={e=>{
+              const value=e.currentTarget.value.trim();
+              if(value!==''&&!safeImage(value)) {setStatus('URL hình ảnh phải bắt đầu bằng https:// hợp lệ.');e.currentTarget.value=activeBlock.imageUrl;return;}
+              if(value!==activeBlock.imageUrl)patchBlock({imageUrl:value});
+            }} placeholder="https://..." className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>}
+            {(['hero','cta'].includes(activeBlock.kind))&&<><label className="block text-xs font-semibold">Chữ trên nút<input value={activeBlock.buttonLabel} maxLength={80} onChange={e=>patchBlock({buttonLabel:e.target.value})} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label>
+              <label className="block text-xs font-semibold">Liên kết (https hoặc #page:slug)<input key={activeBlock.id+'-link-'+activeBlock.buttonUrl} defaultValue={activeBlock.buttonUrl} maxLength={500} onBlur={e=>{
+                const value=e.currentTarget.value.trim();
+                if(value!==''&&!safeLink(value)){setStatus('Liên kết chỉ nhận http(s), #anchor hoặc #page:slug.');e.currentTarget.value=activeBlock.buttonUrl;return;}
+                if(value!==activeBlock.buttonUrl)patchBlock({buttonUrl:value});
+              }} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"/></label></>}
+            <label className="flex items-center justify-between text-xs font-semibold">Màu nhấn khối<input type="color" value={activeBlock.accent} onChange={e=>patchBlock({accent:e.target.value})} className="size-10 cursor-pointer"/></label>
+          </div>:<p className="text-xs text-slate-500">Chọn một khối trên canvas để chỉnh sửa nội dung, màu sắc và bố cục.</p>}
+          <hr className="my-4"/>
+          <button onClick={()=>fileInput.current?.click()} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-xs hover:bg-slate-100"><FileJson size={16}/>Nhập website JSON</button>
+          <input className="hidden" ref={fileInput} type="file" accept="application/json,.json" onChange={importJson}/>
+          <button onClick={reset} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-xs hover:bg-slate-100"><RotateCcw size={16}/>Đặt lại mẫu</button>
+          <p className="mt-4 rounded-lg bg-slate-50 p-3 text-[11px] leading-5 text-slate-600">Bản nháp cục bộ lưu trên trình duyệt; website liên kết tài khoản sẽ tự lưu lên PostgreSQL sau khi dừng chỉnh sửa. Nếu có xung đột, tự lưu sẽ dừng để bảo vệ dữ liệu. Ảnh upload, form và thanh toán chưa bật.</p>
+        </aside>}
+      </div>
+    </div>
+    {gallery&&<div className="@container fixed inset-0 z-[70] overflow-y-auto bg-slate-950/70 px-3 py-4 @md:px-8 @md:py-8" role="dialog" aria-modal="true" aria-label="Thư viện mẫu website">
+      <div className="mx-auto max-w-[1450px] overflow-hidden rounded-2xl bg-white shadow-2xl">
+        <div className="flex items-start justify-between gap-3 border-b px-5 py-5 @md:px-7"><div><p className="text-xs font-bold uppercase tracking-widest text-amber-700">Motngum Studio / Template Gallery</p><h2 className="mt-1 text-2xl font-extrabold">Chọn một website để bắt đầu</h2><p className="mt-1 text-sm text-slate-500">24 mẫu có cấu trúc riêng · 6 ngành nghề · 8 theme · mỗi mẫu gồm 3 trang chỉnh sửa được</p></div><button onClick={()=>setGallery(false)} title="Đóng" className="rounded-lg border p-2"><X size={20}/></button></div>
+        <div className="flex flex-wrap items-center gap-2 px-5 py-4 @md:px-7">
+          <div className="flex min-w-[210px] flex-1 items-center gap-2 rounded-lg border px-3 py-2"><Search size={16} className="text-slate-400"/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Tìm tên mẫu hoặc ngành nghề..." className="w-full min-w-0 text-sm outline-none"/></div>
+          <span className="text-xs text-slate-500">{galleryMatches.length} kết quả</span>
+        </div>
+        <div className="flex flex-wrap gap-2 px-5 pb-4 @md:px-7">{(['Tất cả',...TEMPLATE_CATEGORIES] as const).map(c=><button key={c} onClick={()=>setCategory(c)} className={'rounded-full border px-3 py-1.5 text-xs font-semibold '+(category===c?'border-amber-700 bg-amber-700 text-white':'border-slate-200 text-slate-600 hover:bg-slate-50')}>{c}</button>)}</div>
+        <div className="grid gap-6 border-t p-4 @lg:grid-cols-[1fr_420px] @md:p-6">
+          <div className="max-h-[62vh] overflow-y-auto pr-1"><div className="grid grid-cols-1 gap-3 @sm:grid-cols-2 @xl:grid-cols-3">
+            {galleryMatches.map(t=><button key={t.id} onClick={()=>setCandidate(t.id)} className={'rounded-xl border p-2 text-left transition hover:border-amber-500 hover:shadow-md '+(t.id===candidate?'border-amber-500 ring-2 ring-amber-100':'border-slate-200')}>
+              <TemplateThumb template={t}/><div className="flex items-center justify-between gap-2 px-1 pt-2"><b className="text-sm">{t.name}</b>{t.id===candidate&&<Check size={16} className="text-amber-700"/>}</div><p className="px-1 pt-1 text-[11px] text-slate-500">{t.category} · {themeById(t.theme).mood}</p><p className="px-1 pb-1 pt-2 text-xs leading-5 text-slate-600">{t.description}</p>
+            </button>)}</div>{galleryMatches.length===0&&<p className="p-8 text-center text-slate-500">Không tìm thấy mẫu. Thử chọn ngành nghề khác.</p>}</div>
+          <aside className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-amber-800">Xem trước mẫu đang chọn</p><h3 className="mt-2 text-xl font-bold">{currentTemplate.name}</h3><p className="mt-1 text-sm text-slate-600">{currentTemplate.description}</p>
+            <div className="my-4 overflow-hidden rounded-lg border border-slate-200"><TemplateThumb template={currentTemplate}/></div>
+            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-700">Trang chủ thực tế từ mẫu</p>
+            <div className="h-56 overflow-y-auto rounded-lg border border-slate-200 bg-white">
+              <div className="@container" style={{...studioColors(themeById(currentTemplate.theme)),backgroundColor:'var(--studio-background)',color:'var(--studio-foreground)',fontFamily:'var(--studio-font)',fontSize:'12px'}}>
+                <div className="border-b px-4 py-3 text-sm font-bold" style={{borderColor:'var(--studio-border)'}}>{currentTemplate.name}</div>
+                <div className="px-3">{candidateDocument.pages[0].blocks.slice(0,3).map(b=><div key={b.id}><BlockPreview block={b} theme={themeById(currentTemplate.theme)} navigate={()=>{}}/></div>)}</div>
+              </div>
+            </div>
+            <div className="mb-4 flex flex-wrap gap-2">{currentTemplate.order.map((k,i)=><span key={i} className="rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-slate-600">{KIND_LABELS[k]}</span>)}</div>
+            <p className="mb-4 text-xs text-slate-600">Áp dụng sẽ tạo Trang chủ / Giới thiệu / Liên hệ cùng giao diện nhất quán. Nội dung có thể sửa, không phải ảnh chụp mẫu tĩnh.</p>
+            <button onClick={()=>applyTemplate(currentTemplate)} className="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-700 px-4 py-3 text-sm font-bold text-white hover:bg-amber-800">Dùng mẫu {currentTemplate.name}<ArrowRight size={17}/></button>
+            <p className="mt-3 text-[11px] leading-5 text-slate-500">Đang chỉnh một website khác? Hãy xuất JSON để sao lưu trước khi thay mẫu.</p>
+          </aside>
+        </div>
+      </div>
+    </div>}
+  </div>;
+}

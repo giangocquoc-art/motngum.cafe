@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: commerce-rebuild-2026-10
+          # Use the actual PR/branch revision; never test an unrelated hard-coded ref.
           sparse-checkout: |
             commerce-platform/control-plane
             commerce-platform/edge
@@ -89,6 +89,9 @@ jobs:
             code="$(curl -sS -X "$method" -o /tmp/response.json -w '%{http_code}' "http://127.0.0.1:3000$path")"
             test "$code" = "$wanted" || { echo "Unexpected $path status: $code"; cat /tmp/response.json; exit 1; }
           }
+          check_code /builder-demo 200
+          check_code /api/sites 401
+          check_code /s/never-published 404
           check_code /api/user 401
           check_code /api/team 401
           check_code /api/stripe/checkout 404
@@ -112,6 +115,37 @@ jobs:
       - name: Verify real signed-cookie JWT revocation, scoped membership and PostgreSQL unique index
         working-directory: commerce-platform/control-plane
         run: node test/auth-db-session.mjs
+      - name: Puck v2 lossless round-trip contract and field registry
+        working-directory: commerce-platform/control-plane
+        timeout-minutes: 3
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/motngum-puck-contract --no-save --no-audit --no-fund tsx@4.20.6
+          node /tmp/motngum-puck-contract/node_modules/tsx/dist/cli.mjs --test test/puck-v2-adapter.test.ts
+      - name: Builder two-tenant site lifecycle E2E
+        working-directory: commerce-platform/control-plane
+        run: node test/builder-site-e2e.mjs
+      - name: Real Chromium studio interactions (no Vercel)
+        working-directory: commerce-platform/control-plane
+        timeout-minutes: 8
+        env:
+          PLAYWRIGHT_MODULE: file:///tmp/motngum-browser/node_modules/playwright/index.mjs
+          AXE_MODULE: file:///tmp/motngum-browser/node_modules/@axe-core/playwright/dist/index.js
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/motngum-browser --no-save --no-audit --no-fund playwright@1.56.1 @axe-core/playwright@4.10.2
+          node /tmp/motngum-browser/node_modules/playwright/cli.js install --with-deps chromium
+          node test/browser-builder.mjs
+          node /tmp/motngum-puck-contract/node_modules/tsx/dist/cli.mjs test/browser-templates.mts
+          node test/browser-puck.mjs
+      - name: Upload Studio screenshot and visual acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-template-visual-evidence
+          path: commerce-platform/control-plane/artifacts/studio-template-evidence/
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Block unsafe default demo seed
         run: |
           set -euo pipefail
