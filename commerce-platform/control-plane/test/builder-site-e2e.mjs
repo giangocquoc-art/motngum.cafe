@@ -134,6 +134,49 @@ try {
   assert.match(full.data,/#000000/,'Light hero accent must use readable dark foreground');
   assert.match(full.data,new RegExp('/s/'+fullSite.slug+'/lien-he'),'Internal page CTA must work on public URL');
   console.log('PASS: shared block renderer preserves full hero background, contrast and internal CTA after publish');
+  // Public contact & newsletter: consent, idempotency, isolation and rate limiting.
+  const formDoc=structuredClone(doc);
+  formDoc.title='CI Forms Private Inbox';
+  formDoc.pages[1].blocks=[
+    {...formDoc.pages[1].blocks[0],id:randomUUID(),kind:'contact',
+      body:'Liên hệ với chúng tôi qua biểu mẫu này.',title:'Thông tin liên hệ'},
+    {...formDoc.pages[1].blocks[0],id:randomUUID(),kind:'newsletter',
+      body:'Đăng ký nhận thông tin khi có cập nhật.',title:'Nhận tin'}
+  ];
+  let form=await request('/api/sites',{jwt:a,method:'POST',body:{document:formDoc}});
+  assert.equal(form.status,201,JSON.stringify(form.data));
+  const formSite=form.data.site;
+  form=await request('/api/sites/'+formSite.id+'/publish',{jwt:a,method:'POST',body:{version:1}});
+  assert.equal(form.status,200,JSON.stringify(form.data));
+  const contact=formDoc.pages[1].blocks[0],news=formDoc.pages[1].blocks[1];
+  const submit='/api/public-sites/'+formSite.slug+'/submit';
+  const payload={requestId:randomUUID(),blockId:contact.id,name:'Tester',email:'guest@example.test',
+    message:'Kiểm thử biểu mẫu thật',website:'',consent:true};
+  assert.equal((await request(submit,{method:'POST',body:{...payload,consent:false}})).status,422);
+  assert.equal((await request(submit,{method:'POST',body:{...payload,blockId:randomUUID()}})).status,404);
+  form=await request(submit,{method:'POST',body:payload});
+  assert.equal(form.status,201,JSON.stringify(form.data));
+  form=await request(submit,{method:'POST',body:payload});
+  assert.equal(form.status,200,JSON.stringify(form.data));
+  assert.equal(form.data.duplicate,true);
+  form=await request(submit,{method:'POST',body:{
+    ...payload,requestId:randomUUID(),blockId:news.id,name:'',message:''
+  }});
+  assert.equal(form.status,201,JSON.stringify(form.data));
+  const received=await request('/api/sites/'+formSite.id+'/submissions',{jwt:a});
+  assert.equal(received.status,200,JSON.stringify(received.data));
+  assert.equal(received.data.submissions.length,2);
+  assert.equal(received.data.submissions[0].email,'guest@example.test');
+  assert.equal((await request('/api/sites/'+formSite.id+'/submissions',{jwt:b})).status,404);
+  assert.equal((await request('/api/sites/'+formSite.id+'/submissions')).status,401);
+  const publicForm=await request('/s/'+formSite.slug+'/lien-he');
+  assert.equal(publicForm.status,200);
+  assert.match(publicForm.data,/Gửi thông tin/);
+  await sql.unsafe("INSERT INTO site_submissions(id,request_id,site_id,team_id,block_id,kind,email) SELECT gen_random_uuid(),gen_random_uuid(),$1,$2,$3,'contact','rate@example.test' FROM generate_series(1,24)",
+    [formSite.id,t1.id,contact.id]);
+  const exceeded=await request(submit,{method:'POST',body:{...payload,requestId:randomUUID()}});
+  assert.equal(exceeded.status,429,JSON.stringify(exceeded.data));
+  console.log('PASS: public forms consent, PostgreSQL inbox, idempotency, per-site rate limit and cross-tenant isolation');
   // Bound total sites per tenant to prevent free-plan database abuse and ensure
   // concurrent creation is serialized by the organization's database row lock.
   for(let i=0;i<48;i++){
