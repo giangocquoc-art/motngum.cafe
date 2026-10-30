@@ -389,8 +389,8 @@ async function goReview(page,label,withStory){
   assert.equal(await page.locator("#emptyLink").innerText(),"Bắt đầu HSK 1 cùng An ↗");
   return;
  }
- assert.equal(locked,"18","Full demo should unlock all authored review items");
- assert.equal(await page.locator("#dueCount").textContent(),"18");
+ assert.equal(locked,"23","Full demo should unlock all authored review items");
+ assert.equal(await page.locator("#dueCount").textContent(),"23");
  const oldV3=await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v3"));
  const oldV4=await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v4"));
  const first=await page.evaluate(()=>HSKReviewData.items[0]);
@@ -398,7 +398,7 @@ async function goReview(page,label,withStory){
  await page.locator("#choiceOptions button").nth(idx).click();
  await auditLayout(page,label,'review-first-feedback');
  assert.equal(await page.locator("#independentCount").textContent(),"1");
- assert.equal(await page.locator("#dueCount").textContent(),"17");
+ assert.equal(await page.locator("#dueCount").textContent(),"22");
  await page.locator("#nextBtn").click();
  await page.locator("#hintBtn").click();
  const second=await page.evaluate(()=>HSKReviewData.items[1]);
@@ -411,7 +411,7 @@ async function goReview(page,label,withStory){
  await page.locator("#typedAnswer").fill("我叫安");
  await page.locator("#submitTyped").click();
  assert.equal(await page.locator("#independentCount").textContent(),"2");
- assert.equal(await page.locator("#dueCount").textContent(),"14");
+ assert.equal(await page.locator("#dueCount").textContent(),"19");
  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-review-v1")));
  assert.equal(saved.items["self-introduction"].status,"independent");
  assert.equal(saved.items["arrived-city"].status,"assisted");
@@ -420,8 +420,8 @@ async function goReview(page,label,withStory){
  assert.equal(await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v4")),oldV4,"Optional review mutated V4 shadow");
  await page.screenshot({path:path.join(OUT,label+"-spaced-review.png"),fullPage:true});
  await page.reload({waitUntil:"networkidle"});
- assert.equal(await page.locator("#dueCount").textContent(),"14","Review schedule did not survive reload");
- for(let n=0;n<14;n++){
+ assert.equal(await page.locator("#dueCount").textContent(),"19","Review schedule did not survive reload");
+ for(let n=0;n<19;n++){
   await auditLayout(page,label,'review-item-'+(n+5));
   const item=await page.evaluate(()=>HSKReviewData.items.find(x=>x.question===document.querySelector('#questionPrompt').textContent));
   assert.ok(item,'Active review item must be authored');
