@@ -106,9 +106,14 @@ try {
   r=await request('/api/sites/'+site.id+'/publish',{jwt:a,method:'POST',body:{version:4}});
   assert.equal(r.status,200,JSON.stringify(r.data));
   r=await request('/s/'+slug);assert.equal(r.status,200);assert.match(r.data,/Bánh được làm tươi mỗi sáng/);
-  assert.equal((await request('/api/sites/'+site.id+'/unpublish',{jwt:b,method:'POST',body:{}})).status,404);
-  r=await request('/api/sites/'+site.id+'/unpublish',{jwt:a,method:'POST',body:{}});
+  assert.equal((await request('/api/sites/'+site.id+'/unpublish',{jwt:b,method:'POST',body:{publishedVersion:4}})).status,404);
+  assert.equal((await request('/api/sites/'+site.id+'/unpublish',{jwt:a,method:'POST',body:{}})).status,422);
+  r=await request('/api/sites/'+site.id+'/unpublish',{jwt:a,method:'POST',body:{publishedVersion:3}});
+  assert.equal(r.status,409,'Stale tab must not remove a newer publication');
+  assert.equal((await request('/s/'+slug)).status,200,'stale unpublish must leave public snapshot intact');
+  r=await request('/api/sites/'+site.id+'/unpublish',{jwt:a,method:'POST',body:{publishedVersion:4}});
   assert.equal(r.status,200,JSON.stringify(r.data));
+  assert.equal((await request('/api/sites/'+site.id+'/unpublish',{jwt:a,method:'POST',body:{publishedVersion:4}})).status,409);
   assert.equal((await request('/s/'+slug)).status,404);
   // Renderer parity: same block must support full-width hero image and readable CTA
   // in published HTML (these variants previously existed only inside the editor).
