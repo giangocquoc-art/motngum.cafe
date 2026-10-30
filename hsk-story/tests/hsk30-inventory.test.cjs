@@ -58,7 +58,8 @@ test('pinned source inventory covers all five components for HSK 3.0 levels 1–
       const parent = node.parentId === null ? null : nodesById.get(node.parentId);
       return node.id === expectedId && node.level === Number(level) && node.columnOrdinal === node.tier && node.printedPage >= 56 && node.printedPage <= 71 && /^[a-f0-9]{64}$/.test(node.sourceHash) && Array.isArray(node.cellBoundingBox) && node.cellBoundingBox.length === 4 && (node.tier === 1 ? parent === null : parent?.tier === node.tier - 1);
     }));
-    assert.match(topics.hierarchyStatus, /Visual reconciliation.*pending/);
+    assert.match(topics.hierarchyStatus, /Page-level geometry review confirmed/);
+    assert.match(topics.hierarchyStatus, /Individual cell text and educator mapping still need review/);
 
     const chars = inventory.characters[level];
     assert.equal(chars.length, want.characters);

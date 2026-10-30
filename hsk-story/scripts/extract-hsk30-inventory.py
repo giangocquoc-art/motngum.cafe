@@ -226,7 +226,7 @@ def extract_topics(reader: PdfReader, layout_doc: fitz.Document) -> dict[str, di
             "officialTierCounts": official_counts,
             "rows": rows,
             "nodes": nodes,
-            "hierarchyStatus": "Tier cells and merged-cell parents are extracted from table geometry and carry across page continuations; node counts match printed official footers. Visual reconciliation and educator mapping are still pending.",
+            "hierarchyStatus": "Page-level geometry review confirmed visible topic tier cells and merged-cell parent links across pp.56–71; counts match printed official footers. Individual cell text and educator mapping still need review.",
         }
     return output
 

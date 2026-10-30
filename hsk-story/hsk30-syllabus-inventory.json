@@ -2358,7 +2358,7 @@
           "sourceHash": "bd83c8387c3dd79f742872a23686fe8aa03f30b291a9fdb7018c41ba09b426ee"
         }
       ],
-      "hierarchyStatus": "Tier cells and merged-cell parents are extracted from table geometry and carry across page continuations; node counts match printed official footers. Visual reconciliation and educator mapping are still pending."
+      "hierarchyStatus": "Page-level geometry review confirmed visible topic tier cells and merged-cell parent links across pp.56–71; counts match printed official footers. Individual cell text and educator mapping still need review."
     },
     "2": {
       "officialTierCounts": [
@@ -3668,7 +3668,7 @@
           "sourceHash": "c5361ce7573168c6854c57c577e69f224bc2f20564afede44fbbd7acf9e9340b"
         }
       ],
-      "hierarchyStatus": "Tier cells and merged-cell parents are extracted from table geometry and carry across page continuations; node counts match printed official footers. Visual reconciliation and educator mapping are still pending."
+      "hierarchyStatus": "Page-level geometry review confirmed visible topic tier cells and merged-cell parent links across pp.56–71; counts match printed official footers. Individual cell text and educator mapping still need review."
     },
     "3": {
       "officialTierCounts": [
@@ -5604,7 +5604,7 @@
           "sourceHash": "35a6bb72d929dc0716734d7a8f7528818171346bc61a519b742190a1404733a0"
         }
       ],
-      "hierarchyStatus": "Tier cells and merged-cell parents are extracted from table geometry and carry across page continuations; node counts match printed official footers. Visual reconciliation and educator mapping are still pending."
+      "hierarchyStatus": "Page-level geometry review confirmed visible topic tier cells and merged-cell parent links across pp.56–71; counts match printed official footers. Individual cell text and educator mapping still need review."
     },
     "4": {
       "officialTierCounts": [
@@ -8318,7 +8318,7 @@
           "sourceHash": "b826e683231421faad2dcc334c1efe61f47e690ebcb91da8570aa3cb04353104"
         }
       ],
-      "hierarchyStatus": "Tier cells and merged-cell parents are extracted from table geometry and carry across page continuations; node counts match printed official footers. Visual reconciliation and educator mapping are still pending."
+      "hierarchyStatus": "Page-level geometry review confirmed visible topic tier cells and merged-cell parent links across pp.56–71; counts match printed official footers. Individual cell text and educator mapping still need review."
     },
     "5": {
       "officialTierCounts": [
@@ -10866,7 +10866,7 @@
           "sourceHash": "bf39083d87fbe58d2cf86b5d44b6a562cea58f9f6e807d6dcc07b2919989e28f"
         }
       ],
-      "hierarchyStatus": "Tier cells and merged-cell parents are extracted from table geometry and carry across page continuations; node counts match printed official footers. Visual reconciliation and educator mapping are still pending."
+      "hierarchyStatus": "Page-level geometry review confirmed visible topic tier cells and merged-cell parent links across pp.56–71; counts match printed official footers. Individual cell text and educator mapping still need review."
     },
     "6": {
       "officialTierCounts": [
@@ -13246,7 +13246,7 @@
           "sourceHash": "bf39083d87fbe58d2cf86b5d44b6a562cea58f9f6e807d6dcc07b2919989e28f"
         }
       ],
-      "hierarchyStatus": "Tier cells and merged-cell parents are extracted from table geometry and carry across page continuations; node counts match printed official footers. Visual reconciliation and educator mapping are still pending."
+      "hierarchyStatus": "Page-level geometry review confirmed visible topic tier cells and merged-cell parent links across pp.56–71; counts match printed official footers. Individual cell text and educator mapping still need review."
     }
   },
   "vocabulary": [
