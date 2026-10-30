@@ -13,6 +13,7 @@ import {
   moveSitePage, normalizePageSlug, renameSitePage, renameSitePageTitle, SitePageOperationError
 } from '@/lib/builder/page-operations';
 import { validateSiteDocument } from '@/lib/builder/validation';
+import { parseRecovery, recoveryEnvelope, recoveryKey, type RecoverySnapshot } from '@/lib/builder/local-recovery';
 
 type Props={
   siteId:string;
@@ -20,9 +21,11 @@ type Props={
   initialDocument:SiteDocument;
   initialVersion:number;
   role:string;
+  userId:number;
+  teamId:number;
 };
 
-export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,role}:Props) {
+export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,role,userId,teamId}:Props) {
   const [document,setDocument]=useState(initialDocument);
   const documentRef=useRef(initialDocument);
   const versionRef=useRef(initialVersion);
@@ -38,6 +41,9 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
   const [puckEpoch,setPuckEpoch]=useState(0);
   const [quickKind,setQuickKind]=useState<BlockKind>('text');
   const [publishedUrl,setPublishedUrl]=useState<string|null>(null);
+  const [recovery,setRecovery]=useState<RecoverySnapshot|null>(null);
+  const [recoveryReady,setRecoveryReady]=useState(false);
+  const storageKey=useMemo(()=>recoveryKey(userId,teamId,siteId),[userId,teamId,siteId]);
   const canPublish=role==='owner';
   const activePage=document.pages.find(page=>page.id===activePageId)||document.pages[0];
   const totalBlocks=document.pages.reduce((total,page)=>total+page.blocks.length,0);
@@ -51,6 +57,16 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
     // do not replace its data prop on every keystroke.
   },[activePage.id, document.themeId, puckEpoch]);
 
+  useEffect(()=>{
+    try {
+      const raw=window.localStorage.getItem(storageKey);
+      const backup=parseRecovery(raw);
+      if(backup)setRecovery(backup);
+      else if(raw)window.localStorage.removeItem(storageKey);
+    }catch {setNotice('Không đọc được bản dự phòng trên thiết bị. Hãy xuất JSON khi cần.');}
+    setRecoveryReady(true);
+  },[storageKey]);
+
   const commit=useCallback((next:SiteDocument)=>{
     const validated=validateSiteDocument(next);
     if(!validated){
@@ -60,10 +76,16 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
     }
     if(JSON.stringify(validated)===JSON.stringify(documentRef.current))return true;
     documentRef.current=validated;setDocument(validated);
+    // Synchronous storage write protects a keystroke even if the tab crashes
+    // before the 1.6s cloud debounce fires. No silent cross-account restore.
+    if(recoveryReady){
+      try{window.localStorage.setItem(storageKey,JSON.stringify(recoveryEnvelope(validated,versionRef.current)));}
+      catch{setNotice('Bộ nhớ tạm của trình duyệt đầy; hãy xuất JSON để bảo vệ chỉnh sửa.');}
+    }
     changeCount.current+=1;
     dirtyRef.current=true;setDirty(true);
     return true;
-  },[]);
+  },[recoveryReady,storageKey]);
 
   const editPuck=useCallback((pageId:string,data:Data)=>{
     try{
@@ -114,6 +136,8 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
         versionRef.current=result.site.version;
         if(seq===changeCount.current){
           dirtyRef.current=false;setDirty(false);
+          try{window.localStorage.removeItem(storageKey);}catch{}
+          setRecovery(null);
           setNotice('Đã lưu an toàn · revision '+result.site.version);
         }else{
           dirtyRef.current=true;setDirty(true);
@@ -130,7 +154,7 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
     const success=await operation;
     pendingSave.current=null;
     return success;
-  },[siteId]);
+  },[siteId,storageKey]);
 
   useEffect(()=>{
     if(!dirty||blocked||saving)return;
@@ -295,14 +319,39 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
     }
   }
 
-  function exportJson(){
-    const content=JSON.stringify(documentRef.current,null,2);
+  function exportFile(value:SiteDocument,fileName:string){
+    const content=JSON.stringify(value,null,2);
     const blob=new Blob([content],{type:'application/json'});
     const url=URL.createObjectURL(blob);
     const anchor=window.document.createElement('a');
-    anchor.href=url;anchor.download='motngum-puck-'+siteId+'-v2.json';
+    anchor.href=url;anchor.download=fileName;
     window.document.body.appendChild(anchor);anchor.click();anchor.remove();
     window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  function exportJson(){
+    exportFile(documentRef.current,'motngum-puck-'+siteId+'-v2.json');
+  }
+  function recoverSavedCopy(){
+    if(!recovery||recovery.baseVersion!==versionRef.current){
+      setNotice('Bản dự phòng khác phiên bản cloud. Chỉ xuất JSON để đối chiếu, không ghi đè tự động.');
+      return;
+    }
+    if(dirtyRef.current){
+      setNotice('Đang có chỉnh sửa chưa lưu. Hãy lưu hoặc xuất JSON trước khi khôi phục.');return;
+    }
+    if(!window.confirm('Khôi phục bản nháp trên thiết bị vào trình chỉnh sửa? Bản cloud chỉ thay đổi khi CAS lưu thành công.'))return;
+    blockedRef.current=false;setBlocked(false);
+    if(commit(recovery.document)){
+      setActivePageId(recovery.document.pages[0].id);
+      setPuckEpoch(value=>value+1);
+      setRecovery(null);
+      setNotice('Đã tải bản dự phòng. Đang chờ tự lưu và kiểm tra revision trên server.');
+    }
+  }
+  function discardRecovery(){
+    if(!window.confirm('Xóa bản dự phòng chỉ trên thiết bị này?'))return;
+    try{window.localStorage.removeItem(storageKey);}catch{}
+    setRecovery(null);
   }
 
   return <section className="min-h-screen bg-slate-50">
@@ -329,6 +378,13 @@ export function StudioPuckClient({siteId,slug,initialDocument,initialVersion,rol
       <a className="rounded-lg border px-3 py-2 text-xs font-semibold" href={'/builder-demo?site='+siteId}>Editor cũ</a>
     </header>
     <p role={blocked?'alert':'status'} className={'px-4 py-3 text-sm '+(blocked?'bg-rose-50 text-rose-900':'bg-amber-50 text-amber-950')}>{notice}</p>
+    {recovery&&<aside role="region" aria-label="Khôi phục bản nháp" className="flex flex-wrap items-center gap-2 bg-amber-100 px-4 py-3 text-sm text-amber-950">
+      <strong>Bản dự phòng trên thiết bị ({new Date(recovery.savedAt).toLocaleString('vi-VN')})</strong>
+      <span>{recovery.baseVersion===versionRef.current?'Cùng phiên bản cloud':'Khác phiên bản cloud — chỉ xuất JSON để tránh ghi đè.'}</span>
+      {recovery.baseVersion===versionRef.current&&<button type="button" onClick={recoverSavedCopy} className="rounded border border-amber-900 p-2">Khôi phục bản nháp</button>}
+      <button type="button" onClick={()=>exportFile(recovery.document,'motngum-recovery-'+siteId+'.json')} className="rounded border p-2">Xuất JSON dự phòng</button>
+      <button type="button" onClick={discardRecovery} className="rounded border p-2">Xóa bản dự phòng</button>
+    </aside>}
     <nav aria-label="Các trang website" className="flex flex-wrap items-center gap-2 border-b bg-white px-4 py-3">
       {document.pages.map(page=><button type="button" key={page.id}
         onClick={()=>{void switchPage(page.id);}}
