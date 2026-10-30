@@ -237,6 +237,27 @@ try{
   assert.equal(new Set(dragged.map(block=>block.id)).size,dragged.length);
   console.log('PASS Puck browser: real cross-iframe drawer drag/drop persists unique block with no dangling CTA');
 
+  // Crash/reload simulation: force pending cloud PATCH to fail while a local
+  // recovery copy survives, then require explicit restore and successful CAS.
+  await page.route('**/api/sites/'+id,route=>
+    route.request().method()==='PATCH'?route.abort('failed'):route.continue());
+  await page.getByRole('combobox',{name:'Chọn theme'}).selectOption('ocean');
+  const recoveryKey='studio:recovery:v1:'+user.id+':'+team.id+':'+id;
+  await until(async()=>page.evaluate(key=>{
+    const raw=window.localStorage.getItem(key);
+    return Boolean(raw&&JSON.parse(raw).document.themeId==='ocean');
+  },recoveryKey),'recovery backup written synchronously');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.unroute('**/api/sites/'+id);
+  await page.getByRole('region',{name:'Khôi phục bản nháp'}).waitFor();
+  assert.equal((await saved()).draft_document.themeId,'forest');
+  await page.getByRole('button',{name:'Khôi phục bản nháp'}).click();
+  await until(async()=> (await saved()).draft_document.themeId==='ocean',
+    'restored local edit persisted with CAS after browser reload');
+  await until(async()=>page.evaluate(key=>!window.localStorage.getItem(key),recoveryKey),
+    'recovery cleared after confirmed cloud save');
+  console.log('PASS Puck browser: crash recovery requires explicit consent and CAS, no silent overwrite');
+
   // A URL containing another tenant's site UUID must not disclose its draft,
   // even when the visitor is logged in to a valid unrelated organization.
   const outsider=await sql.unsafe('INSERT INTO users(email,password_hash,role) VALUES ($1,$2,$3) RETURNING id',
