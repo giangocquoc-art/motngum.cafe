@@ -8,8 +8,8 @@ test("Gate5 curated language threads pass schema, never declare official HSK com
  assert.deepEqual(Array.from(T.validate(K,C)),[]);
  assert.equal(T.lines.length,5);
  assert.ok(T.lines.filter(t=>t.checkpoint!==null).every(t=>t.checkpoint>=7));
- assert.equal(K.levels[0].status,"demo");
- assert.ok(K.levels.slice(1).every(l=>l.status==="planned"));
+ assert.equal(K.levels[0].status,"pilot-playable");
+ assert.ok(K.levels.slice(1).every(l=>l.status==="outline-only"));
  assert.equal(K.scenes[8].topic.includes("Nghe"),false);
 });
 test("Gate5 no future retrieval leak for a new reader or when a story task is incomplete",()=>{

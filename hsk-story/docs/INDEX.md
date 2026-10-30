@@ -4,6 +4,8 @@
 
 Tranh: [ART_DIRECTION](../art/ART_DIRECTION.md), [COMPOSITION](../art/COMPOSITION.md), [CHARACTER_ATLASES](../art/CHARACTER_ATLASES.md), [manifest](../art/manifest.json), [GENERATION_LOG](../art/GENERATION_LOG.md). AI và email: [AI_SETUP](../AI_SETUP.md). Bố cục đã duyệt; tranh và hành vi còn phải được rà. Các mục Gate/PR dưới đây là hồ sơ tại thời điểm viết, không chứng minh deployment hiện tại.
 
+Lộ trình syllabus hiện hành: [HSK 3.0 source audit](../HSK3_SOURCE_AUDIT.md) và [machine-readable learning blueprint](../learning-blueprint.js). Sáu bậc đã có khung nguồn; chỉ bậc 1 có pilot, chưa bậc nào có item-level educator sign-off trong blueprint.
+
 ## Hiện hành
 - [CHIM_SE_DIRECTION](CHIM_SE_DIRECTION.md): các quyết định gần nhất từ chủ dự án.
 - [DIRECTION_AUDIT](DIRECTION_AUDIT_20261027.md): từng lệch so với hướng đã chốt, sửa gì, kiểm tra gì và việc nào còn mở.

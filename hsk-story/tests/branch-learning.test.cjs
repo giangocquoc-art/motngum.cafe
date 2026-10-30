@@ -90,3 +90,13 @@ test("evidence distinguishes independent, hinted, attempted, and assisted respon
  const recorded=L.record(cleaned,0,{status:"correct",attempts:0,hint:false});assert.equal(cleaned[0],null);assert.equal(recorded[0].hint,false);assert.equal(recorded[0].attempts,0);assert.equal(recorded[2].status,"assisted");
  assert.equal(L.storageKey,"chimse-branch-learning-v1");assert.throws(()=>L.record(recorded,1,{status:"wrong"}));
 });
+
+test("objective-keyed evidence round-trips while preserving the legacy lesson-index record",()=>{
+ let history=L.clean([]);history=L.record(history,0,{status:"correct",attempts:0,hint:false});history=L.record(history,7,{status:"skipped",attempts:1,hint:false});history=L.record(history,5,{status:"assisted",attempts:2,hint:true});
+ const saved=L.objectiveEvidence(history);
+ assert.equal(saved.version,1);assert.equal(saved.objectives.greeting[0].taskId,"chimse.hsk1-demo.scene.0");
+ assert.equal(saved.objectives["introduce-self"].find(x=>x.taskId==="chimse.hsk1-demo.scene.7").status,"skipped");
+ assert.equal(saved.objectives.price.find(x=>x.taskId==="chimse.hsk1-demo.scene.5").status,"assisted");
+ assert.equal(JSON.stringify(L.fromObjectiveEvidence(saved)),JSON.stringify(history));
+ assert.equal(L.storageKey,"chimse-branch-learning-v1");assert.equal(L.objectiveStorageKey,"chimse-branch-objective-evidence-v1");
+});
