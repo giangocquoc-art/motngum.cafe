@@ -21,7 +21,7 @@ if(chosen){addDelta(next.traits,chosen.traits,TRAITS);addDelta(next.relationship
 return {ok:true,state:next,reply:chosen?chosen.reply:null};}
 function load(value){var obj;try{obj=typeof value==="string"?JSON.parse(value):value;}catch(e){return fresh();}if(!obj||obj.version!==1||!Array.isArray(obj.path))return fresh();var state=fresh();for(var i=0;i<obj.path.length&&i<50;i++){var item=obj.path[i];if(!item||item.at!==state.node||typeof item.choice!=="string")break;var moved=step(state,item.choice);if(!moved.ok)break;state=moved.state;}return state;}
 function exportSave(state){return JSON.stringify({version:1,path:state.path});}
-function conditionText(scene,state){return (scene.echoes||[]).filter(function(e){return Boolean(state.flags[e.if]);}).map(function(e){return e.text;});}
+function conditionText(scene,state){if(!scene||!state)return [];var flags=state.flags||{},echoes=(scene.echoes||[]).filter(function(e){return Boolean(flags[e.if]);}).map(function(e){return e.text;}),callbacks=(data.callbacks||[]).filter(function(c){return c.at===scene.id&&Boolean(flags[c.choice]);}).map(function(c){return c.text;});return echoes.concat(callbacks);}
 function dominant(state){return TRAITS.slice().sort(function(a,b){return state.traits[b]-state.traits[a]||TRAITS.indexOf(a)-TRAITS.indexOf(b);})[0];}
 var endings={
 courage:{name:"An học cách cất tiếng",subtitle:"Lòng dũng cảm không phải là hết sợ",story:"Tối ấy, An hiểu rằng mạnh mẽ không có nghĩa là chẳng bao giờ run rẩy. Mỗi lần cất tiếng hỏi một người lạ, An đã tự mở cho mình một cánh cửa. Ngày mai, có thể An vẫn sợ. Nhưng An biết mình có thể thử lại."},
@@ -49,7 +49,7 @@ if(state.flags["liu-menu"])extra.push("Một câu hỏi về thực đơn hôm q
 return {key:main,name:endings[main].name,subtitle:endings[main].subtitle,story:endings[main].story,closest:REL_NAMES[best],extra:extra,traits:state.traits,relationships:state.relationships};
 }
 function validate(){
- var errors=[],ids=new Set(),choiceIds=new Set(),replyOwners=new Map(),memoryOwners=new Map(),visited=new Set(),visiting=new Set(),branchNodes=0;
+ var errors=[],ids=new Set(),choiceIds=new Set(),choiceSources=new Map(),replyOwners=new Map(),memoryOwners=new Map(),visited=new Set(),visiting=new Set(),branchNodes=0;
  data.scenes.forEach(function(s){
   if(ids.has(s.id))errors.push("Duplicate node "+s.id);ids.add(s.id);
   if(!s.story||!s.title||!s.place||!s.speaker)errors.push("Missing narrative "+s.id);
@@ -59,7 +59,7 @@ function validate(){
    var local=new Set(),spoken=new Map(),unconditional=0;
    s.options.forEach(function(o){
     if(local.has(o.id))errors.push("Duplicate choice "+s.id);local.add(o.id);
-    if(choiceIds.has(o.id))errors.push("Duplicate global choice id "+o.id);choiceIds.add(o.id);
+    if(choiceIds.has(o.id))errors.push("Duplicate global choice id "+o.id);choiceIds.add(o.id);choiceSources.set(o.id,{scene:s,option:o});
     if(!o.vi||!o.zh||!o.py||!o.memory||!o.reply)errors.push("Incomplete choice "+o.id);
     if(!o.consequence||o.consequence.kind!=="journal"||o.consequence.text!==o.memory||normalize(o.consequence.text).length<12)errors.push("Missing authored journal consequence "+o.id);
     var replyKey=normalize(o.reply).toLocaleLowerCase("vi"),memoryKey=normalize(o.memory).toLocaleLowerCase("vi");
@@ -79,6 +79,10 @@ function validate(){
   if(s.kind==="route"&&(!Array.isArray(s.routes)||!s.routes.length||s.routes[s.routes.length-1].requires))errors.push("Route requires unconditional fallback "+s.id);
  });
  function edges(s){if(s.kind==="ending")return [];if(s.kind==="route")return s.routes.map(function(r){return r.to;});if(s.kind==="choice")return s.options.map(function(o){return o.to;});return [s.to];}
+ function canReach(start,target){var seen=new Set(),stack=[start];while(stack.length){var id=stack.pop();if(id===target)return true;if(seen.has(id))continue;seen.add(id);var node=data.byId[id];if(node)edges(node).forEach(function(next){stack.push(next);});}return false;}
+ var callbackOwners=new Set();(data.callbacks||[]).forEach(function(c){if(!c||typeof c.choice!=="string"||typeof c.at!=="string"||typeof c.text!=="string"||normalize(c.text).length<12||!data.byId[c.at]){errors.push("Malformed choice callback");return;}if(callbackOwners.has(c.choice))errors.push("Duplicate choice callback "+c.choice);callbackOwners.add(c.choice);var owner=choiceSources.get(c.choice);if(!owner)errors.push("Callback references unknown choice "+c.choice);else if(c.at===owner.scene.id||!canReach(owner.option.to,c.at))errors.push("Choice callback is not reachable after its choice "+c.choice);});
+ data.scenes.forEach(function(target){(target.echoes||[]).forEach(function(e){var owner=e&&choiceSources.get(e.if);if(!e||typeof e.if!=="string"||typeof e.text!=="string"||normalize(e.text).length<12)errors.push("Malformed scene echo "+target.id);else if(!owner)errors.push("Echo references unknown choice "+e.if);else if(target.id===owner.scene.id||!canReach(owner.option.to,target.id))errors.push("Scene echo is not reachable after its choice "+e.if);});});
+ data.scenes.filter(function(s){return s.kind==="choice";}).forEach(function(s){s.options.forEach(function(o){var laterEcho=data.scenes.some(function(target){return target.id!==s.id&&canReach(o.to,target.id)&&(target.echoes||[]).some(function(e){return e.if===o.id;});}),explicit=(data.callbacks||[]).some(function(c){return c.choice===o.id&&canReach(o.to,c.at);});if(!laterEcho&&!explicit)errors.push("Choice has no later visible consequence "+s.id+" / "+o.id);});});
  function dfs(id){
   if(visiting.has(id)){errors.push("Cycle "+id);return;}
   if(visited.has(id))return;

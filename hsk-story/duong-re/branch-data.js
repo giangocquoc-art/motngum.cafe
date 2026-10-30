@@ -113,8 +113,31 @@ C("day2-letter-curious","我还有很多问题。","Wǒ hái yǒu hěn duō wèn
 ],[{if:"confess-yesterday",text:"An nhớ buổi sáng mẹ ngồi lại nghe con kể nỗi sợ hôm qua."},{if:"bird-with-friend",text:"Tiểu Vũ vẫn giữ chiếc lông chim sẻ ở góc vở."},{if:"liu-stock",text:"Bà Lưu đã tin giao An chiếc kệ đựng mì, điều An không tưởng tới trong ngày đầu."}]),
 {id:"day2-epilogue",kind:"ending",place:"home",title:"Ngày mai còn một trang nữa",speaker:"Minh An",story:"An khép sổ sau hai ngày đầu tiên. Cậu vẫn đọc nhầm vài chữ, vẫn có chuyện phải lấy hết hơi mới dám hỏi. Nhưng ngoài cửa sổ đã có một lối quen để tới trường, và cậu đã gặp những người mình muốn gặp lại. An đặt bút vào trang tiếp theo, để dành cho ngày mai.",options:[]}
 ];
+var callbacks=[
+ {choice:"look-around",at:"day2-arrival",text:"An nhớ tấm biển nhỏ trên phố hôm qua. Vẫn còn một chữ cậu chưa hiểu; cậu muốn hỏi Tiểu Vũ khi tới lớp."},
+ {choice:"hold-mother",at:"lost-diary",text:"Khi lo quyển sổ biến mất, An nhớ bàn tay mẹ đã nắm lấy mình lúc con đường còn xa lạ."},
+ {choice:"say-clearly",at:"walk-home",text:"Trước khi rời trường, An đã nói trọn điều mình cần. Câu nói ấy vẫn ở lại trong đầu cậu trên đường về."},
+ {choice:"say-simple",at:"walk-home",text:"Một câu ngắn đã đủ giúp cô trực hiểu An cần quyển sổ. Trên đường về, cậu không còn thấy mình phải nói thật hoàn hảo."},
+ {choice:"ask-again",at:"walk-home",text:"An đã xin cô nhắc lại thay vì đoán bừa. Cậu tự nhắc mình có thể hỏi thêm khi chưa nghe rõ."},
+ {choice:"sit-friend",at:"walk-home",text:"Tiểu Vũ vẫn đi cạnh An, vui vì hai đứa đã chọn ngồi ăn cùng nhau."},
+ {choice:"write-question",at:"day2-arrival",text:"Câu hỏi An giữ lại trong sổ vẫn theo cậu tới cổng trường sáng nay."},
+ {choice:"write-people",at:"day2-arrival",text:"An bước tới cổng trường, nhớ những người đã giúp cậu bớt thấy lạc lõng trong ngày đầu ở Thành Đô."},
+ {choice:"write-promise",at:"day2-arrival",text:"Lời hứa nhỏ An viết tối qua còn nằm trong sổ; sáng nay cậu mang nó theo đến trường."},
+ {choice:"morning-ready",at:"day2-night",text:"An nhớ sáng nay mình đã tự chuẩn bị trước khi ra khỏi nhà, rồi còn kiểm tra lại chiếc cặp một lần nữa."},
+ {choice:"ask-diary-question",at:"day2-night",text:"Mẹ đã trả lời câu hỏi An mang theo từ tối qua. Cậu ghi câu trả lời bên cạnh dòng chữ đầu tiên trong sổ."},
+ {choice:"liu-ask",at:"day2-night",text:"Bà Lưu đã kể đôi điều về ngày ít khách. An nhớ một câu chào nhỏ cũng có thể mở ra cuộc trò chuyện thật."},
+ {choice:"day2-letter-brave",at:"day2-epilogue",text:"Chữ 勇敢 nằm dưới nét gạch của An. Cậu không thấy mình hết sợ, chỉ thấy mình đã dám thử thêm một lần."},
+ {choice:"day2-letter-kind",at:"day2-epilogue",text:"An nhìn bốn chiếc ghế mình vẽ và nghĩ lần tới có thể chừa thêm một chỗ cho người đang ngồi một mình."},
+ {choice:"day2-letter-curious",at:"day2-epilogue",text:"An khép sổ, nhưng dấu hỏi xanh cạnh chữ 问题 khiến cậu muốn hỏi bà Lưu thêm một chữ vào ngày mai."},
+ {choice:"read-menu",at:"day2-liu",text:"Bà Lưu nhận ra An đã nhìn thực đơn thật lâu hôm qua, rồi chỉ thêm một chữ mới trên bảng."},
+ {choice:"prepare-for-guest",at:"day2-night",text:"An nhớ chiếc ghế mình đã chừa cho Tiểu Vũ sáng nay; lời mời đã thành một buổi gặp thật."},
+ {choice:"bird-quiet",at:"day2-liu",text:"Sẻ đã bay ra sau khi cả lớp cùng lùi lại. An nhớ đôi khi giúp đỡ là biết nhường cho người khác một khoảng trống."},
+ {choice:"bird-teacher",at:"day2-liu",text:"Cô Vương đã mở cửa sổ để Sẻ tự bay ra. An nhớ mình có thể nhờ người lớn khi chưa biết phải làm gì."},
+ {choice:"liu-help",at:"day2-night",text:"Bà Lưu cảm ơn An vì đã phụ rửa bát. Câu cảm ơn ấy còn ở lại với cậu trên đường về."},
+ {choice:"liu-menu",at:"day2-night",text:"Bà Lưu đã đọc chậm hai chữ An hỏi. Tối nay cậu ghi cách đọc vào sổ để lần sau tự thử."}
+];
 var byId=Object.create(null);scenes.forEach(function(s){byId[s.id]=s;});
 var chapters=[{name:"Sáng đầu đến trường",id:"arrival"},{name:"Lớp học mới",id:"school-gate"},{name:"Quyển sổ biến mất",id:"lost-diary"},{name:"Tan học ghé quán",id:"canteen"},{name:"Về đến nhà",id:"walk-home"},{name:"Trang sổ",id:"night"}];
 chapters.push({name:"Sáng thứ hai",id:"day2-arrival"},{name:"Chim sẻ trong lớp",id:"day2-bird"},{name:"Quán mì quen",id:"day2-liu"},{name:"Trang sổ thứ hai",id:"day2-night"});
-return {version:2,storageKey:"hai-que-huong-branching-novel-v1",start:"arrival",scenes:scenes,byId:byId,chapters:chapters};
+return {version:2,storageKey:"hai-que-huong-branching-novel-v1",start:"arrival",scenes:scenes,byId:byId,chapters:chapters,callbacks:callbacks};
 });

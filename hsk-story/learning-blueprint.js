@@ -1,67 +1,125 @@
-/* V10/V17 source-pinned curriculum traceability; never official mastery or full syllabus coverage. */
+/* Editorial HSK 3.0 map. Candidate goals are not official item matches or exam claims. */
 var HSKLearningBlueprint=(function(){"use strict";
 var source={
- id:"hsk30-syllabus-2025-11",
- name:"HSK 考试大纲 / Syllabus for the Chinese Proficiency Test",
- publisher:"中外语言交流合作中心",
- edition:"2025-11",
- published:"2025-11",
- effective:"2026-07",
- framework:"HSK 3.0",
+ id:"hsk30-syllabus-2025-11",name:"HSK 考试大纲 / Syllabus for the Chinese Proficiency Test",
+ publisher:"中外语言交流合作中心",edition:"2025-11",published:"2025-11",effective:"2026-07",framework:"HSK 3.0",
  publisherPage:"https://www.chinesetest.cn/syllabus",
  url:"https://hsk.cn-bj.ufileos.com/3.0/%E6%96%B0%E7%89%88HSK%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B21219.pdf",
- pageConvention:"Printed page numbers in the official PDF, not zero-based PDF viewer page indices.",
+ pageConvention:"Printed page number at the start of each official syllabus section; a locator, not an item-level match.",
  components:["tasks","topics","vocabulary","grammar","characters"],
- status:"Official source identified; exact-content mapping and qualified Mandarin educator sign-off PENDING.",
- notice:"Publication/effective dates identify the syllabus edition only. They do not imply a test rollout date or establish that Chim Sẻ content covers the syllabus."
+ status:"Official source identified; item-level mapping and qualified educator sign-off are pending."
 };
 var levels=[
- {level:1,storyTheme:"Ngày đầu xa nhà",storyStatus:"pilot-playable",sourcePages:{tasks:2,topics:56,vocabulary:77,characters:353,grammar:383},mappingStatus:"pilot-objectives-only; item-level alignment unverified",verifiedOfficialItems:0,teacherSignoff:"PENDING"},
- {level:2,storyTheme:"Người bạn đầu tiên",storyStatus:"planned",sourcePages:{tasks:6,topics:58,vocabulary:84,characters:355,grammar:386},mappingStatus:"unmapped; all content and sign-off pending",verifiedOfficialItems:0,teacherSignoff:"PENDING"},
- {level:3,storyTheme:"Hội chợ mùa xuân",storyStatus:"planned",sourcePages:{tasks:11,topics:60,vocabulary:89,characters:356,grammar:389},mappingStatus:"unmapped; all content and sign-off pending",verifiedOfficialItems:0,teacherSignoff:"PENDING"},
- {level:4,storyTheme:"Khi mọi chuyện thay đổi",storyStatus:"planned",sourcePages:{tasks:18,topics:63,vocabulary:102,characters:358,grammar:392},mappingStatus:"unmapped; all content and sign-off pending",verifiedOfficialItems:0,teacherSignoff:"PENDING"},
- {level:5,storyTheme:"Hai quê hương",storyStatus:"planned",sourcePages:{tasks:29,topics:66,vocabulary:127,characters:361,grammar:395},mappingStatus:"unmapped; all content and sign-off pending",verifiedOfficialItems:0,teacherSignoff:"PENDING"},
- {level:6,storyTheme:"Những điều An muốn gửi lại",storyStatus:"planned",sourcePages:{tasks:37,topics:69,vocabulary:167,characters:364,grammar:398},mappingStatus:"unmapped; all content and sign-off pending",verifiedOfficialItems:0,teacherSignoff:"PENDING"}
+ {level:1,storyTheme:"Ngày đầu xa nhà",storyStatus:"pilot-playable",sourcePages:{tasks:2,topics:56,vocabulary:77,grammar:383,characters:353},verifiedOfficialItems:0,teacherSignoff:"PENDING",readyForRelease:false},
+ {level:2,storyTheme:"Người bạn đầu tiên",storyStatus:"outline-only",sourcePages:{tasks:6,topics:58,vocabulary:84,grammar:386,characters:355},verifiedOfficialItems:0,teacherSignoff:"PENDING",readyForRelease:false},
+ {level:3,storyTheme:"Hội chợ mùa xuân",storyStatus:"outline-only",sourcePages:{tasks:11,topics:60,vocabulary:89,grammar:389,characters:356},verifiedOfficialItems:0,teacherSignoff:"PENDING",readyForRelease:false},
+ {level:4,storyTheme:"Khi mọi chuyện thay đổi",storyStatus:"outline-only",sourcePages:{tasks:18,topics:63,vocabulary:102,grammar:392,characters:358},verifiedOfficialItems:0,teacherSignoff:"PENDING",readyForRelease:false},
+ {level:5,storyTheme:"Hai quê hương",storyStatus:"outline-only",sourcePages:{tasks:29,topics:66,vocabulary:127,grammar:395,characters:361},verifiedOfficialItems:0,teacherSignoff:"PENDING",readyForRelease:false},
+ {level:6,storyTheme:"Những điều An muốn gửi lại",storyStatus:"outline-only",sourcePages:{tasks:37,topics:69,vocabulary:167,grammar:398,characters:364},verifiedOfficialItems:0,teacherSignoff:"PENDING",readyForRelease:false}
 ];
-/* Authored pedagogical labels are kept separate from official-source page anchors. */
-var objectives=[
- {id:"greeting",label:"Đáp lời mẹ hỏi thăm",curriculumSceneIds:[0,1],sourceLevel:1,sourceAnchors:["tasks","topics","vocabulary","characters","grammar"],alignmentStatus:"candidate; exact official items unverified",officialItemIds:[],intro:[0],revisit:[1],formative:[],checkpoint:[],skillEvidence:["text-entry"],needsReview:true,teacherSignoff:"PENDING"},
- {id:"introduce-self",label:"Giới thiệu tên Minh An",curriculumSceneIds:[1,2,7],sourceLevel:1,sourceAnchors:["tasks","topics","vocabulary","characters","grammar"],alignmentStatus:"candidate; exact official items unverified",officialItemIds:[],intro:[1],revisit:[2],formative:["lost-notebook"],checkpoint:[7],skillEvidence:["typed-transfer","typed-checkpoint"],needsReview:true,teacherSignoff:"PENDING"},
- {id:"student-identity",label:"Xác nhận mình là học sinh",curriculumSceneIds:[2,3,7],sourceLevel:1,sourceAnchors:["tasks","topics","vocabulary","characters","grammar"],alignmentStatus:"candidate; exact official items unverified",officialItemIds:[],intro:[2],revisit:[3],formative:["reading-friend"],checkpoint:[7],skillEvidence:["formative-reading"],needsReview:true,teacherSignoff:"PENDING"},
- {id:"numbers",label:"Đếm số người",curriculumSceneIds:[3],sourceLevel:1,sourceAnchors:["tasks","topics","vocabulary","characters","grammar"],alignmentStatus:"candidate; exact official items unverified",officialItemIds:[],intro:[3],revisit:[],formative:[],checkpoint:[],skillEvidence:["text-entry"],needsReview:true,teacherSignoff:"PENDING"},
- {id:"order-noodles",label:"Gọi một món ăn",curriculumSceneIds:[4,5,9],sourceLevel:1,sourceAnchors:["tasks","topics","vocabulary","characters","grammar"],alignmentStatus:"candidate; exact official items unverified",officialItemIds:[],intro:[4],revisit:[5],formative:[],checkpoint:[9],skillEvidence:["text-entry","typed-checkpoint"],needsReview:true,teacherSignoff:"PENDING"},
- {id:"price",label:"Hiểu giá mười tệ",curriculumSceneIds:[5,8],sourceLevel:1,sourceAnchors:["tasks","topics","vocabulary","characters","grammar"],alignmentStatus:"candidate; exact official items unverified",officialItemIds:[],intro:[5],revisit:[],formative:[],checkpoint:[8],skillEvidence:["typed-checkpoint"],needsReview:true,teacherSignoff:"PENDING"},
- {id:"gratitude",label:"Nói lời cảm ơn",curriculumSceneIds:[5],sourceLevel:1,sourceAnchors:["tasks","topics","vocabulary","characters","grammar"],alignmentStatus:"candidate; exact official items unverified",officialItemIds:[],intro:[5],revisit:[],formative:[],checkpoint:[],skillEvidence:["text-entry"],needsReview:true,teacherSignoff:"PENDING"},
- {id:"farewell",label:"Hẹn gặp ngày mai",curriculumSceneIds:[6],sourceLevel:1,sourceAnchors:["tasks","topics","vocabulary","characters","grammar"],alignmentStatus:"candidate; exact official items unverified",officialItemIds:[],intro:[6],revisit:[],formative:["listening-farewell"],checkpoint:[],skillEvidence:["formative-tts-listening"],needsReview:true,teacherSignoff:"PENDING"}
+var hintPolicy={
+ requestable:true,visibleByDefault:false,
+ practice:"Give a contextual clue first. Show Pinyin, translation, or a sentence frame only when requested; mark the response as supported.",
+ checkpoint:"Keep the task and answer key separate. A requested clue, sample, or skip is not independent evidence.",
+ sampleAfterWrongAttempts:2,
+ skip:"Record skipped as non-mastery and continue the common story; never change route, relationships, personality, or ending.",
+ independentCredit:"Only an unassisted correct response earns independent evidence; retries after an error are recorded as retried."
+};
+var levelOne=[
+ {id:"greeting",label:"Đáp lời mẹ hỏi thăm",topic:"Gia đình · Hỏi thăm",task:"Đáp lại lời hỏi thăm trong cuộc trò chuyện quen thuộc.",curriculumSceneIds:[0,1],prerequisiteIds:[],introSceneIds:[0],revisitSceneIds:[1],formative:[],checkpointSceneIds:[],reviewItemIds:["mother-question"],vocabulary:["你还好吗","我很好","你好"],grammar:["A hỏi thăm bằng 你还好吗？; đáp lại bằng 我很好。"]},
+ {id:"introduce-self",label:"Giới thiệu tên Minh An",topic:"Trường học · Làm quen",task:"Nói tên mình khi gặp một bạn mới.",curriculumSceneIds:[1,2,7],prerequisiteIds:["greeting"],introSceneIds:[1],revisitSceneIds:[2],formative:["lost-notebook"],checkpointSceneIds:[7],reviewItemIds:["name-character","self-introduction"],vocabulary:["我叫安","名字","你好"],grammar:["我叫 + tên; dùng câu hỏi 你叫什么名字？"]},
+ {id:"student-identity",label:"Xác nhận mình là học sinh",topic:"Trường học · Bạn mới",task:"Nhận ra và nói ai là học sinh trong lớp.",curriculumSceneIds:[2,3,7],prerequisiteIds:["introduce-self"],introSceneIds:[2],revisitSceneIds:[3],formative:["reading-friend"],checkpointSceneIds:[7],reviewItemIds:["xiaoyu-student","school-speaker"],vocabulary:["学生","我是"],grammar:["我是 + danh tính; câu hỏi đóng với 吗。"]},
+ {id:"numbers",label:"Đếm người trong lớp",topic:"Lớp học · Số đếm",task:"Đếm bạn học để chia nhóm.",curriculumSceneIds:[3],prerequisiteIds:["student-identity"],introSceneIds:[3],revisitSceneIds:[],formative:[],checkpointSceneIds:[],reviewItemIds:["three-count","three-students"],vocabulary:["一二三","三个"],grammar:["Số + lượng từ 个 + danh từ。"]},
+ {id:"order-noodles",label:"Gọi một món ăn",topic:"Quán mì bà Lưu · Gọi món",task:"Nói món mình muốn ăn và xác nhận lựa chọn.",curriculumSceneIds:[4,5,9],prerequisiteIds:["greeting"],introSceneIds:[4],revisitSceneIds:[5],formative:[],checkpointSceneIds:[9],reviewItemIds:["noodle-sign","choose-food","order-again"],vocabulary:["我想吃","面条"],grammar:["我想吃 + món; nêu lựa chọn với 我想要 + món。"]},
+ {id:"price",label:"Hiểu giá bát mì",topic:"Quán mì bà Lưu · Tính tiền",task:"Đọc và nhớ giá một món đã gọi.",curriculumSceneIds:[5,8],prerequisiteIds:["numbers","order-noodles"],introSceneIds:[5],revisitSceneIds:[],formative:[],checkpointSceneIds:[8],reviewItemIds:["price-ten"],vocabulary:["十块钱"],grammar:["Số tiền + 块钱。"]},
+ {id:"gratitude",label:"Nói lời cảm ơn",topic:"Quán mì bà Lưu · Cảm ơn",task:"Cảm ơn người phục vụ sau khi được giúp.",curriculumSceneIds:[5],prerequisiteIds:["order-noodles"],introSceneIds:[5],revisitSceneIds:[],formative:[],checkpointSceneIds:[],reviewItemIds:["thanks-sign","thank-again"],vocabulary:["谢谢"],grammar:["谢谢 trong trao đổi lịch sự。"]},
+ {id:"farewell",label:"Hẹn gặp vào ngày mai",topic:"Đường về · Bạn bè",task:"Đồng ý một lời hẹn và nhận ra thời điểm gặp lại.",curriculumSceneIds:[6],prerequisiteIds:["greeting"],introSceneIds:[6],revisitSceneIds:[],formative:[],checkpointSceneIds:[],reviewItemIds:["tomorrow","school-next-day","agree-in-writing","character-bright"],vocabulary:["明天","好"],grammar:["明天 + sự việc; xác nhận lời hẹn bằng 好。"]}
 ];
-function validate(curriculum,content,skill,encounter){
- var problems=[],ids=new Set(),componentKeys=source.components;
- if(source.url.indexOf("https://hsk.cn-bj.ufileos.com/3.0/")!==0)problems.push("Missing official syllabus PDF URL");
- if(source.published!=="2025-11"||source.effective!=="2026-07")problems.push("Unexpected syllabus edition dates");
- if(levels.length!==6||levels.some(function(level,index){return level.level!==index+1}))problems.push("Expected HSK 3.0 levels 1..6");
- levels.forEach(function(level){
-  if(!level.storyTheme||!level.storyStatus||level.verifiedOfficialItems!==0||level.teacherSignoff!=="PENDING")problems.push("Unverified level must remain explicitly pending: "+level.level);
-  componentKeys.forEach(function(key){if(!Number.isInteger(level.sourcePages[key])||level.sourcePages[key]<1)problems.push("Missing source page "+level.level+"/"+key)});
- });
- objectives.forEach(function(o){
-  if(ids.has(o.id))problems.push("Duplicate objective");ids.add(o.id);
-  if(o.sourceLevel!==1||o.alignmentStatus.indexOf("unverified")<0||o.officialItemIds.length!==0||o.teacherSignoff!=="PENDING")problems.push("Objective must remain unverified: "+o.id);
-  if(!Array.isArray(o.curriculumSceneIds)||o.curriculumSceneIds.length===0)problems.push("Missing curriculum scene references: "+o.id);
-  for(const i of o.curriculumSceneIds){if(!Number.isInteger(i)||!curriculum||!curriculum.scenes[i])problems.push("Unknown curriculum scene "+o.id+"/"+i)}
-  for(const i of o.intro.concat(o.revisit,o.checkpoint)){
-   if(!Number.isInteger(i)||i<0||i>=10)problems.push("Invalid scene index "+o.id+"/"+i);
-   if(!curriculum||!curriculum.scenes[i])problems.push("Unknown scene "+o.id);
+var futurePlans=[
+ {level:2,objectives:[
+  {id:"hsk2.time-and-repair",label:"Làm rõ giờ hẹn sau một lần hiểu lầm",topic:"Bạn bè · Thời gian và lời hẹn",task:"Hỏi lại thông tin thời gian rồi xác nhận một cuộc hẹn.",episode:"misunderstanding",reuseEpisode:"term-conversation",checkpointEpisode:"term-conversation",functions:["hỏi giờ giấc","xin nhắc lại","xin lỗi"]},
+  {id:"hsk2.routes-and-positions",label:"Hỏi và xác nhận đường đi",topic:"Thành Đô · Đường đi và vị trí",task:"Hỏi đường, hiểu chỉ dẫn và xác nhận nơi cần đến.",episode:"street-map",reuseEpisode:"market-money",checkpointEpisode:"term-conversation",functions:["hỏi đường","xác định vị trí","nói phương tiện"]},
+  {id:"hsk2.compare-and-plan",label:"So sánh lựa chọn rồi chốt một lịch hẹn",topic:"Chợ · Lựa chọn và kế hoạch",task:"So sánh hai lựa chọn rồi chốt món quà và lịch gặp.",episode:"market-money",reuseEpisode:"term-conversation",checkpointEpisode:"term-conversation",functions:["nói số lượng và giá","so sánh sở thích","hỏi đáp lịch hẹn"]}
+ ]},
+ {level:3,objectives:[
+  {id:"hsk3.intent-and-coordination",label:"Nêu ý định và phân công cho hội chợ",topic:"Trường học · Hội chợ mùa xuân",task:"Nói rõ ý định, giải thích đề xuất và thống nhất việc cần làm.",episode:"fair-invitation",reuseEpisode:"planning",checkpointEpisode:"festival-presentation",functions:["nói ý định","giải thích đề xuất","phân công"]},
+  {id:"hsk3.plan-and-compare",label:"Sắp xếp kế hoạch và cân nhắc hai cách làm",topic:"Hội chợ · Kế hoạch và lựa chọn",task:"Sắp xếp các bước và so sánh hai cách giải quyết.",episode:"planning",reuseEpisode:"bridge",checkpointEpisode:"festival-presentation",functions:["lập kế hoạch","trình tự thời gian","so sánh giải pháp"]},
+  {id:"hsk3.recount-and-present",label:"Kể lại trải nghiệm rồi trình bày với lớp",topic:"Hội chợ · Kể chuyện và trình bày",task:"Kể lại trải nghiệm, trả lời câu hỏi và kết luận phần trình bày.",episode:"bridge",reuseEpisode:"festival-presentation",checkpointEpisode:"festival-presentation",functions:["kể lại quá khứ","giải thích bối cảnh văn hóa","hỏi ý kiến","hỏi đáp và kết luận"]}
+ ]},
+ {level:4,objectives:[
+  {id:"hsk4.fact-and-inference",label:"Đọc thông báo và tách điều đã biết khỏi điều đang đoán",topic:"Khu phố · Thông báo và thông tin",task:"Đọc thông báo, hỏi thêm và phân biệt dữ kiện với suy đoán.",episode:"notice",reuseEpisode:"sides",checkpointEpisode:"public-debate",functions:["đọc thông báo","đặt câu hỏi","phân biệt thông tin và suy đoán"]},
+  {id:"hsk4.report-perspectives",label:"Trình bày các phía mà không làm sai ý họ",topic:"Khu phố · Góc nhìn của hàng xóm",task:"Tóm tắt các quan điểm và đối chiếu với bằng chứng.",episode:"sides",reuseEpisode:"proposal",checkpointEpisode:"public-debate",functions:["tường thuật quan điểm","nhượng bộ","đối chiếu bằng chứng"]},
+  {id:"hsk4.propose-with-evidence",label:"Đưa ra kiến nghị có điều kiện và lý do",topic:"Khu phố · Kiến nghị chung",task:"Viết kiến nghị, nêu lý do và trả lời ý kiến khác.",episode:"proposal",reuseEpisode:"public-debate",checkpointEpisode:"public-debate",functions:["điều kiện","nguyên nhân và kết quả","viết kiến nghị","phản biện có căn cứ"]}
+ ]},
+ {level:5,objectives:[
+  {id:"hsk5.explain-and-choose",label:"Nói rõ cảm xúc và lý do cho một lựa chọn",topic:"Gia đình · Lựa chọn và cảm xúc",task:"So sánh các khả năng và giải thích lựa chọn của An.",episode:"letter-home",reuseEpisode:"farewells",checkpointEpisode:"graduation",functions:["diễn đạt cảm xúc","so sánh quan điểm","giải thích lựa chọn"]},
+  {id:"hsk5.reflect-and-relate",label:"Kể lại điều chưa nói trong các mối quan hệ",topic:"Bạn bè và gia đình · Điều còn giữ trong lòng",task:"Hồi tưởng một cuộc trò chuyện và giải thích điều An nghĩ.",episode:"farewells",reuseEpisode:"draft",checkpointEpisode:"graduation",functions:["hồi tưởng","giải thích tâm trạng","trao đổi quan điểm"]},
+  {id:"hsk5.analyze-and-compose",label:"Đọc, lập luận và sửa một bài viết về hai quê hương",topic:"Hai quê hương · Bài viết của An",task:"Phân tích văn bản, viết bản nháp và sửa theo tiêu chí biên tập riêng.",episode:"draft",reuseEpisode:"graduation",checkpointEpisode:"graduation",functions:["phân tích văn bản","cấu trúc bài viết","dịch theo nghĩa","tự đánh giá theo rubric riêng"]}
+ ]},
+ {level:6,objectives:[
+  {id:"hsk6.compare-sources",label:"Đối chiếu các ghi chép và đánh dấu điều chưa chắc",topic:"Thành Đô · Ký ức và ghi chép",task:"Đối chiếu nhiều lời kể, ghi nguồn và đánh dấu chỗ còn thiếu chắc chắn.",episode:"old-streets",reuseEpisode:"three-voices",checkpointEpisode:"sparrow-window",functions:["tổng hợp nhiều góc nhìn","đối chiếu lời kể với ghi chép"]},
+  {id:"hsk6.recount-with-attribution",label:"Kể lại có chọn lọc và nói rõ ai nhớ điều gì",topic:"Gia đình và bạn bè · Nhiều lời kể",task:"Kể lại sự việc có chọn lọc và nêu nguồn của từng ý.",episode:"three-voices",reuseEpisode:"open-letter",checkpointEpisode:"sparrow-window",functions:["kể lại có chọn lọc","làm rõ nguồn thông tin"]},
+  {id:"hsk6.revise-a-position",label:"Xây dựng, sửa và giới hạn một lập luận",topic:"Những điều An muốn gửi lại · Bức thư",task:"Xây dựng một lập luận, sửa theo phản hồi và nêu rõ điều chưa thể kết luận.",episode:"open-letter",reuseEpisode:"sparrow-window",checkpointEpisode:"sparrow-window",functions:["lập luận dài","sửa bản thảo theo phản hồi","trình bày quan điểm có giới hạn","tự đánh giá điều còn thiếu"]}
+ ]}
+];
+function unique(values){var seen=new Set();return values.filter(function(x){if(seen.has(x))return false;seen.add(x);return true;});}
+function componentItems(review,component){return review&&review.itemsByComponent&&Array.isArray(review.itemsByComponent[component])?review.itemsByComponent[component].slice():[];}
+function mapComponents(level,review){return source.components.map(function(component){var state=review&&review.statusByComponent&&review.statusByComponent[component];return {component:component,sectionLocatorPage:level.sourcePages[component],officialItemIds:componentItems(review,component),matchStatus:state||"pending-item-review"};});}
+function hintFor(objective){return Object.assign({objectiveId:objective.id},hintPolicy);}
+function candidateChars(words){return unique(Array.from(words.join("")).filter(function(ch){return !/\s|[，。！？、：；“”‘’'"()（）]/.test(ch);}));}
+function reviewFields(spec,level){var review=spec.reviewState||{},items={};source.components.forEach(function(component){items[component]=componentItems(review,component);});return {sourceComponents:mapComponents(level,review),officialItemIds:unique(source.components.flatMap(function(component){return items[component];})),officialItemIdsByComponent:items,teacherSignoff:review.teacherSignoff||"PENDING",readyForRelease:review.readyForRelease===true};}
+function makeLevelOneObjectives(){return levelOne.map(function(spec){
+ var words=spec.vocabulary.slice(),review=reviewFields(spec,levels[0]);
+  return Object.assign({id:spec.id,label:spec.label,level:1,sourceLevel:1,topic:spec.topic,candidateTask:spec.task,curriculumSceneIds:spec.curriculumSceneIds.slice(),prerequisiteIds:spec.prerequisiteIds.slice(),prerequisiteStatus:"editorial-proposal",storyActId:"hsk1.e01",episodeRefs:{},candidateContent:{status:"authored-from-current-pilot; syllabus alignment pending",vocabulary:words,grammar:spec.grammar.slice(),characters:candidateChars(words)},storyStages:{introSceneIds:spec.introSceneIds.slice(),reuseSceneIds:spec.revisitSceneIds.slice(),checkpointSceneIds:spec.checkpointSceneIds.slice(),formativeEpisodeIds:spec.formative.slice(),optionalReviewItemIds:spec.reviewItemIds.slice(),status:spec.revisitSceneIds.length&&spec.checkpointSceneIds.length?"partial; teacher review pending":"incomplete; additional authored practice or checkpoint needed"},hintPolicy:hintFor(spec),candidateStoryActivityModes:["contextual-dialogue","reading","typed-response"]},review);
+ });}
+function makeFutureObjectives(futureActs){var records=[];futurePlans.forEach(function(plan){var level=levels[plan.level-1],act=futureActs&&futureActs.acts.find(function(x){return x.level===plan.level;});plan.objectives.forEach(function(spec,index){var episodeIds=(act&&act.episodes||[]).map(function(e){return e.id;}),prior=spec.prerequisiteIds?spec.prerequisiteIds.slice():plan.objectives.slice(0,index).map(function(x){return x.id;});if(!prior.length&&plan.level>1)prior=[futurePlans[plan.level-3]?futurePlans[plan.level-3].objectives.slice(-1)[0].id:"farewell"];
+ var review=reviewFields(spec,level);
+  records.push(Object.assign({id:spec.id,label:spec.label,level:plan.level,sourceLevel:plan.level,topic:spec.topic,candidateTask:spec.task,curriculumSceneIds:[],prerequisiteIds:prior,prerequisiteStatus:"editorial-proposal; no runtime unlock",storyActId:act&&act.id||"hsk"+plan.level,episodeRefs:{intro:{episodeId:spec.episode,beat:"introduce-in-context"},reuse:{episodeId:spec.reuseEpisode,beat:"revisit-in-a-later-interaction"},checkpoint:{episodeId:spec.checkpointEpisode,beat:"separate-independent-recall-after-story-use"}},candidateFunctions:spec.functions.slice(),candidateContent:{status:"not-authored; requires item mapping and Mandarin educator review",vocabulary:[],grammar:[],characters:[]},hintPolicy:hintFor(spec),candidateStoryActivityModes:["proposed-contextual-dialogue","proposed-reading","proposed-listening","proposed-writing"]},review));});});return records;}
+function objectiveRegistry(curriculum,futureActs){return makeLevelOneObjectives().concat(makeFutureObjectives(futureActs));}
+function validate(curriculum,content,skill,encounter,futureActs,review){
+ var problems=[],componentSet=source.components;
+ if(source.url!=="https://hsk.cn-bj.ufileos.com/3.0/%E6%96%B0%E7%89%88HSK%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B21219.pdf"||source.published!=="2025-11"||source.effective!=="2026-07"||source.framework!=="HSK 3.0")problems.push("Unexpected pinned HSK 3.0 syllabus metadata");
+ if(levels.length!==6||levels.some(function(level,index){return level.level!==index+1;}))problems.push("Expected HSK 3.0 levels 1..6");
+ if(!curriculum||!content||!skill||!encounter||!futureActs) return problems.concat(["Curriculum, content, skill, encounter, and future-act registries are required for an integrated validation"]);
+ if(!Array.isArray(curriculum.levels)||!Array.isArray(curriculum.scenes)||!Array.isArray(content.scenes)||!Array.isArray(futureActs.acts))return problems.concat(["Malformed curriculum, content, or future-act registry"]);
+ if(curriculum.levels.length!==levels.length)problems.push("Curriculum level count differs from the blueprint");
+ levels.forEach(function(level,index){var other=curriculum.levels[index];if(!other||other.level!==level.level||other.status!==level.storyStatus)problems.push("Curriculum level status mismatch: "+level.level);if(!level.storyTheme||!Number.isInteger(level.verifiedOfficialItems)||level.verifiedOfficialItems<0||!(["PENDING","APPROVED","REJECTED"].includes(level.teacherSignoff))||typeof level.readyForRelease!=="boolean")problems.push("Malformed review state: "+level.level);componentSet.forEach(function(key){if(!Number.isInteger(level.sourcePages[key])||level.sourcePages[key]<1||!other||other.sourcePages[key]!==level.sourcePages[key])problems.push("Missing or mismatched section locator "+level.level+"/"+key);});});
+ var all=objectiveRegistry(curriculum,futureActs),ids=new Map(),positions=new Map(),futureActsByLevel=new Map(futureActs.acts.map(function(a){return [a.level,a];}));
+ all.forEach(function(o,index){if(ids.has(o.id))problems.push("Duplicate objective id: "+o.id);ids.set(o.id,o);positions.set(o.id,index);});
+ all.forEach(function(o){
+  if(!o.label||!o.topic||!o.candidateTask||!Number.isInteger(o.level)||o.level<1||o.level>6)problems.push("Malformed objective: "+o.id);
+  if(!["PENDING","APPROVED","REJECTED"].includes(o.teacherSignoff)||typeof o.readyForRelease!=="boolean")problems.push("Malformed objective review state: "+o.id);
+  if(!o.hintPolicy||o.hintPolicy.objectiveId!==o.id||!o.hintPolicy.requestable||o.hintPolicy.visibleByDefault||!Number.isInteger(o.hintPolicy.sampleAfterWrongAttempts)||!o.hintPolicy.skip||!o.hintPolicy.independentCredit)problems.push("Missing objective hint/credit policy: "+o.id);
+  var sourceLevel=levels[o.level-1];
+  if(!sourceLevel||!Array.isArray(o.sourceComponents)||o.sourceComponents.length!==componentSet.length||componentSet.some(function(key){var row=(o.sourceComponents||[]).find(function(x){return x.component===key;}),idsForComponent=o.officialItemIdsByComponent&&o.officialItemIdsByComponent[key];return !row||row.sectionLocatorPage!==sourceLevel.sourcePages[key]||!Array.isArray(row.officialItemIds)||!Array.isArray(idsForComponent)||JSON.stringify(row.officialItemIds.slice().sort())!==JSON.stringify(idsForComponent.slice().sort())||!["pending-item-review","reviewed-match","reviewed-no-match"].includes(row.matchStatus)||(row.matchStatus==="reviewed-match"&&!row.officialItemIds.length)||(row.matchStatus!=="reviewed-match"&&row.officialItemIds.length>0);} ))problems.push("Missing or invalid per-component review crosswalk: "+o.id);
+  if(!o.officialItemIdsByComponent||componentSet.some(function(key){return !Array.isArray(o.officialItemIdsByComponent[key]);}))problems.push("Missing per-component item ID lists: "+o.id);
+  else {var listed=unique(componentSet.flatMap(function(key){return o.officialItemIdsByComponent[key];})).sort(),declared=(o.officialItemIds||[]).slice().sort();if(JSON.stringify(listed)!==JSON.stringify(declared))problems.push("Objective item IDs do not match component crosswalk: "+o.id);}
+  if(!o.candidateContent||!Array.isArray(o.candidateContent.vocabulary)||!Array.isArray(o.candidateContent.grammar)||!Array.isArray(o.candidateContent.characters)||typeof o.candidateContent.status!=="string")problems.push("Missing candidate language fields: "+o.id);
+  if(!Array.isArray(o.prerequisiteIds)||new Set(o.prerequisiteIds).size!==o.prerequisiteIds.length)problems.push("Malformed prerequisite list: "+o.id);
+  (o.prerequisiteIds||[]).forEach(function(pid){var prior=ids.get(pid);if(!prior||positions.get(pid)>=positions.get(o.id)||prior.level>o.level)problems.push("Unknown, forward, or cross-level-invalid prerequisite "+pid+"/"+o.id);});
+  if(o.level===1){
+   if(!Array.isArray(o.curriculumSceneIds)||!o.curriculumSceneIds.length)problems.push("Missing HSK1 scene crosswalk: "+o.id);
+   (o.curriculumSceneIds||[]).forEach(function(i){var scene=curriculum.scenes[i];if(!scene||!scene.objectiveIds||!scene.objectiveIds.includes(o.id))problems.push("Broken bidirectional HSK1 scene crosswalk: "+o.id+"/"+i);});
+   var stages=o.storyStages||{};["introSceneIds","reuseSceneIds","checkpointSceneIds"].forEach(function(key){if(!Array.isArray(stages[key])||stages[key].some(function(i){return !curriculum.scenes[i]||!o.curriculumSceneIds.includes(i);}))problems.push("Unknown or unmapped HSK1 story stage: "+o.id+"/"+key);});
+   (stages.checkpointSceneIds||[]).forEach(function(i){if(curriculum.scenes[i]&&curriculum.scenes[i].kind!=="checkpoint")problems.push("Objective checkpoint points to a lesson: "+o.id+"/"+i);});
+   if(!(stages.introSceneIds||[]).length)problems.push("Missing HSK1 introduction: "+o.id);
+   (stages.optionalReviewItemIds||[]).forEach(function(id){var reviewItem=(review&&review.items||[]).some(function(item){return item.id===id;}),skillItem=(skill.items||[]).some(function(item){return item.id===id;});if(!reviewItem&&!skillItem)problems.push("Unknown optional review item: "+o.id+"/"+id);});
+   if(typeof o.candidateContent.status!=="string"||o.candidateContent.status.indexOf("authored-from-current-pilot")!==0)problems.push("HSK1 pilot content must stay labeled as a candidate: "+o.id);
+  }else{
+   var act=futureActsByLevel.get(o.level),refs=o.episodeRefs||{},order={};(act&&act.episodes||[]).forEach(function(e,i){order[e.id]=i;});
+   ["intro","reuse","checkpoint"].forEach(function(stage){var ref=refs[stage];if(!act||!ref||!Object.prototype.hasOwnProperty.call(order,ref.episodeId))problems.push("Unknown planned episode stage: "+o.id+"/"+stage);});
+   if(refs.intro&&refs.reuse&&refs.checkpoint&&act&&Object.prototype.hasOwnProperty.call(order,refs.intro.episodeId)&&Object.prototype.hasOwnProperty.call(order,refs.reuse.episodeId)&&Object.prototype.hasOwnProperty.call(order,refs.checkpoint.episodeId)){if(order[refs.intro.episodeId]>=order[refs.reuse.episodeId]||order[refs.reuse.episodeId]>order[refs.checkpoint.episodeId])problems.push("Future objective stages are out of order: "+o.id);if(refs.checkpoint.beat!=="separate-independent-recall-after-story-use")problems.push("Future checkpoint must be a separate recall beat: "+o.id);}
+   if(typeof o.candidateContent.status!=="string"||o.candidateContent.status.indexOf("not-authored")!==0)problems.push("Future learning targets must remain explicitly unfinalized: "+o.id);
   }
-  for(const x of o.checkpoint)if(curriculum.scenes[x].kind!=="checkpoint")problems.push("Not a checkpoint");
-  for(const x of o.formative)if(!(skill&&skill.items.some(function(s){return s.id===x}))&&!(encounter&&encounter.content.id===x))problems.push("Unknown formative task "+x);
-  if(o.needsReview!==true||o.teacherSignoff!=="PENDING")problems.push("No syllabus/native review clearance");
+  if(o.readyForRelease){var allMapped=Array.isArray(o.sourceComponents)&&o.sourceComponents.every(function(c){return c.matchStatus==="reviewed-match"&&Array.isArray(c.officialItemIds)&&c.officialItemIds.length>0;});var stagesComplete=o.level===1?!!(o.storyStages&&o.storyStages.reuseSceneIds&&o.storyStages.reuseSceneIds.length&&o.storyStages.checkpointSceneIds&&o.storyStages.checkpointSceneIds.length):typeof o.candidateContent.status==="string"&&o.candidateContent.status.indexOf("approved")>=0;if(o.teacherSignoff!=="APPROVED"||!allMapped||!stagesComplete)problems.push("Objective cannot be release-ready without completed review and practice stages: "+o.id);}
  });
- if(!content||content.scenes.length!==curriculum.scenes.length)problems.push("Content scenes mismatch");
+ curriculum.scenes.forEach(function(scene){if(!Array.isArray(scene.objectiveIds)||scene.objectiveIds.some(function(id){var obj=ids.get(id);return !obj||obj.level!==1||!obj.curriculumSceneIds.includes(scene.id);}))problems.push("Unknown or one-way scene objective reference: "+scene.id);});
+ if(futureActs.acts.length!==5||futurePlans.some(function(p){var act=futureActsByLevel.get(p.level);return !act||act.playable!==false||p.objectives.length!==3;}))problems.push("Future objective plans must cover non-playable HSK2–6");
+ if(content.scenes.length!==curriculum.scenes.length)problems.push("Content scenes mismatch");
+ var idsByLevel=levels.map(function(level){var objectives=all.filter(function(o){return o.level===level.level;});var matched=unique(objectives.flatMap(function(o){return o.officialItemIds||[];})).length;var signoffs=objectives.every(function(o){return o.teacherSignoff==="APPROVED";});if(level.verifiedOfficialItems!==matched)problems.push("Level verified item count differs from objective mappings: "+level.level);if(level.readyForRelease&&(!signoffs||matched===0||level.teacherSignoff!=="APPROVED"||objectives.some(function(o){return !o.readyForRelease;})))problems.push("Level cannot be released before all objectives pass review: "+level.level);return matched;});
  return problems;
 }
-function report(){
- return {pilotObjectivesMapped:objectives.length,withInWorldCheckpoint:objectives.filter(function(x){return x.checkpoint.length>0}).length,awaitingMandarinReview:objectives.filter(function(x){return x.teacherSignoff==="PENDING"}).length,officiallyVerifiedObjectives:0,officiallyVerifiedItems:0,levelsInScope:levels.length,plannedLevels:levels.filter(function(x){return x.storyStatus==="planned"}).length,certifiedHSK1Coverage:false,certifiedHSK3Coverage:false,missingEvidenceModalities:["speaking","handwriting","validated-native-audio"],notice:"Source-pinned pilot only; no claim of complete HSK 3.0 target-set coverage or certification."};
-}
-var api={version:"2025-11-syllabus-map-v1",source:source,levels:levels,objectives:objectives,report:report,validate:validate};
+function report(curriculum,futureActs){var all=objectiveRegistry(curriculum,futureActs),reviewed=all.filter(function(o){return o.teacherSignoff==="APPROVED";});return {objectiveCount:all.length,objectivesByLevel:levels.map(function(l){return {level:l.level,count:all.filter(function(o){return o.level===l.level;}).length,status:l.storyStatus,teacherSignoff:l.teacherSignoff,readyForRelease:l.readyForRelease};}),pilotObjectives:all.filter(function(o){return o.level===1;}).length,futureObjectiveProposals:all.filter(function(o){return o.level>1;}).length,awaitingMandarinReview:all.filter(function(o){return o.teacherSignoff==="PENDING";}).length,educatorReviewedObjectives:reviewed.length,officiallyVerifiedObjectives:all.filter(function(o){return o.officialItemIds.length>0&&o.sourceComponents.every(function(c){return c.matchStatus==="reviewed-match";});}).length,officiallyVerifiedItems:unique(all.flatMap(function(o){return o.officialItemIds;})).length,levelsInScope:levels.length,outlineOnlyLevels:levels.filter(function(x){return x.storyStatus==="outline-only";}).length,incompletePilotSequences:all.filter(function(o){return o.level===1&&o.storyStages.status.indexOf("incomplete")===0;}).map(function(o){return o.id;}),readyLevels:levels.filter(function(x){return x.readyForRelease;}).map(function(x){return x.level;}),certifiedHSK1Coverage:false,certifiedHSK3Coverage:false,missingEvidenceModalities:["speaking","handwriting","validated-native-audio"],notice:"Six-level editorial objective map; section locators only. Item matches, complete practice sequences, educator approval, and level release remain pending."};}
+var api={version:"2025-11-syllabus-map-v3",source:source,levels:levels,objectives:makeLevelOneObjectives(),definitions:levelOne,futurePlans:futurePlans,allObjectives:objectiveRegistry,makeLevelOneObjectives:makeLevelOneObjectives,makeFutureObjectives:makeFutureObjectives,report:report,validate:validate,hintPolicy:hintPolicy};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;return api;
 })();

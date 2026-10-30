@@ -5,6 +5,7 @@ for(const file of ["branch-data.js","branch-engine.js"])vm.runInNewContext(fs.re
 const D=sandbox.AnBranchStory,E=sandbox.AnBranchEngine,A=sandbox.AnBranchPortraits;
 function next(s,choice){const r=E.step(s,choice);assert.equal(r.ok,true,s.node+" → "+choice+": "+r.error);return r.state}
 function go(choices,stop){let s=E.fresh(),guard=0;while(!s.done&&s.node!==stop){if(++guard>60)throw Error("Loop at "+s.node);const n=D.byId[s.node],list=E.availableOptions(n,s),choice=n.kind==="choice"?(choices[n.id]||list[0]?.id):"next";if(!choice)throw Error("No unlocked option at "+s.node);s=next(s,choice);}return s}
+function findState(start,predicate){const seen=new Set();function walk(state){const key=state.node+"|"+JSON.stringify(state.flags)+"|"+JSON.stringify(state.traits)+"|"+JSON.stringify(state.relationships);if(seen.has(key))return null;seen.add(key);if(predicate(state))return state;const scene=D.byId[state.node];if(!scene||scene.kind==="ending")return null;const options=scene.kind==="choice"?E.availableOptions(scene,state).map(x=>x.id):["next"];for(const id of options){const moved=E.step(state,id);if(moved.ok){const found=walk(moved.state);if(found)return found;}}return null}return walk(start)}
 const BRAVE={"arrival":"look-around","school-gate":"ask-friend","lost-diary":"teacher-search","staff-office":"say-clearly","canteen":"sit-friend","noodle-order":"mild","walk-home":"tell-mother","night":"write-promise","day2-breakfast":"morning-ready","day2-bird":"bird-teacher","day2-liu":"liu-help","day2-night":"day2-letter-brave"};
 const CARE={"arrival":"hold-mother","school-gate":"ask-friend","lost-diary":"friend-search","staff-office":"say-simple","canteen":"help-liu","noodle-order":"share-bowl","walk-home":"invite-friend","night":"write-people","day2-breakfast":"prepare-for-guest","day2-bird":"bird-with-friend","day2-liu":"liu-stock","day2-night":"day2-letter-kind"};
 const WONDER={"arrival":"look-around","school-gate":"watch-first","lost-diary":"solo-search","staff-office":"ask-again","canteen":"read-menu","noodle-order":"try-hot","walk-home":"keep-secret","night":"write-question","day2-breakfast":"ask-diary-question","day2-bird":"bird-quiet","day2-liu":"liu-menu","day2-night":"day2-letter-curious"};
@@ -38,6 +39,15 @@ test("Graph validation rejects duplicate replies, mandatory-anchor shortcuts, an
   option.to=destination;fallback.requires={flag:"invite-friend"};
   assert.ok(E.validate().errors.some(x=>x.includes("Route requires unconditional fallback day2-arrival")));
  }finally{option.reply=reply;option.to=destination;fallback.requires=fallbackRequirement;}
+ assert.deepEqual(Array.from(E.validate().errors),[]);
+});
+test("Graph validation rejects orphaned or same-scene callbacks",()=>{
+ const callback=D.callbacks[0],choice=callback.choice,at=callback.at;
+ try{
+  callback.choice="missing-choice";assert.ok(E.validate().errors.some(x=>x.includes("unknown choice")));
+  callback.choice=choice;callback.at=D.scenes.find(scene=>scene.kind==="choice"&&scene.options.some(option=>option.id===choice)).id;
+  assert.ok(E.validate().errors.some(x=>x.includes("not reachable after its choice")));
+ }finally{callback.choice=choice;callback.at=at;}
  assert.deepEqual(Array.from(E.validate().errors),[]);
 });
 test("Every available choice keeps its authored consequence through save replay and decision rewind",()=>{
@@ -155,4 +165,25 @@ test("Day two arrives at class before the recap and the quiet bird route opens a
  const hot=D.byId["noodle-order"].options.find(o=>o.id==="try-hot");
  assert.match(hot.memory,/cốc nước bà chuẩn bị/);
  assert.match(hot.reply,/để sẵn nước/);
+});
+
+test("Every explicit story callback renders only after its choice, survives reload, and disappears on rewind",()=>{
+ assert.ok(D.callbacks.length>0);
+ for(const callback of D.callbacks){
+  const owner=D.scenes.find(scene=>scene.kind==="choice"&&scene.options.some(option=>option.id===callback.choice));
+  assert.ok(owner,"callback owner exists: "+callback.choice);
+  const before=findState(E.fresh(),state=>state.node===owner.id&&E.availableOptions(owner,state).some(option=>option.id===callback.choice));
+  assert.ok(before,"callback choice is reachable: "+callback.choice);
+  const selected=next(before,callback.choice);
+  const shown=findState(selected,state=>state.node===callback.at&&E.conditionText(D.byId[callback.at],state).includes(callback.text));
+  assert.ok(shown,"callback text appears in the later scene: "+callback.choice);
+  const restored=E.load(E.exportSave(shown));
+  assert.ok(E.conditionText(D.byId[callback.at],restored).includes(callback.text),"callback survives save replay: "+callback.choice);
+  const rewound=E.load(E.exportSave(before));
+  assert.equal(E.conditionText(D.byId[callback.at],rewound).includes(callback.text),false,"callback is absent before the choice: "+callback.choice);
+  const alternate=E.availableOptions(owner,before).find(option=>option.id!==callback.choice);
+  assert.ok(alternate,"choice has a distinct alternate: "+callback.choice);
+  const other=next(before,alternate.id);
+  assert.equal(E.conditionText(D.byId[callback.at],other).includes(callback.text),false,"alternate route does not inherit the callback: "+callback.choice);
+ }
 });

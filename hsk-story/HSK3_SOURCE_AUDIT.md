@@ -12,7 +12,7 @@
 
 ## Level map
 
-Each page number is the section's starting page. See `learning-blueprint.js` for machine-readable anchors and story statuses.
+Each page number is the section's starting page. These are locators for teacher review, not references to matched items. See `learning-blueprint.js` for the machine-readable objective registry, per-component review state, story stages, and release gates.
 
 | HSK 3.0 level | Printed page starts: tasks · topics · vocabulary · characters · grammar | Story arc theme | Chim Sẻ content status |
 | --- | --- | --- | --- |
@@ -22,6 +22,16 @@ Each page number is the section's starting page. See `learning-blueprint.js` for
 | 4 | 18 · 63 · 102 · 358 · 392 | Khi mọi chuyện thay đổi | Planned story only; no official item mapping or educator sign-off |
 | 5 | 29 · 66 · 127 · 361 · 395 | Hai quê hương | Planned story only; no official item mapping or educator sign-off |
 | 6 | 37 · 69 · 167 · 364 · 398 | Những điều An muốn gửi lại | Planned story only; no official item mapping or educator sign-off |
+
+## Objective registry and release state
+
+The registry contains eight HSK1 candidate goals linked to the existing ten lesson/checkpoint records, plus three proposed goals for each of HSK2–6. The future goals describe intended story situations and communication tasks. Their vocabulary, grammar, characters, official item IDs, and qualified review are intentionally blank or pending; they are not a completed syllabus.
+
+Each objective carries a stable ID, level, topic, candidate task, prerequisite IDs, five section locators, item-review status for each component, candidate language content, story practice stages, hint rules, and educator sign-off. A component may later be marked `reviewed-match` only when exact official item IDs are recorded; `reviewed-no-match` records a reviewed gap without claiming a match. A level remains locked until its objectives, language content, practice sequence, official mapping, and educator review are complete.
+
+The current pilot has eight candidate goals and zero verified official items. `greeting`, `numbers`, `price`, `gratitude`, and `farewell` still lack a later reuse or independent checkpoint, so the pilot does not yet meet the full practice sequence for those goals. All HSK2–6 goals remain story proposals, not playable lessons.
+
+Future objective stages are ordered as introduction in context, later reuse, and a separate independent recall beat. The recall beat may be a distinct assessment beat inside the capstone episode; it must follow the story interaction and use a non-revealing prompt. No branch may skip a shared learning objective.
 
 ## Existing level 1 objective crosswalk
 
