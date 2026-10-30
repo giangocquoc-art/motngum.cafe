@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { SITE_TEMPLATES, TEMPLATE_CATEGORIES, buildTemplateDocument, themeById } from '@/lib/builder/catalog';
 
 type SiteRow={id:string;slug:string;title:string;draftVersion:number;publishedVersion:number|null;updatedAt:string;publishedAt:string|null};
+type LeadRow={id:string;kind:string;name:string|null;email:string;message:string|null;createdAt:string};
 export function SiteDashboard() {
   const [sites,setSites]=useState<SiteRow[]>([]);
   const [selected,setSelected]=useState(SITE_TEMPLATES[0].id);
@@ -10,6 +11,9 @@ export function SiteDashboard() {
   const [working,setWorking]=useState(false);
   const [message,setMessage]=useState('');
   const [role,setRole]=useState<string|null>(null);
+  const [inboxSiteId,setInboxSiteId]=useState<string|null>(null);
+  const [inbox,setInbox]=useState<LeadRow[]>([]);
+  const [inboxLoading,setInboxLoading]=useState(false);
   const refresh=useCallback(async()=>{
     try{
       const response=await fetch('/api/sites',{cache:'no-store'});
@@ -30,6 +34,19 @@ export function SiteDashboard() {
       if(!response.ok)throw Error(data.error||'Tạo website thất bại');
       window.location.assign(template.curatedSource?'/dashboard/sites/'+encodeURIComponent(data.site.id)+'/puck':'/builder-demo?site='+encodeURIComponent(data.site.id));
     }catch(e){setMessage(e instanceof Error?e.message:'Không thể tạo site');setWorking(false);}
+  }
+  async function openInbox(siteId:string){
+    if(inboxSiteId===siteId){setInboxSiteId(null);setInbox([]);return;}
+    setInboxSiteId(siteId);setInbox([]);setInboxLoading(true);
+    try{
+      const response=await fetch('/api/sites/'+encodeURIComponent(siteId)+'/submissions',{cache:'no-store'});
+      const result=await response.json();
+      if(!response.ok)throw Error(result.error||'Không thể tải tin nhắn');
+      setInbox(result.submissions||[]);
+    }catch(error){
+      setInboxSiteId(null);setInbox([]);
+      setMessage(error instanceof Error?error.message:'Không thể tải yêu cầu liên hệ.');
+    }finally{setInboxLoading(false);}
   }
   async function restoreRevision(site:SiteRow) {
     try{
@@ -91,8 +108,20 @@ export function SiteDashboard() {
             {(role==='owner'||role==='member'||role==='editor')&&<a className="rounded-lg border border-amber-700 px-3 py-2 text-xs font-semibold text-amber-800" href={'/dashboard/sites/'+site.id+'/puck'}>Thử Puck Editor</a>}
             <a className="rounded-lg border px-3 py-2 text-xs" href={'/dashboard/sites/'+site.id+'/preview'}>Xem bản nháp</a>
             <button type="button" onClick={()=>restoreRevision(site)} className="rounded-lg border px-3 py-2 text-xs">Lịch sử / Khôi phục</button>
+            <button type="button" onClick={()=>{void openInbox(site.id);}} className="rounded-lg border px-3 py-2 text-xs">Yêu cầu liên hệ</button>
             {site.publishedVersion&&<a className="rounded-lg border px-3 py-2 text-xs" href={'/s/'+site.slug} target="_blank" rel="noopener noreferrer">Mở bản công khai</a>}
           </div>
+          {inboxSiteId===site.id&&<section aria-label="Hộp thư website" className="mt-4 max-h-80 overflow-y-auto rounded-lg border bg-slate-50 p-3">
+            <h4 className="mb-2 text-sm font-bold">Liên hệ & đăng ký nhận tin</h4>
+            {inboxLoading?<p className="text-xs">Đang tải...</p>:inbox.length===0?
+              <p className="text-xs text-slate-500">Chưa có yêu cầu.</p>:
+              inbox.map(item=><article key={item.id} className="mb-2 rounded border bg-white p-3 text-xs">
+                <p className="font-semibold">{item.kind==='newsletter'?'Đăng ký nhận tin':'Liên hệ'} · {item.name||'Khách truy cập'}</p>
+                <p className="mt-1 break-all">{item.email}</p>
+                {item.message&&<p className="mt-2 whitespace-pre-wrap break-words">{item.message}</p>}
+                <time className="mt-1 block text-slate-500">{new Date(item.createdAt).toLocaleString('vi-VN')}</time>
+              </article>)}
+          </section>}
         </article>)}</div>}
     </section>
   </div>;
