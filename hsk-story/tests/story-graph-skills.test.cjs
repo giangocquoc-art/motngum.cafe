@@ -248,7 +248,8 @@ test("future story decisions have distinct authored reactions, memory, callbacks
  finally{option.joinsAtSceneId=original;}
  assert.deepEqual(Array.from(F.validate()),[]);
 });
-test("future learning anchors and their default prerequisites follow the episode timeline",()=>{
+test("future learning anchors stay ordered and prerequisites are soft prior exposure, not mastery gates",()=>{
+ const mapped=B.makeFutureObjectives(F),mappedById=new Map(mapped.map(objective=>[objective.id,objective]));
  for(const plan of B.futurePlans){
   const act=F.byLevel(plan.level),rank=new Map(act.episodes.map((episode,index)=>[episode.id,index]));
   const positions=new Map(plan.objectives.map((objective,index)=>[objective.id,index]));
@@ -258,13 +259,26 @@ test("future learning anchors and their default prerequisites follow the episode
    assert.ok(rank.get(objective.episode)>=last,objective.id+" must not be introduced before an earlier episode");
    last=rank.get(objective.episode);
   }
-  const mapped=B.makeFutureObjectives(F);
-  for(const objective of mapped.filter(item=>item.level===plan.level)){
+  for(const spec of plan.objectives){
+   const objective=mappedById.get(spec.id);
+   assert.equal(objective.prerequisiteSemantics,"prior-exposure-only");
+   assert.match(objective.prerequisiteStatus,/no runtime unlock/);
+   assert.equal(JSON.stringify(objective.prerequisiteIds),JSON.stringify(spec.prerequisiteIds||[]),"unreviewed candidates must not inherit an automatic full-chain dependency");
    for(const prerequisite of objective.prerequisiteIds){
-    if(positions.has(prerequisite))assert.ok(positions.get(prerequisite)<positions.get(objective.id),prerequisite+" must precede "+objective.id);
+    const prior=mappedById.get(prerequisite);
+    assert.ok(prior,prerequisite+" must be a registered objective");
+    if(prior.level<objective.level)continue;
+    assert.equal(prior.level,objective.level);
+    const earlier=rank.get(prior.episodeRefs.intro.episodeId),dependent=rank.get(objective.episodeRefs.intro.episodeId);
+    assert.ok(earlier<=dependent,prerequisite+" prior exposure must not follow "+objective.id);
+    if(earlier===dependent)assert.ok(positions.get(prerequisite)<positions.get(objective.id),prerequisite+" must be introduced first within the shared episode");
    }
   }
  }
+ const dependent=B.futurePlans[0].objectives.find(objective=>objective.id==="hsk2.routes-and-positions"),prior=B.futurePlans[0].objectives.find(objective=>objective.id==="hsk2.time-and-repair"),originalPrerequisites=dependent.prerequisiteIds,originalEpisode=prior.episode;
+ try{dependent.prerequisiteIds=[prior.id];prior.episode="market-money";assert.ok(B.validate(K,C,S,E,F,R).some(message=>message.includes("introduced before its dependent objective")));}
+ finally{if(originalPrerequisites===undefined)delete dependent.prerequisiteIds;else dependent.prerequisiteIds=originalPrerequisites;prior.episode=originalEpisode;}
+ assert.ok(B.allObjectives(K,F).filter(objective=>objective.level===1).every(objective=>objective.prerequisiteSemantics==="prior-exposure-only"&&objective.prerequisiteStatus.includes("no runtime unlock")));
 });
 test("source inventory captures the whole official level 1–6 corpus while instructional matching stays pending",()=>{
  const report=B.report(K,F),sourceInventory=report.sourceInventory;
@@ -272,9 +286,9 @@ test("source inventory captures the whole official level 1–6 corpus while inst
  assert.equal(report.fullSyllabusInventoryComplete,false);
  assert.equal(report.objectiveCrosswalkComplete,false);
  assert.deepEqual(JSON.parse(JSON.stringify(sourceInventory.totals)),{tasks:136,topicsByTier:[37,140,335],topicNodes:512,topicPageRows:344,vocabulary:5400,recognitionCharacters:1940,grammarPages:17,grammarSourceRows:459,officialGrammarItemCount:null});
- assert.equal(sourceInventory.topicHierarchyStatus.includes("parent links cross page continuations"),true);
+ assert.equal(sourceInventory.topicHierarchyStatus.includes("individual cell text"),true);
  assert.equal(sourceInventory.grammarNormalizationStatus.includes("not an official grammar-item count"),true);
- assert.equal(sourceInventory.grammarNormalizationStatus.includes("reconciliation remains pending"),true);
+ assert.equal(sourceInventory.grammarNormalizationStatus.includes("exact source-text review"),true);
 });
 
 test("Gate3B world clues connect beginner Hanzi to already-visited real scenes without HSK points",()=>{

@@ -32,6 +32,16 @@ test("HSK2 internal graph has explicit reactions, joins, callbacks and common st
  assert.equal(graph.nodes.filter(node=>node.type==="learning-anchor"&&node.stage==="reuse").length,6);
  assert.equal(graph.nodes.filter(node=>node.type==="learning-anchor"&&node.stage==="checkpoint").length,6);
 });
+test("HSK3 simplified-stall callback preserves the open space promised by An's choice",()=>{
+ const drafts=require("../future-branch-decisions.json"),decision=drafts.acts["hsk3.spring-promise"].decisions.planning;
+ const choice=decision.choices.find(option=>option.id==="simplify-design");
+ assert.ok(choice,"the HSK3 compact-layout choice remains authored");
+ assert.match(choice.reaction,/chừa chỗ cho người ghé hội chợ đứng lại xem/);
+ assert.match(choice.laterConsequence.text,/đèn giấy An xếp sang một bên/);
+ assert.match(choice.laterConsequence.text,/mái hiên, không chắn lối đi/);
+ assert.match(choice.laterConsequence.text,/gian hàng vẫn gọn/);
+ assert.match(choice.laterConsequence.text,/khách còn chỗ dừng lại xem/);
+});
 test("future curriculum and author-preview source files stay out of the public Vercel package",()=>{
  const ignore=fs.readFileSync(path.join(__dirname,"../.vercelignore"),"utf8").split(/\r?\n/).map(line=>line.trim());
  for(const file of ["future-branch-runtime.js","future-branch-decisions.json","future-acts.js","learning-blueprint.js","candidate-source-index.json","hsk30-syllabus-inventory.json"])assert.ok(ignore.includes(file),file+" must remain authoring-only");

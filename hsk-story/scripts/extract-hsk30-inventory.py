@@ -1,8 +1,9 @@
 """Extract the HSK 3.0 (2025-11) level 1–6 source inventory from the pinned PDF.
 
 Requires pypdf and PyMuPDF (fitz). The committed JSON is the checked extraction
-output; visual source reconciliation is still pending. Edition-scoped topic-cell
-and grammar-row IDs are generated locators, not IDs published by the source.
+output. Page-level geometry has been visually reviewed; full cell-text
+verification and educator mapping remain pending. Edition-scoped topic-cell and
+grammar-row IDs are generated locators, not IDs published by the source.
 """
 from __future__ import annotations
 
@@ -293,6 +294,7 @@ def extract_grammar_source_rows(layout_doc: fitz.Document) -> tuple[dict[str, li
         items: list[dict] = []
         page_counts: dict[int, int] = {}
         effective_hashes: list[str | None] = [None, None, None, None]
+        effective_cell_anchors: list[dict | None] = [None, None, None, None]
         level_ordinal = 0
         for printed_page in range(start, end + 1):
             page = layout_doc[printed_page + PAGE_OFFSET]
@@ -309,15 +311,31 @@ def extract_grammar_source_rows(layout_doc: fitz.Document) -> tuple[dict[str, li
                     for column, value in enumerate(values):
                         if value:
                             effective_hashes[column] = source_hash(value)
+                            effective_cell_anchors[column] = {
+                                "id": f"hsk30:2025-11:l{level}:grammar:p{printed_page}:tr{table_row_ordinal:03d}:c{column + 1}",
+                                "printedPage": printed_page,
+                                "tableRowOrdinal": table_row_ordinal,
+                                "columnOrdinal": column + 1,
+                                "cellBoundingBox": cell_bbox(row.cells[column]),
+                            }
                             for deeper in range(column + 1, 4):
                                 effective_hashes[deeper] = None
+                                effective_cell_anchors[deeper] = None
                     continue
                 own_hashes = [source_hash(value) if value else None for value in values]
                 for column, value in enumerate(values):
                     if value:
                         effective_hashes[column] = own_hashes[column]
+                        effective_cell_anchors[column] = {
+                            "id": f"hsk30:2025-11:l{level}:grammar:p{printed_page}:tr{table_row_ordinal:03d}:c{column + 1}",
+                            "printedPage": printed_page,
+                            "tableRowOrdinal": table_row_ordinal,
+                            "columnOrdinal": column + 1,
+                            "cellBoundingBox": cell_bbox(row.cells[column]),
+                        }
                         for deeper in range(column + 1, 4):
                             effective_hashes[deeper] = None
+                            effective_cell_anchors[deeper] = None
                 level_ordinal += 1
                 page_count += 1
                 row_text = "\n".join(value for value in values if value)
@@ -330,6 +348,7 @@ def extract_grammar_source_rows(layout_doc: fitz.Document) -> tuple[dict[str, li
                     "tableRowOrdinal": table_row_ordinal,
                     "sourceCellHashes": own_hashes,
                     "effectiveCellHashes": effective_hashes.copy(),
+                    "effectiveCellAnchors": [anchor.copy() if anchor else None for anchor in effective_cell_anchors],
                     "cellBoundingBoxes": [cell_bbox(bbox) if values[column] else None for column, bbox in enumerate(row.cells)],
                     "sourceHash": source_hash(row_text),
                 })
@@ -369,7 +388,7 @@ def main() -> None:
     grammar_source_rows, grammar_counts_by_page = extract_grammar_source_rows(layout_doc)
     grammar_pages = extract_grammar_pages(reader, grammar_counts_by_page)
     inventory = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "edition": SOURCE_EDITION,
         "sourceUrl": SOURCE_URL,
         "sourceSha256": source_sha256,
@@ -379,8 +398,8 @@ def main() -> None:
         "extraction": {
             "tool": f"pypdf {__import__('pypdf').__version__} plus PyMuPDF {fitz.VersionBind}",
             "taskAndVocabularyRows": "Stable IDs, printed-page locators, and SHA-256 checks of normalized source rows are retained; full source wording is not copied into this repo.",
-            "topicRows": "Raw layout-line locators remain alongside geometry-derived tier-cell IDs, parent IDs, printed-page row anchors, cell bounding boxes, and normalized source hashes. Rotated watermark spans are excluded. Tier counts must match the official footers; visual reconciliation and educator mapping remain pending.",
-            "grammarPages": "All 17 printed-page locators retain page hashes and extracted physical source-row counts. grammarSourceRows records geometry-derived row/page/cell anchors and hashes of each source column; no table wording is copied. These extraction row counts are not official grammar item counts and still need visual reconciliation.",
+            "topicRows": "Raw layout-line locators remain alongside geometry-derived tier-cell IDs, parent IDs, printed-page row anchors, cell bounding boxes, and normalized source hashes. Rotated watermark spans are excluded. Page-level geometry and parent continuation were visually reviewed against pp.56–71; individual cell text and educator mapping remain pending.",
+            "grammarPages": "All 17 printed-page locators retain page hashes and extracted physical source-row counts. grammarSourceRows records geometry-derived row/page/cell anchors, explicit effective-cell source references with bounding boxes (including inherited cells across pages), and hashes of each source column; no table wording is copied. Page-level row geometry was visually reviewed, including headerless p399. These extraction row counts are not official grammar item counts; individual source text and educator mapping remain pending.",
             "characterRows": "Stable per-level recognition-list IDs and source-row hashes are retained, not a claim of writing proficiency.",
         },
         "levelCounts": {
