@@ -103,6 +103,7 @@ export default function BuilderDemoPage() {
   const [cloudWorking,setCloudWorking]=useState(false);
   const [autoSaveBlocked,setAutoSaveBlocked]=useState(false);
   const [publishedUrl,setPublishedUrl]=useState<string|null>(null);
+  const [publishedVersion,setPublishedVersion]=useState<number|null>(null);
   const revisionRef=useRef(0);
   const saveInFlightRef=useRef(false);
   const undoRef=useRef<SiteDocument[]>([]);
@@ -136,6 +137,7 @@ export default function BuilderDemoPage() {
           setCloudSiteId(data.site.id);setCloudVersion(data.site.version);setCloudDirty(false);
           setDraftMode('cloud');setAutoSaveBlocked(false);
           setPublishedUrl(data.site.publishedVersion?'/s/'+data.site.slug:null);
+          setPublishedVersion(data.site.publishedVersion??null);
           setStatus('Đã tải website từ PostgreSQL, revision '+data.site.version+'.');
         }catch(e) {
           if(!cancelled){setDraftMode('load-error');setStatus('Không mở được website cloud: '+(e instanceof Error?e.message:'Lỗi kết nối')+'. Không có bản nháp nào bị ghi đè.');}
@@ -366,21 +368,21 @@ export default function BuilderDemoPage() {
       });
       const data=await response.json();
       if(!response.ok)throw new Error(data.problems?.join(' · ')||data.error||'Không thể xuất bản');
-      setPublishedUrl(data.url);setStatus('Đã xuất bản snapshot revision '+data.version+' trên staging.');
+      setPublishedUrl(data.url);setPublishedVersion(data.version);setStatus('Đã xuất bản snapshot revision '+data.version+' trên staging.');
     }catch(e){setStatus('Publish bị chặn: '+(e instanceof Error?e.message:'Không xác định'));}
     finally{setCloudWorking(false);}
   }
 
   async function unpublishCloud() {
-    if(!cloudSiteId||cloudWorking)return;
+    if(!cloudSiteId||cloudWorking||publishedVersion===null)return;
     if(!window.confirm('Gỡ website khỏi URL staging công khai? Bản nháp vẫn được giữ.'))return;
     setCloudWorking(true);
     try{
       const response=await fetch('/api/sites/'+encodeURIComponent(cloudSiteId)+'/unpublish',{
-        method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({publishedVersion})});
       const data=await response.json();
       if(!response.ok)throw new Error(data.error||'Không thể gỡ xuất bản');
-      setPublishedUrl(null);setStatus('Đã gỡ website khỏi URL công khai. Bản nháp được giữ trên PostgreSQL.');
+      setPublishedUrl(null);setPublishedVersion(null);setStatus('Đã gỡ website khỏi URL công khai. Bản nháp được giữ trên PostgreSQL.');
     }catch(e){setStatus('Không thể gỡ: '+(e instanceof Error?e.message:'Lỗi không xác định'));}
     finally{setCloudWorking(false);}
   }
