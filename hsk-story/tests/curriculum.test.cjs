@@ -16,3 +16,9 @@ test("all ten stable lesson records point to the blueprint objective IDs",()=>{
  assert.equal(JSON.stringify(actual),JSON.stringify(expected));
  assert.equal(new Set(blueprint.objectives.map(o=>o.id)).size,blueprint.objectives.length);
 });
+test("lesson assessment evidence credits only what its answer evaluates",()=>{
+ const expected=["greeting","introduce-self","student-identity","numbers","order-noodles","gratitude","farewell"];
+ assert.deepEqual(Array.from(syllabus.scenes.slice(0,7),s=>s.assessmentObjectiveIds[0]),expected);
+ assert.deepEqual(Array.from(syllabus.scenes.slice(7),s=>Array.from(s.assessmentObjectiveIds)),[["introduce-self","student-identity"],["price"],["order-noodles"]]);
+ assert.ok(syllabus.scenes.every(s=>s.assessmentObjectiveIds.every(id=>s.objectiveIds.includes(id))));
+});

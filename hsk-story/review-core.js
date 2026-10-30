@@ -23,10 +23,10 @@ var HSKReviewCore=(function(){"use strict";
  }
  function completedPrefix(legacy){
   if(!legacy||legacy.v!==3||!Array.isArray(legacy.history))return 0;
-  var count=0;while(count<10&&legacy.history[count]&&["correct","assisted"].includes(legacy.history[count].status))count++;
+  var count=0;while(count<10&&legacy.history[count]&&["correct","assisted","skipped"].includes(legacy.history[count].status))count++;
   return count;
  }
- function storyRecord(raw){if(!raw||typeof raw!=="object"||Array.isArray(raw)||!["correct","assisted"].includes(raw.status))return null;return Object.freeze({status:raw.status,attempts:Number.isInteger(raw.attempts)?Math.min(100,Math.max(0,raw.attempts)):0,hint:raw.status==="assisted"||raw.hint===true})}
+ function storyRecord(raw){if(!raw||typeof raw!=="object"||Array.isArray(raw)||!["correct","assisted","skipped"].includes(raw.status))return null;return Object.freeze({status:raw.status,attempts:Number.isInteger(raw.attempts)?Math.min(100,Math.max(0,raw.attempts)):0,hint:raw.status==="assisted"||raw.hint===true})}
  function combineProgress(legacy,branch){
   var old=legacy&&legacy.v===3&&Array.isArray(legacy.history)?legacy.history:[],other=Array.isArray(branch)?branch:[];
   return Object.freeze({v:3,history:Object.freeze(Array.from({length:10},function(_,i){return storyRecord(old[i])||storyRecord(other[i])}))});

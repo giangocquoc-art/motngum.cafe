@@ -86,7 +86,8 @@ test("V17 versioned blueprint maps six levels and exposes unverified coverage",(
  assert.deepEqual(Array.from(B.levels,x=>x.verifiedOfficialItems),[0,0,0,0,0,0]);
  assert.deepEqual(Array.from(B.levels,x=>[x.sourcePages.tasks,x.sourcePages.topics,x.sourcePages.vocabulary,x.sourcePages.characters,x.sourcePages.grammar]),[[2,56,77,353,383],[6,58,84,355,386],[11,60,89,356,389],[18,63,102,358,392],[29,66,127,361,395],[37,69,167,364,398]]);
  assert.ok(B.levels.slice(1).every(x=>x.storyStatus==="outline-only"&&x.teacherSignoff==="PENDING"));
- assert.deepEqual(Array.from(report.incompletePilotSequences),["greeting","numbers","price","gratitude","farewell"]);
+ assert.deepEqual(Array.from(report.incompletePilotSequences),[]);
+ assert.deepEqual(Array.from(report.optionalReviewSequences).sort(),["farewell","gratitude","greeting","introduce-self","numbers","order-noodles","price","student-identity"]);
 });
 test("V17 stable objective IDs point to the unchanged ten lesson/checkpoint scenes",()=>{
  const expected={"greeting":[0,1],"introduce-self":[1,2,7],"student-identity":[2,3,7],"numbers":[3],"order-noodles":[4,5,9],"price":[5,8],"gratitude":[5],"farewell":[6]};
@@ -102,6 +103,26 @@ test("V17 stable objective IDs point to the unchanged ten lesson/checkpoint scen
  }
  const mapped=new Set(B.objectives.flatMap(x=>Array.from(x.curriculumSceneIds)));
  assert.deepEqual(Array.from(mapped).sort((a,b)=>a-b),[0,1,2,3,4,5,6,7,8,9]);
+});
+test("V18 HSK1 stage references point to objective-tagged reuse and independent checkpoint activities",()=>{
+ const reviews=Object.fromEntries(R.items.map(x=>[x.id,x]));
+ for(const objective of B.objectives){
+  const stages=objective.storyStages;
+  assert.ok(stages.introSceneIds.length,objective.id+" has an introduction");
+  assert.ok(stages.reuseSceneIds.length||stages.reviewReuseItemIds.length,objective.id+" has a reuse opportunity");
+  assert.ok(stages.checkpointSceneIds.length||stages.reviewCheckpointItemIds.length,objective.id+" has a checkpoint");
+  for(const id of stages.reviewReuseItemIds){assert.equal(reviews[id].objectiveId,objective.id);assert.equal(reviews[id].stage,"reuse")}
+  for(const id of stages.reviewCheckpointItemIds){assert.equal(reviews[id].objectiveId,objective.id);assert.equal(reviews[id].stage,"checkpoint")}
+  assert.equal(stages.reviewChannel,"optional-spaced-review");
+ }
+ assert.ok(R.items.find(x=>x.id==="greeting-checkpoint").after===9);
+ assert.ok(R.items.find(x=>x.id==="farewell-checkpoint").after===9);
+});
+test("V18 blueprint rejects an activity whose objective stage metadata no longer matches its reference",()=>{
+ const item=R.items.find(x=>x.id==="greeting-reuse"),original=item.stage;
+ try{item.stage="checkpoint";assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("greeting/greeting-reuse")))}
+ finally{item.stage=original}
+ assert.deepEqual(Array.from(B.validate(K,C,S,E,F,R)),[]);
 });
 test("V17 all six levels have stable objectives, ordered story stages, and no false syllabus match",()=>{
  const all=B.allObjectives(K,F);

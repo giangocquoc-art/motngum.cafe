@@ -29,28 +29,28 @@ The registry contains eight HSK1 candidate goals linked to the existing ten less
 
 Each objective carries a stable ID, level, topic, candidate task, prerequisite IDs, five section locators, item-review status for each component, candidate language content, story practice stages, hint rules, and educator sign-off. A component may later be marked `reviewed-match` only when exact official item IDs are recorded; `reviewed-no-match` records a reviewed gap without claiming a match. A level remains locked until its objectives, language content, practice sequence, official mapping, and educator review are complete.
 
-The current pilot has eight candidate goals and zero verified official items. `greeting`, `numbers`, `price`, `gratitude`, and `farewell` still lack a later reuse or independent checkpoint, so the pilot does not yet meet the full practice sequence for those goals. All HSK2–6 goals remain story proposals, not playable lessons.
+The current pilot has eight candidate goals and zero verified official items. All eight now have authored introduction, later reuse, and recall opportunities. Some reuse/checkpoint activities live in optional spaced review rather than the mandatory story route; these are editorial opportunities, not evidence of full HSK1 coverage. All HSK2–6 goals remain story proposals, not playable lessons.
 
 Future objective stages are ordered as introduction in context, later reuse, and a separate independent recall beat. The recall beat may be a distinct assessment beat inside the capstone episode; it must follow the story interaction and use a non-revealing prompt. No branch may skip a shared learning objective.
 
 ## Existing level 1 objective crosswalk
 
-The labels below are authored lesson goals. Their HSK 3.0 page references are candidate review locations, **not verified item matches**. The current map has no item IDs or educator sign-off, so the official match count stays zero. `curriculumSceneIds` preserve the current 10-record lesson/checkpoint contract; their IDs remain stable.
+The labels below are authored lesson goals. Their HSK 3.0 page references are candidate review locations, **not verified item matches**. The current map has no official syllabus item IDs or educator sign-off, so the official match count stays zero. `curriculumSceneIds` preserve the current 10-record lesson/checkpoint contract; their IDs remain stable. `assessmentObjectiveIds` separately records only goals directly evaluated by each accepted answer, avoiding credit for language that merely appears in a scene.
 
 | Stable objective ID | Current lesson/checkpoint scene IDs | Candidate source level | Alignment |
 | --- | --- | --- | --- |
-| `greeting` | 0, 1 | 1 | Exact task, topic, word, character, and grammar matching pending |
+| `greeting` | 0, 1 | 1 | Scene 0 checks the reply to a check-in; optional reuse practices both the check-in response and a hello, with a combined independent recall item |
 | `introduce-self` | 1, 2, 7 | 1 | Exact task, topic, word, character, and grammar matching pending |
 | `student-identity` | 2, 3, 7 | 1 | Exact task, topic, word, character, and grammar matching pending |
-| `numbers` | 3 | 1 | Exact task, topic, word, character, and grammar matching pending |
+| `numbers` | 3 | 1 | Scene 3 checks counting; optional recognition/reading cards provide later practice and recall |
 | `order-noodles` | 4, 5, 9 | 1 | Exact task, topic, word, character, and grammar matching pending |
-| `price` | 5, 8 | 1 | Exact task, topic, word, character, and grammar matching pending |
-| `gratitude` | 5 | 1 | Exact task, topic, word, character, and grammar matching pending |
-| `farewell` | 6 | 1 | Exact task, topic, word, character, and grammar matching pending |
+| `price` | 5, 8 | 1 | Scene 8 is text-based recall, not listening evidence; `price-ten` is optional reuse |
+| `gratitude` | 5 | 1 | Scene 5 evaluates thanks; reuse and typed recall are optional review items |
+| `farewell` | 6 | 1 | Scene 6 evaluates accepting the invitation; later reading and typed recall are optional review items |
 
 ## Verification gaps
 
-- Level 1: map each authored objective to exact official rows/items across all five syllabus components; confirm the Chinese, Pinyin, Vietnamese glosses, accepted variants, difficulty, and scene sequencing with a qualified Mandarin/HSK educator. The two checkpoints are story-internal formative tasks, not official exam items.
+- Level 1: map each authored objective to exact official rows/items across all five syllabus components; confirm the Chinese, Pinyin, Vietnamese glosses, accepted variants, difficulty, and scene sequencing with a qualified Mandarin/HSK educator. The three in-story checkpoints and optional review cards are formative tasks, not official exam items.
 - Levels 2–6: all story themes and episode functions are proposals. Map their complete planned learning objectives against the versioned syllabus before authoring them as lessons or making them playable.
 - Do not infer listening or speaking proficiency from browser TTS or speech recognition; no validated native recordings, pronunciation rubric, or handwriting evidence is established here.
 - Keep story choice outcomes separate from learning evidence. Lesson completion is not HSK readiness or a certificate.

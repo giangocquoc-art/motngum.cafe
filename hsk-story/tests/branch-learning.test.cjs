@@ -96,7 +96,33 @@ test("objective-keyed evidence round-trips while preserving the legacy lesson-in
  const saved=L.objectiveEvidence(history);
  assert.equal(saved.version,1);assert.equal(saved.objectives.greeting[0].taskId,"chimse.hsk1-demo.scene.0");
  assert.equal(saved.objectives["introduce-self"].find(x=>x.taskId==="chimse.hsk1-demo.scene.7").status,"skipped");
- assert.equal(saved.objectives.price.find(x=>x.taskId==="chimse.hsk1-demo.scene.5").status,"assisted");
+ assert.equal(saved.objectives.gratitude.find(x=>x.taskId==="chimse.hsk1-demo.scene.5").status,"assisted");
  assert.equal(JSON.stringify(L.fromObjectiveEvidence(saved)),JSON.stringify(history));
  assert.equal(L.storageKey,"chimse-branch-learning-v1");assert.equal(L.objectiveStorageKey,"chimse-branch-objective-evidence-v1");
+});
+
+test("objective evidence is credited only to the objective directly tested by each canonical answer",()=>{
+ let history=L.clean([]);
+ for(const index of [0,1,2,3,4,5,6,7,8,9])history=L.record(history,index,{status:"correct",attempts:0,hint:false});
+ const objectives=L.objectiveEvidence(history).objectives;
+ assert.deepEqual(Object.keys(objectives).sort(),["farewell","gratitude","greeting","introduce-self","numbers","order-noodles","price","student-identity"].sort());
+ assert.deepEqual(Array.from(objectives.greeting,x=>x.taskId),["chimse.hsk1-demo.scene.0"]);
+ assert.deepEqual(Array.from(objectives["introduce-self"],x=>x.taskId),["chimse.hsk1-demo.scene.1","chimse.hsk1-demo.scene.7"]);
+ assert.deepEqual(Array.from(objectives["student-identity"],x=>x.taskId),["chimse.hsk1-demo.scene.2","chimse.hsk1-demo.scene.7"]);
+ assert.deepEqual(Array.from(objectives.numbers,x=>x.taskId),["chimse.hsk1-demo.scene.3"]);
+ assert.deepEqual(Array.from(objectives.price,x=>x.taskId),["chimse.hsk1-demo.scene.8"]);
+ assert.deepEqual(Array.from(objectives.gratitude,x=>x.taskId),["chimse.hsk1-demo.scene.5"]);
+ assert.deepEqual(Array.from(objectives["order-noodles"],x=>x.taskId),["chimse.hsk1-demo.scene.4","chimse.hsk1-demo.scene.9"]);
+ assert.deepEqual(Array.from(objectives.farewell,x=>x.taskId),["chimse.hsk1-demo.scene.6"]);
+});
+
+test("legacy objective evidence with a mismatched objective-to-scene key is ignored",()=>{
+ const restored=L.fromObjectiveEvidence({version:1,objectives:{
+  greeting:[{taskId:"chimse.hsk1-demo.scene.8",status:"correct",attempts:0,hint:false}],
+  price:[{taskId:"chimse.hsk1-demo.scene.8",status:"assisted",attempts:2,hint:true}],
+  "order-noodles":[{taskId:"chimse.hsk1-demo.scene.99",status:"correct",attempts:0,hint:false}]
+ }});
+ assert.equal(restored[0],null);
+ assert.equal(restored[8].status,"assisted");
+ assert.equal(restored[9],null);
 });

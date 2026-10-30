@@ -6,7 +6,7 @@ Nguồn chuẩn: [hướng hiện hành từ chat](docs/CHIM_SE_DIRECTION.md), [
 
 ## Phạm vi hiện tại
 
-9 trang Nhập môn; tập HSK1 demo gồm 7 cảnh luyện và 3 checkpoint, tìm sổ, hai lựa chọn truyện; 18 mục ôn mở theo cảnh đã hoàn thành. Bản đồ HSK 3.0 bậc 1–6 hiện là lộ trình: bậc 1 mới có nội dung pilot, bậc 2–6 mới là khung truyện, chưa ánh xạ đủ từng mục và chưa được giáo viên duyệt. Không phải toàn bộ đại cương, chứng chỉ hay đánh giá phát âm/thanh điệu. Xem [bản đối chiếu HSK 3.0](HSK3_SOURCE_AUDIT.md) và [blueprint](learning-blueprint.js).
+9 trang Nhập môn; tập HSK1 demo gồm 7 cảnh luyện và 3 checkpoint, tìm sổ, hai lựa chọn truyện; 23 mục ôn mở theo cảnh đã hoàn thành. Bản đồ HSK 3.0 bậc 1–6 hiện là lộ trình: bậc 1 mới có nội dung pilot, bậc 2–6 mới là khung truyện, chưa ánh xạ đủ từng mục và chưa được giáo viên duyệt. Không phải toàn bộ đại cương, chứng chỉ hay đánh giá phát âm/thanh điệu. Xem [bản đối chiếu HSK 3.0](HSK3_SOURCE_AUDIT.md) và [blueprint](learning-blueprint.js).
 
 ## Chạy và kiểm tra
 

@@ -5,10 +5,10 @@ const D=load("review-data.js"),R=load("review-core.js"),Core=load("game-core.js"
 const TODAY="2026-10-26";
 const v3=(count)=>({v:3,step:Math.min(count,9),done:count===10,history:Array.from({length:count},()=>({status:"correct",hint:false,attempts:0}))});
 const mem=()=>{const store=new Map;return {getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v),dump:k=>store.get(k)}};
-test("Gate6 pilot data: 18 audited-shape items, 7 reading, 7 Hanzi recognition, 4 typed (not full HSK1)",()=>{
+test("Gate6 pilot data: 23 authored items, including 9 typed tasks (not full HSK1)",()=>{
  assert.deepEqual(Array.from(D.validate()),[]);
- assert.equal(D.items.length,18);for(const kind of ["reading","hanzi","typed"])assert.ok(D.items.some(x=>x.kind===kind));
- assert.equal(D.items.filter(x=>x.kind==="typed").length,4);
+ assert.equal(D.items.length,23);for(const kind of ["reading","hanzi","typed"])assert.ok(D.items.some(x=>x.kind===kind));
+ assert.equal(D.items.filter(x=>x.kind==="typed").length,9);
  assert.ok(D.source.syllabusStatus.includes("pending"));
 });
 test("Gate6 never unlock items for merely seeing chapter00 or accessing HSK index",()=>{
@@ -17,7 +17,20 @@ test("Gate6 never unlock items for merely seeing chapter00 or accessing HSK inde
  assert.equal(R.completedPrefix({v:3,history:[{status:"correct"},{status:"bogus"},{status:"correct"}]}),1);
  assert.equal(R.report(D,v3(0),R.initial(),TODAY).unlocked,0);
  assert.equal(R.report(D,v3(1),R.initial(),TODAY).unlocked,2);
- assert.equal(R.report(D,v3(7),R.initial(),TODAY).unlocked,18);
+ assert.equal(R.report(D,v3(7),R.initial(),TODAY).unlocked,21);
+ assert.equal(R.report(D,v3(10),R.initial(),TODAY).unlocked,23);
+});
+test("late independent checkpoints remain locked until the complete ten-task prefix",()=>{
+ const nine=v3(9),gap=v3(10);gap.history[8]=null;
+ for(const legacy of [nine,gap]){
+  assert.equal(R.completedPrefix(legacy)<10,true);
+  assert.equal(R.queue(D,legacy,R.initial(),TODAY).some(x=>x.id==="greeting-checkpoint"),false);
+  assert.equal(R.queue(D,legacy,R.initial(),TODAY).some(x=>x.id==="farewell-checkpoint"),false);
+ }
+ const allSkipped={v:3,history:Array.from({length:10},()=>({status:"skipped",attempts:0,hint:false}))};
+ assert.equal(R.completedPrefix(allSkipped),10);
+ assert.equal(R.queue(D,allSkipped,R.initial(),TODAY).filter(x=>x.after===9).length,2);
+ assert.equal(R.report(D,allSkipped,R.initial(),TODAY).independent,0);
 });
 test("Gate6 output locked when a malicious client requests content from future story scenes",()=>{
  assert.throws(()=>R.act(D,R.initial(),"thank-again",{type:"answer",value:"谢谢"},TODAY,Core,v3(1)));
@@ -61,11 +74,25 @@ test("Gate6 typed task grades authored accepted Hanzi, rejects pinyin, negation 
  assert.equal(R.act(D,R.initial(),it.id,{type:"answer",value:"我不叫安"},TODAY,Core,v3(2)).result,"incorrect");
  assert.throws(()=>R.act(D,R.initial(),it.id,{type:"answer",value:"我叫安"},TODAY,Core,v3(1)));
 });
+test("greeting checkpoint independently recalls both the hello and the check-in reply",()=>{
+ const item=D.items.find(x=>x.id==="greeting-checkpoint");
+ assert.equal(R.act(D,R.initial(),item.id,{type:"answer",value:"你好，我很好。"},TODAY,Core,v3(10)).result,"independent");
+ assert.equal(R.act(D,R.initial(),item.id,{type:"answer",value:"你好"},TODAY,Core,v3(10)).result,"incorrect");
+ assert.doesNotMatch(item.zh,/你好|我很好/);
+});
 test("Gate6 skip does not give credit; it is due again tomorrow",()=>{
  const it=D.items[0],x=R.act(D,R.initial(),it.id,{type:"skip"},TODAY,Core,v3(1));
  assert.equal(x.result,"skipped");assert.equal(x.state.items[it.id].dueDay,"2026-10-27");
  assert.equal(R.report(D,v3(1),x.state,TODAY).skipped,1);
  assert.equal(R.queue(D,v3(1),x.state,"2026-10-27").length,2);
+});
+test("skipping a story task still reaches late optional checkpoints without awarding review mastery",()=>{
+ const skipped=v3(10);skipped.history[4]={status:"skipped",attempts:1,hint:false};
+ assert.equal(R.completedPrefix(skipped),10);
+ const available=R.queue(D,skipped,R.initial(),TODAY);
+ assert.ok(available.some(x=>x.id==="greeting-checkpoint"));
+ assert.ok(available.some(x=>x.id==="farewell-checkpoint"));
+ assert.equal(R.report(D,skipped,R.initial(),TODAY).independent,0);
 });
 test("Gate6 corrupt or tampered review saves are sanitized; legacy V3 unchanged",()=>{
  const store=mem(),old=JSON.stringify(v3(7));store.setItem("hai-que-huong-progress-v3",old);
@@ -77,6 +104,18 @@ test("Gate6 corrupt or tampered review saves are sanitized; legacy V3 unchanged"
  assert.equal(R.write(store,D,x.state),true);
  assert.equal(store.dump("hai-que-huong-progress-v3"),old);
  assert.equal(R.read(store,D).items[D.items[0].id].status,"skipped");
+});
+test("adding stage items preserves completed records in the old review save key",()=>{
+ const storage=mem(),old={v:1,items:{"mother-question":{status:"independent",attempts:0,hinted:false,stage:2,lastDay:TODAY,dueDay:"2026-11-02"},"self-introduction":{status:"assisted",attempts:0,hinted:false,stage:0,lastDay:TODAY,dueDay:"2026-10-27"}}};
+ storage.setItem(R.key,JSON.stringify(old));
+ const state=R.read(storage,D);
+ assert.equal(state.items["mother-question"].status,"independent");
+ assert.equal(state.items["self-introduction"].status,"assisted");
+ assert.equal(Object.hasOwn(state.items,"greeting-checkpoint"),false);
+ assert.equal(R.write(storage,D,state),true);
+ const restored=R.read(storage,D);
+ assert.equal(restored.items["mother-question"].stage,2);
+ assert.equal(restored.items["self-introduction"].status,"assisted");
 });
 test("Gate6 localStorage unavailable leaves in-memory learning possible but no false save promise",()=>{
  const deny={getItem(){throw Error("blocked")},setItem(){throw Error("blocked")}};
@@ -96,4 +135,14 @@ test("Gate6 learning practice page is separate, keyboard accessible and never lo
  assert.match(fs.readFileSync(path.join(base,"review.js"),"utf8"),/Bạn đã ôn hết những câu đến hạn hôm nay/);
  assert.ok(home.includes('href="/ren-luyen.html"'));
  assert.ok(!html.includes("speechSynthesis")&&!html.includes("SpeechRecognition"));
+ assert.match(fs.readFileSync(path.join(base,"review.js"),"utf8"),/active\.artScene\).*active\.artScene:.*active\.scene/);
+});
+test("new story-stage review cards use their authored scene art, not the lesson-unlock gate art",()=>{
+ const manifest=load("scene-manifest.js");
+ const expected={"greeting-reuse":"hsk1.e01.xiaoyu-friendship","greeting-checkpoint":"hsk1.e01.xiaoyu-friendship","checkin-reuse":"hsk1.e01.xiaoyu-friendship","order-noodles-reuse":"hsk1.e01.liu-noodle-order","farewell-checkpoint":"hsk1.e01.walk-home"};
+ for(const id of ["greeting-reuse","greeting-checkpoint","checkin-reuse","order-noodles-reuse","farewell-checkpoint"]){
+  const item=D.items.find(x=>x.id===id);assert.ok(item);assert.ok(Number.isInteger(item.artScene));
+  assert.equal(manifest.sceneIds[item.artScene],expected[id],id+" loads the scene art matching its story context");
+ }
+ for(const id of ["greeting-checkpoint","checkin-reuse","order-noodles-reuse","farewell-checkpoint"]){const item=D.items.find(x=>x.id===id);assert.notEqual(item.artScene,item.after,id+" chooses a scene for this moment, not the unlock index")}
 });

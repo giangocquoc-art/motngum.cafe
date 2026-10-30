@@ -8,8 +8,8 @@ const plain=value=>JSON.parse(JSON.stringify(value));
 test("branch learning opens the same existing review items as completed HSK tasks",()=>{
  assert.equal(R.report(D,R.combineProgress(null,[]),R.initial(),DAY).unlocked,0);
  assert.equal(R.report(D,R.combineProgress(null,history(1)),R.initial(),DAY).unlocked,2);
- const all=R.combineProgress(null,history(7));assert.equal(R.completedPrefix(all),7);assert.equal(R.queue(D,all,R.initial(),DAY).length,18);
- assert.equal(R.report(D,R.combineProgress(null,history(10)),R.initial(),DAY).unlocked,18);
+ const all=R.combineProgress(null,history(7));assert.equal(R.completedPrefix(all),7);assert.equal(R.queue(D,all,R.initial(),DAY).length,21);
+ assert.equal(R.report(D,R.combineProgress(null,history(10)),R.initial(),DAY).unlocked,23);
 });
 
 test("valid canonical records take priority and branch evidence fills only missing records",()=>{
