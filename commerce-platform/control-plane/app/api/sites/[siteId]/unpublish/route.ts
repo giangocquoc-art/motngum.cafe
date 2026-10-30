@@ -15,10 +15,18 @@ export async function POST(request:NextRequest,{params}:{params:Promise<{siteId:
   if(!siteIdValid(siteId))return studioReply({error:'not_found'},404);
   const input=await readStudioBody(request);
   if(input.error)return input.error;
+  const body=input.body as Record<string,unknown>|null;
+  if(typeof body?.publishedVersion!=='number'||!Number.isSafeInteger(body.publishedVersion)||body.publishedVersion<1)
+    return studioReply({error:'invalid_published_version'},422);
   const [result]=await db.update(builderSites)
     .set({publishedDocument:null,publishedVersion:null,publishedAt:null,updatedAt:new Date()})
-    .where(and(eq(builderSites.id,siteId),eq(builderSites.teamId,ctx.team.id)))
+    .where(and(eq(builderSites.id,siteId),eq(builderSites.teamId,ctx.team.id),
+      eq(builderSites.publishedVersion,body.publishedVersion as number)))
     .returning({id:builderSites.id});
-  if(!result)return studioReply({error:'not_found'},404);
+  if(!result){
+    const [existing]=await db.select({id:builderSites.id}).from(builderSites)
+      .where(and(eq(builderSites.id,siteId),eq(builderSites.teamId,ctx.team.id))).limit(1);
+    return studioReply({error:existing?'stale_publication':'not_found'},existing?409:404);
+  }
   return studioReply({unpublished:true});
 }
