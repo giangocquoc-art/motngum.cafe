@@ -248,14 +248,33 @@ test("future story decisions have distinct authored reactions, memory, callbacks
  finally{option.joinsAtSceneId=original;}
  assert.deepEqual(Array.from(F.validate()),[]);
 });
+test("future learning anchors and their default prerequisites follow the episode timeline",()=>{
+ for(const plan of B.futurePlans){
+  const act=F.byLevel(plan.level),rank=new Map(act.episodes.map((episode,index)=>[episode.id,index]));
+  const positions=new Map(plan.objectives.map((objective,index)=>[objective.id,index]));
+  assert.deepEqual(Array.from(B.futureEpisodeOrder[plan.level]),Array.from(act.episodes,episode=>episode.id));
+  let last=-1;
+  for(const objective of plan.objectives){
+   assert.ok(rank.get(objective.episode)>=last,objective.id+" must not be introduced before an earlier episode");
+   last=rank.get(objective.episode);
+  }
+  const mapped=B.makeFutureObjectives(F);
+  for(const objective of mapped.filter(item=>item.level===plan.level)){
+   for(const prerequisite of objective.prerequisiteIds){
+    if(positions.has(prerequisite))assert.ok(positions.get(prerequisite)<positions.get(objective.id),prerequisite+" must precede "+objective.id);
+   }
+  }
+ }
+});
 test("source inventory captures the whole official level 1–6 corpus while instructional matching stays pending",()=>{
  const report=B.report(K,F),sourceInventory=report.sourceInventory;
  assert.equal(report.completeSourceInventory,true);
  assert.equal(report.fullSyllabusInventoryComplete,false);
  assert.equal(report.objectiveCrosswalkComplete,false);
- assert.deepEqual(JSON.parse(JSON.stringify(sourceInventory.totals)),{tasks:136,topicsByTier:[37,140,335],vocabulary:5400,recognitionCharacters:1940,grammarPages:17,grammarItemCount:null});
- assert.equal(sourceInventory.topicHierarchyStatus.includes("without inferred parent links"),true);
- assert.equal(sourceInventory.grammarNormalizationStatus.includes("visual normalization"),true);
+ assert.deepEqual(JSON.parse(JSON.stringify(sourceInventory.totals)),{tasks:136,topicsByTier:[37,140,335],topicNodes:512,topicPageRows:344,vocabulary:5400,recognitionCharacters:1940,grammarPages:17,grammarSourceRows:459,officialGrammarItemCount:null});
+ assert.equal(sourceInventory.topicHierarchyStatus.includes("parent links cross page continuations"),true);
+ assert.equal(sourceInventory.grammarNormalizationStatus.includes("not an official grammar-item count"),true);
+ assert.equal(sourceInventory.grammarNormalizationStatus.includes("reconciliation remains pending"),true);
 });
 
 test("Gate3B world clues connect beginner Hanzi to already-visited real scenes without HSK points",()=>{

@@ -10,7 +10,7 @@
   "acts": {
     "hsk2.first-friend": {
       "level": 2,
-      "commonLearningAnchorIds": ["hsk2.time-and-repair", "hsk2.routes-and-positions", "hsk2.compare-and-plan", "hsk2.daily-rhythm", "hsk2.shopping-decisions", "hsk2.ask-for-help"],
+      "commonLearningAnchorIds": ["hsk2.time-and-repair", "hsk2.daily-rhythm", "hsk2.ask-for-help", "hsk2.routes-and-positions", "hsk2.compare-and-plan", "hsk2.shopping-decisions"],
       "decisions": {
         "misunderstanding": {
           "id": "hsk2.misunderstanding.decision",
@@ -52,7 +52,7 @@
     },
     "hsk3.spring-promise": {
       "level": 3,
-      "commonLearningAnchorIds": ["hsk3.intent-and-coordination", "hsk3.plan-and-compare", "hsk3.recount-and-present", "hsk3.handle-a-setback", "hsk3.hear-another-view", "hsk3.culture-through-experience"],
+      "commonLearningAnchorIds": ["hsk3.intent-and-coordination", "hsk3.handle-a-setback", "hsk3.plan-and-compare", "hsk3.hear-another-view", "hsk3.recount-and-present", "hsk3.culture-through-experience"],
       "decisions": {
         "fair-invitation": {
           "id": "hsk3.fair-invitation.decision",
@@ -94,7 +94,7 @@
     },
     "hsk4.change-season": {
       "level": 4,
-      "commonLearningAnchorIds": ["hsk4.fact-and-inference", "hsk4.report-perspectives", "hsk4.propose-with-evidence", "hsk4.trace-cause-and-result", "hsk4.community-responsibilities", "hsk4.negotiate-conditions"],
+      "commonLearningAnchorIds": ["hsk4.fact-and-inference", "hsk4.trace-cause-and-result", "hsk4.report-perspectives", "hsk4.community-responsibilities", "hsk4.propose-with-evidence", "hsk4.negotiate-conditions"],
       "decisions": {
         "notice": {
           "id": "hsk4.notice.decision",
@@ -136,7 +136,7 @@
     },
     "hsk5.two-homes": {
       "level": 5,
-      "commonLearningAnchorIds": ["hsk5.explain-and-choose", "hsk5.reflect-and-relate", "hsk5.analyze-and-compose", "hsk5.reframe-a-memory", "hsk5.compare-perspectives", "hsk5.edit-for-a-reader"],
+      "commonLearningAnchorIds": ["hsk5.explain-and-choose", "hsk5.compare-perspectives", "hsk5.reflect-and-relate", "hsk5.reframe-a-memory", "hsk5.analyze-and-compose", "hsk5.edit-for-a-reader"],
       "decisions": {
         "letter-home": {
           "id": "hsk5.letter-home.decision",
@@ -178,7 +178,7 @@
     },
     "hsk6.letters-we-leave": {
       "level": 6,
-      "commonLearningAnchorIds": ["hsk6.compare-sources", "hsk6.recount-with-attribution", "hsk6.revise-a-position", "hsk6.separate-fact-and-inference", "hsk6.compare-voices", "hsk6.synthesize-with-limits"],
+      "commonLearningAnchorIds": ["hsk6.compare-sources", "hsk6.separate-fact-and-inference", "hsk6.recount-with-attribution", "hsk6.compare-voices", "hsk6.revise-a-position", "hsk6.synthesize-with-limits"],
       "decisions": {
         "old-streets": {
           "id": "hsk6.old-streets.decision",
