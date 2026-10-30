@@ -7,6 +7,13 @@ export const MAX_SITE_PAYLOAD = 1024 * 1024;
 export const MAX_SITE_PAGES = 12;
 export const MAX_SITE_BLOCKS = 40;
 export const MAX_SITE_TOTAL_BLOCKS = 200;
+/** Reject unsupported v2 fields instead of silently erasing imported data. */
+const exactKeys=(value:Record<string,unknown>,expected:readonly string[]) =>
+  Object.keys(value).length===expected.length &&
+  Object.keys(value).every(key=>expected.includes(key));
+const DOCUMENT_FIELDS=['version','title','themeId','pages'] as const;
+const PAGE_FIELDS=['id','title','slug','blocks'] as const;
+const BLOCK_FIELDS=['id','kind','variant','title','body','imageUrl','buttonLabel','buttonUrl','accent'] as const;
 
 export function isSafeImage(value: string): boolean {
   if (!value) return true;
@@ -25,6 +32,7 @@ export function isSafeLink(value: string): boolean {
 export function validateSiteDocument(value: unknown): SiteDocument | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const doc = value as Record<string, unknown>;
+  if (!exactKeys(doc,DOCUMENT_FIELDS)) return null;
   if (doc.version !== 2 || typeof doc.title !== 'string' || !doc.title.trim() ||
       doc.title.length > 120 || typeof doc.themeId !== 'string' ||
       !THEMES.some(t => t.id === doc.themeId) || !Array.isArray(doc.pages) ||
@@ -35,6 +43,7 @@ export function validateSiteDocument(value: unknown): SiteDocument | null {
   for (const rawPage of doc.pages) {
     if (!rawPage || typeof rawPage !== 'object' || Array.isArray(rawPage)) return null;
     const p = rawPage as Record<string,unknown>;
+    if (!exactKeys(p,PAGE_FIELDS)) return null;
     if (typeof p.id !== 'string' || p.id.length < 1 || p.id.length > 100 ||
         typeof p.title !== 'string' || !p.title.trim() || p.title.length > 80 ||
         typeof p.slug !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.slug) ||
@@ -45,6 +54,7 @@ export function validateSiteDocument(value: unknown): SiteDocument | null {
     for (const rawBlock of p.blocks) {
       if (!rawBlock || typeof rawBlock !== 'object' || Array.isArray(rawBlock)) return null;
       const b = rawBlock as Record<string,unknown>;
+      if (!exactKeys(b,BLOCK_FIELDS)) return null;
       if (typeof b.id !== 'string' || !b.id || b.id.length > 100 || blockIds.has(b.id) ||
           !BLOCK_KINDS.includes(b.kind as BlockKind) ||
           !BLOCK_VARIANTS.includes(b.variant as Block['variant']) ||
