@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { ChevronDown, Image as ImageIcon } from 'lucide-react';
 import type { Block, ThemeDefinition } from '@/lib/builder/catalog';
 import { isSafeImage, isSafeLink } from '@/lib/builder/validation';
+import { SiteLeadForm } from '@/components/site-lead-form';
 
 function safeImage(value:string) {
   return isSafeImage(value) && value ? new URL(value).toString() : null;
@@ -64,6 +65,7 @@ function ImageSurface({src,alt,large=false}: {src:string;alt:string;large?:boole
     : <div className={'flex items-center justify-center bg-gradient-to-br from-stone-100 via-gray-50 to-amber-100 text-sm text-stone-500 '+(large?'min-h-[260px]':'h-44')}><ImageIcon size={24} className="mr-2"/>Thêm hình ảnh HTTPS</div>;
 }
 export function BlockPreview({block,theme,navigate,base}: {block:Block;theme:ThemeDefinition;navigate?:(slug:string)=>void;base?:string}) {
+  const siteSlug=base?.match(/^\/s\/([a-z0-9]+(?:-[a-z0-9]+)*)$/)?.[1];
   const accent = block.accent || theme.primary;
   const variant = block.variant;
   const isFull = variant==='full' || variant==='banner';
@@ -184,8 +186,10 @@ export function BlockPreview({block,theme,navigate,base}: {block:Block;theme:The
   </div></section>;
   if (block.kind==='contact') return <section className="my-10 grid gap-7 border p-7 @md:grid-cols-2 @md:p-10" style={{...common,borderColor:'var(--studio-border)',backgroundColor:'var(--studio-surface)'}}>
     <div>{title}<p className="mt-5 whitespace-pre-line text-sm leading-8 opacity-75">{block.body}</p></div>
-    <div className="rounded-xl border p-6 text-sm" style={{borderColor:'var(--studio-border)'}}><p className="font-bold">Liên hệ trực tiếp</p><p className="mt-3 opacity-70">Hãy sử dụng các kênh liên hệ mà website cung cấp. Mục này chỉ hiển thị thông tin; chưa có chức năng gửi biểu mẫu tự động.</p></div>
+    <div className="rounded-xl border p-6 text-sm" style={{borderColor:'var(--studio-border)'}}><p className="font-bold">Liên hệ trực tiếp</p>{siteSlug?<SiteLeadForm siteSlug={siteSlug} blockId={block.id} kind="contact"/>:
+      <p className="mt-3 opacity-70">Biểu mẫu liên hệ chỉ nhận dữ liệu khi website đã được xuất bản.</p>}</div>
   </section>;
-  if(block.kind==='newsletter') return <section className="my-10 px-7 py-12 text-center" style={{...common,backgroundColor:'var(--studio-surface)',border:'1px solid var(--studio-border)'}}>{title}<p className="mx-auto mt-3 max-w-xl text-sm opacity-75">{block.body}</p><p className="mt-4 text-xs opacity-60">Chức năng đăng ký nhận tin chưa kết nối máy chủ.</p></section>;
+  if(block.kind==='newsletter') return <section className="my-10 px-7 py-12 text-center" style={{...common,backgroundColor:'var(--studio-surface)',border:'1px solid var(--studio-border)'}}>{title}<p className="mx-auto mt-3 max-w-xl text-sm opacity-75">{block.body}</p>{siteSlug?<div className="mx-auto max-w-sm text-left"><SiteLeadForm siteSlug={siteSlug} blockId={block.id} kind="newsletter"/></div>:
+    <p className="mt-4 text-xs opacity-60">Đăng ký nhận tin hoạt động sau khi website xuất bản.</p>}</section>;
   return null;
 }
