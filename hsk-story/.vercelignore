@@ -22,6 +22,12 @@ tests/
 e2e/
 test-results/
 .sites-runtime/
+hsk30-syllabus-inventory.json
+future-branch-decisions.json
+candidate-source-index.json
+learning-blueprint.js
+future-acts.js
+future-branch-runtime.js
 *.md
 
 # Private layout review scaffolding is not part of the product.

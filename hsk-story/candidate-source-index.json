@@ -1,0 +1,1570 @@
+{
+  "edition": "HSK 3.0 · 2025-11 syllabus",
+  "sourceUrl": "https://hsk.cn-bj.ufileos.com/3.0/%E6%96%B0%E7%89%88HSK%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B21219.pdf",
+  "pageConvention": "pypdf zero-based page index = printed page + 2; PDF one-based page number = printed page + 3.",
+  "extractionDate": "2026-10-30",
+  "vocabularyRows": {
+    "2:306": {
+      "hanzi": "帮忙",
+      "pinyin": "bāngmáng",
+      "printedPage": 84
+    },
+    "2:315": {
+      "hanzi": "车站",
+      "pinyin": "chēzhàn",
+      "printedPage": 84
+    },
+    "2:335": {
+      "hanzi": "地铁",
+      "pinyin": "dìtiě",
+      "printedPage": 85
+    },
+    "2:343": {
+      "hanzi": "告诉",
+      "pinyin": "gàosu",
+      "printedPage": 85
+    },
+    "2:346": {
+      "hanzi": "公交车",
+      "pinyin": "gōngjiāochē",
+      "printedPage": 85
+    },
+    "2:365": {
+      "hanzi": "记得",
+      "pinyin": "jìde",
+      "printedPage": 86
+    },
+    "2:378": {
+      "hanzi": "开始",
+      "pinyin": "kāishǐ",
+      "printedPage": 86
+    },
+    "2:386": {
+      "hanzi": "快要",
+      "pinyin": "kuàiyào",
+      "printedPage": 86
+    },
+    "2:393": {
+      "hanzi": "路上",
+      "pinyin": "lùshang",
+      "printedPage": 86
+    },
+    "2:413": {
+      "hanzi": "旁边",
+      "pinyin": "pángbiān",
+      "printedPage": 87
+    },
+    "2:416": {
+      "hanzi": "票",
+      "pinyin": "piào",
+      "printedPage": 87
+    },
+    "2:419": {
+      "hanzi": "前面",
+      "pinyin": "qiánmiàn",
+      "printedPage": 87
+    },
+    "2:424": {
+      "hanzi": "商场",
+      "pinyin": "shāngchǎng",
+      "printedPage": 87
+    },
+    "2:439": {
+      "hanzi": "所以",
+      "pinyin": "suǒyǐ",
+      "printedPage": 87
+    },
+    "2:466": {
+      "hanzi": "颜色",
+      "pinyin": "yánsè",
+      "printedPage": 88
+    },
+    "2:473": {
+      "hanzi": "一起",
+      "pinyin": "yìqǐ",
+      "printedPage": 88
+    },
+    "2:476": {
+      "hanzi": "因为",
+      "pinyin": "yīnwèi",
+      "printedPage": 88
+    },
+    "2:493": {
+      "hanzi": "准备",
+      "pinyin": "zhǔnbèi",
+      "printedPage": 89
+    },
+    "3:511": {
+      "hanzi": "办法",
+      "pinyin": "bànfǎ",
+      "printedPage": 89
+    },
+    "3:546": {
+      "hanzi": "参加",
+      "pinyin": "cānjiā",
+      "printedPage": 90
+    },
+    "3:572": {
+      "hanzi": "打算",
+      "pinyin": "dǎsuàn",
+      "printedPage": 91
+    },
+    "3:650": {
+      "hanzi": "故事",
+      "pinyin": "gùshi",
+      "printedPage": 93
+    },
+    "3:671": {
+      "hanzi": "后来",
+      "pinyin": "hòulái",
+      "printedPage": 93
+    },
+    "3:702": {
+      "hanzi": "见面",
+      "pinyin": "jiànmiàn",
+      "printedPage": 94
+    },
+    "3:724": {
+      "hanzi": "决定",
+      "pinyin": "juédìng",
+      "printedPage": 95
+    },
+    "3:813": {
+      "hanzi": "然后",
+      "pinyin": "ránhòu",
+      "printedPage": 97
+    },
+    "3:816": {
+      "hanzi": "认为",
+      "pinyin": "rènwéi",
+      "printedPage": 97
+    },
+    "3:860": {
+      "hanzi": "同意",
+      "pinyin": "tóngyì",
+      "printedPage": 98
+    },
+    "3:868": {
+      "hanzi": "完成",
+      "pinyin": "wánchéng",
+      "printedPage": 98
+    },
+    "3:878": {
+      "hanzi": "文化",
+      "pinyin": "wénhuà",
+      "printedPage": 98
+    },
+    "3:890": {
+      "hanzi": "先",
+      "pinyin": "xiān",
+      "printedPage": 99
+    },
+    "3:927": {
+      "hanzi": "以前",
+      "pinyin": "yǐqián",
+      "printedPage": 100
+    },
+    "3:939": {
+      "hanzi": "应该",
+      "pinyin": "yīnggāi",
+      "printedPage": 100
+    },
+    "3:997": {
+      "hanzi": "最后",
+      "pinyin": "zuìhòu",
+      "printedPage": 101
+    },
+    "4:1192": {
+      "hanzi": "反对",
+      "pinyin": "fǎnduì",
+      "printedPage": 106
+    },
+    "4:1215": {
+      "hanzi": "负责",
+      "pinyin": "fùzé",
+      "printedPage": 107
+    },
+    "4:1354": {
+      "hanzi": "建议",
+      "pinyin": "jiànyì",
+      "printedPage": 110
+    },
+    "4:1382": {
+      "hanzi": "结果",
+      "pinyin": "jiéguǒ",
+      "printedPage": 111
+    },
+    "4:1736": {
+      "hanzi": "条件",
+      "pinyin": "tiáojiàn",
+      "printedPage": 120
+    },
+    "4:1745": {
+      "hanzi": "通知",
+      "pinyin": "tōngzhī",
+      "printedPage": 120
+    },
+    "4:1811": {
+      "hanzi": "消息",
+      "pinyin": "xiāoxi",
+      "printedPage": 122
+    },
+    "4:1868": {
+      "hanzi": "意见",
+      "pinyin": "yìjiàn",
+      "printedPage": 123
+    },
+    "4:1871": {
+      "hanzi": "因此",
+      "pinyin": "yīncǐ",
+      "printedPage": 123
+    },
+    "4:1902": {
+      "hanzi": "原因",
+      "pinyin": "yuányīn",
+      "printedPage": 124
+    },
+    "4:1930": {
+      "hanzi": "整理",
+      "pinyin": "zhěnglǐ",
+      "printedPage": 125
+    },
+    "4:1935": {
+      "hanzi": "证明",
+      "pinyin": "zhèngmíng",
+      "printedPage": 125
+    },
+    "4:1939": {
+      "hanzi": "支持",
+      "pinyin": "zhīchí",
+      "printedPage": 125
+    },
+    "5:2045": {
+      "hanzi": "彼此",
+      "pinyin": "bǐcǐ",
+      "printedPage": 128
+    },
+    "5:2050": {
+      "hanzi": "毕竟",
+      "pinyin": "bìjìng",
+      "printedPage": 128
+    },
+    "5:2062": {
+      "hanzi": "表达",
+      "pinyin": "biǎodá",
+      "printedPage": 128
+    },
+    "5:2098": {
+      "hanzi": "曾经",
+      "pinyin": "céngjīng",
+      "printedPage": 129
+    },
+    "5:2187": {
+      "hanzi": "传统",
+      "pinyin": "chuántǒng",
+      "printedPage": 131
+    },
+    "5:2201": {
+      "hanzi": "从而",
+      "pinyin": "cóng’ér",
+      "printedPage": 132
+    },
+    "5:2267": {
+      "hanzi": "的确",
+      "pinyin": "díquè",
+      "printedPage": 133
+    },
+    "5:2331": {
+      "hanzi": "反而",
+      "pinyin": "fǎn’ér",
+      "printedPage": 135
+    },
+    "5:2343": {
+      "hanzi": "仿佛",
+      "pinyin": "fǎngfú",
+      "printedPage": 135
+    },
+    "5:2355": {
+      "hanzi": "分析",
+      "pinyin": "fēnxī",
+      "printedPage": 135
+    },
+    "5:2433": {
+      "hanzi": "观点",
+      "pinyin": "guāndiǎn",
+      "printedPage": 137
+    },
+    "5:2452": {
+      "hanzi": "果然",
+      "pinyin": "guǒrán",
+      "printedPage": 138
+    },
+    "5:2571": {
+      "hanzi": "简直",
+      "pinyin": "jiǎnzhí",
+      "printedPage": 141
+    },
+    "5:2603": {
+      "hanzi": "结论",
+      "pinyin": "jiélùn",
+      "printedPage": 142
+    },
+    "5:2610": {
+      "hanzi": "尽量",
+      "pinyin": "jǐnliàng",
+      "printedPage": 142
+    },
+    "5:2703": {
+      "hanzi": "理由",
+      "pinyin": "lǐyóu",
+      "printedPage": 144
+    },
+    "5:3249": {
+      "hanzi": "相当",
+      "pinyin": "xiāngdāng",
+      "printedPage": 158
+    },
+    "5:3280": {
+      "hanzi": "欣赏",
+      "pinyin": "xīnshǎng",
+      "printedPage": 158
+    },
+    "5:3399": {
+      "hanzi": "优美",
+      "pinyin": "yōuměi",
+      "printedPage": 161
+    },
+    "5:3482": {
+      "hanzi": "针对",
+      "pinyin": "zhēnduì",
+      "printedPage": 164
+    },
+    "5:3586": {
+      "hanzi": "总之",
+      "pinyin": "zǒngzhī",
+      "printedPage": 166
+    },
+    "6:4307": {
+      "hanzi": "进而",
+      "pinyin": "jìn’ér",
+      "printedPage": 184
+    },
+    "6:4437": {
+      "hanzi": "立场",
+      "pinyin": "lìchǎng",
+      "printedPage": 187
+    },
+    "6:4638": {
+      "hanzi": "前提",
+      "pinyin": "qiántí",
+      "printedPage": 192
+    },
+    "6:4663": {
+      "hanzi": "倾向",
+      "pinyin": "qīngxiàng",
+      "printedPage": 193
+    },
+    "6:4758": {
+      "hanzi": "涉及",
+      "pinyin": "shèjí",
+      "printedPage": 195
+    },
+    "6:4939": {
+      "hanzi": "推测",
+      "pinyin": "tuīcè",
+      "printedPage": 200
+    },
+    "6:5040": {
+      "hanzi": "相应",
+      "pinyin": "xiāngyìng",
+      "printedPage": 202
+    },
+    "6:5085": {
+      "hanzi": "叙述",
+      "pinyin": "xùshù",
+      "printedPage": 204
+    },
+    "6:5216": {
+      "hanzi": "原材料",
+      "pinyin": "yuáncáiliào",
+      "printedPage": 207
+    },
+    "6:5291": {
+      "hanzi": "证实",
+      "pinyin": "zhèngshí",
+      "printedPage": 209
+    }
+  },
+  "characterRefsByTargetLevel": {
+    "2": {
+      "一": {
+        "characterLevel": 1,
+        "ordinal": 212,
+        "printedPage": 354,
+        "relation": "prior-level"
+      },
+      "上": {
+        "characterLevel": 1,
+        "ordinal": 149,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "为": {
+        "characterLevel": 2,
+        "ordinal": 94,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "交": {
+        "characterLevel": 2,
+        "ordinal": 33,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "以": {
+        "characterLevel": 1,
+        "ordinal": 216,
+        "printedPage": 354,
+        "relation": "prior-level"
+      },
+      "公": {
+        "characterLevel": 1,
+        "ordinal": 56,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "准": {
+        "characterLevel": 2,
+        "ordinal": 120,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "前": {
+        "characterLevel": 1,
+        "ordinal": 139,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "告": {
+        "characterLevel": 2,
+        "ordinal": 22,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "商": {
+        "characterLevel": 1,
+        "ordinal": 148,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "因": {
+        "characterLevel": 2,
+        "ordinal": 107,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "地": {
+        "characterLevel": 2,
+        "ordinal": 15,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "场": {
+        "characterLevel": 2,
+        "ordinal": 9,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "备": {
+        "characterLevel": 2,
+        "ordinal": 3,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "始": {
+        "characterLevel": 2,
+        "ordinal": 73,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "帮": {
+        "characterLevel": 2,
+        "ordinal": 2,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "开": {
+        "characterLevel": 1,
+        "ordinal": 89,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "得": {
+        "characterLevel": 1,
+        "ordinal": 31,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "忙": {
+        "characterLevel": 1,
+        "ordinal": 109,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "快": {
+        "characterLevel": 2,
+        "ordinal": 45,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "所": {
+        "characterLevel": 2,
+        "ordinal": 81,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "旁": {
+        "characterLevel": 2,
+        "ordinal": 60,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "票": {
+        "characterLevel": 2,
+        "ordinal": 62,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "站": {
+        "characterLevel": 2,
+        "ordinal": 115,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "色": {
+        "characterLevel": 2,
+        "ordinal": 70,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "要": {
+        "characterLevel": 1,
+        "ordinal": 210,
+        "printedPage": 354,
+        "relation": "prior-level"
+      },
+      "记": {
+        "characterLevel": 2,
+        "ordinal": 32,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "诉": {
+        "characterLevel": 2,
+        "ordinal": 79,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "起": {
+        "characterLevel": 1,
+        "ordinal": 136,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "路": {
+        "characterLevel": 2,
+        "ordinal": 52,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "车": {
+        "characterLevel": 1,
+        "ordinal": 21,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "边": {
+        "characterLevel": 1,
+        "ordinal": 12,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "铁": {
+        "characterLevel": 2,
+        "ordinal": 86,
+        "printedPage": 355,
+        "relation": "target-level"
+      },
+      "面": {
+        "characterLevel": 1,
+        "ordinal": 116,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "颜": {
+        "characterLevel": 2,
+        "ordinal": 101,
+        "printedPage": 355,
+        "relation": "target-level"
+      }
+    },
+    "3": {
+      "为": {
+        "characterLevel": 2,
+        "ordinal": 94,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "事": {
+        "characterLevel": 1,
+        "ordinal": 160,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "以": {
+        "characterLevel": 1,
+        "ordinal": 216,
+        "printedPage": 354,
+        "relation": "prior-level"
+      },
+      "先": {
+        "characterLevel": 1,
+        "ordinal": 195,
+        "printedPage": 354,
+        "relation": "prior-level"
+      },
+      "决": {
+        "characterLevel": 3,
+        "ordinal": 125,
+        "printedPage": 356,
+        "relation": "target-level"
+      },
+      "前": {
+        "characterLevel": 1,
+        "ordinal": 139,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "办": {
+        "characterLevel": 3,
+        "ordinal": 8,
+        "printedPage": 356,
+        "relation": "target-level"
+      },
+      "加": {
+        "characterLevel": 3,
+        "ordinal": 97,
+        "printedPage": 356,
+        "relation": "target-level"
+      },
+      "化": {
+        "characterLevel": 3,
+        "ordinal": 84,
+        "printedPage": 356,
+        "relation": "target-level"
+      },
+      "参": {
+        "characterLevel": 3,
+        "ordinal": 19,
+        "printedPage": 356,
+        "relation": "target-level"
+      },
+      "同": {
+        "characterLevel": 1,
+        "ordinal": 179,
+        "printedPage": 354,
+        "relation": "prior-level"
+      },
+      "后": {
+        "characterLevel": 1,
+        "ordinal": 70,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "完": {
+        "characterLevel": 2,
+        "ordinal": 88,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "定": {
+        "characterLevel": 3,
+        "ordinal": 45,
+        "printedPage": 356,
+        "relation": "target-level"
+      },
+      "应": {
+        "characterLevel": 3,
+        "ordinal": 254,
+        "printedPage": 357,
+        "relation": "prior-level"
+      },
+      "意": {
+        "characterLevel": 2,
+        "ordinal": 106,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "成": {
+        "characterLevel": 3,
+        "ordinal": 26,
+        "printedPage": 356,
+        "relation": "target-level"
+      },
+      "打": {
+        "characterLevel": 1,
+        "ordinal": 26,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "故": {
+        "characterLevel": 3,
+        "ordinal": 72,
+        "printedPage": 356,
+        "relation": "target-level"
+      },
+      "文": {
+        "characterLevel": 1,
+        "ordinal": 184,
+        "printedPage": 354,
+        "relation": "prior-level"
+      },
+      "最": {
+        "characterLevel": 2,
+        "ordinal": 124,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "来": {
+        "characterLevel": 1,
+        "ordinal": 96,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "法": {
+        "characterLevel": 3,
+        "ordinal": 56,
+        "printedPage": 356,
+        "relation": "target-level"
+      },
+      "然": {
+        "characterLevel": 2,
+        "ordinal": 67,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "算": {
+        "characterLevel": 3,
+        "ordinal": 207,
+        "printedPage": 357,
+        "relation": "target-level"
+      },
+      "见": {
+        "characterLevel": 1,
+        "ordinal": 82,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "认": {
+        "characterLevel": 1,
+        "ordinal": 145,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "该": {
+        "characterLevel": 3,
+        "ordinal": 63,
+        "printedPage": 356,
+        "relation": "target-level"
+      },
+      "面": {
+        "characterLevel": 1,
+        "ordinal": 116,
+        "printedPage": 353,
+        "relation": "prior-level"
+      }
+    },
+    "4": {
+      "件": {
+        "characterLevel": 1,
+        "ordinal": 83,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "原": {
+        "characterLevel": 4,
+        "ordinal": 398,
+        "printedPage": 360,
+        "relation": "prior-level"
+      },
+      "反": {
+        "characterLevel": 4,
+        "ordinal": 66,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "因": {
+        "characterLevel": 2,
+        "ordinal": 107,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "对": {
+        "characterLevel": 1,
+        "ordinal": 40,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "建": {
+        "characterLevel": 4,
+        "ordinal": 139,
+        "printedPage": 358,
+        "relation": "target-level"
+      },
+      "息": {
+        "characterLevel": 1,
+        "ordinal": 190,
+        "printedPage": 354,
+        "relation": "prior-level"
+      },
+      "意": {
+        "characterLevel": 2,
+        "ordinal": 106,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "持": {
+        "characterLevel": 3,
+        "ordinal": 29,
+        "printedPage": 356,
+        "relation": "prior-level"
+      },
+      "支": {
+        "characterLevel": 4,
+        "ordinal": 418,
+        "printedPage": 360,
+        "relation": "target-level"
+      },
+      "整": {
+        "characterLevel": 4,
+        "ordinal": 415,
+        "printedPage": 360,
+        "relation": "target-level"
+      },
+      "明": {
+        "characterLevel": 1,
+        "ordinal": 118,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "条": {
+        "characterLevel": 1,
+        "ordinal": 177,
+        "printedPage": 354,
+        "relation": "prior-level"
+      },
+      "果": {
+        "characterLevel": 1,
+        "ordinal": 61,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "此": {
+        "characterLevel": 4,
+        "ordinal": 39,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "消": {
+        "characterLevel": 4,
+        "ordinal": 352,
+        "printedPage": 360,
+        "relation": "target-level"
+      },
+      "理": {
+        "characterLevel": 3,
+        "ordinal": 137,
+        "printedPage": 356,
+        "relation": "prior-level"
+      },
+      "知": {
+        "characterLevel": 1,
+        "ordinal": 234,
+        "printedPage": 354,
+        "relation": "prior-level"
+      },
+      "结": {
+        "characterLevel": 3,
+        "ordinal": 112,
+        "printedPage": 356,
+        "relation": "prior-level"
+      },
+      "见": {
+        "characterLevel": 1,
+        "ordinal": 82,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "议": {
+        "characterLevel": 3,
+        "ordinal": 249,
+        "printedPage": 357,
+        "relation": "prior-level"
+      },
+      "证": {
+        "characterLevel": 4,
+        "ordinal": 416,
+        "printedPage": 360,
+        "relation": "prior-level"
+      },
+      "负": {
+        "characterLevel": 4,
+        "ordinal": 78,
+        "printedPage": 358,
+        "relation": "target-level"
+      },
+      "责": {
+        "characterLevel": 4,
+        "ordinal": 407,
+        "printedPage": 360,
+        "relation": "target-level"
+      },
+      "通": {
+        "characterLevel": 4,
+        "ordinal": 324,
+        "printedPage": 359,
+        "relation": "target-level"
+      }
+    },
+    "5": {
+      "之": {
+        "characterLevel": 4,
+        "ordinal": 417,
+        "printedPage": 360,
+        "relation": "prior-level"
+      },
+      "从": {
+        "characterLevel": 2,
+        "ordinal": 12,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "仿": {
+        "characterLevel": 5,
+        "ordinal": 85,
+        "printedPage": 361,
+        "relation": "target-level"
+      },
+      "优": {
+        "characterLevel": 4,
+        "ordinal": 390,
+        "printedPage": 360,
+        "relation": "prior-level"
+      },
+      "传": {
+        "characterLevel": 5,
+        "ordinal": 52,
+        "printedPage": 361,
+        "relation": "target-level"
+      },
+      "佛": {
+        "characterLevel": 5,
+        "ordinal": 91,
+        "printedPage": 361,
+        "relation": "target-level"
+      },
+      "分": {
+        "characterLevel": 1,
+        "ordinal": 48,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "反": {
+        "characterLevel": 4,
+        "ordinal": 66,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "对": {
+        "characterLevel": 1,
+        "ordinal": 40,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "尽": {
+        "characterLevel": 4,
+        "ordinal": 150,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "当": {
+        "characterLevel": 3,
+        "ordinal": 41,
+        "printedPage": 356,
+        "relation": "prior-level"
+      },
+      "彼": {
+        "characterLevel": 5,
+        "ordinal": 14,
+        "printedPage": 361,
+        "relation": "target-level"
+      },
+      "总": {
+        "characterLevel": 3,
+        "ordinal": 283,
+        "printedPage": 357,
+        "relation": "prior-level"
+      },
+      "曾": {
+        "characterLevel": 5,
+        "ordinal": 27,
+        "printedPage": 361,
+        "relation": "target-level"
+      },
+      "析": {
+        "characterLevel": 5,
+        "ordinal": 331,
+        "printedPage": 362,
+        "relation": "target-level"
+      },
+      "果": {
+        "characterLevel": 1,
+        "ordinal": 61,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "欣": {
+        "characterLevel": 5,
+        "ordinal": 346,
+        "printedPage": 363,
+        "relation": "target-level"
+      },
+      "此": {
+        "characterLevel": 4,
+        "ordinal": 39,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "毕": {
+        "characterLevel": 4,
+        "ordinal": 13,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "点": {
+        "characterLevel": 1,
+        "ordinal": 35,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "然": {
+        "characterLevel": 2,
+        "ordinal": 67,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "理": {
+        "characterLevel": 3,
+        "ordinal": 137,
+        "printedPage": 356,
+        "relation": "prior-level"
+      },
+      "由": {
+        "characterLevel": 4,
+        "ordinal": 393,
+        "printedPage": 360,
+        "relation": "prior-level"
+      },
+      "的": {
+        "characterLevel": 1,
+        "ordinal": 32,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "直": {
+        "characterLevel": 3,
+        "ordinal": 275,
+        "printedPage": 357,
+        "relation": "prior-level"
+      },
+      "相": {
+        "characterLevel": 3,
+        "ordinal": 226,
+        "printedPage": 357,
+        "relation": "prior-level"
+      },
+      "确": {
+        "characterLevel": 4,
+        "ordinal": 263,
+        "printedPage": 359,
+        "relation": "prior-level"
+      },
+      "竟": {
+        "characterLevel": 4,
+        "ordinal": 159,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "简": {
+        "characterLevel": 3,
+        "ordinal": 101,
+        "printedPage": 356,
+        "relation": "prior-level"
+      },
+      "经": {
+        "characterLevel": 2,
+        "ordinal": 38,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "结": {
+        "characterLevel": 3,
+        "ordinal": 112,
+        "printedPage": 356,
+        "relation": "prior-level"
+      },
+      "统": {
+        "characterLevel": 5,
+        "ordinal": 307,
+        "printedPage": 362,
+        "relation": "target-level"
+      },
+      "美": {
+        "characterLevel": 4,
+        "ordinal": 208,
+        "printedPage": 359,
+        "relation": "prior-level"
+      },
+      "而": {
+        "characterLevel": 3,
+        "ordinal": 53,
+        "printedPage": 356,
+        "relation": "prior-level"
+      },
+      "表": {
+        "characterLevel": 2,
+        "ordinal": 6,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "观": {
+        "characterLevel": 4,
+        "ordinal": 97,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "论": {
+        "characterLevel": 4,
+        "ordinal": 199,
+        "printedPage": 359,
+        "relation": "prior-level"
+      },
+      "赏": {
+        "characterLevel": 5,
+        "ordinal": 267,
+        "printedPage": 362,
+        "relation": "target-level"
+      },
+      "达": {
+        "characterLevel": 4,
+        "ordinal": 43,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "量": {
+        "characterLevel": 4,
+        "ordinal": 192,
+        "printedPage": 359,
+        "relation": "prior-level"
+      },
+      "针": {
+        "characterLevel": 4,
+        "ordinal": 413,
+        "printedPage": 360,
+        "relation": "prior-level"
+      }
+    },
+    "6": {
+      "倾": {
+        "characterLevel": 6,
+        "ordinal": 255,
+        "printedPage": 365,
+        "relation": "target-level"
+      },
+      "前": {
+        "characterLevel": 1,
+        "ordinal": 139,
+        "printedPage": 353,
+        "relation": "prior-level"
+      },
+      "原": {
+        "characterLevel": 4,
+        "ordinal": 398,
+        "printedPage": 360,
+        "relation": "prior-level"
+      },
+      "及": {
+        "characterLevel": 4,
+        "ordinal": 126,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "叙": {
+        "characterLevel": 6,
+        "ordinal": 335,
+        "printedPage": 365,
+        "relation": "target-level"
+      },
+      "向": {
+        "characterLevel": 3,
+        "ordinal": 230,
+        "printedPage": 357,
+        "relation": "prior-level"
+      },
+      "场": {
+        "characterLevel": 2,
+        "ordinal": 9,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "实": {
+        "characterLevel": 3,
+        "ordinal": 194,
+        "printedPage": 357,
+        "relation": "prior-level"
+      },
+      "应": {
+        "characterLevel": 3,
+        "ordinal": 254,
+        "printedPage": 357,
+        "relation": "prior-level"
+      },
+      "推": {
+        "characterLevel": 4,
+        "ordinal": 329,
+        "printedPage": 359,
+        "relation": "prior-level"
+      },
+      "提": {
+        "characterLevel": 3,
+        "ordinal": 211,
+        "printedPage": 357,
+        "relation": "prior-level"
+      },
+      "料": {
+        "characterLevel": 3,
+        "ordinal": 146,
+        "printedPage": 356,
+        "relation": "prior-level"
+      },
+      "材": {
+        "characterLevel": 4,
+        "ordinal": 23,
+        "printedPage": 358,
+        "relation": "prior-level"
+      },
+      "测": {
+        "characterLevel": 5,
+        "ordinal": 26,
+        "printedPage": 361,
+        "relation": "prior-level"
+      },
+      "涉": {
+        "characterLevel": 6,
+        "ordinal": 277,
+        "printedPage": 365,
+        "relation": "target-level"
+      },
+      "相": {
+        "characterLevel": 3,
+        "ordinal": 226,
+        "printedPage": 357,
+        "relation": "prior-level"
+      },
+      "立": {
+        "characterLevel": 5,
+        "ordinal": 183,
+        "printedPage": 362,
+        "relation": "prior-level"
+      },
+      "而": {
+        "characterLevel": 3,
+        "ordinal": 53,
+        "printedPage": 356,
+        "relation": "prior-level"
+      },
+      "证": {
+        "characterLevel": 4,
+        "ordinal": 416,
+        "printedPage": 360,
+        "relation": "prior-level"
+      },
+      "进": {
+        "characterLevel": 2,
+        "ordinal": 36,
+        "printedPage": 355,
+        "relation": "prior-level"
+      },
+      "述": {
+        "characterLevel": 5,
+        "ordinal": 289,
+        "printedPage": 362,
+        "relation": "prior-level"
+      }
+    }
+  },
+  "grammarEntries": [
+    {
+      "level": 2,
+      "pattern": "固定格式：要/快要/就要……了",
+      "printedPage": 387
+    },
+    {
+      "level": 2,
+      "pattern": "因果复句：因为……，所以……",
+      "printedPage": 388
+    },
+    {
+      "level": 2,
+      "pattern": "引出方向、路径：往",
+      "printedPage": 386
+    },
+    {
+      "level": 2,
+      "pattern": "趋向补语1：动词+来/去",
+      "printedPage": 387
+    },
+    {
+      "level": 2,
+      "pattern": "比较句1：A比B+形容词",
+      "printedPage": 387
+    },
+    {
+      "level": 2,
+      "pattern": "比较句1：A有/没有B（+这么/那么）+形容词",
+      "printedPage": 387
+    },
+    {
+      "level": 2,
+      "pattern": "时间副词：已经",
+      "printedPage": 386
+    },
+    {
+      "level": 2,
+      "pattern": "比较句1：A比B+形容词+数量补语/程度补语",
+      "printedPage": 387
+    },
+    {
+      "level": 2,
+      "pattern": "疑问代词：为什么",
+      "printedPage": 386
+    },
+    {
+      "level": 3,
+      "pattern": "假设复句：如果……，就……",
+      "printedPage": 391
+    },
+    {
+      "level": 3,
+      "pattern": "条件复句：只有……，才……",
+      "printedPage": 391
+    },
+    {
+      "level": 3,
+      "pattern": "承接复句：先……，再/然后……",
+      "printedPage": 391
+    },
+    {
+      "level": 3,
+      "pattern": "比较句2：A比B+更/还+形容词",
+      "printedPage": 391
+    },
+    {
+      "level": 3,
+      "pattern": "固定格式：(在)……以前/以后",
+      "printedPage": 390
+    },
+    {
+      "level": 3,
+      "pattern": "特殊句型：“把”字句1",
+      "printedPage": 391
+    },
+    {
+      "level": 3,
+      "pattern": "结果补语2：动词+到/住/走/上",
+      "printedPage": 390
+    },
+    {
+      "level": 3,
+      "pattern": "选择复句：或者……，或者……",
+      "printedPage": 391
+    },
+    {
+      "level": 3,
+      "pattern": "转折复句：虽然……，可是……",
+      "printedPage": 391
+    },
+    {
+      "level": 4,
+      "pattern": "固定格式：拿……来说",
+      "printedPage": 393
+    },
+    {
+      "level": 4,
+      "pattern": "因果复句：既然……，就……",
+      "printedPage": 394
+    },
+    {
+      "level": 4,
+      "pattern": "并列复句：一方面……，另一方面……",
+      "printedPage": 394
+    },
+    {
+      "level": 4,
+      "pattern": "转折复句：尽管……，但是/可是……",
+      "printedPage": 394
+    },
+    {
+      "level": 4,
+      "pattern": "假设复句：要是……，就……",
+      "printedPage": 394
+    },
+    {
+      "level": 4,
+      "pattern": "因果复句：（由于）……，因此……",
+      "printedPage": 394
+    },
+    {
+      "level": 4,
+      "pattern": "固定格式：为了……而……",
+      "printedPage": 393
+    },
+    {
+      "level": 4,
+      "pattern": "特殊句型：“把”字句2",
+      "printedPage": 393
+    },
+    {
+      "level": 4,
+      "pattern": "固定格式：在……方面",
+      "printedPage": 393
+    },
+    {
+      "level": 4,
+      "pattern": "条件复句：不管……，都/也……",
+      "printedPage": 394
+    },
+    {
+      "level": 5,
+      "pattern": "固定格式：从……来看",
+      "printedPage": 395
+    },
+    {
+      "level": 5,
+      "pattern": "固定短语：A来A去",
+      "printedPage": 395
+    },
+    {
+      "level": 5,
+      "pattern": "递进复句：不但不/不但没有……，反而……",
+      "printedPage": 396
+    },
+    {
+      "level": 5,
+      "pattern": "固定短语：A着A着",
+      "printedPage": 395
+    },
+    {
+      "level": 5,
+      "pattern": "让步复句：哪怕……，也……",
+      "printedPage": 396
+    },
+    {
+      "level": 5,
+      "pattern": "固定格式：由……组成",
+      "printedPage": 395
+    },
+    {
+      "level": 5,
+      "pattern": "连词：从而",
+      "printedPage": 395
+    },
+    {
+      "level": 5,
+      "pattern": "固定格式：不管怎样说",
+      "printedPage": 396
+    },
+    {
+      "level": 5,
+      "pattern": "因果复句：……，因而……",
+      "printedPage": 396
+    },
+    {
+      "level": 6,
+      "pattern": "转折复句：虽……，但/可/却/也……",
+      "printedPage": 399
+    },
+    {
+      "level": 6,
+      "pattern": "条件复句：除非……，才……",
+      "printedPage": 399
+    },
+    {
+      "level": 6,
+      "pattern": "并列复句：一时……一时……",
+      "printedPage": 399
+    },
+    {
+      "level": 6,
+      "pattern": "条件复句：除非……，否则/不然……",
+      "printedPage": 399
+    },
+    {
+      "level": 6,
+      "pattern": "让步复句：就算……，也……",
+      "printedPage": 399
+    },
+    {
+      "level": 6,
+      "pattern": "目的复句：……，以便……",
+      "printedPage": 399
+    },
+    {
+      "level": 6,
+      "pattern": "条件复句：凡是……，都……",
+      "printedPage": 399
+    },
+    {
+      "level": 6,
+      "pattern": "固定格式：X归X，Y归Y",
+      "printedPage": 399
+    },
+    {
+      "level": 6,
+      "pattern": "选择复句：要么……，要么……",
+      "printedPage": 399
+    }
+  ],
+  "grammarSectionPages": {
+    "2": [
+      386,
+      388
+    ],
+    "3": [
+      389,
+      391
+    ],
+    "4": [
+      392,
+      394
+    ],
+    "5": [
+      395,
+      397
+    ],
+    "6": [
+      398,
+      399
+    ]
+  }
+}

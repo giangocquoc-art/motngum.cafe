@@ -1,0 +1,143 @@
+/* A self-contained non-canonical narrative experiment. Main's HSK progress is never touched. */
+(function(root,factory){"use strict";var api=factory();if(typeof module!=="undefined"&&module.exports)module.exports=api;root.AnBranchStory=api;})(typeof globalThis!=="undefined"?globalThis:this,function(){"use strict";
+function C(id,zh,py,vi,to,traits,relationships,memory,reply,aliases){return {id:id,zh:zh,py:py,vi:vi,to:to,traits:traits||{},relationships:relationships||{},memory:memory,consequence:{kind:"journal",text:memory},reply:reply,aliases:aliases||[]};}
+function N(id,place,title,speaker,story,options,echoes){return {id:id,kind:"choice",place:place,title:title,speaker:speaker,story:story,options:options,echoes:echoes||[]};}
+function P(id,place,title,speaker,story,to,echoes){return {id:id,kind:"passage",place:place,title:title,speaker:speaker,story:story,to:to,echoes:echoes||[]};}
+var scenes=[
+N("arrival","street","Buổi sáng đầu tiên đến trường","Mẹ","Thành Đô còn ẩm mùi mưa. An theo mẹ tới trường mới, tay siết quai cặp. Quyển sổ hai mẹ con mở tối qua nằm trong cặp, đã có vài chữ và những nét bút chưa ngay hàng. Sẻ xanh nhạt đậu trên cành gần đó, hỏi nhỏ: “Cậu cũng chưa biết đi lối nào à?” Chỉ An hiểu; mẹ chỉ nghe tiếng chim. Mẹ dừng chân, đợi An chọn cách bước tiếp.",[
+C("look-around","我想看看。","Wǒ xiǎng kànkan.","Nói với mẹ rằng con muốn nhìn quanh một chút.","arrival-street",{curiosity:2,courage:1},{mother:0},"An chọn nhìn kỹ Thành Đô trước khi bước đi.","Mẹ thả chậm bước chân: “Được, mẹ đợi con.”",["我想看一看","我想看看这里"]),
+C("hold-mother","妈妈，我们一起走。","Māma, wǒmen yìqǐ zǒu.","Rủ mẹ cùng đi với mình.","arrival-mother",{empathy:1,courage:1},{mother:2},"An muốn bắt đầu một nơi lạ cùng mẹ.","Mẹ xiết tay An: “Mình đi cùng nhau.”",["妈妈一起走","我们一起走"])
+]),
+P("arrival-street","street","Chữ trên biển hiệu","An","An đứng trước biển quán nhỏ. Mấy chữ trông quen quen, nhưng cậu mới nhận ra được một nét rồi lại nhầm. Mẹ vẫn chờ cạnh bên. An giữ lại câu hỏi trong đầu để lát nữa viết vào sổ: “Cuối ngày mình sẽ hiểu thêm điều gì nhỉ?”","school-gate"),
+P("arrival-mother","street","Khoảng cách của một bàn tay","Mẹ","Mẹ kể lần đầu đi xa nhà, mẹ cũng từng xuống nhầm một trạm xe. An ngước lên: hóa ra mẹ không phải lúc nào cũng biết đường. Cậu nắm tay mẹ, chiếc cặp trên vai bỗng bớt nặng.","school-gate"),
+N("school-gate","school","Một chỗ ngồi còn trống","王老师 · Cô Vương","Tiếng chuông đầu tiên vang lên. Cô Vương đón An rồi đưa em vào lớp. Tiểu Vũ nhìn sang, nhích chiếc cặp khỏi một ghế trống. An định chào, nhưng câu nói mắc lại ở đầu lưỡi. Cô vẫn đứng bên cạnh, không giục.",[
+C("ask-friend","我可以坐这里吗？","Wǒ kěyǐ zuò zhèlǐ ma?","Hỏi Tiểu Vũ liệu mình có thể ngồi cạnh không.","school-friend",{courage:2,empathy:1},{xiaoyu:2},"An tự mình hỏi Tiểu Vũ về chiếc ghế bên cạnh.","Tiểu Vũ dịch sách sang một nửa bàn: “当然可以！”",["我能坐这里吗","我可以坐这儿吗"]),
+C("ask-teacher","老师，可以帮帮我吗？","Lǎoshī, kěyǐ bāngbang wǒ ma?","Thành thật nhờ cô Vương dẫn đến chỗ ngồi.","school-teacher",{courage:1,empathy:1},{wang:2},"An tin tưởng nhờ cô Vương giúp tìm chỗ.","Cô gật đầu: “当然。我们慢慢来。”",["老师可以帮我吗","老师帮帮我"]),
+C("watch-first","我想先看看。","Wǒ xiǎng xiān kànkan.","Đứng quan sát một lúc rồi tự chọn chỗ.","school-watch",{curiosity:2},{wang:1},"An dành thời gian quan sát lớp học mới.","Cô Vương không giục. Cô chỉ chỉ vào chỗ trống gần cửa sổ.",["我先看看","我想看看"])
+]),
+P("school-friend","class","Bàn học hai người","小雨 · Tiểu Vũ","Tiểu Vũ vẽ một con chim sẻ vào góc vở, rồi đẩy bút về phía An. An vẽ thêm một chiếc lá. Hai người chưa hiểu hết câu nói của nhau, nhưng đã làm chung được một việc.","lost-diary"),
+P("school-teacher","class","Một câu nói đủ nhỏ","王老师 · Cô Vương","Cô Vương viết tên 安 lên tờ giấy nhỏ, đặt ở góc bàn. “Em cứ hỏi khi chưa hiểu”, cô nói. Trong căn phòng ồn ào, có một người lớn biết cách nói đủ nhỏ để An nghe.","lost-diary"),
+P("school-watch","class","Góc cửa sổ","An","An chọn chiếc bàn sát cửa. Nhìn cách Tiểu Vũ và các bạn mở vở, An làm theo. Một lúc sau, Tiểu Vũ quay sang mỉm cười. Không ai biết An đã phải cố gắng nhiều đến thế mới mỉm cười lại.","lost-diary"),
+N("lost-diary","class","Quyển sổ biến mất","An","Giờ ra chơi, An thò tay vào cặp. Quyển sổ mẹ đưa không còn đó. Giấy nháp nằm xộc xệch, quai cặp hơi mở. An nhớ lời mẹ viết ở trang đầu: “Mỗi ngày, chỉ cần hiểu thêm một người.” Tim An đập nhanh. Nếu quyển sổ mất thật, An chưa biết nói với mẹ thế nào.",[
+C("friend-search","小雨，你能帮我吗？","Xiǎoyǔ, nǐ néng bāng wǒ ma?","Rủ Tiểu Vũ cùng tìm quyển sổ.","search-friend",{empathy:2,courage:1},{xiaoyu:2},"An để Tiểu Vũ cùng chia sẻ nỗi lo mất sổ.","Tiểu Vũ khép vở lại: “我们一起找！”",["小雨帮帮我","你可以帮我吗"]),
+C("teacher-search","老师，我的本子不见了。","Lǎoshī, wǒ de běnzi bú jiàn le.","Báo ngay với cô Vương rằng mình mất sổ.","search-teacher",{courage:2},{wang:2},"An nói thẳng với cô Vương khi mất sổ.","Cô cúi xuống ngang tầm An: “别着急。我们找找。”",["我的本子不见了","老师我的本子不见了"]),
+C("solo-search","我想自己找找。","Wǒ xiǎng zìjǐ zhǎozhao.","Tự kiểm tra bàn, cặp và cửa lớp trước.","search-alone",{curiosity:2,courage:1},{xiaoyu:0},"An thử tự tìm bằng những dấu vết nhỏ.","An cúi nhìn quanh bàn rồi bắt đầu quan sát.",["我自己找","我想找找"])
+],[
+{if:"ask-friend",text:"An nhớ Tiểu Vũ từng đẩy sang nửa trang vở để An vẽ cùng. Lúc này, An không chắc có nên nhờ bạn lần nữa."},
+{if:"ask-teacher",text:"Mảnh giấy viết tên 安 vẫn ở góc bàn, khiến An nhớ lời cô Vương: cứ hỏi khi chưa hiểu."},
+{if:"watch-first",text:"Lần này An cũng muốn quan sát trước, nhưng nỗi sợ mất quyển sổ làm mọi thứ khó bình tĩnh hơn."}
+]),
+P("search-friend","class","Dấu giày bên cửa","小雨 · Tiểu Vũ","Tiểu Vũ hỏi những bạn ngồi cuối lớp. Một người nhớ đã thấy quyển sổ màu kem gần cửa. Tiểu Vũ nắm tay An. Hai đứa chuẩn bị tới phòng trực; bạn nói chậm từng từ để An hiểu.","staff-office"),
+P("search-teacher","class","Bước chân cô giáo","王老师 · Cô Vương","Cô Vương gọi lớp trưởng hỏi về vật thất lạc. Cô ra hiệu An theo mình tới phòng trực, không nói “chuyện nhỏ thôi”, vì cô hiểu quyển sổ ấy không hề nhỏ với An.","staff-office"),
+P("search-alone","class","Những dấu vết nhỏ","An","An kiểm tra lại chân bàn và ngăn cặp. Ở cửa lớp có tờ nhắn về đồ thất lạc, kèm hình một cuốn sổ nhỏ và mũi tên chỉ tới phòng trực. An nhìn theo mũi tên, chần chừ: nếu sổ ở đó, cậu vẫn phải mở lời.","staff-office"),
+N("staff-office","office","Tại bàn trực","Cô nhân viên trực","Sau tấm kính là quyển sổ quen thuộc. Cô nhân viên hỏi: “你叫什么名字？” — Cháu tên gì? An nghe được chữ 名字, rồi nhìn xuống thẻ tên trên áo. Cô chờ, tay vẫn đặt nhẹ trên bìa sổ.",[
+C("say-clearly","我叫安。这是我的本子。","Wǒ jiào Ān. Zhè shì wǒ de běnzi.","Bình tĩnh giới thiệu và nói đó là sổ của mình.","canteen",{courage:2,curiosity:1},{wang:1},"An nói rõ tên và nhận lại quyển sổ bằng tiếng Trung.","Cô nhân viên đưa sổ qua cửa kính: “好，拿好。”",["我叫安这是我的本子","这是我的本子我叫安"]),
+C("say-simple","我叫安。","Wǒ jiào Ān.","Chỉ nói tên mình, để cô nhìn thẻ tên.","canteen",{courage:1},{mother:1},"An nhận ra một câu ngắn cũng có thể giúp mình được hiểu.","Cô nhân viên đối chiếu tên rồi mỉm cười trao trả quyển sổ.",["我是安","我叫明安"]),
+C("ask-again","请再说一遍。","Qǐng zài shuō yí biàn.","Xin cô nhắc lại vì chưa nghe rõ.","canteen",{curiosity:2,courage:1},{wang:1},"An dám nói khi không nghe rõ và xin người khác nhắc lại.","Cô chậm rãi hỏi lại, nhìn thẻ tên của An rồi trả quyển sổ.",["请再说一次","请慢一点"])
+],[
+{if:"friend-search",text:"Tiểu Vũ đứng cùng An trước bàn trực, giơ hai ngón tay làm dấu cổ vũ."},
+{if:"teacher-search",text:"Cô Vương đợi ở bên cạnh, nhưng không nói thay An."},
+{if:"solo-search",text:"Không có ai đứng cạnh để nhắc lời. An có thể thử theo nhịp của mình."}
+]),
+N("canteen","canteen","Tan học, quán mì vẫn sáng","刘奶奶 · Bà Lưu","Tan học, An kiểm tra quyển sổ trong cặp thêm một lần rồi cùng Tiểu Vũ ghé quán bà Lưu. Mùi nước dùng bay ra tận cửa. Bà đang xoay xở giữa quầy và mấy bàn khách; một chồng bát sạch chưa xếp, còn Tiểu Vũ vẫy An tới bàn bên cửa sổ.",[
+C("help-liu","奶奶，我来帮您。","Nǎinai, wǒ lái bāng nín.","Giúp bà Lưu xếp bát trước khi ăn.","serve-liu",{empathy:2,courage:1},{liu:3},"An giúp bà Lưu xếp chồng bát sạch cạnh quầy.","Bà Lưu cười: “小心，碗有点热！”",["我帮您","奶奶我来帮你"]),
+C("sit-friend","小雨，我们一起吃吧。","Xiǎoyǔ, wǒmen yìqǐ chī ba.","Rủ Tiểu Vũ cùng ăn.","serve-friend",{empathy:1},{xiaoyu:3},"An ngồi xuống cùng Tiểu Vũ sau buổi học.","Tiểu Vũ đẩy ghế ra: “快来！”",["我们一起吃吧","小雨一起吃"]),
+C("read-menu","我想看看菜单。","Wǒ xiǎng kànkan càidān.","Đọc thử thực đơn và những chữ chưa biết.","serve-menu",{curiosity:2},{liu:1},"An tò mò tìm hiểu thực đơn của bà Lưu.","Bà Lưu chỉ vào một hàng chữ lớn: “面条。”",["我看看菜单","我想看菜单"])
+]),
+P("serve-liu","canteen","Cái bát nóng","刘奶奶 · Bà Lưu","An vừa phụ bà đặt bát sạch và xếp đũa cạnh quầy, rồi quay lại ngồi với Tiểu Vũ. Cậu vẫn chưa hiểu hết lời bà, nhưng một câu dặn chậm và cái gật đầu đã giúp cậu biết phải làm gì.","noodle-order"),
+P("serve-friend","canteen","Bàn bên cửa sổ","小雨 · Tiểu Vũ","Tiểu Vũ nghe chuyện quyển sổ mà không ngắt lời. Rồi bạn kể mình cũng từng quên bài tập vào ngày đầu chuyển lớp. An bật cười: có lẽ ai cũng từng cảm thấy lạc lõng.","noodle-order"),
+P("serve-menu","canteen","Những chữ trên bảng gỗ","An","An lần theo nét chữ 面. Bên cạnh nó là hình một bát mì. Lần đầu tiên, tiếng Trung trên biển hiệu không còn chỉ là những vệt mực vô nghĩa.","noodle-order"),
+N("noodle-order","canteen","An muốn ăn thế nào?","刘奶奶 · Bà Lưu","Bà Lưu đặt tay lên lọ ớt, chờ An gọi món. Cậu nhìn Tiểu Vũ rồi nhìn bảng có chữ 面条. Mùi ớt thơm nhưng hơi lạ; An không muốn gật đầu chỉ vì ngại nói mình chưa quen.",[
+C("mild","我想要一碗不辣的面。","Wǒ xiǎng yào yì wǎn bú là de miàn.","Gọi mì không cay, nói rõ mình thích gì.","walk-home",{courage:1},{liu:1},"An biết nói rõ sở thích thay vì cố làm vừa lòng mọi người.","Bà Lưu gật đầu: “好，不放辣椒。”",["我要不辣的面","我想吃不辣的面"]),
+C("try-hot","我想试一点辣的。","Wǒ xiǎng shì yìdiǎn là de.","Thử một chút vị cay Thành Đô.","walk-home",{curiosity:2,courage:1},{liu:1},"An thử một ít vị cay mới và biết có cốc nước bà chuẩn bị bên cạnh.","Bà Lưu để sẵn nước bên cạnh: “先尝一点。”",["我想试辣的","给我一点辣的"]),
+C("share-bowl","我们可以一起吃吗？","Wǒmen kěyǐ yìqǐ chī ma?","Hỏi Tiểu Vũ có muốn cùng nếm thử không.","walk-home",{empathy:2},{xiaoyu:2,liu:1},"An nghĩ đến việc chia sẻ bữa ăn cùng bạn.","Tiểu Vũ gật đầu, bà Lưu lấy thêm một đôi đũa sạch.",["可以一起吃吗","我们一起吃好吗"])
+]),
+N("walk-home","home","Mẹ đợi ở đầu ngõ","Mẹ","Ăn xong, An và Tiểu Vũ đi qua hàng cây đã đổ bóng dài. Mẹ đang đợi ở đầu ngõ gần nhà; Tiểu Vũ dừng lại cùng An trước khi về. Mẹ hỏi ngày đầu đi học thế nào. An sờ quai cặp, chưa biết nên kể chuyện quyển sổ hay chuyện người bạn mới trước.",[
+C("tell-mother","妈妈，今天我有点害怕。","Māma, jīntiān wǒ yǒudiǎn hàipà.","Thừa nhận với mẹ rằng hôm nay có lúc mình sợ.","home-confide",{empathy:1,courage:2},{mother:3},"An chọn nói thật với mẹ về nỗi sợ và quyển sổ.","Mẹ khẽ nói: “Con không cần phải giấu mẹ.”",["妈妈我有点害怕","今天我害怕"]),
+C("keep-secret","妈妈，我今天学会了很多。","Māma, wǒ jīntiān xuéhuì le hěn duō.","Chỉ kể những điều học được, giữ nỗi sợ cho riêng mình.","home-quiet",{curiosity:1},{mother:1},"An kể với mẹ về những điều mới, nhưng giữ lại nỗi sợ trong lòng.","Mẹ nhận ra An ngập ngừng, song không ép con kể.",["我学会了很多","今天我学了很多"]),
+C("invite-friend","小雨，明天来我家吗？","Xiǎoyǔ, míngtiān lái wǒ jiā ma?","Mời Tiểu Vũ đến nhà vào hôm sau.","home-invite",{courage:2,empathy:1},{xiaoyu:3,mother:1},"An muốn nối hai thế giới của mình bằng cách mời Tiểu Vũ đến nhà.","Tiểu Vũ vui vẻ hỏi mẹ An có đồng ý không; An hứa sẽ hỏi mẹ.",["明天来我家吗","你明天来我家吗"])
+],[
+{if:"mild",text:"Vị nước dùng dịu khiến An nghĩ: dám nói mình không thích cay cũng là một điều đáng học."},
+{if:"try-hot",text:"Đầu lưỡi còn hơi tê. An nhớ bà Lưu đưa sẵn một cốc nước trước khi mình kịp xin."},
+{if:"share-bowl",text:"Tiểu Vũ vẫn cười vì hai người đã chia nhau nửa bát mì."},
+{if:"friend-search",text:"Tiểu Vũ bước chậm hơn để đợi An, như lúc cả hai cùng tìm quyển sổ."},
+{if:"teacher-search",text:"Lúc rời trường, cô Vương đã vẫy tay chào. An vẫn nhớ cảm giác cô đứng bên mà không nói thay mình."}
+]),
+P("home-confide","home","Chuyện chưa kể ở trường","Mẹ","Tiểu Vũ chào mẹ con An rồi về. Vào nhà, An kể từ chiếc ghế trống đến quyển sổ thất lạc. Mẹ chỉ hỏi: “Lúc ấy con cần điều gì nhất?” An nghĩ rất lâu trước khi trả lời.","night"),
+P("home-quiet","home","Một khoảng lặng","Mẹ","Tiểu Vũ chào rồi về. Trong nhà, An đọc lại các chữ mới trong sổ, còn mẹ gọt một quả lê. Khi mẹ hỏi thêm về buổi học, An chỉ cười. Một số câu chuyện cần thời gian mới thành lời, và mẹ cho con thời gian ấy.","night"),
+P("home-invite","home","Ngày mai có thể đông vui hơn","Mẹ","Tiểu Vũ chào rồi về. An vào nhà hỏi mẹ liệu bạn có thể ghé chơi hôm sau không. Mẹ bảo nhà còn hơi bừa, nhưng cùng nhau dọn sẽ kịp. An bỗng thấy hai thế giới của mình có thể gặp nhau ở một chiếc bàn ăn.","night"),
+N("night","home","Trang cuối của ngày đầu tiên","An","Trước khi ngủ, An mở quyển sổ dưới ánh đèn vàng. Những chữ vừa học nằm cạnh một vệt mực cậu lỡ quệt bằng tay áo. Sẻ nghiêng đầu nhìn trang giấy: “Cậu định viết hết cả ngày vào đó à?” An bật cười, rồi chọn một điều mình muốn giữ lại.",[
+C("write-question","明天，我还想知道为什么。","Míngtiān, wǒ hái xiǎng zhīdào wèishénme.","Viết một câu hỏi An muốn khám phá tiếp.","epilogue",{curiosity:2},{wang:1},"An quyết định giữ lại một câu hỏi cho ngày mai.","Quyển sổ có thêm một dấu hỏi nhỏ dưới chữ 安.",["我还想知道为什么","明天我想知道"]),
+C("write-people","谢谢你们。","Xièxie nǐmen.","Viết lời cảm ơn những người đã giúp An.","epilogue",{empathy:2},{xiaoyu:1,liu:1,mother:1},"An ghi tên những người làm mình thấy bớt cô đơn.","Bên cạnh lời cảm ơn là nét vẽ một chiếc bàn có nhiều chỗ ngồi.",["谢谢你","谢谢大家"]),
+C("write-promise","明天我会再试一次。","Míngtiān wǒ huì zài shì yí cì.","Tự hứa sẽ thử lại điều mình còn ngại.","epilogue",{courage:2},{mother:1},"An hứa với chính mình sẽ thử lại vào ngày mai.","Ở cuối trang, An gạch dưới hai chữ 再试 — thử lần nữa.",["我会再试一次","明天再试一次"])
+]),
+{id:"epilogue",kind:"milestone",place:"home",title:"Một trang sổ khép lại",speaker:"Minh An",story:"Thành Đô vẫn sáng đèn ngoài cửa sổ. An đặt sổ cạnh chiếc cặp, kiểm tra khóa kéo rồi mới nằm xuống. Cậu còn vài điều chưa hiểu, nhưng đã có những người để ngày mai hỏi tiếp.",to:"day2-arrival"},
+{id:"day2-arrival",kind:"route",place:"home",title:"Buổi sáng thứ hai",speaker:"Mẹ",story:"Mùi bánh nóng đánh thức An. Cậu với tay tìm quyển sổ, nhìn thấy nó cạnh cặp mới thở ra. Từ bếp, mẹ gọi: “Dậy ăn sáng nào con.”",routes:[{requires:{flag:"invite-friend"},to:"day2-guest-arrives"},{to:"day2-home-quiet"}]},
+P("day2-guest-arrives","home","Tin nhắn trước bữa sáng","Mẹ","Mẹ đọc tin nhắn của nhà Tiểu Vũ: bạn sẽ ghé sau bữa sáng, mang theo bức vẽ chim sẻ chưa tô xong. An nhìn góc bàn còn đầy giấy. Lời mời hôm qua giờ thành một việc cần chuẩn bị thật rồi.","day2-breakfast"),
+P("day2-home-quiet","home","Buổi sáng yên trong bếp","Mẹ","Trên bàn là bánh nóng và hai chiếc cốc. Mẹ hỏi An có ngủ ngon không. Cậu vừa gật vừa gỡ quai cặp mắc vào chân ghế. Trước giờ đi học vẫn còn đủ một chút thời gian để ngồi cùng mẹ.","day2-breakfast"),
+N("day2-breakfast","home","Trước giờ ra cửa","Mẹ","Mẹ xếp hộp cơm vào cặp cho An. Cậu tự kiểm tra ngăn sổ, rồi chợt nhớ một điều từ hôm qua. Mẹ kéo ghế lại, đợi An nói nốt trước khi cả hai ra cửa.",[
+Object.assign(C("morning-ready","妈妈，我准备好了。","Māma, wǒ zhǔnbèi hǎo le.","Nói với mẹ rằng con đã sẵn sàng.","day2-ready",{courage:1},{mother:1},"An bước ra khỏi nhà với một lời chào bình thường nhưng chắc chắn.","Mẹ chỉnh lại quai cặp: “Đi đường cẩn thận.”",["我准备好了","妈妈我准备好了"]),{mood:"determined"}),
+Object.assign(C("confess-yesterday","妈妈，昨天我有点害怕。","Māma, zuótiān wǒ yǒudiǎn hàipà.","Kể thật điều mình đã giấu hôm qua.","day2-confession",{courage:2,empathy:1},{mother:3},"An chọn ngày hôm sau để nói chuyện đã khiến mình lo sợ.","Mẹ đặt hộp cơm xuống: “Cảm ơn con đã kể.”",["昨天我有点害怕","妈妈我昨天害怕"]),{requires:{flag:"keep-secret"},mood:"vulnerable"}),
+Object.assign(C("ask-diary-question","妈妈，为什么这个字这样写？","Māma, wèishénme zhège zì zhèyàng xiě?","Mang câu hỏi trong sổ ra hỏi mẹ.","day2-mother-explains",{curiosity:2},{mother:1},"An mang câu hỏi tối qua ra ánh sáng ban ngày.","Mẹ nói: “Mẹ cũng không biết hết, mình cùng tìm hiểu nhé.”",["这个字为什么这样写","妈妈为什么这样写"]),{requires:{flag:"write-question"},mood:"curious"}),
+Object.assign(C("prepare-for-guest","妈妈，小雨快来了！","Māma, Xiǎoyǔ kuài lái le!","Chuẩn bị đón Tiểu Vũ đã được mời.","day2-guest-prep",{empathy:2},{mother:1,xiaoyu:1},"An dọn góc bàn để Tiểu Vũ có chỗ ngồi.","Mẹ mang thêm hai chiếc cốc rồi mỉm cười.",["小雨快来了","妈妈小雨来了"]),{requires:{flag:"invite-friend"},mood:"excited"})
+],[
+{if:"keep-secret",text:"Hôm qua An chỉ nói mình đã học được nhiều. Sáng nay, chuyện quyển sổ vẫn nằm trong cổ họng."},
+{if:"tell-mother",text:"Mẹ không hỏi lại nỗi sợ hôm qua. Mẹ đã nghe, và cho An quyền tự quyết định nói tiếp khi nào."}
+]),
+P("day2-ready","street","Con đường đã nhìn thấy một lần","An","An chào mẹ rồi bước ra ngõ. Cùng một ngã tư, cùng mùi bánh nóng; hôm nay cậu nhận ra biển quán mẹ từng chỉ hôm qua. Cậu vẫn phải dừng lại kiểm tra mình rẽ đúng hướng.","day2-bird",[{if:"invite-friend",text:"Tiểu Vũ vừa tới cửa thì An xỏ xong giày. Hai đứa cùng chào mẹ rồi đi học, vừa đi vừa xem bức tranh bạn mang theo."}]),
+P("day2-confession","home","Bữa sáng không cần phải hoàn hảo","Mẹ","Mẹ nghe An kể hết nỗi sợ khi đánh mất sổ. Cậu ngừng giữa câu, rồi nói tiếp. Mẹ đặt tay lên bàn, chờ đến khi con kể xong. Cả hai ngồi thêm một chút rồi mới ra khỏi nhà.","day2-bird",[{if:"invite-friend",text:"Chuông cửa vang lên khi An đã kể xong. Tiểu Vũ mang tranh tới; mẹ tiễn hai đứa ra ngõ cùng nhau."}]),
+P("day2-mother-explains","home","Câu hỏi trên trang giấy","Mẹ","Mẹ và An mở từ điển cùng nhau. Mẹ chỉ chỗ ghi nghĩa, rồi thú nhận có phần mẹ cũng chưa hiểu. An chép thêm một dấu hỏi nhỏ vào sổ để hỏi cô Vương. Hai mẹ con thu dọn bàn trước khi ra cửa.","day2-bird",[{if:"invite-friend",text:"Tiểu Vũ tới đúng lúc An cất sổ. Bạn ghé xem dấu hỏi mới, rồi hai đứa cùng đi học."}]),
+P("day2-guest-prep","home","Một chỗ cho bạn","小雨 · Tiểu Vũ","An gom giấy trên góc bàn, vô ý làm rơi một chiếc bút rồi cúi nhặt. Vừa dọn xong thì chuông cửa vang lên. Tiểu Vũ cầm bức vẽ chim sẻ bước vào. Hai đứa xem tranh một lát, chào mẹ rồi cùng đi học.","day2-bird"),
+N("day2-bird","class","Sẻ bay nhầm vào lớp","小雨 · Tiểu Vũ","Tới lớp, An thấy Sẻ xanh nhạt vỗ cánh trước ô kính. “Tớ tưởng bên kia cũng là cửa mở,” Sẻ lí nhí. Chỉ An hiểu lời ấy; Tiểu Vũ và các bạn chỉ nghe tiếng chim ríu rít. Vài bạn tiến gần làm Sẻ cuống hơn. Tiểu Vũ níu tay áo An: “我们怎么办？” — Chúng mình làm sao đây? An định đưa tay ra, rồi khựng lại khi Sẻ né đi.",[
+C("bird-quiet","别着急，我们慢慢来。","Bié zháojí, wǒmen mànmàn lái.","Bảo mọi người đừng vội, cùng bình tĩnh lại.","day2-bird-quiet",{empathy:2},{xiaoyu:1,wang:1},"An bảo mọi người lùi lại để chim bớt sợ.","Tiểu Vũ khẽ khàng ra hiệu cho các bạn đứng xa.",["别着急","我们慢慢来"]),
+C("bird-teacher","老师，小鸟在教室里。","Lǎoshī, xiǎoniǎo zài jiàoshì lǐ.","Báo với cô Vương và nhờ cô giúp.","day2-bird-teacher",{courage:2},{wang:2},"An nói rõ với cô về chú chim sẻ bị mắc trong lớp.","Cô Vương bảo lớp mở lối ra và không đuổi theo chú chim.",["小鸟在教室里","老师有小鸟"]),
+Object.assign(C("bird-with-friend","小雨，我们一起打开窗户吧。","Xiǎoyǔ, wǒmen yìqǐ dǎkāi chuānghu ba.","Phối hợp với Tiểu Vũ mở lối bay ra.","day2-bird-team",{empathy:1,courage:1},{xiaoyu:2},"An và Tiểu Vũ cùng thực hiện một việc khó mà không hoảng.","Tiểu Vũ giữ cửa, An mở nhẹ cánh cửa sổ.",["我们一起打开窗户吧","小雨打开窗户"]),{requires:{anyFlags:["ask-friend","friend-search","invite-friend"]}})
+],[{if:"invite-friend",text:"Bức tranh chim sẻ Tiểu Vũ mang tới sáng nay bỗng trở thành một điều trùng hợp khiến An không thể quên."},{if:"watch-first",text:"An lại nhớ lần mình đứng quan sát lớp trước khi tìm chỗ ngồi. Bây giờ quan sát cũng có thể giúp một sinh vật nhỏ."}]),
+P("day2-bird-quiet","class","Khoảng trống cho đôi cánh","An","An nói nhỏ, giọng còn hơi run. Tiểu Vũ ra hiệu cho các bạn lùi lại rồi mở cửa sổ. Sẻ nhìn thấy ô cửa mở, ngập ngừng một nhịp rồi bay ra: “À, lối này!” Tiểu Vũ chỉ nghe một tiếng ríu ngắn. An thở ra, hạ bàn tay nãy giờ vẫn giơ lơ lửng.","day2-liu"),
+P("day2-bird-teacher","class","Cả lớp cùng mở lối","王老师 · Cô Vương","Cô Vương mở cửa sổ, bảo các bạn đứng xa để Sẻ tự tìm lối. An đứng cạnh cô chờ. “Tớ thấy rồi,” Sẻ nói, rồi bay ra. Cô chỉ nghe tiếng chim, còn An mỉm cười vì hiểu. Tiểu Vũ khẽ đập vai bạn trước khi cả lớp quay lại bàn.","day2-liu"),
+P("day2-bird-team","class","Một việc làm chung","小雨 · Tiểu Vũ","Tiểu Vũ giữ cánh cửa, An mở nhẹ cửa sổ rồi cả hai lùi lại. Sẻ nghiêng đầu kiểm tra khoảng trống trước khi bay ra, để lại một chiếc lông nhỏ trên bậu. “Lần này đúng cửa rồi,” chỉ An nghe được. Tiểu Vũ nhặt chiếc lông, kẹp vào góc vở.","day2-liu"),
+N("day2-liu","canteen","Bà Lưu lại thấy An","刘奶奶 · Bà Lưu","Tan học, An và Tiểu Vũ đi ngang quán mì. Bà Lưu nhận ra hai đứa, nhấc tấm rèm cửa: “Vào ngồi một lát không?” Trên quầy có khăn sạch và một chồng bát; phía sau bà là mấy hộp mì vừa được giao tới.",[
+C("liu-ask","奶奶，您今天好吗？","Nǎinai, nín jīntiān hǎo ma?","Hỏi thăm bà Lưu trước khi đi.","day2-liu-chat",{empathy:1},{liu:1},"An dừng lại hỏi bà Lưu một câu chân thành.","Bà hỏi ngược: “Cháu còn nhớ mì hôm qua không?”",["您今天好吗","奶奶好"]),
+C("liu-help","奶奶，我可以帮忙吗？","Nǎinai, wǒ kěyǐ bāngmáng ma?","Chủ động giúp bà rửa và xếp bát.","day2-liu-help",{empathy:2,courage:1},{liu:2},"An dành thời gian để phụ bà dù chưa quen quán.","Bà đưa An khăn sạch và dặn cẩn thận.",["我可以帮忙吗","奶奶我帮忙"]),
+Object.assign(C("liu-stock","奶奶，这些面条放哪里？","Nǎinai, zhèxiē miàntiáo fàng nǎlǐ?","Được bà tin giao sắp xếp hộp mì.","day2-liu-stock",{curiosity:1,empathy:1},{liu:3},"Nhờ lần giúp quán trước, bà Lưu giao An một việc có trách nhiệm hơn.","Bà cười: “Hôm qua cháu xếp bát rất cẩn thận, bà tin cháu.”",["这些面条放哪里","面条放哪里"]),{requires:{flag:"help-liu"}}),
+Object.assign(C("liu-menu","奶奶，这两个字怎么读？","Nǎinai, zhè liǎng ge zì zěnme dú?","Hỏi thêm hai chữ trên thực đơn hôm qua.","day2-liu-menu",{curiosity:2},{liu:1},"Lần đầu An chỉ nhận ra hình chữ, hôm nay An chủ động hỏi cách đọc.","Bà Lưu đọc chậm, rồi để An tự thử nhắc lại.",["这两个字怎么读","这怎么读"]),{requires:{flag:"read-menu"}})
+],[{if:"help-liu",text:"Bà vẫn nhớ đôi đũa An xếp ngay ngắn hôm qua và gọi An là “người phụ việc nhỏ”."},{if:"share-bowl",text:"Bà hỏi hôm qua hai đứa đã ăn hết bát mì chia đôi chưa."}]),
+P("day2-liu-chat","canteen","Một câu hỏi rất đời thường","刘奶奶 · Bà Lưu","Bà kể hôm nay ít khách nên có thời gian ngồi uống trà. An hiểu thêm rằng một câu chào không chỉ để bắt đầu bài học; đôi khi nó là món quà nhỏ cho người đang làm việc.","day2-night"),
+P("day2-liu-help","canteen","Nước ấm trên tay","An","An vừa giúp bà rửa và xếp bát; có một chiếc cậu xếp lệch nên phải chỉnh lại. Bà Lưu nói “谢谢”, đưa cậu chiếc khăn khô. An quay lại ngồi cạnh Tiểu Vũ, xoa hai bàn tay còn ấm trước khi cả hai về nhà.","day2-night"),
+P("day2-liu-stock","canteen","Chiếc kệ được tin cậy","刘奶奶 · Bà Lưu","An vừa xếp xong những hộp mì khô theo nhãn và ngày nhập. Có chỗ chưa rõ, cậu đã hỏi lại bà trước khi đặt lên kệ. Trở lại ngồi cạnh Tiểu Vũ, An thấy vui vì bà tin mình làm được việc ấy.","day2-night"),
+P("day2-liu-menu","canteen","Nét chữ vẫn chưa hết chuyện","An","An đánh dấu vào sổ cách đọc vừa nghe. Một chữ không biến An thành người Thành Đô, nhưng đủ để An thấy mình có thể hiểu thế giới này từng chút một.","day2-night"),
+N("day2-night","home","Lá thư gửi chính mình","Minh An","Tối thứ hai, An mở sổ cạnh cửa sổ. Sẻ đậu trên mép ngoài, im lặng nhìn cậu viết. Trang giấy có vài nét bút và vết tẩy chưa sạch. An thử viết một câu cho mình của buổi sáng đầu tiên, rồi dừng bút để nghĩ.",[
+C("day2-letter-brave","我可以慢慢学，也可以勇敢说。","Wǒ kěyǐ mànmàn xué, yě kěyǐ yǒnggǎn shuō.","Viết rằng mình có thể học chậm và vẫn dám nói.","day2-epilogue",{courage:2},{mother:1},"An ghi rằng chậm rãi không trái ngược với dũng cảm.","An gạch dưới chữ 勇敢, rồi vẽ một con chim nhỏ bay khỏi cửa sổ.",["我可以勇敢说","我可以慢慢学"]),
+C("day2-letter-kind","我想多听别人说话。","Wǒ xiǎng duō tīng biérén shuōhuà.","Viết rằng mình muốn lắng nghe người khác.","day2-epilogue",{empathy:2},{xiaoyu:1,liu:1},"An nhận ra lắng nghe cũng là một cách mở đường.","An vẽ bốn chiếc ghế bên một bàn ăn ấm.",["我想听别人说话","我想多听"]),
+C("day2-letter-curious","我还有很多问题。","Wǒ hái yǒu hěn duō wèntí.","Giữ lại những câu hỏi chưa được trả lời.","day2-epilogue",{curiosity:2},{wang:1},"An giữ lại câu hỏi mình từng ngại nói ra.","Bên chữ 问题, An chấm thêm một dấu hỏi màu xanh.",["我有很多问题","我还想问"])
+],[{if:"confess-yesterday",text:"An nhớ buổi sáng mẹ ngồi lại nghe con kể nỗi sợ hôm qua."},{if:"bird-with-friend",text:"Tiểu Vũ vẫn giữ chiếc lông chim sẻ ở góc vở."},{if:"liu-stock",text:"Bà Lưu đã tin giao An chiếc kệ đựng mì, điều An không tưởng tới trong ngày đầu."}]),
+{id:"day2-epilogue",kind:"ending",place:"home",title:"Ngày mai còn một trang nữa",speaker:"Minh An",story:"An khép sổ sau hai ngày đầu tiên. Cậu vẫn đọc nhầm vài chữ, vẫn có chuyện phải lấy hết hơi mới dám hỏi. Nhưng ngoài cửa sổ đã có một lối quen để tới trường, và cậu đã gặp những người mình muốn gặp lại. An đặt bút vào trang tiếp theo, để dành cho ngày mai.",options:[]}
+];
+var callbacks=[
+ {choice:"look-around",at:"day2-arrival",text:"An nhớ tấm biển nhỏ trên phố hôm qua. Vẫn còn một chữ cậu chưa hiểu; cậu muốn hỏi Tiểu Vũ khi tới lớp."},
+ {choice:"hold-mother",at:"lost-diary",text:"Khi lo quyển sổ biến mất, An nhớ bàn tay mẹ đã nắm lấy mình lúc con đường còn xa lạ."},
+ {choice:"say-clearly",at:"walk-home",text:"Trước khi rời trường, An đã nói trọn điều mình cần. Câu nói ấy vẫn ở lại trong đầu cậu trên đường về."},
+ {choice:"say-simple",at:"walk-home",text:"Một câu ngắn đã đủ giúp cô trực hiểu An cần quyển sổ. Trên đường về, cậu không còn thấy mình phải nói thật hoàn hảo."},
+ {choice:"ask-again",at:"walk-home",text:"An đã xin cô nhắc lại thay vì đoán bừa. Cậu tự nhắc mình có thể hỏi thêm khi chưa nghe rõ."},
+ {choice:"sit-friend",at:"walk-home",text:"Tiểu Vũ vẫn đi cạnh An, vui vì hai đứa đã chọn ngồi ăn cùng nhau."},
+ {choice:"write-question",at:"day2-arrival",text:"Câu hỏi An giữ lại trong sổ vẫn theo cậu tới cổng trường sáng nay."},
+ {choice:"write-people",at:"day2-arrival",text:"An bước tới cổng trường, nhớ những người đã giúp cậu bớt thấy lạc lõng trong ngày đầu ở Thành Đô."},
+ {choice:"write-promise",at:"day2-arrival",text:"Lời hứa nhỏ An viết tối qua còn nằm trong sổ; sáng nay cậu mang nó theo đến trường."},
+ {choice:"morning-ready",at:"day2-night",text:"An nhớ sáng nay mình đã tự chuẩn bị trước khi ra khỏi nhà, rồi còn kiểm tra lại chiếc cặp một lần nữa."},
+ {choice:"ask-diary-question",at:"day2-night",text:"Mẹ đã trả lời câu hỏi An mang theo từ tối qua. Cậu ghi câu trả lời bên cạnh dòng chữ đầu tiên trong sổ."},
+ {choice:"liu-ask",at:"day2-night",text:"Bà Lưu đã kể đôi điều về ngày ít khách. An nhớ một câu chào nhỏ cũng có thể mở ra cuộc trò chuyện thật."},
+ {choice:"day2-letter-brave",at:"day2-epilogue",text:"Chữ 勇敢 nằm dưới nét gạch của An. Cậu không thấy mình hết sợ, chỉ thấy mình đã dám thử thêm một lần."},
+ {choice:"day2-letter-kind",at:"day2-epilogue",text:"An nhìn bốn chiếc ghế mình vẽ và nghĩ lần tới có thể chừa thêm một chỗ cho người đang ngồi một mình."},
+ {choice:"day2-letter-curious",at:"day2-epilogue",text:"An khép sổ, nhưng dấu hỏi xanh cạnh chữ 问题 khiến cậu muốn hỏi bà Lưu thêm một chữ vào ngày mai."},
+ {choice:"read-menu",at:"day2-liu",text:"Bà Lưu nhận ra An đã nhìn thực đơn thật lâu hôm qua, rồi chỉ thêm một chữ mới trên bảng."},
+ {choice:"prepare-for-guest",at:"day2-night",text:"An nhớ chiếc ghế mình đã chừa cho Tiểu Vũ sáng nay; lời mời đã thành một buổi gặp thật."},
+ {choice:"bird-quiet",at:"day2-liu",text:"Sẻ đã bay ra sau khi cả lớp cùng lùi lại. An nhớ đôi khi giúp đỡ là biết nhường cho người khác một khoảng trống."},
+ {choice:"bird-teacher",at:"day2-liu",text:"Cô Vương đã mở cửa sổ để Sẻ tự bay ra. An nhớ mình có thể nhờ người lớn khi chưa biết phải làm gì."},
+ {choice:"liu-help",at:"day2-night",text:"Bà Lưu cảm ơn An vì đã phụ rửa bát. Câu cảm ơn ấy còn ở lại với cậu trên đường về."},
+ {choice:"liu-menu",at:"day2-night",text:"Bà Lưu đã đọc chậm hai chữ An hỏi. Tối nay cậu ghi cách đọc vào sổ để lần sau tự thử."}
+];
+var byId=Object.create(null);scenes.forEach(function(s){byId[s.id]=s;});
+var chapters=[{name:"Sáng đầu đến trường",id:"arrival"},{name:"Lớp học mới",id:"school-gate"},{name:"Quyển sổ biến mất",id:"lost-diary"},{name:"Tan học ghé quán",id:"canteen"},{name:"Về đến nhà",id:"walk-home"},{name:"Trang sổ",id:"night"}];
+chapters.push({name:"Sáng thứ hai",id:"day2-arrival"},{name:"Chim sẻ trong lớp",id:"day2-bird"},{name:"Quán mì quen",id:"day2-liu"},{name:"Trang sổ thứ hai",id:"day2-night"});
+return {version:2,storageKey:"hai-que-huong-branching-novel-v1",start:"arrival",scenes:scenes,byId:byId,chapters:chapters,callbacks:callbacks};
+});

@@ -6,8 +6,9 @@ var D=HSKReviewData,C=HSKReviewCore,CORE=HSKCore;
 if(D.validate().length)throw Error("Review content not valid: "+D.validate().join(", "));
 function $(id){return document.getElementById(id)}
 function today(){var d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-")}
-function readStory(){try{return JSON.parse(localStorage.getItem("hai-que-huong-progress-v3")||"null")}catch(e){return null}}
+function readStory(){try{return C.readStoryProgress(localStorage)}catch(e){return C.combineProgress(null,null)}}
 var story=readStory(),progress=C.read(localStorage,D),day=today(),currentId=null,outcome=null,notice="",draft="";
+var storyHref=C.storyHref(localStorage);if(storyHref!=="/duong-re/")document.querySelectorAll('a[href="/duong-re/"]').forEach(function(link){link.href=storyHref});
 function persist(){if(!C.write(localStorage,D,progress))$("storageNotice").textContent="Trình duyệt chưa giữ được lịch ôn trên máy. Bạn vẫn có thể luyện tiếp và thử lưu vào tài khoản.";if(typeof window.CustomEvent==="function"&&typeof window.dispatchEvent==="function")window.dispatchEvent(new window.CustomEvent("chimse-progress-changed",{detail:{area:"review",value:C.clean(progress,D)}}))}
 function actionLabel(item){return item.kind==="reading"?"ĐỌC HIỂU":item.kind==="hanzi"?"NHẬN MẶT CHỮ":"NHẬP CHỮ HÁN"}
 function clearChildren(el){el.replaceChildren()}
@@ -21,7 +22,7 @@ function render(){
  var due=C.queue(D,story,progress,day);
  var active= currentId?D.items.find(x=>x.id===currentId):null;
  if(!active||(!outcome&&!due.some(x=>x.id===currentId))){active=due[0]||null;currentId=active&&active.id||null}
- if(window.HSKSceneLayers){window.HSKSceneLayers.mount($("reviewArt"),active?HSKSceneLayers.sceneIds[active.after]:"review.notebook",{dialogue:document.querySelector(".opening"),anExpression:outcome&&outcome.result==="independent"?"smile":"thinking"});if(due[1])window.HSKSceneLayers.preload(HSKSceneLayers.sceneIds[due[1].after])}
+ if(window.HSKSceneLayers){var artScene=active&&(Number.isInteger(active.artScene)?active.artScene:Number.isInteger(active.scene)?active.scene:active.after);window.HSKSceneLayers.mount($("reviewArt"),active?HSKSceneLayers.sceneIds[artScene]:"review.notebook",{dialogue:document.querySelector(".opening"),anExpression:outcome&&outcome.result==="independent"?"smile":"thinking"});if(due[1]){var nextArt=Number.isInteger(due[1].artScene)?due[1].artScene:Number.isInteger(due[1].scene)?due[1].scene:due[1].after;window.HSKSceneLayers.preload(HSKSceneLayers.sceneIds[nextArt])}}
  $("emptyReview").hidden=!!active;
  document.querySelector(".book").classList.toggle("is-empty",!active);
  $("exerciseCard").hidden=!active;

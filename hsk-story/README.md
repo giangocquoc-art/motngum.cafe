@@ -6,13 +6,13 @@ Nguồn chuẩn: [hướng hiện hành từ chat](docs/CHIM_SE_DIRECTION.md), [
 
 ## Phạm vi hiện tại
 
-9 trang Nhập môn; tập HSK1 demo gồm 7 cảnh luyện và 3 checkpoint, tìm sổ, hai lựa chọn truyện; 18 mục ôn mở theo cảnh đã hoàn thành. Chưa đủ đại cương HSK1, chưa có HSK2–5 chơi được, không phải chứng chỉ hay đánh giá phát âm/thanh điệu.
+9 trang Nhập môn; tập HSK1 demo gồm 7 cảnh luyện và 3 checkpoint, tìm sổ, hai lựa chọn truyện; 23 mục ôn mở theo cảnh đã hoàn thành. Bản đồ HSK 3.0 bậc 1–6 có bộ định vị nguồn cho cả năm hợp phần; bậc 1 mới có nội dung pilot, bậc 2–6 có mạch truyện và 40 lựa chọn nhánh ở trạng thái bản thảo chưa mở chơi. `future-branch-runtime.js` là đồ thị author-preview nội bộ cho HSK2, không được tải vào game. Crosswalk mục tiêu học, chuẩn hóa bảng ngữ pháp/chủ đề, nội dung bài tập và duyệt của giáo viên vẫn còn thiếu. Đây không phải tuyên bố bao phủ HSK, chứng chỉ hay đánh giá phát âm/thanh điệu. Xem [bản đối chiếu HSK 3.0](HSK3_SOURCE_AUDIT.md) và [blueprint](learning-blueprint.js).
 
 ## Chạy và kiểm tra
 
 Phục vụ thư mục hsk-story qua static HTTP server để chơi truyện. Không mở bằng file:// vì URL tài sản đi từ root. Backend /api/ai/tutor cần Vercel development hoặc deployment và secret server; xem [AI_SETUP.md](AI_SETUP.md). .env được Git bỏ qua; .env.example là mẫu trống.
 
-Từ thư mục repo: `node --test hsk-story/tests/*.test.cjs`. Unit tests không thay cho browser QA. Gate e2e/browser-smoke.cjs cần Playwright và Chromium/Edge; kỳ vọng phải khớp sản phẩm thật và kiểm tra cả nội dung con bị cắt.
+Từ thư mục repo: `node --test hsk-story/tests/*.test.cjs`. Kiểm tra parser task với dữ liệu giả có ngắt trang bằng `python hsk-story/tests/hsk30-extractor.test.py` (cần cùng bộ thư viện đã ghim). Để tái tạo bộ định vị nguồn, cài các phiên bản đã ghim trong `hsk-story/scripts/requirements-hsk30-inventory.txt`, tải đúng PDF chính thức (script xác minh SHA-256), rồi chạy `python hsk-story/scripts/extract-hsk30-inventory.py <pdf> hsk-story/hsk30-syllabus-inventory.json`. Bộ trích xuất lập ID và quan hệ cha/con cho 512 nút chủ đề, cùng locator hình học cho 459 hàng vật lý trong bảng ngữ pháp; mỗi cột ngữ pháp có ID/bounding box trỏ đến ô nguồn kể cả khi kế thừa qua trang. Không chép chữ trong bảng. 459 là số hàng trích xuất theo quy tắc lưới, không phải tổng mục ngữ pháp chính thức. Đã rà hình học ở cấp trang; kiểm tra từng chuỗi chữ và đối chiếu giáo viên vẫn còn. Unit tests không thay cho browser QA. Gate e2e/browser-smoke.cjs cần Playwright và Chromium/Edge; kỳ vọng phải khớp sản phẩm thật và kiểm tra cả nội dung con bị cắt.
 
 ## Tranh, dữ liệu và triển khai
 

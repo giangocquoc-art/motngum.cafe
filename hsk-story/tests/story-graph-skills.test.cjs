@@ -1,7 +1,7 @@
 const {test}=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 const folder=path.resolve(__dirname,"..");
-function load(file){const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box);return box.module.exports}
-const G=load("story-graph.js"),W=load("scene-world.js"),S=load("skill-sampler.js"),B=load("learning-blueprint.js"),F=load("future-acts.js");
+function load(file){const box={module:{exports:{}},require:request=>require(path.resolve(folder,request))};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box);return box.module.exports}
+const G=load("story-graph.js"),W=load("scene-world.js"),S=load("skill-sampler.js"),B=load("learning-blueprint.js"),F=load("future-acts.js"),R=load("review-data.js");
 const C=load("content-manifest.js"),K=load("curriculum-data.js"),D=load("story-director.js"),E=load("active-encounter.js"),Beats=load("story-beats.js");
 test("V9 stable string IDs and graph/curriculum contract",()=>{
  assert.deepEqual(Array.from(G.validate(C,K,Beats,D,E)),[]);
@@ -22,7 +22,7 @@ test("V9 optional scene objects do not change curriculum or scores",()=>{
  state=W.inspect(state,G.idAt(0),"diary").state;
  state=W.inspect(state,G.idAt(0),"diary").state;
  assert.equal(state[G.idAt(0)].length,1);
- assert.equal(W.inspect(state,G.idAt(0),"window").object.zh,"这里是成都。");
+ assert.equal(W.inspect(state,G.idAt(0),"window").object.zh,"这里是学校。");
  assert.throws(()=>W.inspect(state,G.idAt(7),"future-leak"));
  assert.equal(K.scenes.length,10);
 });
@@ -69,20 +69,226 @@ test("V10 skip, historic save and tampered result do not fabricate mastery",()=>
  assert.equal(forged.status,"pending");
  assert.equal(forged.results[0].result,"unassessed");
 });
-test("V10 traceability blueprint exposes missing proof instead of fabricated HSK1 certification",()=>{
- assert.deepEqual(Array.from(B.validate(K,C,S,E)),[]);
- const report=B.report();
+test("V17 versioned blueprint maps six levels and exposes unverified coverage",()=>{
+ assert.deepEqual(Array.from(B.validate(K,C,S,E,F,R)),[]);
+ const report=B.report(K,F);
  assert.equal(report.certifiedHSK1Coverage,false);
  assert.equal(report.officiallyVerifiedObjectives,0);
+ assert.equal(report.officiallyVerifiedItems,0);
+ assert.equal(report.levelsInScope,6);
+ assert.equal(report.outlineOnlyLevels,5);
  assert.ok(report.awaitingMandarinReview>0);
  assert.equal(B.source.publisherPage,"https://www.chinesetest.cn/syllabus");
+ assert.equal(B.source.published,"2025-11");
+ assert.equal(B.source.effective,"2026-07");
+ assert.match(B.source.url,/hsk\.cn-bj\.ufileos\.com\/3\.0\//);
+ assert.deepEqual(Array.from(B.levels,x=>x.level),[1,2,3,4,5,6]);
+ assert.deepEqual(Array.from(B.levels,x=>x.verifiedOfficialItems),[0,0,0,0,0,0]);
+ assert.deepEqual(Array.from(B.levels,x=>[x.sourcePages.tasks,x.sourcePages.topics,x.sourcePages.vocabulary,x.sourcePages.characters,x.sourcePages.grammar]),[[2,56,77,353,383],[6,58,84,355,386],[11,60,89,356,389],[18,63,102,358,392],[29,66,127,361,395],[37,69,167,364,398]]);
+ assert.ok(B.levels.slice(1).every(x=>x.storyStatus==="outline-only"&&x.teacherSignoff==="PENDING"));
+ assert.deepEqual(Array.from(report.incompletePilotSequences),[]);
+ assert.deepEqual(Array.from(report.optionalReviewSequences).sort(),["farewell","gratitude","greeting","introduce-self","numbers","order-noodles","price","student-identity"]);
 });
-test("V13–V16 four drafted acts remain explicitly non-playable, with coherent episodic stakes",()=>{
+test("V17 stable objective IDs point to the unchanged ten lesson/checkpoint scenes",()=>{
+ const expected={"greeting":[0,1],"introduce-self":[1,2,7],"student-identity":[2,3,7],"numbers":[3],"order-noodles":[4,5,9],"price":[5,8],"gratitude":[5],"farewell":[6]};
+ assert.equal(K.scenes.length,10);
+ for(const objective of B.objectives){
+  assert.deepEqual(Array.from(objective.curriculumSceneIds),expected[objective.id]);
+  assert.equal(objective.sourceLevel,1);
+  assert.ok(objective.topic&&objective.candidateTask);
+  assert.equal(objective.teacherSignoff,"PENDING");
+  assert.deepEqual(Array.from(objective.officialItemIds),[]);
+  assert.equal(objective.sourceComponents.length,5);
+  assert.deepEqual(Array.from(objective.sourceComponents,x=>x.matchStatus),["pending-item-review","pending-item-review","pending-item-review","pending-item-review","pending-item-review"]);
+ }
+ const mapped=new Set(B.objectives.flatMap(x=>Array.from(x.curriculumSceneIds)));
+ assert.deepEqual(Array.from(mapped).sort((a,b)=>a-b),[0,1,2,3,4,5,6,7,8,9]);
+});
+test("V18 HSK1 stage references point to objective-tagged reuse and independent checkpoint activities",()=>{
+ const reviews=Object.fromEntries(R.items.map(x=>[x.id,x]));
+ for(const objective of B.objectives){
+  const stages=objective.storyStages;
+  assert.ok(stages.introSceneIds.length,objective.id+" has an introduction");
+  assert.ok(stages.reuseSceneIds.length||stages.reviewReuseItemIds.length,objective.id+" has a reuse opportunity");
+  assert.ok(stages.checkpointSceneIds.length||stages.reviewCheckpointItemIds.length,objective.id+" has a checkpoint");
+  for(const id of stages.reviewReuseItemIds){assert.equal(reviews[id].objectiveId,objective.id);assert.equal(reviews[id].stage,"reuse")}
+  for(const id of stages.reviewCheckpointItemIds){assert.equal(reviews[id].objectiveId,objective.id);assert.equal(reviews[id].stage,"checkpoint")}
+  assert.equal(stages.reviewChannel,"optional-spaced-review");
+ }
+ assert.ok(R.items.find(x=>x.id==="greeting-checkpoint").after===9);
+ assert.ok(R.items.find(x=>x.id==="farewell-checkpoint").after===9);
+});
+test("V18 blueprint rejects an activity whose objective stage metadata no longer matches its reference",()=>{
+ const item=R.items.find(x=>x.id==="greeting-reuse"),original=item.stage;
+ try{item.stage="checkpoint";assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("greeting/greeting-reuse")))}
+ finally{item.stage=original}
+ assert.deepEqual(Array.from(B.validate(K,C,S,E,F,R)),[]);
+});
+test("V17 all six levels have stable objectives, ordered story stages, and no false syllabus match",()=>{
+ const all=B.allObjectives(K,F);
+ assert.equal(all.length,38);
+ assert.deepEqual(Array.from(B.report(K,F).objectivesByLevel,x=>x.count),[8,6,6,6,6,6]);
+ assert.ok(all.every(x=>x.officialItemIds.length===0&&x.teacherSignoff==="PENDING"&&!x.readyForRelease));
+ for(const objective of all.filter(x=>x.level>1)){
+  const act=F.acts.find(x=>x.level===objective.level),order=Object.fromEntries(act.episodes.map((episode,index)=>[episode.id,index]));
+  assert.ok(order[objective.episodeRefs.intro.episodeId]<order[objective.episodeRefs.reuse.episodeId],objective.id+" introduces before reuse");
+  assert.ok(order[objective.episodeRefs.reuse.episodeId]<=order[objective.episodeRefs.checkpoint.episodeId],objective.id+" practices before recall");
+  assert.equal(objective.episodeRefs.checkpoint.beat,"separate-independent-recall-after-story-use");
+  assert.equal(objective.candidateContent.status.startsWith("draft-candidate"),true);
+  assert.ok(objective.candidateContent.vocabulary.length>=4,objective.id+" has sourced vocabulary candidates");
+  assert.ok(objective.candidateContent.grammar.length>=2,objective.id+" has grammar candidates");
+  assert.ok(objective.candidateContent.characters.length>0,objective.id+" has character candidates");
+  assert.deepEqual(Array.from(Object.keys(objective.candidateSourceRefs).sort()),["characters","edition","grammar","sourceUrl","tasks","topics","vocabulary"]);
+  assert.ok(objective.candidateSkillProfile.candidatePracticeSkills.length>0);
+  assert.ok(objective.candidateSkillProfile.officialExamSections.includes("listening")&&objective.candidateSkillProfile.officialExamSections.includes("reading"));
+  assert.equal(objective.sourceComponents.every(x=>x.matchStatus==="pending-item-review"&&x.officialItemIds.length===0),true);
+ }
+});
+test("future candidate vocabulary, grammar, and characters resolve to independent PDF item locators",()=>{
+ const index=B.candidateSourceIndex,inventory=B.syllabusInventory,all=B.makeFutureObjectives(F);
+ const inventoryIds=new Set([...inventory.vocabulary,...Object.values(inventory.characters).flat(),...Object.values(inventory.grammarPages).flat()].map(item=>item.id));
+ assert.equal(index.sourceUrl,B.source.url);
+ assert.equal(Object.keys(index.vocabularyRows).length,78);
+ assert.equal(Object.values(index.characterRefsByTargetLevel).reduce((sum,chars)=>sum+Object.keys(chars).length,0),151);
+ assert.equal(index.vocabularyRows["6:4758"].hanzi,"涉及");
+ assert.equal(index.vocabularyRows["6:4939"].hanzi,"推测");
+ assert.equal(index.vocabularyRows["6:5216"].hanzi,"原材料");
+ for(const objective of all.filter(x=>x.level>1)){
+  for(const word of objective.candidateContent.vocabulary){
+   const ref=index.vocabularyRows[objective.level+":"+word.candidateRowNumber];
+   assert.deepEqual([word.hanzi,word.pinyin,word.printedPage],[ref.hanzi,ref.pinyin,ref.printedPage]);
+   const inventoryRef=objective.candidateSourceRefs.vocabulary.candidateRows.find(item=>item.rowNumber===word.candidateRowNumber);
+   assert.equal(inventoryRef.sourceInventoryId,"hsk30:vocab:"+String(word.candidateRowNumber).padStart(4,"0"));assert.ok(inventoryIds.has(inventoryRef.sourceInventoryId));
+  }
+  for(const grammar of objective.candidateContent.grammar){
+   assert.ok(index.grammarEntries.some(ref=>ref.level===objective.level&&ref.pattern===grammar.pattern&&ref.printedPage===grammar.printedPage),objective.id+" cites a target-level grammar item");
+   const inventoryRef=objective.candidateSourceRefs.grammar.candidateEntries.find(item=>item.candidateId===grammar.candidateId);
+   assert.equal(inventoryRef.sourcePageId,"hsk30:l"+objective.level+":grammar:p"+grammar.printedPage);assert.ok(inventoryIds.has(inventoryRef.sourcePageId));
+  }
+  for(const ref of objective.candidateSourceRefs.characters.candidateItems){
+   const expected=index.characterRefsByTargetLevel[objective.level][ref.character];
+   assert.deepEqual([ref.characterLevel,ref.ordinal,ref.printedPage,ref.relation],[expected.characterLevel,expected.ordinal,expected.printedPage,expected.relation]);
+   assert.equal(ref.sourceInventoryId,"hsk30:l"+expected.characterLevel+":hanzi:"+String(expected.ordinal).padStart(3,"0"));assert.ok(inventoryIds.has(ref.sourceInventoryId));
+  }
+ }
+});
+test("future candidate crosswalk validation fails closed on missing rows or skills",()=>{
+ const spec=B.futurePlans.find(plan=>plan.level===4).objectives[0],row=spec.vocabulary[0],skills=spec.practiceSkills;
+ try{row[3]=0;assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("Malformed candidate vocabulary row")))}finally{row[3]=1811}
+ try{row[3]=1812;assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("pinned PDF row/page index")))}finally{row[3]=1811}
+ const grammar=spec.grammar[0],page=grammar[2];
+ try{grammar[2]=386;assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("incorrectly level-mapped candidate grammar")))}finally{grammar[2]=page}
+ try{spec.practiceSkills=["speaking"];assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("skill profile")))}finally{spec.practiceSkills=skills}
+ assert.deepEqual(Array.from(B.validate(K,C,S,E,F,R)),[]);
+});
+test("V17 validator rejects broken crosswalks, bad prerequisites, and playable future acts",()=>{
+ const badPages=JSON.parse(JSON.stringify(K)),badAct=JSON.parse(JSON.stringify(F));
+ badPages.levels[0].sourcePages.tasks++;
+ assert.ok(B.validate(badPages,C,S,E,F,R).some(x=>x.includes("section locator")));
+ badPages.levels[0].sourcePages.tasks--;
+ badPages.scenes[0].objectiveIds=[];
+ assert.ok(B.validate(badPages,C,S,E,F,R).some(x=>x.includes("crosswalk")));
+ badAct.acts[0].playable=true;
+ assert.ok(B.validate(K,C,S,E,badAct,R).some(x=>x.includes("six candidate strands per locked HSK2–6")));
+ const first=B.futurePlans[0].objectives[0],oldPrerequisites=first.prerequisiteIds;
+ try{first.prerequisiteIds=["unknown-objective"];assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("prerequisite")));}
+ finally{if(oldPrerequisites===undefined)delete first.prerequisiteIds;else first.prerequisiteIds=oldPrerequisites;}
+ assert.deepEqual(Array.from(B.validate(K,C,S,E,F,R)),[]);
+ assert.ok(B.validate(null,C,S,E,F,R).some(x=>x.includes("registries are required")));
+});
+test("V17 reviewed mappings can be recorded without making incomplete HSK1 releasable",()=>{
+ const objective=B.definitions[0],original=objective.reviewState,oldCount=B.levels[0].verifiedOfficialItems;
+ const statusByComponent=Object.fromEntries(B.source.components.map(x=>[x,"reviewed-match"]));
+ const itemsByComponent=Object.fromEntries(B.source.components.map(x=>[x,["official-row-"+x]]));
+ try{
+  objective.reviewState={statusByComponent:statusByComponent,itemsByComponent:itemsByComponent,teacherSignoff:"APPROVED",readyForRelease:false};
+  B.levels[0].verifiedOfficialItems=5;
+  assert.deepEqual(Array.from(B.validate(K,C,S,E,F,R)),[]);
+  assert.equal(B.report(K,F).officiallyVerifiedItems,5);
+  assert.equal(B.report(K,F).readyLevels.length,0);
+ }finally{if(original===undefined)delete objective.reviewState;else objective.reviewState=original;B.levels[0].verifiedOfficialItems=oldCount;}
+});
+test("V13–V17 five drafted acts remain non-playable through HSK 3.0 level 6",()=>{
  assert.deepEqual(Array.from(F.validate()),[]);
- assert.deepEqual(Array.from(F.acts,x=>x.level),[2,3,4,5]);
- assert.equal(F.acts.reduce((n,x)=>n+x.episodes.length,0),16);
+ assert.deepEqual(Array.from(F.acts,x=>x.level),[2,3,4,5,6]);
+ assert.ok(F.acts.every(x=>x.playable===false&&x.planningStatus.includes("exact official item matches")&&x.planningStatus.includes("pending")));
+ assert.equal(F.acts.reduce((n,x)=>n+x.episodes.length,0),20);
  assert.ok(F.byLevel(5).episodes.some(e=>e.id==="graduation"));
+ assert.equal(F.byLevel(6).id,"hsk6.letters-we-leave");
+ assert.equal(F.byLevel(6).episodes.length,4);
  assert.ok(F.status.includes("NOT PLAYABLE"));
+});
+test("future story decisions have distinct authored reactions, memory, callbacks, and shared learning anchors",()=>{
+ const allBranchScenes=new Set();
+ for(const act of F.acts){
+  const plan=B.futurePlans.find(item=>item.level===act.level);
+  assert.deepEqual(Array.from(act.commonLearningAnchorIds),Array.from(plan.objectives,item=>item.id));
+  assert.equal(act.episodes.length,4);
+  const positions=new Map(act.episodes.map((episode,index)=>[episode.id,index]));
+  for(const episode of act.episodes){
+   const decision=episode.decision,choices=decision.choices;
+   assert.ok(choices.length>=2,act.id+"/"+episode.id);
+   assert.deepEqual(Array.from(decision.sharedLearningAnchorIds),Array.from(act.commonLearningAnchorIds));
+   assert.deepEqual(Array.from(episode.learningAnchorIds),Array.from(plan.objectives.filter(objective=>objective.episode===episode.id),objective=>objective.id));
+   assert.equal(new Set(choices.map(option=>option.id)).size,choices.length);
+   assert.equal(new Set(choices.map(option=>option.branchSceneId)).size,choices.length);
+   assert.equal(new Set(choices.map(option=>option.reaction)).size,choices.length);
+   assert.equal(new Set(choices.map(option=>option.memory.value)).size,choices.length);
+   assert.equal(new Set(choices.map(option=>option.laterConsequence.text)).size,choices.length);
+   assert.equal(new Set(choices.map(option=>option.memory.key)).size,1);
+   for(const option of choices){
+    assert.ok(!allBranchScenes.has(option.branchSceneId));allBranchScenes.add(option.branchSceneId);
+    assert.equal(option.joinsAtSceneId,decision.convergenceSceneId);
+    assert.ok(positions.get(option.laterConsequence.episodeId)>=positions.get(episode.id));
+   }
+  }
+ }
+ const episode=F.acts[0].episodes[0],option=episode.decision.choices[0],original=option.joinsAtSceneId;
+ try{option.joinsAtSceneId="broken-rejoin";assert.ok(F.validate().some(message=>message.includes("shared scene")));}
+ finally{option.joinsAtSceneId=original;}
+ assert.deepEqual(Array.from(F.validate()),[]);
+});
+test("future learning anchors stay ordered and prerequisites are soft prior exposure, not mastery gates",()=>{
+ const mapped=B.makeFutureObjectives(F),mappedById=new Map(mapped.map(objective=>[objective.id,objective]));
+ for(const plan of B.futurePlans){
+  const act=F.byLevel(plan.level),rank=new Map(act.episodes.map((episode,index)=>[episode.id,index]));
+  const positions=new Map(plan.objectives.map((objective,index)=>[objective.id,index]));
+  assert.deepEqual(Array.from(B.futureEpisodeOrder[plan.level]),Array.from(act.episodes,episode=>episode.id));
+  let last=-1;
+  for(const objective of plan.objectives){
+   assert.ok(rank.get(objective.episode)>=last,objective.id+" must not be introduced before an earlier episode");
+   last=rank.get(objective.episode);
+  }
+  for(const spec of plan.objectives){
+   const objective=mappedById.get(spec.id);
+   assert.equal(objective.prerequisiteSemantics,"prior-exposure-only");
+   assert.match(objective.prerequisiteStatus,/no runtime unlock/);
+   assert.equal(JSON.stringify(objective.prerequisiteIds),JSON.stringify(spec.prerequisiteIds||[]),"unreviewed candidates must not inherit an automatic full-chain dependency");
+   for(const prerequisite of objective.prerequisiteIds){
+    const prior=mappedById.get(prerequisite);
+    assert.ok(prior,prerequisite+" must be a registered objective");
+    if(prior.level<objective.level)continue;
+    assert.equal(prior.level,objective.level);
+    const earlier=rank.get(prior.episodeRefs.intro.episodeId),dependent=rank.get(objective.episodeRefs.intro.episodeId);
+    assert.ok(earlier<=dependent,prerequisite+" prior exposure must not follow "+objective.id);
+    if(earlier===dependent)assert.ok(positions.get(prerequisite)<positions.get(objective.id),prerequisite+" must be introduced first within the shared episode");
+   }
+  }
+ }
+ const dependent=B.futurePlans[0].objectives.find(objective=>objective.id==="hsk2.routes-and-positions"),prior=B.futurePlans[0].objectives.find(objective=>objective.id==="hsk2.time-and-repair"),originalPrerequisites=dependent.prerequisiteIds,originalEpisode=prior.episode;
+ try{dependent.prerequisiteIds=[prior.id];prior.episode="market-money";assert.ok(B.validate(K,C,S,E,F,R).some(message=>message.includes("introduced before its dependent objective")));}
+ finally{if(originalPrerequisites===undefined)delete dependent.prerequisiteIds;else dependent.prerequisiteIds=originalPrerequisites;prior.episode=originalEpisode;}
+ assert.ok(B.allObjectives(K,F).filter(objective=>objective.level===1).every(objective=>objective.prerequisiteSemantics==="prior-exposure-only"&&objective.prerequisiteStatus.includes("no runtime unlock")));
+});
+test("source inventory captures the whole official level 1–6 corpus while instructional matching stays pending",()=>{
+ const report=B.report(K,F),sourceInventory=report.sourceInventory;
+ assert.equal(report.completeSourceInventory,true);
+ assert.equal(report.fullSyllabusInventoryComplete,false);
+ assert.equal(report.objectiveCrosswalkComplete,false);
+ assert.deepEqual(JSON.parse(JSON.stringify(sourceInventory.totals)),{tasks:136,topicsByTier:[37,140,335],topicNodes:512,topicPageRows:344,vocabulary:5400,recognitionCharacters:1940,grammarPages:17,grammarSourceRows:459,officialGrammarItemCount:null});
+ assert.equal(sourceInventory.topicHierarchyStatus.includes("individual cell text"),true);
+ assert.equal(sourceInventory.grammarNormalizationStatus.includes("not an official grammar-item count"),true);
+ assert.equal(sourceInventory.grammarNormalizationStatus.includes("exact source-text review"),true);
 });
 
 test("Gate3B world clues connect beginner Hanzi to already-visited real scenes without HSK points",()=>{
@@ -101,7 +307,7 @@ test("Gate3B past observations unlock small emotional callbacks, not story grade
  const past={[G.idAt(0)]:["window","diary"]};
  const tree=W.describe(G.idAt(6),"tree",past,null);
  const diary=W.describe(G.idAt(6),"diary",past,null);
- assert.ok(tree.callbackText.includes("ô cửa xe"));
+ assert.ok(tree.callbackText.includes("nép bên mẹ"));
  assert.ok(diary.callbackText.includes("trang đầu"));
  assert.equal(W.describe(G.idAt(6),"tree",{},null).callbackText,"");
  assert.equal(W.describe(G.idAt(0),"window",past,null).callbackText,"");

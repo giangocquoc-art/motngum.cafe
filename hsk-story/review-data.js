@@ -82,6 +82,8 @@ var items=[
  },
  {
   "id": "self-introduction",
+  "objectiveId": "introduce-self",
+  "stage": "reuse",
   "after": 1,
   "kind": "typed",
   "scene": 1,
@@ -99,6 +101,8 @@ var items=[
  },
  {
   "id": "xiaoyu-student",
+  "objectiveId": "student-identity",
+  "stage": "reuse",
   "after": 2,
   "kind": "hanzi",
   "topic": "Trường học",
@@ -151,6 +155,8 @@ var items=[
  },
  {
   "id": "three-count",
+  "objectiveId": "numbers",
+  "stage": "reuse",
   "after": 3,
   "kind": "hanzi",
   "topic": "Số đếm",
@@ -177,6 +183,8 @@ var items=[
  },
  {
   "id": "three-students",
+  "objectiveId": "numbers",
+  "stage": "checkpoint",
   "after": 3,
   "kind": "reading",
   "topic": "Lớp học",
@@ -255,6 +263,8 @@ var items=[
  },
  {
   "id": "order-again",
+  "objectiveId": "order-noodles",
+  "stage": "reuse",
   "after": 4,
   "kind": "typed",
   "scene": 4,
@@ -273,6 +283,8 @@ var items=[
  },
  {
   "id": "price-ten",
+  "objectiveId": "price",
+  "stage": "reuse",
   "after": 5,
   "kind": "reading",
   "topic": "Mua đồ",
@@ -299,6 +311,8 @@ var items=[
  },
  {
   "id": "thanks-sign",
+  "objectiveId": "gratitude",
+  "stage": "reuse",
   "after": 5,
   "kind": "hanzi",
   "topic": "Lịch sự",
@@ -325,6 +339,8 @@ var items=[
  },
  {
   "id": "thank-again",
+  "objectiveId": "gratitude",
+  "stage": "checkpoint",
   "after": 5,
   "kind": "typed",
   "scene": 5,
@@ -368,6 +384,8 @@ var items=[
  },
  {
   "id": "school-next-day",
+  "objectiveId": "farewell",
+  "stage": "reuse",
   "after": 6,
   "kind": "reading",
   "topic": "Hẹn gặp",
@@ -394,6 +412,8 @@ var items=[
  },
  {
   "id": "agree-in-writing",
+  "objectiveId": "farewell",
+  "stage": "checkpoint",
   "after": 6,
   "kind": "typed",
   "scene": 6,
@@ -436,7 +456,87 @@ var items=[
   "correct": "ming",
   "hint": "明 là chữ đứng đầu cụm 明天 (ngày mai). Hãy nhìn chữ trong cụm rồi chọn cách đọc tương ứng.",
   "explain": "明 là chữ đứng trước 天 trong 明天. Đây là một mẹo nhận dạng, không phải khẳng định lịch sử từ nguyên."
+ },
+ {
+  "id": "greeting-reuse",
+  "objectiveId": "greeting",
+  "stage": "reuse",
+  "after": 2,
+  "artScene": 2,
+  "kind": "typed",
+  "scene": 0,
+  "topic": "Lời chào ở lớp",
+  "zh": "小雨走进教室。",
+  "py": "Xiǎoyǔ zǒu jìn jiàoshì.",
+  "question": "Tiểu Vũ vừa bước vào lớp. An muốn chào bạn bằng tiếng Trung; hãy gõ lời chào.",
+  "answers": ["你好"],
+  "hint": "Lời chào ngắn bắt đầu bằng 你.",
+  "explain": "你好 (nǐ hǎo) là lời chào. Đây là lượt luyện gõ, không chấm phát âm."
+ },
+ {
+  "id": "greeting-checkpoint",
+  "objectiveId": "greeting",
+  "stage": "checkpoint",
+  "after": 9,
+  "artScene": 2,
+  "kind": "typed",
+  "scene": 0,
+  "topic": "Tự chào một người bạn",
+  "zh": "安又遇见小雨了。小雨问安还好吗？",
+  "py": "Ān yòu yùjiàn Xiǎoyǔ le. Xiǎoyǔ wèn Ān hái hǎo ma?",
+  "question": "Không mở gợi ý: An muốn chào Tiểu Vũ rồi đáp rằng mình vẫn ổn. Gõ cả hai câu bằng tiếng Trung.",
+  "answers": ["你好我很好", "你好我还好"],
+  "hint": "Gồm một lời chào ngắn và một câu đáp lời hỏi thăm.",
+  "explain": "你好，我很好。 An chào bạn rồi nói mình vẫn ổn. Câu này chỉ ghi nhận nhớ chữ, không chấm nói."
+ },
+ {
+  "id": "checkin-reuse",
+  "objectiveId": "greeting",
+  "stage": "reuse",
+  "after": 3,
+  "artScene": 2,
+  "kind": "typed",
+  "scene": 0,
+  "topic": "Trả lời khi bạn hỏi thăm",
+  "zh": "小雨：安，你还好吗？",
+  "py": "Xiǎoyǔ: Ān, nǐ hái hǎo ma?",
+  "question": "Tiểu Vũ hỏi thăm An sau buổi học đầu tiên. An muốn nói rằng mình vẫn ổn; hãy gõ câu trả lời.",
+  "answers": ["我很好", "我还好", "很好", "还好"],
+  "hint": "Có thể bắt đầu bằng 我…",
+  "explain": "我很好 / 我还好 là những cách ngắn để nói mình vẫn ổn. Đây là luyện gõ, không chấm phát âm."
+ },
+ {
+  "id": "order-noodles-reuse",
+  "objectiveId": "order-noodles",
+  "stage": "reuse",
+  "after": 6,
+  "artScene": 4,
+  "kind": "typed",
+  "scene": 4,
+  "topic": "Gọi mì lần nữa",
+  "zh": "安和小雨又来到刘奶奶的店。",
+  "py": "Ān hé Xiǎoyǔ yòu lái dào Liú nǎinai de diàn.",
+  "question": "An và Tiểu Vũ ghé quán bà Lưu lần nữa. Bà hỏi An muốn ăn gì; hãy tự gõ câu gọi mì.",
+  "answers": ["我想吃面条", "我要面条", "一碗面条", "我想要一碗面条"],
+  "hint": "Có thể bắt đầu bằng 我想吃…",
+  "explain": "An dùng lại câu gọi mì trong một lần ghé quán khác. Đây là luyện nhập chữ, không chấm phát âm."
+ },
+ {
+  "id": "farewell-checkpoint",
+  "objectiveId": "farewell",
+  "stage": "checkpoint",
+  "after": 9,
+  "artScene": 6,
+  "kind": "typed",
+  "scene": 6,
+  "topic": "Nhận lời hẹn",
+  "zh": "安和小雨在校门口见面。",
+  "py": "Ān hé Xiǎoyǔ zài xiàoménkǒu jiànmiàn.",
+  "question": "Không dùng gợi ý: Tiểu Vũ rủ An cùng đi học vào ngày mai. An đồng ý bằng một câu ngắn nào?",
+  "answers": ["好", "好的", "好啊", "可以", "好的明天见"],
+  "hint": "Một chữ cũng đủ để nhận lời.",
+  "explain": "好 / 好的 là cách đồng ý ngắn. Đây là luyện gõ, không đánh giá phát âm."
  }
 ];
-function validate(){var e=[],ids=new Set();items.forEach(function(it){if(ids.has(it.id))e.push("Duplicate item "+it.id);ids.add(it.id);if(!Number.isInteger(it.after)||it.after<0||it.after>6)e.push("Future or unknown story gate "+it.id);if(!["reading","hanzi","typed"].includes(it.kind))e.push("Unknown learning mode "+it.id);if(it.kind==="typed"?(!Array.isArray(it.answers)||it.answers.length===0||!Number.isInteger(it.scene)):(!Array.isArray(it.options)||it.options.length!==3||!it.options.some(o=>o[0]===it.correct)||new Set(it.options.map(o=>o[0])).size!==3))e.push("Invalid answer schema "+it.id);if(!it.question||!it.zh||!it.py||!it.explain||!it.hint)e.push("Missing educational text "+it.id);});return e;}
+function validate(){var e=[],ids=new Set();items.forEach(function(it){if(ids.has(it.id))e.push("Duplicate item "+it.id);ids.add(it.id);if(!Number.isInteger(it.after)||it.after<0||it.after>9)e.push("Future or unknown story gate "+it.id);if(it.artScene!==undefined&&(!Number.isInteger(it.artScene)||it.artScene<0||it.artScene>9))e.push("Unknown review artwork scene "+it.id);if(!["reading","hanzi","typed"].includes(it.kind))e.push("Unknown learning mode "+it.id);if(it.kind==="typed"?(!Array.isArray(it.answers)||it.answers.length===0||!Number.isInteger(it.scene)):(!Array.isArray(it.options)||it.options.length!==3||!it.options.some(o=>o[0]===it.correct)||new Set(it.options.map(o=>o[0])).size!==3))e.push("Invalid answer schema "+it.id);if(it.objectiveId&&(!["greeting","introduce-self","student-identity","numbers","order-noodles","price","gratitude","farewell"].includes(it.objectiveId)||!["reuse","checkpoint"].includes(it.stage)))e.push("Invalid objective stage metadata "+it.id);if(!it.question||!it.zh||!it.py||!it.explain||!it.hint)e.push("Missing educational text "+it.id);});return e;}
 var api={source:source,items:items,validate:validate};if(typeof module!=="undefined"&&module.exports)module.exports=api;return api;})();

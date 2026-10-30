@@ -158,7 +158,7 @@ function updateNav(stage){
  if(stage.kind==="guess"&&state.quizIndex<Data.quizzes.length){
   var q=Data.quizzes[state.quizIndex];
   $("nextBtn").textContent=Object.prototype.hasOwnProperty.call(state.quizResults,q.id)?"Câu đoán tiếp theo ↗":"Bỏ qua câu này ↗";
- }else $("nextBtn").textContent=stage.kind==="ending"?"Bắt đầu HSK 1 ↗":"Trang tiếp theo ↗";
+ }else $("nextBtn").textContent=stage.kind==="ending"?"Bước vào chuyện của An ↗":"Trang tiếp theo ↗";
 }
 function render(){
  var stage=Data.stages[state.step];
@@ -187,7 +187,7 @@ function render(){
  if(window.HSKSceneLayers)window.HSKSceneLayers.mount($("introArt"),"intro.bedroom",{dialogue:document.querySelector(".intro-dialogue"),glyph:document.querySelector(".glyph-frame"),anExpression:stage.kind==="ending"?"smile":stage.kind==="discover"?"curious":"thinking"});
 }
 function next(){
- if(state.step===last){window.location.href="/?play=hsk1";return}
+ if(state.step===last){window.location.href="/duong-re/";return}
  if(Data.stages[state.step].kind==="guess"&&state.quizIndex<Data.quizzes.length){
   var q=Data.quizzes[state.quizIndex];
   if(Object.prototype.hasOwnProperty.call(state.quizResults,q.id))change(Core.nextQuiz(state,Data.quizzes),"");

@@ -374,7 +374,9 @@ function renderStoryChoice(){
  return true;
 }
 function updateResumeLabel(){
- $("resumeBtn").firstChild.textContent=state.done?"Xem lại câu chuyện ":"Tiếp tục câu chuyện ";
+ var saved=readSafe(KEY),legacy=state.history.some(Boolean)||!!(saved&&saved.v===3&&Array.isArray(saved.history));$("resumeBtn").hidden=!legacy;$("startBtn").hidden=!legacy;
+ $("resumeBtn").firstChild.textContent=state.done?"Xem lại lượt luyện ":"Tiếp tục lượt luyện cũ ";
+ var branch=readSafe("hai-que-huong-branching-novel-v1");if($("branchStart"))$("branchStart").textContent=branch&&branch.version===1&&Array.isArray(branch.path)?"Tiếp tục chuyện của An ↗":"Bước vào câu chuyện ↗";
 }
 function showCompletion(){
  var summary=HSKCore.summarize(state.history,SCENE_TOTAL,EXAM_START);
