@@ -485,7 +485,7 @@ var items=[
   "zh": "安又遇见小雨了。小雨问安还好吗？",
   "py": "Ān yòu yùjiàn Xiǎoyǔ le. Xiǎoyǔ wèn Ān hái hǎo ma?",
   "question": "Không mở gợi ý: An muốn chào Tiểu Vũ rồi đáp rằng mình vẫn ổn. Gõ cả hai câu bằng tiếng Trung.",
-  "answers": ["你好我很好"],
+  "answers": ["你好我很好", "你好我还好"],
   "hint": "Gồm một lời chào ngắn và một câu đáp lời hỏi thăm.",
   "explain": "你好，我很好。 An chào bạn rồi nói mình vẫn ổn. Câu này chỉ ghi nhận nhớ chữ, không chấm nói."
  },

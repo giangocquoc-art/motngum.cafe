@@ -77,6 +77,7 @@ test("Gate6 typed task grades authored accepted Hanzi, rejects pinyin, negation 
 test("greeting checkpoint independently recalls both the hello and the check-in reply",()=>{
  const item=D.items.find(x=>x.id==="greeting-checkpoint");
  assert.equal(R.act(D,R.initial(),item.id,{type:"answer",value:"你好，我很好。"},TODAY,Core,v3(10)).result,"independent");
+ assert.equal(R.act(D,R.initial(),item.id,{type:"answer",value:"你好，我还好。"},TODAY,Core,v3(10)).result,"independent");
  assert.equal(R.act(D,R.initial(),item.id,{type:"answer",value:"你好"},TODAY,Core,v3(10)).result,"incorrect");
  assert.doesNotMatch(item.zh,/你好|我很好/);
 });

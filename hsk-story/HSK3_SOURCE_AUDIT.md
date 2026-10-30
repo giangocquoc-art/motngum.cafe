@@ -5,7 +5,8 @@
 ## Edition and source
 
 - Issuer: 中外语言交流合作中心, *HSK 考试大纲 / Syllabus for the Chinese Proficiency Test*.
-- Published: November 2025. Effective: July 2026. These are the syllabus edition dates, not a claim about an exam launch date.
+- Published: November 2025. Effective: July 2026. The official notice schedules worldwide HSK 3.0 launch for December 13, 2026; the syllabus effective date and exam rollout date are separate.
+- Official launch notice: https://old.chinesetest.cn/gonewcontent.do?flag=kdnew&id=51336883
 - Official landing page: https://www.chinesetest.cn/syllabus
 - Direct official PDF: https://hsk.cn-bj.ufileos.com/3.0/%E6%96%B0%E7%89%88HSK%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B21219.pdf
 - Page numbers below are the printed page numbers in that PDF. The syllabus organizes each level by tasks, topics, vocabulary, Chinese characters, and grammar.
@@ -17,19 +18,21 @@ Each page number is the section's starting page. These are locators for teacher 
 | HSK 3.0 level | Printed page starts: tasks · topics · vocabulary · characters · grammar | Story arc theme | Chim Sẻ content status |
 | --- | --- | --- | --- |
 | 1 | 2 · 56 · 77 · 353 · 383 | Ngày đầu xa nhà | Ten existing lesson/checkpoint records; eight candidate objectives; item alignment pending |
-| 2 | 6 · 58 · 84 · 355 · 386 | Người bạn đầu tiên | Planned story only; no official item mapping or educator sign-off |
-| 3 | 11 · 60 · 89 · 356 · 389 | Hội chợ mùa xuân | Planned story only; no official item mapping or educator sign-off |
-| 4 | 18 · 63 · 102 · 358 · 392 | Khi mọi chuyện thay đổi | Planned story only; no official item mapping or educator sign-off |
-| 5 | 29 · 66 · 127 · 361 · 395 | Hai quê hương | Planned story only; no official item mapping or educator sign-off |
-| 6 | 37 · 69 · 167 · 364 · 398 | Những điều An muốn gửi lại | Planned story only; no official item mapping or educator sign-off |
+| 2 | 6 · 58 · 84 · 355 · 386 | Người bạn đầu tiên | Six curated story-spine candidates; candidate vocabulary rows and grammar/character locators recorded; item match and educator review pending |
+| 3 | 11 · 60 · 89 · 356 · 389 | Hội chợ mùa xuân | Six curated story-spine candidates; candidate vocabulary rows and grammar/character locators recorded; item match and educator review pending |
+| 4 | 18 · 63 · 102 · 358 · 392 | Khi mọi chuyện thay đổi | Six curated story-spine candidates; candidate vocabulary rows and grammar/character locators recorded; item match and educator review pending |
+| 5 | 29 · 66 · 127 · 361 · 395 | Hai quê hương | Six curated story-spine candidates; candidate vocabulary rows and grammar/character locators recorded; item match and educator review pending |
+| 6 | 37 · 69 · 167 · 364 · 398 | Những điều An muốn gửi lại | Six curated story-spine candidates; candidate vocabulary rows and grammar/character locators recorded; item match and educator review pending |
 
 ## Objective registry and release state
 
-The registry contains eight HSK1 candidate goals linked to the existing ten lesson/checkpoint records, plus three proposed goals for each of HSK2–6. The future goals describe intended story situations and communication tasks. Their vocabulary, grammar, characters, official item IDs, and qualified review are intentionally blank or pending; they are not a completed syllabus.
+The registry contains eight HSK1 candidate goals linked to the existing ten lesson/checkpoint records, plus six curated story-spine candidates for each of HSK2–6. Each future candidate includes vocabulary serials and exact printed pages checked against `candidate-source-index.json`, target-level grammar entries with page locators, and every candidate Hanzi's recognition-list level, ordinal, and printed page. Task/topic cues, planned practice skills, exam-section references, prerequisites, episode intro/reuse/checkpoint links, and hint policy are also recorded. These are traceable candidate references, **not an exhaustive HSK vocabulary/objective inventory or a teacher-approved match**.
+
+`candidate-source-index.json` is a checked-in extraction fixture for the pinned official PDF. It records 78 unique vocabulary row references, 151 per-level character locators, and 46 target-level grammar entry locators. Validators compare candidate content against this independent fixture, including the exact row word/Pinyin/page, character list ordinal/page, and target-level grammar source/page. The fixture improves traceability but does not replace human review of task/topic alignment, grammar use in dialogue, Pinyin, glosses, or instructional suitability.
 
 Each objective carries a stable ID, level, topic, candidate task, prerequisite IDs, five section locators, item-review status for each component, candidate language content, story practice stages, hint rules, and educator sign-off. A component may later be marked `reviewed-match` only when exact official item IDs are recorded; `reviewed-no-match` records a reviewed gap without claiming a match. A level remains locked until its objectives, language content, practice sequence, official mapping, and educator review are complete.
 
-The current pilot has eight candidate goals and zero verified official items. All eight now have authored introduction, later reuse, and recall opportunities. Some reuse/checkpoint activities live in optional spaced review rather than the mandatory story route; these are editorial opportunities, not evidence of full HSK1 coverage. All HSK2–6 goals remain story proposals, not playable lessons.
+The current pilot has eight candidate goals and zero verified official items. All eight have authored introduction, later reuse, and recall opportunities. Some reuse/checkpoint activities live in optional spaced review rather than the mandatory story route; these are editorial opportunities, not evidence of full HSK1 coverage. HSK2–6 now have candidate word rows and structures sourced from the pinned PDF, but no official item IDs, educator sign-off, authored assessments, or playable content. All remain locked.
 
 Future objective stages are ordered as introduction in context, later reuse, and a separate independent recall beat. The recall beat may be a distinct assessment beat inside the capstone episode; it must follow the story interaction and use a non-revealing prompt. No branch may skip a shared learning objective.
 
@@ -51,7 +54,8 @@ The labels below are authored lesson goals. Their HSK 3.0 page references are ca
 ## Verification gaps
 
 - Level 1: map each authored objective to exact official rows/items across all five syllabus components; confirm the Chinese, Pinyin, Vietnamese glosses, accepted variants, difficulty, and scene sequencing with a qualified Mandarin/HSK educator. The three in-story checkpoints and optional review cards are formative tasks, not official exam items.
-- Levels 2–6: all story themes and episode functions are proposals. Map their complete planned learning objectives against the versioned syllabus before authoring them as lessons or making them playable.
+- Levels 2–6: six curated story-spine candidates per level are not a complete syllabus inventory. Verify every candidate row, Chinese form, Pinyin, Vietnamese gloss, grammar structure, topic/task relationship, character list, and skill activity with a qualified educator; then expand the map to the level's complete planned learning objectives and record exact reviewed crosswalks before authoring playable lessons.
+- Exam section references are separated from Chim Sẻ practice claims: the current official pages list listening/reading for levels 1–2 and listening/reading/writing for levels 3–6. The app has no validated native listening, speaking, handwriting, or exam-grade writing evidence.
 - Do not infer listening or speaking proficiency from browser TTS or speech recognition; no validated native recordings, pronunciation rubric, or handwriting evidence is established here.
 - Keep story choice outcomes separate from learning evidence. Lesson completion is not HSK readiness or a certificate.
 - Recheck the official source and any replacement edition before future release claims.

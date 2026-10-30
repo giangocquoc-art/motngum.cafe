@@ -32,6 +32,44 @@ test("all 4374 first-day routes require their seven original tasks and retain ev
  walk(E.fresh(),[]);assert.equal(routes,4374);
 });
 
+test("all condition-equivalent day-two routes keep the same final HSK anchors",()=>{
+ const day2Start=D.byId.epilogue.to,requirements=[],seenGraph=new Set(),flagKeys=new Set(),traitThresholds={},relationThresholds={};
+ const allowedRequirementKeys=["flag","notFlag","anyFlags","minTrait","minRelation"];
+ function inspectRequirement(req){if(!req)return;for(const key of Object.keys(req))assert.ok(allowedRequirementKeys.includes(key),"Add new condition type to the route signature: "+key);
+  if(req.flag)flagKeys.add(req.flag);if(req.notFlag)flagKeys.add(req.notFlag);(req.anyFlags||[]).forEach(key=>flagKeys.add(key));
+  Object.entries(req.minTrait||{}).forEach(([key,value])=>(traitThresholds[key]||(traitThresholds[key]=new Set())).add(value));
+  Object.entries(req.minRelation||{}).forEach(([key,value])=>(relationThresholds[key]||(relationThresholds[key]=new Set())).add(value));requirements.push(req);
+ }
+ function scan(id){if(seenGraph.has(id))return;seenGraph.add(id);const scene=D.byId[id];assert.ok(scene,"Missing day-two node "+id);if(scene.kind==="ending")return;
+  const outgoing=scene.kind==="choice"?scene.options:scene.kind==="route"?scene.routes:[{to:scene.to}];
+  for(const edge of outgoing){inspectRequirement(edge.requires);scan(edge.to);}
+ }
+ scan(day2Start);
+ function signature(state){return JSON.stringify({flags:Array.from(flagKeys).sort().map(key=>[key,Boolean(state.flags[key])]),traits:Object.keys(traitThresholds).sort().map(key=>[key,Array.from(traitThresholds[key]).sort((a,b)=>a-b).map(value=>(state.traits[key]||0)>=value)]),relations:Object.keys(relationThresholds).sort().map(key=>[key,Array.from(relationThresholds[key]).sort((a,b)=>a-b).map(value=>(state.relationships[key]||0)>=value)])});}
+ const groups=new Map();let firstDayRoutes=0;
+ function visitDayOne(state){if(state.node==="epilogue"){
+   const history=finish(state,[]);assert.equal(history.slice(0,7).every(Boolean),true);assert.equal(history.slice(7).some(Boolean),false);
+   firstDayRoutes++;const key=signature(state),group=groups.get(key)||{state:state,count:0};group.count++;groups.set(key,group);return;
+  }
+  const scene=D.byId[state.node];if(scene.kind==="choice")E.availableOptions(scene,state).forEach(option=>visitDayOne(next(state,option.id)));else visitDayOne(next(state,"next"));
+ }
+ visitDayOne(E.fresh());assert.equal(firstDayRoutes,4374);assert.equal(groups.size,72);
+ let representativeSuffixes=0,weightedFullRoutes=0;
+ const expectedTasks=[7,8,9],expectedObjectives=[["introduce-self","student-identity"],["price"],["order-noodles"]];
+ function visitDayTwo(state,history,seenNodes){
+  assert.equal(seenNodes.has(state.node),false,"Day-two route loop at "+state.node);seenNodes.add(state.node);
+  let pending;
+  while((pending=L.pending(state,history))){assert.equal(state.node,"day2-bird","The shared day-two checkpoint must be at the bird scene");assert.equal(pending.index,expectedTasks[history.slice(7).filter(Boolean).length]);assert.deepEqual(Array.from(pending.meta.assessmentObjectiveIds),expectedObjectives[pending.index-7]);history=L.record(history,pending.index,{status:"correct",attempts:0,hint:false});}
+  if(state.node==="day2-epilogue"){
+   assert.equal(state.done,true);assert.equal(history.slice(0,10).every(Boolean),true);assert.equal(L.pending(state,history),null);representativeSuffixes++;return 1;
+  }
+  const scene=D.byId[state.node],options=scene.kind==="choice"?E.availableOptions(scene,state):[null];assert.ok(options.length,"No valid continuation at "+state.node);
+  let count=0;for(const option of options){const choice=option?option.id:"next";count+=visitDayTwo(next(state,choice),history,new Set(seenNodes));}return count;
+ }
+ for(const group of groups.values())weightedFullRoutes+=group.count*visitDayTwo(group.state,Array.from({length:7},()=>({status:"correct",attempts:0,hint:false})),new Set());
+ assert.equal(representativeSuffixes,3552);assert.equal(weightedFullRoutes,190944);
+});
+
 test("different complete two-day story branches expose the same ten learning tasks in the same order",()=>{
  const routes=[
   {name:"friendship",choices:{arrival:"hold-mother","school-gate":"ask-friend","lost-diary":"friend-search","staff-office":"say-simple",canteen:"help-liu","noodle-order":"share-bowl","walk-home":"invite-friend",night:"write-people","day2-breakfast":"prepare-for-guest","day2-bird":"bird-with-friend","day2-liu":"liu-stock","day2-night":"day2-letter-kind"}},

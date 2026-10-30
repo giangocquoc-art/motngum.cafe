@@ -1,6 +1,6 @@
 const {test}=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 const folder=path.resolve(__dirname,"..");
-function load(file){const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box);return box.module.exports}
+function load(file){const box={module:{exports:{}},require:request=>require(path.resolve(folder,request))};vm.runInNewContext(fs.readFileSync(path.join(folder,file),"utf8"),box);return box.module.exports}
 const G=load("story-graph.js"),W=load("scene-world.js"),S=load("skill-sampler.js"),B=load("learning-blueprint.js"),F=load("future-acts.js"),R=load("review-data.js");
 const C=load("content-manifest.js"),K=load("curriculum-data.js"),D=load("story-director.js"),E=load("active-encounter.js"),Beats=load("story-beats.js");
 test("V9 stable string IDs and graph/curriculum contract",()=>{
@@ -126,16 +126,54 @@ test("V18 blueprint rejects an activity whose objective stage metadata no longer
 });
 test("V17 all six levels have stable objectives, ordered story stages, and no false syllabus match",()=>{
  const all=B.allObjectives(K,F);
- assert.equal(all.length,23);
- assert.deepEqual(Array.from(B.report(K,F).objectivesByLevel,x=>x.count),[8,3,3,3,3,3]);
+ assert.equal(all.length,38);
+ assert.deepEqual(Array.from(B.report(K,F).objectivesByLevel,x=>x.count),[8,6,6,6,6,6]);
  assert.ok(all.every(x=>x.officialItemIds.length===0&&x.teacherSignoff==="PENDING"&&!x.readyForRelease));
  for(const objective of all.filter(x=>x.level>1)){
   const act=F.acts.find(x=>x.level===objective.level),order=Object.fromEntries(act.episodes.map((episode,index)=>[episode.id,index]));
   assert.ok(order[objective.episodeRefs.intro.episodeId]<order[objective.episodeRefs.reuse.episodeId],objective.id+" introduces before reuse");
   assert.ok(order[objective.episodeRefs.reuse.episodeId]<=order[objective.episodeRefs.checkpoint.episodeId],objective.id+" practices before recall");
   assert.equal(objective.episodeRefs.checkpoint.beat,"separate-independent-recall-after-story-use");
-  assert.equal(objective.candidateContent.status.startsWith("not-authored"),true);
+  assert.equal(objective.candidateContent.status.startsWith("draft-candidate"),true);
+  assert.ok(objective.candidateContent.vocabulary.length>=4,objective.id+" has sourced vocabulary candidates");
+  assert.ok(objective.candidateContent.grammar.length>=2,objective.id+" has grammar candidates");
+  assert.ok(objective.candidateContent.characters.length>0,objective.id+" has character candidates");
+  assert.deepEqual(Array.from(Object.keys(objective.candidateSourceRefs).sort()),["characters","edition","grammar","sourceUrl","tasks","topics","vocabulary"]);
+  assert.ok(objective.candidateSkillProfile.candidatePracticeSkills.length>0);
+  assert.ok(objective.candidateSkillProfile.officialExamSections.includes("listening")&&objective.candidateSkillProfile.officialExamSections.includes("reading"));
+  assert.equal(objective.sourceComponents.every(x=>x.matchStatus==="pending-item-review"&&x.officialItemIds.length===0),true);
  }
+});
+test("future candidate vocabulary, grammar, and characters resolve to independent PDF item locators",()=>{
+ const index=B.candidateSourceIndex,all=B.makeFutureObjectives(F);
+ assert.equal(index.sourceUrl,B.source.url);
+ assert.equal(Object.keys(index.vocabularyRows).length,78);
+ assert.equal(Object.values(index.characterRefsByTargetLevel).reduce((sum,chars)=>sum+Object.keys(chars).length,0),151);
+ assert.equal(index.vocabularyRows["6:4758"].hanzi,"涉及");
+ assert.equal(index.vocabularyRows["6:4939"].hanzi,"推测");
+ assert.equal(index.vocabularyRows["6:5216"].hanzi,"原材料");
+ for(const objective of all.filter(x=>x.level>1)){
+  for(const word of objective.candidateContent.vocabulary){
+   const ref=index.vocabularyRows[objective.level+":"+word.candidateRowNumber];
+   assert.deepEqual([word.hanzi,word.pinyin,word.printedPage],[ref.hanzi,ref.pinyin,ref.printedPage]);
+  }
+  for(const grammar of objective.candidateContent.grammar){
+   assert.ok(index.grammarEntries.some(ref=>ref.level===objective.level&&ref.pattern===grammar.pattern&&ref.printedPage===grammar.printedPage),objective.id+" cites a target-level grammar item");
+  }
+  for(const ref of objective.candidateSourceRefs.characters.candidateItems){
+   const expected=index.characterRefsByTargetLevel[objective.level][ref.character];
+   assert.deepEqual([ref.characterLevel,ref.ordinal,ref.printedPage,ref.relation],[expected.characterLevel,expected.ordinal,expected.printedPage,expected.relation]);
+  }
+ }
+});
+test("future candidate crosswalk validation fails closed on missing rows or skills",()=>{
+ const spec=B.futurePlans.find(plan=>plan.level===4).objectives[0],row=spec.vocabulary[0],skills=spec.practiceSkills;
+ try{row[3]=0;assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("Malformed candidate vocabulary row")))}finally{row[3]=1811}
+ try{row[3]=1812;assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("pinned PDF row/page index")))}finally{row[3]=1811}
+ const grammar=spec.grammar[0],page=grammar[2];
+ try{grammar[2]=386;assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("incorrectly level-mapped candidate grammar")))}finally{grammar[2]=page}
+ try{spec.practiceSkills=["speaking"];assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("skill profile")))}finally{spec.practiceSkills=skills}
+ assert.deepEqual(Array.from(B.validate(K,C,S,E,F,R)),[]);
 });
 test("V17 validator rejects broken crosswalks, bad prerequisites, and playable future acts",()=>{
  const badPages=JSON.parse(JSON.stringify(K)),badAct=JSON.parse(JSON.stringify(F));
@@ -145,7 +183,7 @@ test("V17 validator rejects broken crosswalks, bad prerequisites, and playable f
  badPages.scenes[0].objectiveIds=[];
  assert.ok(B.validate(badPages,C,S,E,F,R).some(x=>x.includes("crosswalk")));
  badAct.acts[0].playable=true;
- assert.ok(B.validate(K,C,S,E,badAct,R).some(x=>x.includes("non-playable HSK2–6")));
+ assert.ok(B.validate(K,C,S,E,badAct,R).some(x=>x.includes("six candidate strands per locked HSK2–6")));
  const first=B.futurePlans[0].objectives[0],oldPrerequisites=first.prerequisiteIds;
  try{first.prerequisiteIds=["unknown-objective"];assert.ok(B.validate(K,C,S,E,F,R).some(x=>x.includes("prerequisite")));}
  finally{if(oldPrerequisites===undefined)delete first.prerequisiteIds;else first.prerequisiteIds=oldPrerequisites;}
