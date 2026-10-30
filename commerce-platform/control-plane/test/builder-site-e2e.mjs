@@ -192,5 +192,15 @@ try {
     'Other team remains isolated from quota and sites');
   console.log('PASS: atomic team-level 50-site quota while independent team stays isolated');
 
+  // The quota is durable across instances and keyed to the actual user/team.
+  await sql.unsafe("INSERT INTO activity_logs(team_id,user_id,action) SELECT $1,$2,'studio:save' FROM generate_series(1,55)",[t1.id,u1.id]);
+  const rateSave=await request('/api/sites/'+site.id,{jwt:a,method:'PATCH',body:{version:4,document:doc}});
+  assert.equal(rateSave.status,429,'Per-user save throttle must reject a sustained burst');
+  assert.equal(rateSave.data.error,'rate_limited');
+  await sql.unsafe("INSERT INTO activity_logs(team_id,user_id,action) SELECT $1,$2,'studio:create' FROM generate_series(1,8)",[t1.id,u1.id]);
+  const rateCreate=await request('/api/sites',{jwt:a,method:'POST',body:{document:doc}});
+  assert.equal(rateCreate.status,429,'Creation rate limit must be independent of DB site quota');
+  assert.equal(rateCreate.data.error,'rate_limited');
+  console.log('PASS: PostgreSQL-backed tenant/user rate throttling for site creation and CAS saves');
   console.log('PASS: two tenant isolation, CSRF, CAS draft save, revision restore, publish snapshot, unpublish and malicious URL checks');
 }finally{await sql.end();}
