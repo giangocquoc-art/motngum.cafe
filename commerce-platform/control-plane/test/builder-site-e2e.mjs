@@ -1,5 +1,6 @@
 // Disposable PostgreSQL + live Next server test; never run against a production database.
 import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { SignJWT } from 'jose';
 import postgres from 'postgres';
@@ -202,5 +203,13 @@ try {
   assert.equal(rateCreate.status,429,'Creation rate limit must be independent of DB site quota');
   assert.equal(rateCreate.data.error,'rate_limited');
   console.log('PASS: PostgreSQL-backed tenant/user rate throttling for site creation and CAS saves');
+  const retentionDry=spawnSync(process.execPath,['scripts/studio-retention.mjs'],
+    {cwd:process.cwd(),env:process.env,encoding:'utf8'});
+  assert.equal(retentionDry.status,0,'Retention default dry-run must succeed: '+retentionDry.stderr);
+  assert.match(retentionDry.stdout,/"mode": "dry-run"/);
+  const noBackup=spawnSync(process.execPath,['scripts/studio-retention.mjs','--apply'],
+    {cwd:process.cwd(),env:process.env,encoding:'utf8'});
+  assert.notEqual(noBackup.status,0,'Retention must refuse deletion without explicit backup directory');
+  console.log('PASS: retention defaults to read-only and rejects apply without backup');
   console.log('PASS: two tenant isolation, CSRF, CAS draft save, revision restore, publish snapshot, unpublish and malicious URL checks');
 }finally{await sql.end();}
