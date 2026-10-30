@@ -1,3 +1,4 @@
+import {parseRecovery,recoveryEnvelope,recoveryKey,RECOVERY_TTL_MS} from '../lib/builder/local-recovery';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -261,4 +262,17 @@ test('strict v2 schema rejects unmapped fields before cloud-save can erase them'
   ((block.pages as Record<string,unknown>[])[0].blocks as Record<string,unknown>[])[0].fontSize=28;
   assert.equal(validateSiteDocument(block),null);
   assert.deepEqual(validateSiteDocument(original),original);
+});
+
+test('local crash recovery is user/team/site scoped, version checked and expires',()=>{
+  const doc=buildTemplateDocument(SITE_TEMPLATES.find(t=>t.id==='maison-cafe')!);
+  assert.notEqual(recoveryKey(1,10,'site'),recoveryKey(2,10,'site'));
+  assert.notEqual(recoveryKey(1,10,'site'),recoveryKey(1,11,'site'));
+  assert.notEqual(recoveryKey(1,10,'site'),recoveryKey(1,10,'other'));
+  const now=Date.now();
+  const backup=recoveryEnvelope(doc,5,now);
+  assert.deepEqual(parseRecovery(JSON.stringify(backup),now),backup);
+  assert.equal(parseRecovery(JSON.stringify(backup),now+RECOVERY_TTL_MS+1),null);
+  assert.equal(parseRecovery(JSON.stringify({...backup,baseVersion:-1}),now),null);
+  assert.equal(parseRecovery(JSON.stringify({...backup,document:{...doc,pages:[]}}),now),null);
 });
