@@ -204,3 +204,20 @@ export const builderSiteRevisions = pgTable('builder_site_revisions', {
 ]);
 
 export type BuilderSite = typeof builderSites.$inferSelect;
+
+/** Inbound requests for public sites. Data is isolated by site AND tenant. */
+export const siteSubmissions = pgTable('site_submissions', {
+  id: uuid('id').primaryKey(),
+  requestId: uuid('request_id').notNull(),
+  siteId: uuid('site_id').notNull().references(() => builderSites.id, {onDelete:'cascade'}),
+  teamId: integer('team_id').notNull().references(() => teams.id),
+  blockId: varchar('block_id',{length:100}).notNull(),
+  kind: varchar('kind',{length:12}).notNull(),
+  name: varchar('name',{length:100}),
+  email: varchar('email',{length:254}).notNull(),
+  message: varchar('message',{length:2000}),
+  createdAt: timestamp('created_at').notNull().defaultNow()
+}, table=>[
+  uniqueIndex('site_submissions_dedupe').on(table.siteId,table.requestId),
+  index('site_submissions_team_site_created').on(table.teamId,table.siteId,table.createdAt)
+]);
