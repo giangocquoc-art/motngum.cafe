@@ -83,6 +83,7 @@ test("plot persistence stores only the versioned route path and choices; callbac
  const complete=play(Object.fromEntries(F.byLevel(2).episodes.map(episode=>[episode.id,episode.decision.choices[0].id]))).progress,completePath=R.routePath(complete.choices).path,priorCursor=completePath[completePath.length-2],validPrior={...complete,cursorNodeId:priorCursor,routeHistory:completePath.slice(0,-1)};
  assert.equal(R.inspectProgress(validPrior).ok,true);
  assert.equal(R.inspectProgress({...validPrior,cursorNodeId:R.compiled.graph.endingNodeId}).ok,false,"a cursor jump cannot bypass the final reaction, callbacks, or anchors");
+ assert.equal(R.inspectProgress({schemaVersion:1,actId:"hsk2.first-friend",choices:complete.choices,scenePath:[completePath[0]]}).ok,false,"future decisions cannot be pre-saved before their reactions are reached");
 });
 function playPartial(choiceByEpisode){
  let progress=R.freshProgress(),guard=0;

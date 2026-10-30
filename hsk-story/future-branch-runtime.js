@@ -88,6 +88,7 @@ function inspectProgress(save){
  if(typeof cursor!=="string"||!Array.isArray(history))return fail("Malformed in-session plot cursor");
  var cursorIndex=route.path.indexOf(cursor),expectedHistory=cursorIndex<0?[]:route.path.slice(0,cursorIndex+1);
  if(cursorIndex<0||JSON.stringify(history)!==JSON.stringify(expectedHistory))return fail("Plot progress must follow the reachable story path without skipping scenes");
+ for(var choiceIndex=0;choiceIndex<save.choices.length;choiceIndex++){var choiceRecord=save.choices[choiceIndex],decisionNode=Object.values(compiled.graph.byId).find(function(node){return node.type==="story-decision"&&node.episodeId===choiceRecord.episodeId;}),selectedEdge=decisionNode&&decisionNode.choices.find(function(edge){return edge.id===choiceRecord.choiceId;});if(!selectedEdge||history.indexOf(selectedEdge.to)<0)return fail("A saved choice must appear in the reached route path");}
  return {ok:true,progress:{schemaVersion:SAVE_VERSION,actId:compiled.graph.id,choices:clone(save.choices),cursorNodeId:cursor,routeHistory:clone(history)},route:route};
 }
 function saveProgress(progress){var checked=inspectProgress(progress);if(!checked.ok)return checked;return {ok:true,save:{schemaVersion:SAVE_VERSION,actId:compiled.graph.id,choices:clone(checked.progress.choices),scenePath:clone(checked.progress.routeHistory)}};}
