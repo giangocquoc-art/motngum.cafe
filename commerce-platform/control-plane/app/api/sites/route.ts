@@ -6,6 +6,7 @@ import { builderSites, builderSiteRevisions, teams } from '@/lib/db/schema';
 import { studioContext, mayEdit } from '@/lib/builder/site-context';
 import { readStudioBody, studioReply } from '@/lib/builder/http';
 import { validateSiteDocument } from '@/lib/builder/validation';
+import { studioRateLimit } from '@/lib/builder/rate-limit';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -36,6 +37,10 @@ export async function POST(request:NextRequest) {
   const value=input.body as Record<string,unknown>|null;
   const document=validateSiteDocument(value?.document);
   if(!document)return studioReply({error:'invalid_site_document'},422);
+  try{
+    if(!await studioRateLimit(ctx.team.id,ctx.user.id,'studio:create'))
+      return studioReply({error:'rate_limited',retryAfterSeconds:60},429);
+  }catch{return studioReply({error:'rate_limit_unavailable'},503);}
   const id=randomUUID(),slug=slugify(document.title)+'-'+id.slice(0,8);
   try{
     await db.transaction(async tx=>{
