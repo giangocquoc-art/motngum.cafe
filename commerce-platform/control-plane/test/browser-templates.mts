@@ -66,6 +66,9 @@ try{
   for(const site of sites){
     const result=await page.goto('/s/'+site.slug,{waitUntil:'domcontentloaded'});
     assert.equal(result?.status(),200);
+    assert.doesNotMatch(await page.locator('main').innerText(),
+      /Thông tin ở bên trái là dữ liệu mẫu/,
+      'published sites must not call edited contact details sample data');
     const locator=page.locator('[data-studio-pattern="'+site.pattern+'"]').first();
     await locator.waitFor();
     const desc=await locator.evaluate((node:Element)=>{
