@@ -251,7 +251,7 @@ try{
   await page.unroute('**/api/sites/'+id);
   await page.getByRole('region',{name:'Khôi phục bản nháp'}).waitFor();
   assert.equal((await saved()).draft_document.themeId,'forest');
-  await page.getByRole('button',{name:'Khôi phục bản nháp'}).click();
+  await dialogs([''],async()=>page.getByRole('button',{name:'Khôi phục bản nháp'}).click());
   await until(async()=> (await saved()).draft_document.themeId==='ocean',
     'restored local edit persisted with CAS after browser reload');
   await until(async()=>page.evaluate(key=>!window.localStorage.getItem(key),recoveryKey),
