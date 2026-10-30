@@ -62,9 +62,12 @@ test("wrong, assisted/sample, and skipped learning outcomes never mutate narrati
  let state=next(E.fresh(),"hold-mother"),history=L.clean([]);const before=JSON.stringify(state),pending=L.pending(state,history);
  assert.equal(pending.index,0);
  const wrong=L.evaluate(0,"不是正确答案");assert.equal(wrong.ok,false);assert.deepEqual(JSON.parse(JSON.stringify(state)),JSON.parse(before));assert.equal(L.pending(state,history).index,0);
- assert.throws(()=>L.record(history,0,{status:"skipped",attempts:1,hint:false}));assert.throws(()=>L.record(history,0,{status:"wrong",attempts:1,hint:false}));
+ assert.throws(()=>L.record(history,0,{status:"wrong",attempts:1,hint:false}));
  assert.deepEqual(JSON.parse(JSON.stringify(state)),JSON.parse(before));assert.equal(L.pending(state,history).index,0);assert.equal(history[0],null);
- history=L.record(history,0,{status:"assisted",attempts:2,hint:true});
+ const skipped=L.record(history,0,{status:"skipped",attempts:1,hint:false});
+ assert.deepEqual(JSON.parse(JSON.stringify(state)),JSON.parse(before));assert.deepEqual(JSON.parse(JSON.stringify(skipped[0])),{status:"skipped",attempts:1,hint:false});
+ assert.equal(L.pending(state,skipped),null,"skip records completion so the narrative can continue");assert.notEqual(skipped[0].status,"correct","skip is not independent mastery");
+ history=L.record(L.clean([]),0,{status:"assisted",attempts:2,hint:true});
  assert.deepEqual(JSON.parse(JSON.stringify(state)),JSON.parse(before));assert.deepEqual(JSON.parse(JSON.stringify(history[0])),{status:"assisted",attempts:2,hint:true});
  assert.notEqual(history[0].status,"correct","a viewed sample remains assisted evidence");
 });
