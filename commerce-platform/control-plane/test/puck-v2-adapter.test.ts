@@ -248,3 +248,17 @@ test('all three source-normalized MIT templates are distinct, editable, and cann
   assert.equal(docs[1].pages[0].blocks.find(b=>b.kind==='features')?.variant,'banner');
   assert.equal(docs[2].pages[0].blocks.find(b=>b.kind==='services')?.variant,'list');
 });
+
+test('strict v2 schema rejects unmapped fields before cloud-save can erase them',()=>{
+  const original=buildTemplateDocument(SITE_TEMPLATES.find(t=>t.id==='maison-cafe')!);
+  const root=structuredClone(original) as unknown as Record<string,unknown>;
+  root.seo={title:'hidden metadata'};
+  assert.equal(validateSiteDocument(root),null);
+  const page=structuredClone(original) as unknown as Record<string,unknown>;
+  (page.pages as Record<string,unknown>[])[0].layout={columns:2};
+  assert.equal(validateSiteDocument(page),null);
+  const block=structuredClone(original) as unknown as Record<string,unknown>;
+  ((block.pages as Record<string,unknown>[])[0].blocks as Record<string,unknown>[])[0].fontSize=28;
+  assert.equal(validateSiteDocument(block),null);
+  assert.deepEqual(validateSiteDocument(original),original);
+});
