@@ -37,5 +37,7 @@ export default async function PuckSiteEditor({params}:{
     initialDocument={document}
     initialVersion={site.draftVersion}
     role={ctx.role||''}
+    userId={ctx.user!.id}
+    teamId={ctx.team.id}
   />;
 }
