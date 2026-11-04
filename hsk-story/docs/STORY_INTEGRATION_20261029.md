@@ -40,4 +40,12 @@ Ponytail chưa có công cụ trong phiên; dùng agent phối hợp sẵn có t
 - Hai thẻ ôn về Tiểu Vũ dùng đúng câu trong truyện và Pinyin tương ứng.
 - Câu mẫu cảm ơn thuộc Tiểu Vũ. Người mẫu và biểu cảm nay theo metadata của câu mẫu; bà Lưu tạm dừng nói để nghe rồi trở lại lượt của bà. Cả hai luồng chơi dùng `setSpeaker` trong renderer chung; `mount` khôi phục thay đổi tạm trước khi tái sử dụng hoặc thay cảnh. Biểu cảm cảm xúc của nhân vật khác và thay đổi độc lập được giữ lại.
 - Kiểm chứng logic mới nhất: 340/340 kiểm thử qua. Edge đã qua 314 trạng thái của Nhập môn, HSK1 và góc ôn ở điện thoại dọc/ngang, cùng các bài kiểm tra bàn phím. Kịch bản điều khiển truyện mới qua cả hai chiều màn hình, kiểm tra trực tiếp người nói, biểu cảm, câu mẫu, trả lời sai và trợ giúp. Kiểm tra bổ sung ở luồng HSK cũ xác nhận Tiểu Vũ là người nói mẫu cảm ơn và bà Lưu tiếp tục lượt kế. Đây vẫn là QA trên Edge headless cục bộ.
-- Rà ngôn ngữ lần này là rà biên tập, chưa phải giáo viên duyệt. Câu hỏi giá `一碗面多少钱？` vẫn cần được đưa vào hội thoại trước lượt nhớ lại nếu muốn coi cấu trúc hỏi giá đã được luyện; hiện lượt đó chỉ được mô tả là đọc và nhớ ngữ cảnh, không phải bằng chứng nghe hay sử dụng cấu trúc hỏi giá.
+- Rà ngôn ngữ lần này là rà biên tập, chưa phải giáo viên duyệt. Lượt giá chỉ được mô tả là đọc và nhớ ngữ cảnh, không phải bằng chứng nghe hay tự đặt câu hỏi giá.
+
+## Nối hội thoại hỏi giá ngày 2026-11-04
+
+- Cả hai luồng dùng câu hỏi `一碗面多少钱？` của Tiểu Vũ trước lời báo giá của bà Lưu, rồi mới đến mẫu cảm ơn. Câu hỏi, Pinyin và bản dịch được lưu một lần trong `story-beats.js`; lời báo giá lấy từ cảnh 5 hiện có. Luồng HSK cũ có hai lượt thoại được gắn vào đồ thị, luồng truyện mới dùng lời báo giá ở bước đọc hiện có.
+- Quan sát hội thoại chỉ ghi nhận trang truyện đã đọc trong luồng HSK cũ; không tạo đáp án đúng, kết quả học, quan hệ hoặc lựa chọn truyện. Luồng truyện mới giữ nguyên dữ liệu lưu khi đọc hội thoại. ID 10 bài học, đáp án, khóa lưu và phiên bản bản lưu giữ nguyên.
+- Bản lưu đã hoàn thành cảnh 5 tiếp tục từ mốc hiện tại mà không phải đọc lại hai lượt thoại mới. Bản đang làm giữ câu gõ dở, số lần thử và trạng thái trợ giúp khi tải lại; ngữ cảnh mới có thể được đọc lại trước khi tiếp tục.
+- 348/348 kiểm thử logic qua. Edge qua 318 trạng thái bố cục ở điện thoại dọc/ngang, có kiểm tra thứ tự hỏi–đáp–cảm ơn, người nói, một Sẻ, bài học và bàn phím. Luồng truyện mới qua kiểm tra điều khiển ở 320×568 và 667×375. Kiểm thử logic cũng bao gồm lưu cũ, tải lại giữa hai lượt thoại và việc không tạo bằng chứng học từ việc đọc.
+- Người chơi đã gặp câu hỏi trước checkpoint 8; đây vẫn là tiếp xúc trong ngữ cảnh, chưa chứng minh tự hỏi giá hoặc nghe hiểu độc lập.

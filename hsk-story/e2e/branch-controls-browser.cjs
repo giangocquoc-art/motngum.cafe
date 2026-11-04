@@ -21,8 +21,20 @@ async function history(page,i){return page.evaluate(i=>JSON.parse(localStorage.g
  await seed(page,'day2-breakfast',7);await until(page,'choose');await page.locator('#journalToggle').click();await page.getByRole('button',{name:'Tự viết câu này'}).click();await page.locator('.lesson-form input').fill('妈妈，昨天我有点害怕。');await page.locator('.lesson-form button.primary').click();assert.equal(await phase(page),'typed');assert.equal(await page.evaluate(()=>AnBranchEngine.load(localStorage.getItem(AnBranchStory.storageKey)).node),'day2-breakfast');
  // The walk-home lesson's NPC reply belongs before the children reach home.
  await seed(page,'walk-home',6);await until(page,'lesson');await page.locator('#answerInput').fill('好');await page.locator('.lesson-form button.primary').click();assert.equal(await phase(page),'feedback');assert.match(await page.locator('#content').innerText(),/明天一起去/);assert.doesNotMatch(await page.locator('#content').innerText(),/明天见/);
- // Tiểu Vũ models the thank-you; bà Lưu remains the addressee and resumes her own turn.
- await seed(page,'walk-home',5);await until(page,'model');
+ // The familiar price question comes before the price response and the thanks model.
+ await seed(page,'walk-home',5);await until(page,'context');
+ const contextBefore=await page.evaluate(()=>({story:localStorage.getItem(AnBranchStory.storageKey),learning:localStorage.getItem(ChimSeBranchLearning.storageKey)}));
+ assert.equal(await page.locator('#speaker').innerText(),'小雨 · Tiểu Vũ');
+ assert.equal(await page.locator('.lesson-zh').innerText(),await page.evaluate(()=>HSKContent.scenes[8].zh));
+ assert.equal(await page.locator('#branchArt [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
+ assert.notEqual(await page.locator('#branchArt [data-character="liu"]').getAttribute('data-expression'),'speaking');
+ await layout(page,v.name+' price question');await page.locator('#nextBtn').click();
+ assert.equal(await phase(page),'listen');assert.equal(await page.locator('#speaker').innerText(),'刘奶奶 · Bà Lưu');
+ assert.equal(await page.locator('.lesson-zh').innerText(),await page.evaluate(()=>HSKContent.scenes[5].zh));
+ assert.equal(await page.locator('#branchArt [data-character="liu"]').getAttribute('data-expression'),'speaking');
+ await layout(page,v.name+' price response');
+ assert.deepEqual(await page.evaluate(()=>({story:localStorage.getItem(AnBranchStory.storageKey),learning:localStorage.getItem(ChimSeBranchLearning.storageKey)})),contextBefore,'hearing the conversation preserves plot and evidence');
+ await until(page,'model');
  assert.equal(await page.locator('#speaker').innerText(),'小雨 · Tiểu Vũ · nhắc An');
  assert.equal(await page.locator('#branchArt [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
  assert.notEqual(await page.locator('#branchArt [data-character="liu"]').getAttribute('data-expression'),'speaking');

@@ -316,14 +316,16 @@ function pendingModel(){
  return !state.done&&state.step<EXAM_START&&!state.history[state.step]&&!state.vocabSeen.includes(state.step)?SCENES[state.step].guidedModel:null;
 }
 function renderStoryInterlude(){
- var story=HSKStoryBeats.pending(state.step,state.storyBeats),model=!story&&pendingModel(),b=story||model;
+ var story=HSKStoryBeats.pending(state.step,state.storyBeats),model=!story&&pendingModel(),b=story?HSKStoryBeats.resolve(story,HSKContent):model;
+ var dialogue=story&&(story.kind==="dialogue"||story.kind==="scene-dialogue");
  $("storyInterlude").hidden=!b;
- $("storyInterlude").dataset.kind=model?"model":"story";
+ $("storyInterlude").dataset.kind=model?"model":dialogue?"dialogue":"story";
  if(!b)return false;
  $("interludeHeading").textContent=b.title;$("interludeStory").textContent=b.story;
- $("speaker").textContent=model?(model.speaker||SCENES[state.step].speaker)+" · nhắc An":"旁白 · Người kể chuyện";$("sceneTag").textContent=model?"CÂU AN TẬP NÓI":"TRANG TRUYỆN";
- $("interludeContinue").textContent=model?"Thử nói cùng An ↗":"Đọc tiếp câu chuyện ↗";
+ $("speaker").textContent=model?(model.speaker||SCENES[state.step].speaker)+" · nhắc An":dialogue?b.speaker:"旁白 · Người kể chuyện";$("sceneTag").textContent=model?"CÂU AN TẬP NÓI":dialogue?"TRÒ CHUYỆN":"TRANG TRUYỆN";
+ $("interludeContinue").textContent=model?"Thử nói cùng An ↗":dialogue?b.continueLabel:"Đọc tiếp câu chuyện ↗";
  if(model&&(model.speakerCharacter||SCENES[state.step].speakerCharacter))HSKSceneLayers.setSpeaker($("stageIllustration"),model.speakerCharacter||SCENES[state.step].speakerCharacter);
+ if(dialogue)HSKSceneLayers.setSpeaker($("stageIllustration"),b.speakerCharacter);
  $("dialogueText").textContent=b.zh;$("pinyinText").textContent=b.py;$("vietText").textContent=b.vi;
  $("userInstruction").hidden=true;$("sceneObjective").hidden=true;
  $("answerForm").hidden=true;$("sentenceBuilder").hidden=true;$("learningStrip").hidden=true;

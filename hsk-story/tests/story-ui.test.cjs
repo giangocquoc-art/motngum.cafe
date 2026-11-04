@@ -117,6 +117,39 @@ test('new learners meet a spoken model before answering and retain truthful guid
  assert.ok(saved.vocabSeen.includes(0));
 });
 
+test('the price question and bà Lưu’s response precede the thanks model without creating learning evidence',()=>{
+ const key='hai-que-huong-progress-v3',history=Array.from({length:5},()=>({status:'correct',attempts:0,hint:false}));
+ const st={[key]:JSON.stringify({v:3,step:5,history,storyBeats:['arrival','gate','lunch'],draft:'谢',attempts:1,hintUsed:false,vocabSeen:[]})};
+ let t=harness(st),e=t.e;e.startBtn.click();
+ assert.equal(e.storyInterlude.dataset.kind,'dialogue');assert.equal(e.interludeHeading.textContent,'Tiểu Vũ hỏi giá');
+ assert.equal(e.speaker.textContent,'小雨 · Tiểu Vũ');assert.equal(e.dialogueText.textContent,Content.scenes[8].zh);assert.equal(e.answerForm.hidden,true);
+ e.listenBtn.click();assert.equal(t.spoken.at(-1),B.dialogueFor(5).zh);
+ e.answerForm.fire('submit');assert.deepEqual(JSON.parse(st[key]).history,history,'a hidden answer action cannot finish the task during the question');
+ e.interludeContinue.click();
+ let saved=JSON.parse(st[key]);assert.equal(saved.step,5);assert.deepEqual(saved.history,history);assert.equal(saved.draft,'谢');assert.equal(saved.attempts,1);assert.equal(saved.hintUsed,false);
+ assert.ok(saved.storyBeats.includes('noodle-price-question'));assert.ok(!saved.storyBeats.includes('noodle-price-response'));
+ t=harness(st);e=t.e;e.resumeBtn.click();
+ assert.equal(e.interludeHeading.textContent,'Bà Lưu báo giá');assert.equal(e.speaker.textContent,Content.scenes[5].speaker);
+ assert.equal(e.dialogueText.textContent,Content.scenes[5].zh);assert.equal(e.storyInterlude.dataset.kind,'dialogue');
+ e.listenBtn.click();assert.equal(t.spoken.at(-1),Content.scenes[5].zh);e.interludeContinue.click();
+ assert.equal(e.storyInterlude.dataset.kind,'model');assert.equal(e.speaker.textContent,Content.scenes[5].guidedModel.speaker+' · nhắc An');
+ assert.equal(e.dialogueText.textContent,Content.scenes[5].guidedModel.zh);assert.deepEqual(JSON.parse(st[key]).history,history);
+ e.interludeContinue.click();
+ assert.equal(e.answerForm.hidden,false);assert.equal(e.answerInput.value,'谢');
+ e.answerInput.value='谢谢';e.answerForm.fire('submit');saved=JSON.parse(st[key]);
+ assert.deepEqual(saved.history.slice(0,5),history);assert.deepEqual(saved.history[5],{status:'correct',attempts:1,hint:true});
+ assert.equal(saved.step,5);assert.equal(saved.v,3);
+});
+
+test('an old save with the payment task complete keeps its result and advances without replaying new context',()=>{
+ const key='hai-que-huong-progress-v3',history=Array.from({length:6},(_,index)=>({status:'correct',attempts:index===5?1:0,hint:index===5}));
+ const st={[key]:JSON.stringify({v:3,step:5,history,storyBeats:['arrival','gate','lunch'],vocabSeen:[0,1,2,3,4,5]})};
+ const t=harness(st),e=t.e;e.resumeBtn.click();assert.equal(e.storyInterlude.hidden,true);assert.equal(e.nextBtn.hidden,false);
+ assert.deepEqual(JSON.parse(st[key]).history,history);e.nextBtn.click();
+ const saved=JSON.parse(st[key]);assert.equal(saved.step,6);assert.deepEqual(saved.history,history);
+ assert.ok(saved.storyBeats.includes('noodle-price-question'));assert.ok(saved.storyBeats.includes('noodle-price-response'));
+});
+
 test('checkpoint subtitles are reachable without opening the answer notebook and count as support',()=>{
  const store={'hai-que-huong-progress-v3':JSON.stringify({v:3,step:7,history:Array.from({length:7},()=>({status:'correct',hint:true,attempts:0})),storyBeats:B.beats.map(x=>x.id)})};
  const t=harness(store),e=t.e;e.resumeBtn.click();assert.equal(e.pinyinText.hidden,true);

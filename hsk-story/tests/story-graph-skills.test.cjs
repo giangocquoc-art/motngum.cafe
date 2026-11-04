@@ -9,6 +9,15 @@ test("V9 stable string IDs and graph/curriculum contract",()=>{
  assert.equal(new Set(Array.from(G.sceneIds)).size,10);
  assert.equal(G.indexOf("hsk1.e01.school-introduction"),1);
 });
+test("every contextual price turn is registered before payment and cannot silently disappear from the graph",()=>{
+ for(const sourceId of ['noodle-price-question','noodle-price-response']){
+  const event=G.events.find(event=>event.sourceId===sourceId);assert.ok(event);assert.equal(event.before,G.idAt(5));
+  const original=event.sourceId;
+  try{event.sourceId='missing-context';assert.ok(G.validate(C,K,Beats,D,E).some(error=>error.includes('Story dialogue needs one event')&&error.includes(sourceId)));}
+  finally{event.sourceId=original;}
+ }
+ assert.deepEqual(Array.from(G.validate(C,K,Beats,D,E)),[]);
+});
 test("V9 graph resolves old numeric save and stable reference safely",()=>{
  assert.equal(G.resolve(null,7),7);
  assert.equal(G.resolve("hsk1.e01.xiaoyu-friendship",7),2);

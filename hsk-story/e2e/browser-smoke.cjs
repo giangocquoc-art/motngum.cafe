@@ -157,7 +157,7 @@ async function goStory(page,label){
  assert.equal(await page.locator("#heroArt").evaluate(el=>getComputedStyle(el).visibility),"hidden","The home illustration must not render a second Sẻ behind the active story");
  assert.equal(await page.locator("#gameOverlay .cs-sparrow:visible").count(),1,"The active game view should show one Sẻ");
  let finished=false,steps=0,practiceUsed=false,supportUsed=false,arrivalObserved=false,returnedTree=false,streetEchoObserved=false,encounterResumeChecked=false;
- const capturedScenes=new Set();
+ const capturedScenes=new Set();let priceConversation=0;
  for(;steps<100;steps++){
   await auditLayout(page,label,'story-'+steps+'-'+(await page.locator('#stepText').innerText()));
   const artId=await page.locator('#stageIllustration .cs-scene').getAttribute('data-scene');
@@ -182,8 +182,26 @@ async function goStory(page,label){
   }
   if(await visible(page,"#completionPane")){finished=true;break}
   if(await visible(page,"#storyInterlude")){
+   if(artId==='hsk1.e01.liu-payment'){
+    const heading=await page.locator('#interludeHeading').innerText();
+    if(heading==='Tiểu Vũ hỏi giá'){
+     assert.equal(priceConversation,0);priceConversation=1;
+     assert.equal(await page.locator('#speaker').innerText(),'小雨 · Tiểu Vũ');
+     assert.equal(await page.locator('#dialogueText').innerText(),await page.evaluate(()=>HSKContent.scenes[8].zh));
+     assert.equal(await page.locator('#stageIllustration [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
+     assert.notEqual(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking');
+    }else if(heading==='Bà Lưu báo giá'){
+     assert.equal(priceConversation,1);priceConversation=2;
+     assert.equal(await page.locator('#speaker').innerText(),'刘奶奶 · Bà Lưu');
+     assert.equal(await page.locator('#dialogueText').innerText(),await page.evaluate(()=>HSKContent.scenes[5].zh));
+     assert.equal(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking');
+     assert.notEqual(await page.locator('#stageIllustration [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
+    }
+    assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('hai-que-huong-progress-v3')).history[5]||null),null,'context and the model cannot complete the payment task');
+   }
    const paymentModel=artId==='hsk1.e01.liu-payment'&&await page.locator('#storyInterlude').getAttribute('data-kind')==='model';
    if(paymentModel){
+    assert.equal(priceConversation,2,'the price response comes before the thanks model');priceConversation=3;
     assert.equal(await page.locator('#speaker').innerText(),'小雨 · Tiểu Vũ · nhắc An');
     assert.equal(await page.locator('#stageIllustration [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
     assert.notEqual(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking','bà Lưu listens while Tiểu Vũ models thanks');
@@ -348,6 +366,7 @@ async function goStory(page,label){
  }
  if(!finished){await page.screenshot({path:path.join(OUT,label+'-stuck.png')});console.error(await page.evaluate(()=>({step:document.querySelector('#stepText').textContent,feedback:document.querySelector('#feedback').textContent,answer:document.querySelector('#answerInput').value,panels:['storyInterlude','encounterPanel','skillPanel','storyChoicePanel','nextBtn','answerForm'].map(id=>[id,!document.getElementById(id).hidden])})))}
  assert.equal(finished,true,"End-to-end story not finished after "+steps+" steps");
+ assert.equal(priceConversation,3,'the played route includes the full question, response and thanks model');
  const expectedCaptures=await page.evaluate(()=>[...HSKSceneLayers.sceneIds,'lost-notebook-office'].sort());
  assert.deepEqual([...capturedScenes].sort(),expectedCaptures,'Every state-authored story/encounter scene needs a real decoded-image capture');
  const stats=await page.locator("#summaryStats").textContent();
