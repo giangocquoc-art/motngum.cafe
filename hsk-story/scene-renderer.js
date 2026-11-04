@@ -1,6 +1,6 @@
 /* Shared layered scene renderer. Production flat geometry and scene data have one authored source. */
 var HSKSceneLayers=(function(){"use strict";
-var data=HSKSceneManifest,scenes=data.scenes,observers=new WeakMap(),preloaded=new Set(),reactions=new WeakMap();
+var data=HSKSceneManifest,scenes=data.scenes,observers=new WeakMap(),preloaded=new Set(),reactions=new WeakMap(),speakerChanges=new WeakMap();
 function escape(value){return String(value).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function sprite(name,expression,extra,position,spriteName){
  var key=spriteName||name,s=data.sprites[key],frame=s.frames[expression];
@@ -20,6 +20,25 @@ function setExpression(host,name,expression){
  var x=spec.columns===1?0:(frame%spec.columns)/(spec.columns-1)*100,y=spec.rows===1?0:Math.floor(frame/spec.columns)/(spec.rows-1)*100;
  target.style.backgroundPosition=x+'% '+y+'%';target.dataset.expression=expression;return true;
 }
+function restoreSpeaker(host){
+ if(!host||typeof host.querySelector!=="function")return false;
+ var changes=speakerChanges.get(host)||[],restored=false;speakerChanges.delete(host);
+ changes.forEach(function(change){var current=host.querySelector('.cs-actor[data-character="'+change.character+'"]');if(current===change.target&&current.dataset.expression===change.ownedExpression)restored=setExpression(host,change.character,change.expression)||restored;});
+ return restored;
+}
+function setSpeaker(host,character){
+ restoreSpeaker(host);
+ if(!host||typeof host.querySelector!=="function"||typeof character!=="string"||!Object.prototype.hasOwnProperty.call(data.sprites,character))return false;
+ var target=host.querySelector('.cs-actor[data-character="'+character+'"]');if(!target||!target.dataset)return false;
+ var spec=data.sprites[target.dataset.sprite||character]||data.sprites[character];
+ if(!spec||!spec.frames||spec.frames.speaking===undefined||spec.frames[target.dataset.expression]===undefined)return false;
+ var changes=[];
+ function change(actor,name,expression){var prior=actor.dataset.expression;if(prior!==expression&&setExpression(host,name,expression))changes.push({target:actor,character:name,expression:prior,ownedExpression:expression});}
+ change(target,character,"speaking");
+ if(typeof host.querySelectorAll==="function")Array.from(host.querySelectorAll(".cs-actor")||[]).forEach(function(actor){if(!actor||!actor.dataset||actor===target||actor.dataset.expression!=="speaking")return;var name=actor.dataset.character,other=data.sprites[actor.dataset.sprite||name]||data.sprites[name],rest=other&&other.frames&&["listening","smile","neutral"].find(function(expression){return other.frames[expression]!==undefined;});if(rest)change(actor,name,rest);});
+ if(changes.length)speakerChanges.set(host,changes);
+ return true;
+}
 function layerEntries(value){return value?(Array.isArray(value)?value:[value]):[]}
 function layerVisible(layer,options){return !layer.visibleWhen||!!(options&&options.showForeground===true)}
 function layerImages(value,options){return layerEntries(value).map(function(layer,index){return {layer:layer,index:index}}).filter(function(item){return layerVisible(item.layer,options)}).map(function(item){return '<img alt="" class="cs-layer-image'+(item.layer.motion==='steam'?' cs-steam-layer':'')+'" data-layer-index="'+item.index+'" data-asset="'+escape(item.layer.asset)+'">'}).join('')}
@@ -33,6 +52,7 @@ function render(place,id,options){
  return '<div class="cs-scene" data-scene="'+escape(id)+'" data-background="'+scene.background+'" role="img" aria-label="'+escape(label)+'"><picture class="cs-background" data-layer="background"><source media="(max-width:900px) and (orientation:portrait)" srcset="/art/'+bg.mobile+'"><img src="/art/'+bg.desktop+'" alt="" decoding="async"></picture><div class="cs-midground" data-layer="midground" aria-hidden="true">'+layerImages(midground,options)+'</div><div class="cs-back-actors" data-layer="background-characters">'+backActors+'</div>'+counterMask+(layers.tabletop?'<div class="cs-tabletop" data-layer="tabletop" aria-hidden="true">'+layerImages(layers.tabletop,options)+'</div>':'')+'<div class="cs-actors" data-layer="characters">'+actors+sparrow+'</div><div class="cs-foreground" data-layer="foreground" aria-hidden="true">'+layerImages(foreground,options)+'</div></div>';
 }
 function mount(host,id,options){
+ restoreSpeaker(host);
  options=options||{};host.classList.add('chimse-art');host.dataset.artMode=data.sprites.an.format==='svg'?'flat':'raster';host.dataset.sourcePositions=scenes[id].actors.some(function(a){return !!a.sourcePosition})?'true':'false';
  var sceneForeground=(scenes[id].layers||{}).foreground,foregroundMode=layerEntries(sceneForeground).some(function(layer){return layerVisible(layer,options)})?'shown':'hidden';
  var companionMode=options.companion||'';
@@ -147,5 +167,5 @@ function validate(expected){
   if(s.sparrow.asset!==data.sprites.sparrow.asset)errors.push('Invalid Sparrow '+id);
  });return errors;
 }
-return {version:data.version,sceneIds:data.sceneIds,scenes:scenes,sprites:data.sprites,backgrounds:data.backgrounds,render:render,mount:mount,setExpression:setExpression,react:react,preload:preload,validate:validate};
+return {version:data.version,sceneIds:data.sceneIds,scenes:scenes,sprites:data.sprites,backgrounds:data.backgrounds,render:render,mount:mount,setExpression:setExpression,setSpeaker:setSpeaker,restoreSpeaker:restoreSpeaker,react:react,preload:preload,validate:validate};
 })();

@@ -98,6 +98,61 @@ test('expression changes update the inline SVG in place and preserve the single 
   assert.throws(() => layers.render(null, 'missing-scene'), /Unknown art scene/);
 });
 
+function speakerHost(id='hsk1.e01.liu-payment') {
+  const actors=new Map(runtime.scenes[id].actors.map(actor=>[actor.character,{dataset:{character:actor.character,sprite:actor.sprite||actor.character,expression:actor.expression},innerHTML:'',style:{}}]));
+  let markup='',writes=0;
+  const host={dataset:{},classList:{add(){}},querySelector(selector){return actors.get(/data-character="([^"]+)"/.exec(selector)?.[1])||null;},querySelectorAll(selector){return selector==='.cs-actor'?Array.from(actors.values()):[];}};
+  Object.defineProperty(host,'innerHTML',{get(){return markup;},set(value){markup=value;writes++;}});
+  return {host,actors,writes:()=>writes};
+}
+
+test('speaker turns pause another speaking actor, preserve emotions, and restore owned expression changes',()=>{
+  const {host,actors}=speakerHost(),liu=actors.get('liu'),xiaoyu=actors.get('xiaoyu'),an=actors.get('an'),priorXiaoyu=xiaoyu.dataset.expression;
+  assert.equal(liu.dataset.expression,'speaking','payment artwork starts with bà Lưu stating the price');
+  layers.setExpression(host,'an','thinking');
+  assert.equal(layers.setSpeaker(host,'xiaoyu'),true);
+  assert.equal(xiaoyu.dataset.expression,'speaking');assert.match(xiaoyu.innerHTML,/<svg\b/);
+  assert.equal(liu.dataset.expression,'smile','bà Lưu listens while Tiểu Vũ models thanks');
+  assert.equal(an.dataset.expression,'thinking','an emotional reaction is not reset');
+  assert.equal(layers.restoreSpeaker(host),true);
+  assert.equal(liu.dataset.expression,'speaking');assert.equal(xiaoyu.dataset.expression,priorXiaoyu);assert.equal(an.dataset.expression,'thinking');
+  assert.equal(layers.restoreSpeaker(host),false,'restoration is idempotent');
+});
+
+test('speaker turns use supported listening and neutral fallbacks for other speaking sprites',()=>{
+  const {host,actors}=speakerHost();layers.setExpression(host,'an','speaking');layers.setExpression(host,'xiaoyu','speaking');
+  assert.equal(layers.setSpeaker(host,'liu'),true);
+  assert.equal(actors.get('an').dataset.expression,'listening');
+  assert.equal(actors.get('xiaoyu').dataset.expression,'neutral','Tiểu Vũ has no listening or smile frame');
+  layers.restoreSpeaker(host);assert.equal(actors.get('an').dataset.expression,'speaking');assert.equal(actors.get('xiaoyu').dataset.expression,'speaking');
+});
+
+test('restoring a speaker turn preserves independent actor updates and replacement actor nodes',()=>{
+  const {host,actors}=speakerHost();layers.setSpeaker(host,'xiaoyu');
+  layers.setExpression(host,'xiaoyu','laughing');layers.setExpression(host,'liu','curious');
+  assert.equal(layers.restoreSpeaker(host),false);assert.equal(actors.get('xiaoyu').dataset.expression,'laughing');assert.equal(actors.get('liu').dataset.expression,'curious');
+  layers.setSpeaker(host,'xiaoyu');const replacement={dataset:{character:'xiaoyu',sprite:'xiaoyuNoodle',expression:'surprised'},innerHTML:'',style:{}};actors.set('xiaoyu',replacement);
+  layers.restoreSpeaker(host);assert.equal(replacement.dataset.expression,'surprised','a replacement DOM node is not treated as the owned actor');
+});
+
+test('mount restores the prior speaker turn even when it reuses the same scene DOM',()=>{
+  const fixture=speakerHost(),{host,actors}=fixture;layers.mount(host,'hsk1.e01.liu-payment');const writes=fixture.writes(),original=actors.get('xiaoyu').dataset.expression;
+  layers.setSpeaker(host,'xiaoyu');assert.equal(actors.get('liu').dataset.expression,'smile');
+  layers.mount(host,'hsk1.e01.liu-payment');
+  assert.equal(fixture.writes(),writes,'same-scene mount reuses its markup');
+  assert.equal(actors.get('liu').dataset.expression,'speaking');assert.equal(actors.get('xiaoyu').dataset.expression,original);
+});
+
+test('speaker ownership is per host and missing or off-scene speakers fail safely',()=>{
+  const first=speakerHost(),second=speakerHost();layers.setSpeaker(first.host,'xiaoyu');layers.setSpeaker(second.host,'xiaoyu');
+  layers.restoreSpeaker(first.host);assert.equal(first.actors.get('liu').dataset.expression,'speaking');assert.equal(second.actors.get('liu').dataset.expression,'smile');
+  assert.equal(layers.setSpeaker(second.host,'mother'),false,'mother is absent from the payment scene');
+  assert.equal(second.actors.get('liu').dataset.expression,'speaking','a failed new turn still releases the previous owned turn');
+  for(const host of [null,undefined,{},'not-a-host']){assert.equal(layers.setSpeaker(host,'xiaoyu'),false);assert.equal(layers.restoreSpeaker(host),false);}
+  assert.equal(layers.setSpeaker(first.host,'not-a-character'),false);
+  assert.equal(layers.setSpeaker({querySelector(){return {}; }},'xiaoyu'),false);
+});
+
 test('lost-notebook route variants and speaking roles keep existing story contracts', () => {
   const office = runtime.scenes['lost-notebook-office'];
   assert.ok(runtime.sceneIds.includes('lost-notebook'));

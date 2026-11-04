@@ -323,7 +323,7 @@ function renderStoryInterlude(){
  $("interludeHeading").textContent=b.title;$("interludeStory").textContent=b.story;
  $("speaker").textContent=model?(model.speaker||SCENES[state.step].speaker)+" · nhắc An":"旁白 · Người kể chuyện";$("sceneTag").textContent=model?"CÂU AN TẬP NÓI":"TRANG TRUYỆN";
  $("interludeContinue").textContent=model?"Thử nói cùng An ↗":"Đọc tiếp câu chuyện ↗";
- if(model&&(model.speakerCharacter||SCENES[state.step].speakerCharacter))HSKSceneLayers.setExpression($("stageIllustration"),model.speakerCharacter||SCENES[state.step].speakerCharacter,"speaking");
+ if(model&&(model.speakerCharacter||SCENES[state.step].speakerCharacter))HSKSceneLayers.setSpeaker($("stageIllustration"),model.speakerCharacter||SCENES[state.step].speakerCharacter);
  $("dialogueText").textContent=b.zh;$("pinyinText").textContent=b.py;$("vietText").textContent=b.vi;
  $("userInstruction").hidden=true;$("sceneObjective").hidden=true;
  $("answerForm").hidden=true;$("sentenceBuilder").hidden=true;$("learningStrip").hidden=true;
@@ -462,7 +462,7 @@ function renderStep(){
  if(state.done)showCompletion();
  else {
   var blocked=renderEncounter()||renderSkillSampler()||renderStoryInterlude();
-  if(!blocked&&SCENES[state.step].speakerCharacter)HSKSceneLayers.setExpression($("stageIllustration"),SCENES[state.step].speakerCharacter,"speaking");
+  if(!blocked&&SCENES[state.step].speakerCharacter)HSKSceneLayers.setSpeaker($("stageIllustration"),SCENES[state.step].speakerCharacter);
   if(!blocked&&state.history[state.step])displayResolved();
   $("practiceOpenBtn").hidden=blocked||state.done||state.step<EXAM_START||!HSKSkillSampler.current(state.skillSampler)||!!HSKStoryBeats.pending(state.step,state.storyBeats);
   renderWorld();

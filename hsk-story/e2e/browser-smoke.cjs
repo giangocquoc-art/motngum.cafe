@@ -182,13 +182,24 @@ async function goStory(page,label){
   }
   if(await visible(page,"#completionPane")){finished=true;break}
   if(await visible(page,"#storyInterlude")){
+   const paymentModel=artId==='hsk1.e01.liu-payment'&&await page.locator('#storyInterlude').getAttribute('data-kind')==='model';
+   if(paymentModel){
+    assert.equal(await page.locator('#speaker').innerText(),'小雨 · Tiểu Vũ · nhắc An');
+    assert.equal(await page.locator('#stageIllustration [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
+    assert.notEqual(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking','bà Lưu listens while Tiểu Vũ models thanks');
+   }
    if(artId==='hsk1.e01.school-introduction'&&await page.locator('#storyInterlude').getAttribute('data-kind')!=='model')assert.equal(await page.locator('#stageIllustration [data-character="wang"]').getAttribute('data-expression'),'smile','Narrative beat keeps the teacher smile before her prompt');
    if((await page.locator('#interludeHeading').innerText())==='Mùi hương trong ngõ'){
     assert.equal((await page.locator('#dialogueText').innerText()).trim(),'安和小雨在面馆里。','Noodle-shop illustration must match the narrated place');
     assert.equal(await page.locator('#interludeTranslation').count(),0,'Story translation is already shown in the dialogue layer');
     assert.equal(await page.locator('#stageIllustration [data-character="sparrow"]').count(),1,'The scene must show exactly one Sẻ');
    }
-   await page.locator("#interludeContinue").click();continue
+   await page.locator("#interludeContinue").click();
+   if(paymentModel){
+    assert.equal(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking');
+    assert.notEqual(await page.locator('#stageIllustration [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking','the model speaker returns to listening when the actual question resumes');
+   }
+   continue
   }
   const stepText=await page.locator("#stepText").innerText();
   if((!arrivalObserved&&stepText.trim()==='01 / 10'||!returnedTree&&stepText.trim()==='07 / 10')&&!await visible(page,'#worldPanel')&&await visible(page,'#worldOpenBtn'))await page.locator('#worldOpenBtn').click();
