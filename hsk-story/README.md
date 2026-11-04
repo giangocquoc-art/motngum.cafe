@@ -6,7 +6,7 @@ Nguồn chuẩn: [hướng hiện hành từ chat](docs/CHIM_SE_DIRECTION.md), [
 
 ## Phạm vi hiện tại
 
-9 trang Nhập môn; tập HSK1 demo gồm 7 cảnh luyện và 3 checkpoint, tìm sổ, hai lựa chọn truyện; 23 mục ôn mở theo cảnh đã hoàn thành. Bản đồ HSK 3.0 bậc 1–6 có bộ định vị nguồn cho cả năm hợp phần; bậc 1 mới có nội dung pilot, bậc 2–6 có mạch truyện và 40 lựa chọn nhánh ở trạng thái bản thảo chưa mở chơi. `future-branch-runtime.js` là đồ thị author-preview nội bộ cho HSK2, không được tải vào game. Crosswalk mục tiêu học, chuẩn hóa bảng ngữ pháp/chủ đề, nội dung bài tập và duyệt của giáo viên vẫn còn thiếu. Đây không phải tuyên bố bao phủ HSK, chứng chỉ hay đánh giá phát âm/thanh điệu. Xem [bản đối chiếu HSK 3.0](HSK3_SOURCE_AUDIT.md) và [blueprint](learning-blueprint.js).
+9 trang Nhập môn; tập HSK1 demo gồm 7 cảnh luyện và 3 checkpoint, tìm sổ, hai lựa chọn truyện; 23 mục ôn mở theo cảnh đã hoàn thành. Bản đồ HSK 3.0 bậc 1–6 có bộ định vị nguồn cho cả năm hợp phần; bậc 1 mới có nội dung pilot, bậc 2–6 có mạch truyện và 40 lựa chọn nhánh ở trạng thái bản thảo chưa mở chơi. `future-branch-runtime.js` dựng đồ thị author-preview nội bộ riêng cho mỗi bậc HSK2–6 và kiểm tra đủ 80 đường đi theo các liên kết cảnh thực tế; các điểm học còn là mốc thiết kế, chưa phải bài tập đã soạn và duyệt. Khung này không được tải vào game. Crosswalk mục tiêu học, chuẩn hóa bảng ngữ pháp/chủ đề, nội dung bài tập và duyệt của giáo viên vẫn còn thiếu. Đây không phải tuyên bố bao phủ HSK, chứng chỉ hay đánh giá phát âm/thanh điệu. Xem [bản đối chiếu HSK 3.0](HSK3_SOURCE_AUDIT.md) và [blueprint](learning-blueprint.js).
 
 ## Chạy và kiểm tra
 
