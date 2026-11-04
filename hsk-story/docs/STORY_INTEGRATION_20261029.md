@@ -49,3 +49,9 @@ Ponytail chưa có công cụ trong phiên; dùng agent phối hợp sẵn có t
 - Bản lưu đã hoàn thành cảnh 5 tiếp tục từ mốc hiện tại mà không phải đọc lại hai lượt thoại mới. Bản đang làm giữ câu gõ dở, số lần thử và trạng thái trợ giúp khi tải lại; ngữ cảnh mới có thể được đọc lại trước khi tiếp tục.
 - 348/348 kiểm thử logic qua. Edge qua 318 trạng thái bố cục ở điện thoại dọc/ngang, có kiểm tra thứ tự hỏi–đáp–cảm ơn, người nói, một Sẻ, bài học và bàn phím. Luồng truyện mới qua kiểm tra điều khiển ở 320×568 và 667×375. Kiểm thử logic cũng bao gồm lưu cũ, tải lại giữa hai lượt thoại và việc không tạo bằng chứng học từ việc đọc.
 - Người chơi đã gặp câu hỏi trước checkpoint 8; đây vẫn là tiếp xúc trong ngữ cảnh, chưa chứng minh tự hỏi giá hoặc nghe hiểu độc lập.
+
+## Triển khai kế hoạch phát triển 04/11/2026
+
+Xem `DEVELOPMENT_PLAN_20261104.md` cho phạm vi/tiến độ M0–M6, `DELIVERY_GATES.md` cho nhánh Neon Preview đã migration và cấu hình DB riêng, `CONTENT_REVIEW.md` cho receipt/dấu vân tay học liệu. Các thay đổi gồm phân đoạn 7 chặng, sổ tay ba ngăn, lịch sử lượt thử, luyện thêm không đổi ngày ôn, Hỏi Sẻ trong luồng phân nhánh với phân trang, bảo vệ bản lưu bị hỏng/ghi dở và bố cục 200%.
+
+Kiểm chứng cục bộ: 382 kiểm thử Node qua; audit package/manifest và audit 37 lựa chọn qua. Edge headless đi luồng mới ở phone dọc/ngang/desktop/200%, kiểm hội thoại AI giả lập (hủy/retry/tin dài/giữ cảnh/bàn phím), sổ tay và câu trả lời; 18 trường hợp save mới hơn qua. Ôn tự chọn trên phone dọc/ngang xác nhận lịch và tiến độ truyện giữ nguyên. Nhập môn/HSK1 cũ/góc ôn qua 318 trạng thái bố cục; một lượt trước đó timeout ở lựa chọn glyph đầu tiên, chạy lại context sạch không tái hiện, không đổi kỳ vọng test để che lỗi. Đây không phải kiểm dịch vụ AI thật, đăng nhập Google thật hoặc thiết bị thật.

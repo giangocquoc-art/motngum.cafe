@@ -5,6 +5,22 @@ on:
       - "hsk-story/duong-re/**"
       - "hsk-story/e2e/branch-integration-browser.cjs"
       - "hsk-story/tests/branch-*.test.cjs"
+      - "hsk-story/e2e/branch-newer-save-browser.cjs"
+      - "hsk-story/duong-re/*.css"
+      - "hsk-story/duong-re/*.js"
+      - "hsk-story/account.css"
+      - "hsk-story/account.js"
+      - "hsk-story/auth-sdk.js"
+      - "hsk-story/branch-account.js"
+      - "hsk-story/content-manifest.js"
+      - "hsk-story/curriculum-data.js"
+      - "hsk-story/game-core.js"
+      - "hsk-story/learning-evidence.js"
+      - "hsk-story/learning-kit.js"
+      - "hsk-story/progress-core.js"
+      - "hsk-story/scene-*.js"
+      - "hsk-story/story-session-plan.js"
+      - "hsk-story/story-beats.js"
       - ".github/workflows/hsk-branch-novel-e2e.yml"
 permissions:
   contents: read
@@ -29,6 +45,7 @@ jobs:
         env:
           NODE_PATH: /tmp/an-branch-browser/node_modules
           BRANCH_BASE_URL: http://127.0.0.1:4173/duong-re/
+          HSK_URL: http://127.0.0.1:4173
         run: |
           python3 -m http.server 4173 --bind 127.0.0.1 --directory hsk-story >/tmp/an-branch-http.log 2>&1 &
           for i in {1..30}; do if curl -fsS http://127.0.0.1:4173/duong-re/ >/dev/null; then break; fi; sleep 1; done
@@ -39,6 +56,9 @@ jobs:
           node hsk-story/e2e/branch-reply-refresh-browser.cjs
           node hsk-story/e2e/branch-feedback-refresh-browser.cjs
           node hsk-story/e2e/branch-rewind-draft-browser.cjs
+          node hsk-story/e2e/branch-newer-save-browser.cjs
+          node hsk-story/e2e/branch-roadmap-browser.cjs
+          node hsk-story/e2e/review-practice-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

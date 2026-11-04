@@ -27,7 +27,7 @@ test('a pre-existing in-progress thanks draft survives replaying the price lead-
  const routeKey=reloaded.box.AnBranchStory.storageKey,route=reloaded.values.get(routeKey),form=reloaded.get('content').children.find(child=>child.tagName==='FORM');
  reloaded.get('answerInput').value='谢谢奶奶';form.fire('submit');
  const record=JSON.parse(reloaded.values.get(reloaded.box.ChimSeBranchLearning.storageKey))[5];
- assert.deepEqual(record,{status:'correct',attempts:2,hint:true});assert.equal(reloaded.values.get(routeKey),route);assert.equal(reloaded.values.has(DRAFT),false);
+ const {evidence,...legacy}=record;assert.deepEqual(legacy,{status:'correct',attempts:2,hint:true});assert.equal(evidence.events.length,1,'legacy mistakes have no fabricated timestamps');assert.equal(evidence.events[0].result,'correct');assert.equal(evidence.events[0].attempt,2);assert.equal(reloaded.values.get(routeKey),route);assert.equal(reloaded.values.has(DRAFT),false);
 });
 
 test('a completed thanks task and an existing feedback save never reopen the price lead-in',()=>{

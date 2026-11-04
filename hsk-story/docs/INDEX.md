@@ -7,6 +7,9 @@ Tranh: [ART_DIRECTION](../art/ART_DIRECTION.md), [COMPOSITION](../art/COMPOSITIO
 Lộ trình syllabus hiện hành: [HSK 3.0 source audit](../HSK3_SOURCE_AUDIT.md) và [machine-readable learning blueprint](../learning-blueprint.js). Sáu bậc đã có khung nguồn; chỉ bậc 1 có pilot, chưa bậc nào có item-level educator sign-off trong blueprint.
 
 ## Hiện hành
+- [Kế hoạch phát triển được duyệt 04/11/2026](DEVELOPMENT_PLAN_20261104.md): M0–M6, các nhóm thực hiện và cổng nghiệm thu; trạng thái theo từng mảng, không quy thành phần trăm toàn game.
+- [Chặng truyện và mục tiêu](STORY_SESSION_PLAN.md): phân đoạn nội dung và audit hệ quả, mục tiêu chung.
+- [Điều kiện phát hành](DELIVERY_GATES.md): kiểm package/CI và bằng chứng nền tảng, các cổng còn chờ.
 - [CHIM_SE_DIRECTION](CHIM_SE_DIRECTION.md): các quyết định gần nhất từ chủ dự án.
 - [DIRECTION_AUDIT](DIRECTION_AUDIT_20261027.md): từng lệch so với hướng đã chốt, sửa gì, kiểm tra gì và việc nào còn mở.
 - [STORY_BIBLE](../STORY_BIBLE.md): nhân vật, tình tiết và thế giới.

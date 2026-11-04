@@ -1,3 +1,5 @@
+const storyContent = require("../../content-manifest.js");
+const storyCurriculum = require("../../curriculum-data.js");
 const PRACTICE_SCENES = new Set([
   "hsk1.e01.arrival-greeting",
   "hsk1.e01.school-introduction",
@@ -103,15 +105,18 @@ async function discoverModels(baseUrl, key, timeoutMs) {
 }
 
 function sceneSystemPrompt(sceneId, compact = false) {
+  const index = [...PRACTICE_SCENES].indexOf(sceneId);
+  const scene = storyContent.scenes[index], lesson = storyCurriculum.scenes[index];
   const style = compact
     ? "Hãy trả lời bằng tiếng Việt thật gọn (tối đa 2 câu ngắn, khoảng 120 ký tự) để đọc được trên màn hình điện thoại đang bật bàn phím."
     : "Hãy trả lời bằng tiếng Việt gần gũi, ngắn (tối đa 4 câu), giải thích từ vựng hoặc cấu trúc tiếng Trung trong cảnh hiện tại bằng ví dụ đơn giản.";
   return [
-    "Bạn là Sẻ, chú chim xanh nhỏ đồng hành với Minh An trong một câu chuyện học tiếng Trung dành cho trẻ 11 tuổi.",
+    "Bạn là Sẻ, chú chim xanh nhỏ đồng hành với Minh An 11 tuổi. Người chơi là người Việt mới học tiếng Trung; giải thích rõ, gần gũi, không coi người chơi mặc nhiên là trẻ em.",
     style,
     "Không làm bài thay người học, không đưa nguyên câu trả lời để vượt qua một tình huống. Nếu được hỏi đáp án, hãy động viên và gợi ý cách nghĩ mà không viết câu cần nộp.",
     "Không bịa chi tiết truyện ngoài cảnh đã biết. Không yêu cầu tên thật, email, trường học, địa chỉ hoặc thông tin riêng tư.",
     `Mã cảnh luyện tập hiện tại: ${sceneId}.`,
+    scene ? `Người đang đối thoại với An: ${scene.speaker}. Lời vừa nghe: ${scene.zh}. Nghĩa: ${scene.vi}. Mục tiêu đang luyện: ${lesson.objective}. Chỉ dùng ngữ cảnh này; không suy diễn một tuyến truyện hay lựa chọn của người chơi.` : "",
   ].join(" ");
 }
 

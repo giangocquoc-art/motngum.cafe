@@ -115,6 +115,9 @@ test("AI tutor access, provider rotation and configuration", async (t) => {
       const res = responseCapture(); await handler(request("hsk1.e01.arrival-greeting", true), res);
       assert.equal(res.statusCode, 200); assert.equal(payload.max_tokens, 80);
       assert.match(payload.messages[0].content, /tối đa 2 câu ngắn, khoảng 120 ký tự/);
+      assert.match(payload.messages[0].content, /安，你还好吗？/);
+      assert.match(payload.messages[0].content, /người Việt mới học tiếng Trung/);
+      assert.equal(payload.messages[0].content.includes('我很好'),false,'the server context omits the accepted answer/model');
     });
     await t.test("continues through every configured key/model pair when requests time out", async () => {
       process.env.PSHAREHUB_API_KEYS = "key-a,key-b,key-c,key-d";

@@ -17,16 +17,28 @@ export function sanitizeSnapshot(raw) {
   const learning = raw.learning.map(item => {
     if (item === null) return null;
     if (!plain(item) || !['correct', 'assisted', 'skipped'].includes(item.status) || !Number.isInteger(item.attempts) || item.attempts < 0 || item.attempts > 100 || typeof item.hint !== 'boolean' || (item.status === 'assisted' && !item.hint)) throw invalid();
-    return { status: item.status, attempts: item.attempts, hint: item.hint };
+    const checked = Learning.clean([item])[0];
+    if (!checked) throw invalid();
+    return checked;
   });
   let draft = null;
   if (raw.draft != null) {
     const d = raw.draft, pending = Learning.pending(replay, learning);
     if (!plain(d) || !Number.isInteger(d.index) || !pending || d.index !== pending.index || d.at !== replay.node || !Array.isArray(d.path) || JSON.stringify(d.path) !== JSON.stringify(path) || !Number.isInteger(d.attempts) || d.attempts < 0 || d.attempts > 100 || typeof d.helped !== 'boolean' || typeof d.draft !== 'string' || d.draft.length > 100) throw invalid();
     draft = {index:d.index, at:d.at, path, attempts:d.attempts, helped:d.helped, draft:d.draft};
+    if (d.evidence != null) {
+      const checked = Learning.clean([{status:'correct',attempts:d.attempts,hint:d.helped,evidence:d.evidence}])[0];
+      if (!checked) throw invalid();
+      draft.evidence = checked.evidence;
+    }
+    if (d.helpSources != null) {
+      const allowed = ['model','subtitles','tiles','sample','ai'];
+      if (!Array.isArray(d.helpSources) || d.helpSources.some(value => !allowed.includes(value))) throw invalid();
+      draft.helpSources = allowed.filter(value => d.helpSources.includes(value));
+    }
   }
   const result = {version: 1, path, learning, draft};
-  if (JSON.stringify(result).length > 20000) throw invalid();
+  if (JSON.stringify(result).length > 120000) throw invalid();
   return result;
 }
 function database() { return neon(process.env.CHIMSE_DATABASE_URL, {fetchOptions: {signal: AbortSignal.timeout(10000)}}); }
@@ -45,7 +57,7 @@ export function createHandler(resolveUser = userFor, getDatabase = database) {
     const rows = await db`SELECT branch_revision, branch_snapshot, branch_updated_at FROM public.learner_progress WHERE user_id=${user.id}`;
     return json(res, 200, record(rows[0]));
    }
-   const body = bodyJSON(req, 30000);
+   const body = bodyJSON(req, 131072);
    if (!Number.isSafeInteger(body.revision) || body.revision < 0 || body.revision > 2147483646) return json(res, 400, {error:'Invalid revision'});
    const snapshot = JSON.stringify(sanitizeSnapshot(body.snapshot));
    const rows = body.revision === 0
