@@ -21,6 +21,15 @@ async function history(page,i){return page.evaluate(i=>JSON.parse(localStorage.g
  await seed(page,'day2-breakfast',7);await until(page,'choose');await page.locator('#journalToggle').click();await page.getByRole('button',{name:'Tự viết câu này'}).click();await page.locator('.lesson-form input').fill('妈妈，昨天我有点害怕。');await page.locator('.lesson-form button.primary').click();assert.equal(await phase(page),'typed');assert.equal(await page.evaluate(()=>AnBranchEngine.load(localStorage.getItem(AnBranchStory.storageKey)).node),'day2-breakfast');
  // The walk-home lesson's NPC reply belongs before the children reach home.
  await seed(page,'walk-home',6);await until(page,'lesson');await page.locator('#answerInput').fill('好');await page.locator('.lesson-form button.primary').click();assert.equal(await phase(page),'feedback');assert.match(await page.locator('#content').innerText(),/明天一起去/);assert.doesNotMatch(await page.locator('#content').innerText(),/明天见/);
+ // Tiểu Vũ models the thank-you; bà Lưu remains the addressee and resumes her own turn.
+ await seed(page,'walk-home',5);await until(page,'model');
+ assert.equal(await page.locator('#speaker').innerText(),'小雨 · Tiểu Vũ · nhắc An');
+ assert.equal(await page.locator('#branchArt [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
+ assert.notEqual(await page.locator('#branchArt [data-character="liu"]').getAttribute('data-expression'),'speaking');
+ assert.equal(await history(page,5),null,'hearing a model does not complete the thanks task');
+ await page.locator('#nextBtn').click();
+ assert.equal(await page.locator('#speaker').innerText(),'刘奶奶 · Bà Lưu');
+ assert.notEqual(await page.locator('#branchArt [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
  // Every authored question exposes its request and its available help within the viewport.
  for(const [target,start,end] of [['arrival',0,0],['school-gate',1,1],['lost-diary',2,3],['noodle-order',4,4],['walk-home',5,6],['day2-bird',7,9]])for(let i=start;i<=end;i++){await seed(page,target,i);await until(page,'request');assert.equal(await page.locator('#sceneTitle').textContent(),await page.evaluate(i=>HSKContent.scenes[i].request,i));await layout(page,v.name+' request '+i);await page.locator('#nextBtn').click();await page.locator('#nextBtn').click();await layout(page,v.name+' help '+i);if(i<7){await page.getByRole('button',{name:'Ghép từng phần của câu'}).click();await layout(page,v.name+' builder '+i)}else assert.equal(await page.getByRole('button',{name:'Ghép từng phần của câu'}).count(),0)}
  // After two misses, the learner can still choose the builder or see a sample.

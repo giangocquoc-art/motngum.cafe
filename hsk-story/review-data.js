@@ -106,8 +106,8 @@ var items=[
   "after": 2,
   "kind": "hanzi",
   "topic": "Trường học",
-  "zh": "你是学生吗？",
-  "py": "Nǐ shì xuésheng ma?",
+  "zh": "你是新来的学生吗？",
+  "py": "Nǐ shì xīn lái de xuésheng ma?",
   "question": "Chọn từ có nghĩa 'học sinh'.",
   "options": [
    [
@@ -132,8 +132,8 @@ var items=[
   "after": 2,
   "kind": "reading",
   "topic": "Bạn bè",
-  "zh": "我是小雨。你是学生吗？",
-  "py": "Wǒ shì Xiǎoyǔ. Nǐ shì xuésheng ma?",
+  "zh": "你好，我是小雨。你是新来的学生吗？",
+  "py": "Nǐ hǎo, wǒ shì Xiǎoyǔ. Nǐ shì xīn lái de xuésheng ma?",
   "question": "Ai đang tự giới thiệu mình?",
   "options": [
    [

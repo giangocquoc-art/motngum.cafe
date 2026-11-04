@@ -1,4 +1,4 @@
-/* Versioned author-authored content manifest for Hai que huong, starting at content version 1. */
+/* Versioned authored lesson content for Chim Sẻ; stable scene and answer contracts. */
 var HSKContent=(function(){
 "use strict";
 var CHAPTERS=[
@@ -16,10 +16,10 @@ var SCENES=[
 {id:4,place:"noodle-shop",speaker:"刘奶奶 · Bà Lưu",speakerCharacter:"liu",tag:"GỌI MÓN Ở QUÁN BÀ LƯU",zh:"你好！你想吃什么？",py:"Nǐ hǎo! Nǐ xiǎng chī shénme?",vi:"Cháu muốn ăn gì?",request:"Nói với bà Lưu rằng An muốn ăn mì.",error:"Bà đang chờ biết An muốn ăn món gì. Thử nói điều mình muốn ăn nhé.",answers:["我想吃面条","我要面条","一碗面条","我想要一碗面条"],guidedModel:{title:"Bà Lưu làm mẫu",zh:"我想吃面条。",py:"Wǒ xiǎng chī miàntiáo.",vi:"Cháu muốn ăn mì.",story:"Bà Lưu chỉ lên bảng món, làm mẫu cách gọi món rồi chờ An thử."},hint:"我想吃面条。 (Wǒ xiǎng chī miàntiáo.)"},
 {id:5,place:"noodle-shop",speaker:"刘奶奶 · Bà Lưu",speakerCharacter:"liu",tag:"BÀ LƯU TÍNH TIỀN",zh:"这碗面十块钱。",py:"Zhè wǎn miàn shí kuài qián.",vi:"Bát mì này mười tệ.",request:"An trả tiền rồi nhận bát mì. Nói lời cảm ơn bà Lưu.",error:"An vừa nhận mì và trả tiền. Đây là lúc nói lời cảm ơn bà.",answers:["谢谢","谢谢您","谢谢奶奶"],guidedModel:{title:"An nghe một câu cảm ơn",zh:"谢谢！",py:"Xièxie!",vi:"Cảm ơn bà!",speaker:"小雨 · Tiểu Vũ",speakerCharacter:"xiaoyu",story:"Tiểu Vũ gợi An câu cảm ơn để dùng khi nhận mì."},hint:"谢谢！(Xièxie!) — Cảm ơn bà!"},
 {id:6,place:"street",speaker:"小雨 · Tiểu Vũ",speakerCharacter:"xiaoyu",tag:"TRÊN ĐƯỜNG VỀ",zh:"明天一起上学，好吗？",py:"Míngtiān yìqǐ shàngxué, hǎo ma?",vi:"Ngày mai mình cùng đi học nhé?",request:"An muốn đi cùng bạn. Nhận lời hẹn của Tiểu Vũ.",error:"Tiểu Vũ rủ An cùng đi học ngày mai. Thử đáp lời bạn nhé.",answers:["好","好的","好啊","可以","好的明天见"],guidedModel:{title:"Tiểu Vũ làm mẫu",zh:"好！",py:"Hǎo!",vi:"Được đó!",story:"Tiểu Vũ gợi cho An một câu ngắn để nhận lời hẹn."},hint:"好！(Hǎo!) — Được đó!"},
-{id:7,place:"exam",speaker:"王老师 · Cô Vương",speakerCharacter:"wang",tag:"BÀI KIỂM TRA · 1/3",zh:"考试开始。请用中文介绍一下自己。",py:"Kǎoshì kāishǐ. Qǐng yòng Zhōngwén jièshào yíxià zìjǐ.",vi:"Bắt đầu kiểm tra. Hãy tự giới thiệu ngắn gọn bằng tiếng Trung.",request:"Thử thách 1/3: giới thiệu tên và nói rằng mình là học sinh (có thể viết 2 câu).",error:"Cô đang chờ câu trả lời của An. Thử lại một lần nữa nhé.",answers:["我叫安我是学生","我是安我是学生","我叫明安我是学生","我叫安，我是学生"],hint:"我叫安。我是学生。 (Wǒ jiào Ān. Wǒ shì xuésheng.)"}
+{id:7,place:"exam",speaker:"王老师 · Cô Vương",speakerCharacter:"wang",tag:"CÙNG CÔ NHỚ LẠI · 1/3",zh:"你叫什么名字？你是学生吗？",py:"Nǐ jiào shénme míngzi? Nǐ shì xuésheng ma?",vi:"Em tên là gì? Em là học sinh phải không?",request:"Cô mời An tự giới thiệu tên và nói rằng mình là học sinh. Có thể viết hai câu.",error:"Cô muốn nghe cả tên An và việc An là học sinh. Em thử nói đủ hai ý nhé.",answers:["我叫安我是学生","我是安我是学生","我叫明安我是学生","我叫安，我是学生"],hint:"我叫安。我是学生。 (Wǒ jiào Ān. Wǒ shì xuésheng.)"}
 ,
-{id:8,place:"exam",speaker:"王老师 · Cô Vương",speakerCharacter:"wang",tag:"BÀI KIỂM TRA · 2/3",zh:"一碗面多少钱？",py:"Yì wǎn miàn duōshao qián?",vi:"Một bát mì bao nhiêu tiền?",request:"Thử thách 2/3: nhớ giá bát mì ở quán bà Lưu. Trả lời bằng tiếng Trung.",error:"Cô đang chờ câu trả lời của An. Thử lại một lần nữa nhé.",answers:["十块钱","十块","十元"],hint:"Bà Lưu đã nói: 这碗面十块钱。"},
-{id:9,place:"exam",speaker:"王老师 · Cô Vương",speakerCharacter:"wang",tag:"BÀI KIỂM TRA · 3/3",zh:"你想吃什么？",py:"Nǐ xiǎng chī shénme?",vi:"Em muốn ăn gì?",request:"Cô Vương đóng vai chủ quán. Tự nói món An muốn ăn, như hôm qua.",error:"Cô đang chờ câu trả lời của An. Thử lại một lần nữa nhé.",answers:["我想吃面条","我要面条","我想要一碗面条","我想吃一碗面条"],hint:"Câu đã luyện ở quán bà Lưu: 我想吃面条。"}
+{id:8,place:"exam",speaker:"王老师 · Cô Vương",speakerCharacter:"wang",tag:"CÙNG CÔ NHỚ LẠI · 2/3",zh:"一碗面多少钱？",py:"Yì wǎn miàn duōshao qián?",vi:"Một bát mì bao nhiêu tiền?",request:"Cô hỏi về bữa mì hôm qua. Nhớ lại giá ở quán bà Lưu và trả lời bằng tiếng Trung.",error:"Cô đang hỏi giá bát mì An đã ăn. Em thử nhớ lại lời bà Lưu nhé.",answers:["十块钱","十块","十元"],hint:"Bà Lưu đã nói: 这碗面十块钱。"},
+{id:9,place:"exam",speaker:"王老师 · Cô Vương",speakerCharacter:"wang",tag:"CÙNG CÔ NHỚ LẠI · 3/3",zh:"你想吃什么？",py:"Nǐ xiǎng chī shénme?",vi:"Em muốn ăn gì?",request:"Cô Vương đóng vai chủ quán. Tự nói món An muốn ăn, như hôm qua.",error:"Cô đang đóng vai chủ quán. An thử nói món mình muốn ăn bằng câu đã luyện nhé.",answers:["我想吃面条","我要面条","我想要一碗面条","我想吃一碗面条"],hint:"Câu đã luyện ở quán bà Lưu: 我想吃面条。"}
 ];
 
 var REPLIES=[
@@ -56,6 +56,6 @@ function validate(curriculum){
  });
  return errors;
 }
-return {version:"1.0.1",chapters:CHAPTERS,scenes:SCENES,replies:REPLIES,validate:validate};
+return {version:"1.0.2",chapters:CHAPTERS,scenes:SCENES,replies:REPLIES,validate:validate};
 })();
 if(typeof module!=="undefined"&&module.exports)module.exports=HSKContent;

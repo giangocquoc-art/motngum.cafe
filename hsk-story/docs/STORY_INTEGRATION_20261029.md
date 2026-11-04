@@ -33,3 +33,11 @@ Ponytail chưa có công cụ trong phiên; dùng agent phối hợp sẵn có t
 | Khung trả lời trên điện thoại nhỏ | Root | Đã sửa tràn nội dung sau câu sai ở 320×568. Thao tác bỏ qua chuyển vào bảng trợ giúp; vùng học lấy đủ chiều cao nội dung. Edge qua lại toàn bộ yêu cầu/trợ giúp, ghép câu, xem mẫu và tua lại trên điện thoại dọc/ngang. |
 | Kiểm chứng tích hợp | Root | `node --test hsk-story/tests/*.test.cjs`: 331/331 qua. Edge: 18 tình huống khôi phục ở desktop/320×568/667×375; điều khiển học; bỏ qua/tua lại/đọc lại; đăng xuất khi mất mạng và tách dữ liệu hai tài khoản đều qua. Backend đồng bộ dùng dữ liệu giả trong kiểm tra trình duyệt; chưa chứng minh đồng bộ thật trên Preview. |
 | Cổng phát hành còn lại | Root / người duyệt nội dung | Chờ deployment đúng commit mới, migration và đồng bộ thật trên Preview, rà tiếng Trung/Pinyin với người đủ chuyên môn, đối chiếu từng mục HSK và kiểm tra thiết bị thật. Chưa hoàn tất toàn bộ lộ trình HSK1–6. |
+
+## Rà lời học và người nói ngày 2026-11-04
+
+- Lượt tự giới thiệu dùng lại hai câu hỏi về tên và học sinh, thay lời mở đầu kỳ thi dài. Ba checkpoint có yêu cầu và phản hồi theo tình huống; cảnh dẫn nhập của cô chuyển thành một lượt đóng vai. ID, đáp án và dữ liệu lưu giữ nguyên.
+- Hai thẻ ôn về Tiểu Vũ dùng đúng câu trong truyện và Pinyin tương ứng.
+- Câu mẫu cảm ơn thuộc Tiểu Vũ. Người mẫu và biểu cảm nay theo metadata của câu mẫu; bà Lưu tạm dừng nói để nghe rồi trở lại lượt của bà. Biểu cảm cảm xúc của nhân vật khác và thay đổi độc lập không bị ghi đè.
+- Kiểm chứng: 335/335 kiểm thử logic; Edge qua 314 trạng thái của Nhập môn, HSK1 và góc ôn ở điện thoại dọc/ngang, cùng các bài kiểm tra bàn phím. Kịch bản điều khiển truyện mới qua cả hai chiều màn hình, kiểm tra trực tiếp người nói, biểu cảm, câu mẫu, trả lời sai và trợ giúp. Đây vẫn là QA trên Edge headless cục bộ.
+- Rà ngôn ngữ lần này là rà biên tập, chưa phải giáo viên duyệt. Câu hỏi giá `一碗面多少钱？` vẫn cần được đưa vào hội thoại trước lượt nhớ lại nếu muốn coi cấu trúc hỏi giá đã được luyện; hiện lượt đó chỉ được mô tả là đọc và nhớ ngữ cảnh, không phải bằng chứng nghe hay sử dụng cấu trúc hỏi giá.
