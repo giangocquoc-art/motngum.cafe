@@ -11,13 +11,25 @@ Nguồn ý tưởng: nhánh `experiment/hsk-an-branching-novel-20261029`, commit
 | Đặt các tình huống học vào mạch kể | ECC runtime | Giữ 10 tình huống và quy tắc chấm; mẫu, trợ giúp và kết quả độc lập tách riêng. Ký ức và điểm tính cách không tạo kết quả học. |
 | Ôn tập và tiến độ cũ | ECC runtime | Bài ôn đọc bằng chứng của cả hai luồng, không ghi đè bản lưu HSK cũ; người đã chơi có đường tiếp tục lượt cũ. |
 | Đồng bộ tài khoản cho truyện mới | ECC tài khoản | Đã xây dựng vùng lưu có revision riêng và kiểm thử chống ghi đè; chưa chạy migration hoặc xác nhận đồng bộ trên Preview. |
-| Phát hành Preview | Root | Chờ kiểm tra toàn luồng, mạch tiếng Trung và quota Vercel; xác minh deployment đúng commit. |
+| Phát hành Preview | Root | Đã có Preview tại commit `cffe892`; các bản sửa tiếp theo phải được xác minh đúng commit trước khi coi là đã phát hành. |
 
 Hành trình mới lưu đường đi phân nhánh và kết quả học trên thiết bị bằng các khóa riêng. Phần đồng bộ tài khoản cho hai khóa này chưa sẵn sàng; không công bố việc tiếp tục trên thiết bị khác cho đến khi đã kiểm tra đồng bộ an toàn.
 
 ## Kiểm tra và giới hạn
 
 - Kiểm thử logic đồ thị, điều kiện, hồi tưởng, lưu lại, bài học và kết nối ôn tập; đối chiếu manifest cảnh với tập nhân vật đang dùng.
-- Browser đi ba tuyến với viewport desktop, điện thoại dọc và điện thoại ngang; có trả lời sai, tải lại, kiểm viewport và một Sẻ trong cảnh. Kiểm thử bổ sung đang rà micro, trợ giúp, bàn phím và sổ tay.
+- Browser đi ba tuyến với viewport desktop, điện thoại dọc và điện thoại ngang; có trả lời sai, tải lại, kiểm viewport và một Sẻ trong cảnh. Bộ kiểm tra giao diện HSK/Nhập môn/góc ôn đã qua 756 trạng thái bố cục trên Edge headless; đây là trình duyệt cục bộ, chưa dùng phiên đăng nhập hoặc thiết bị thật của chủ dự án.
 - Các câu thoại mới từ nhánh ý tưởng là bản thảo kể chuyện, cần giáo viên hoặc người dùng tiếng Trung rà trước khi giới thiệu là học liệu chuẩn. Chưa kiểm bàn phím và âm thanh trên thiết bị thật.
-- Vercel đã trả giới hạn deployment hằng ngày; link Preview cũ không chứa bản tích hợp này. Chưa triển khai commit mới.
+- Preview tại commit `cffe892` chứa bản tích hợp. Các lượt dựng `ec4b333` và `5fa9291` sau đó bị giới hạn deployment hằng ngày; trạng thái cũ này không chứng minh quota hiện tại. Luôn kiểm tra trạng thái commit mới sau khi đẩy nhánh.
+
+## Rà tích hợp ngày 2026-11-04
+
+Ponytail chưa có công cụ trong phiên; dùng agent phối hợp sẵn có theo `AGENTS.md` và skill ECC `team-agent-orchestration`. Các thay đổi nằm trong cùng worktree tích hợp với quyền sửa riêng từng nhóm.
+
+| Việc | Chủ trì | Trạng thái / bằng chứng |
+| --- | --- | --- |
+| Bảo vệ bản lưu từ phiên bản mới hơn | Agent tài khoản; root tích hợp | Đã kiểm tra: giữ nguyên byte ở đường truyện, kết quả học, bài đang gõ, bản dự phòng và mốc khôi phục. Chặn ghi ở lúc mở trang, nhận dữ liệu từ tab/tài khoản khác và trước thao tác. Kiểm tra cả cấu trúc lồng sâu và dữ liệu vòng. |
+| Khung nhánh HSK2–6 | Root; agent rà độc lập | Đã kiểm tra: 80 tuyến chạy theo liên kết cảnh thực tế, lưu giữa cảnh và tua lại từng quyết định; phát hiện vòng lặp, đường tắt bỏ mốc học, nguồn cảnh thiếu/trùng và bằng chứng học lỗi. API HSK2 và ID bản lưu v1 được giữ tương thích. Các bậc tương lai vẫn là thiết kế nội bộ chưa có bài tập đã duyệt. |
+| Khung trả lời trên điện thoại nhỏ | Root | Đã sửa tràn nội dung sau câu sai ở 320×568. Thao tác bỏ qua chuyển vào bảng trợ giúp; vùng học lấy đủ chiều cao nội dung. Edge qua lại toàn bộ yêu cầu/trợ giúp, ghép câu, xem mẫu và tua lại trên điện thoại dọc/ngang. |
+| Kiểm chứng tích hợp | Root | `node --test hsk-story/tests/*.test.cjs`: 331/331 qua. Edge: 18 tình huống khôi phục ở desktop/320×568/667×375; điều khiển học; bỏ qua/tua lại/đọc lại; đăng xuất khi mất mạng và tách dữ liệu hai tài khoản đều qua. Backend đồng bộ dùng dữ liệu giả trong kiểm tra trình duyệt; chưa chứng minh đồng bộ thật trên Preview. |
+| Cổng phát hành còn lại | Root / người duyệt nội dung | Chờ deployment đúng commit mới, migration và đồng bộ thật trên Preview, rà tiếng Trung/Pinyin với người đủ chuyên môn, đối chiếu từng mục HSK và kiểm tra thiết bị thật. Chưa hoàn tất toàn bộ lộ trình HSK1–6. |

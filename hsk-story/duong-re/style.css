@@ -5,3 +5,6 @@ button.primary:hover,button.primary:active{background:#873a26;color:#fff}#helpCo
 /* Keep account access within the story header on narrow screens. */
 @media(max-width:600px){.branch-header #dayLabel{display:none}.branch-header .account-open{width:44px;min-width:44px;min-height:44px;padding:8px}.branch-header .account-open span{display:none}}
 .branch-header .account-open{flex:none}
+/* Let the answer and its feedback determine the reading area's height. */
+body:not(.keyboard-open) .branch-shell[data-phase="lesson"] .branch-reader{flex:0 0 auto;max-height:none}
+body:not(.keyboard-open) .branch-shell[data-phase="lesson"] .reader-content{flex:none}

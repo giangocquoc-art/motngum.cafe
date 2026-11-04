@@ -53,3 +53,38 @@ test('a delayed cloud restore notifies the running view after the snapshot is co
  assert.equal((await a.reconcile('alice')).ok,false);online=true;
  assert.equal((await a.flush()).changed,true);assert.equal(notifications,1);
 });
+
+test('newer snapshot, draft, path, and learning record versions cannot be silently normalized away',()=>{
+ const cases=[{...state(),schemaVersion:2},state(),state(),state()];
+ cases[1].draft={version:2};cases[2].path[0].version=2;cases[3].learning[0]={status:'correct',attempts:0,hint:false,version:2};
+ for(const raw of cases){const before=JSON.stringify(raw);assert.throws(()=>C.normalize(raw),/mới hơn/);assert.equal(JSON.stringify(raw),before);}
+});
+
+test('capture and apply preserve newer local records, owner backups, and restore points byte-for-byte',()=>{
+ const L=require('../duong-re/branch-learning.js'),newer=' { "version": 2, "future": "keep these bytes" }\n';
+ const cases=[
+  [C.keys.path,newer],[C.keys.learning,newer],[L.objectiveStorageKey,newer],[C.keys.draft,newer],
+  [C.keys.learning,'[{"status":"correct","attempts":0,"hint":false,"version":2}]'],
+  [C.keys.path,'{"version":1,"path":[{"at":"arrival","choice":"hold-mother","version":2}]}'],
+  ['chimse-branch-pending-reply-v1',newer],['chimse-branch-pending-feedback-v1',newer],[C.keys.meta,newer],[C.keys.guest,newer],
+  [C.keys.cache,JSON.stringify({other:{snapshot:{version:2},revision:7,base:C.empty()}})],
+  [C.keys.restore,JSON.stringify([{owner:'other',snapshot:{version:2},at:1}])]
+ ];
+ const keys=[...Object.values(C.keys),L.objectiveStorageKey,'chimse-branch-pending-reply-v1','chimse-branch-pending-feedback-v1','hai-que-huong-progress-v3'];
+ for(const [key,raw] of cases){
+  const s=storage();C.apply(s,state());s.setItem('hai-que-huong-progress-v3','canonical progress');s.setItem(key,raw);
+  const before=keys.map(k=>[k,s.getItem(k)]);
+  assert.throws(()=>C.capture(s),/mới hơn/,key);assert.throws(()=>C.apply(s,C.empty()),/mới hơn/,key);
+  assert.deepEqual(keys.map(k=>[k,s.getItem(k)]),before,key);
+ }
+});
+
+test('a newer record appearing during account use blocks sync and owner changes without touching storage',async()=>{
+ const s=storage(),srv=server();let requests=0;const a=C.create({storage:s,fetch:(...args)=>{requests++;return srv.fetch(...args)}});
+ C.apply(s,state());assert.ok((await a.reconcile('alice')).ok);
+ const future=' { "version": 2, "draft": "from a newer release" } ';s.setItem(C.keys.draft,future);
+ const keys=Object.values(C.keys),before=keys.map(k=>[k,s.getItem(k)]),requestCount=requests;
+ assert.equal((await a.reconcile('bob')).ok,false);assert.equal((await a.flush()).ok,false);assert.equal(await a.beforeSignOut(),false);assert.equal(await a.prepareLocalSignOut(),false);
+ await assert.rejects(a.afterSignOut(),/mới hơn/);a.schedule();assert.equal(a.getStatus().state,'error');
+ assert.equal(requests,requestCount);assert.deepEqual(keys.map(k=>[k,s.getItem(k)]),before);assert.equal(JSON.parse(s.getItem(C.keys.meta)).owner,'alice');
+});

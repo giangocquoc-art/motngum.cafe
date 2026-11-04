@@ -20,6 +20,9 @@ var next={version:1,node:link,path:state.path.concat([{at:scene.id,choice:choice
 if(chosen){addDelta(next.traits,chosen.traits,TRAITS);addDelta(next.relationships,chosen.relationships,RELATIONS);next.flags[chosen.id]=true;next.journal.push({scene:scene.id,choice:chosen.id,zh:chosen.zh,vi:chosen.vi,memory:chosen.memory,consequence:{kind:chosen.consequence.kind,text:chosen.consequence.text},reply:chosen.reply});}
 return {ok:true,state:next,reply:chosen?chosen.reply:null};}
 function load(value){var obj;try{obj=typeof value==="string"?JSON.parse(value):value;}catch(e){return fresh();}if(!obj||obj.version!==1||!Array.isArray(obj.path))return fresh();var state=fresh();for(var i=0;i<obj.path.length&&i<50;i++){var item=obj.path[i];if(!item||item.at!==state.node||typeof item.choice!=="string")break;var moved=step(state,item.choice);if(!moved.ok)break;state=moved.state;}return state;}
+// Unsupported future records must be preserved by storage owners, even when
+// load() cannot interpret their path and can only produce an in-memory start.
+function isNewerSave(value){var obj;try{obj=typeof value==="string"?JSON.parse(value):value;}catch(e){return false;}var seen=new WeakSet(),pending=[obj];while(pending.length){var record=pending.pop();if(!record||typeof record!=="object"||seen.has(record))continue;seen.add(record);if(Array.isArray(record)){record.forEach(function(item){pending.push(item);});continue;}if([record.version,record.schemaVersion].some(function(version){return Number.isInteger(version)&&version>1;}))return true;["path","learning","draft"].forEach(function(key){pending.push(record[key]);});}return false;}
 function exportSave(state){return JSON.stringify({version:1,path:state.path});}
 function conditionText(scene,state){if(!scene||!state)return [];var flags=state.flags||{},echoes=(scene.echoes||[]).filter(function(e){return Boolean(flags[e.if]);}).map(function(e){return e.text;}),callbacks=(data.callbacks||[]).filter(function(c){return c.at===scene.id&&Boolean(flags[c.choice]);}).map(function(c){return c.text;});return echoes.concat(callbacks);}
 function dominant(state){return TRAITS.slice().sort(function(a,b){return state.traits[b]-state.traits[a]||TRAITS.indexOf(a)-TRAITS.indexOf(b);})[0];}
@@ -113,5 +116,5 @@ function validate(){
  return {errors:Array.from(new Set(errors)),branchNodes:branchNodes,structuralPaths:structuralPaths,nodeCount:ids.size};
 }
 
-return {data:data,TRAITS:TRAITS,RELATIONS:RELATIONS,TRAIT_NAMES:TRAIT_NAMES,REL_NAMES:REL_NAMES,fresh:fresh,step:step,load:load,exportSave:exportSave,normalize:normalize,meets:meets,availableOptions:availableOptions,resolveTyped:resolveTyped,conditionText:conditionText,dominant:dominant,ending:ending,validate:validate};
+return {data:data,TRAITS:TRAITS,RELATIONS:RELATIONS,TRAIT_NAMES:TRAIT_NAMES,REL_NAMES:REL_NAMES,fresh:fresh,step:step,load:load,isNewerSave:isNewerSave,exportSave:exportSave,normalize:normalize,meets:meets,availableOptions:availableOptions,resolveTyped:resolveTyped,conditionText:conditionText,dominant:dominant,ending:ending,validate:validate};
 });

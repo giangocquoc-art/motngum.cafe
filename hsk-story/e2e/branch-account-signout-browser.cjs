@@ -1,7 +1,8 @@
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 (async () => {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true, executablePath: process.env.HSK_BROWSER_BIN || undefined });
+  try {
   const context = await browser.newContext({ viewport: { width: 320, height: 568 } });
   const page = await context.newPage();
   let offline = false;
@@ -54,5 +55,5 @@ const assert = require('node:assert/strict');
   await page.evaluate(() => ChimseAccount.refresh());
   assert.equal((await page.evaluate(() => JSON.parse(localStorage.getItem('hai-que-huong-branching-novel-v1')))).path.length, 0, 'Bob cannot see Alice’s local story');
   console.log('PASS: offline story save, explicit sign-out and separate account backup');
-  await browser.close();
+  } finally { await browser.close(); }
 })().catch(e => { console.error(e); process.exitCode = 1; });
