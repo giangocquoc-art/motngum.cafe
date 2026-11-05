@@ -1,7 +1,6 @@
 <!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Get 2FA — Motngum</title><link rel="stylesheet" href="/site.css"><script src="/site.js" defer></script></head><body>
-<main><h1>Get 2FA</h1><p>Nhập tài khoản và mã truy cập đã được cấp để xem mã xác thực.</p>
-<form id="getForm" autocomplete="off"><label for="account">Tài khoản</label><input id="account" name="account" autocapitalize="off" spellcheck="false" required placeholder="Email hoặc tên tài khoản" maxlength="180">
-<label for="pin">Mã truy cập (PIN hoặc email do admin cấp)</label><input id="pin" name="pin" type="password" required placeholder="Nhập mã truy cập" maxlength="160" autocomplete="off"><button class="full" type="submit" id="submit">Get 2FA</button></form>
+<main><h1>Get 2FA</h1><p>Nhập mã tài khoản do admin cấp để xem mã xác thực.</p>
+<form id="getForm" autocomplete="off"><label for="access">Mã tài khoản</label><input id="access" name="access" type="text" autocapitalize="off" autocomplete="off" spellcheck="false" required placeholder="Dán mã do admin cấp" maxlength="512"><button class="full" type="submit" id="submit">Get 2FA</button></form>
 <div id="status" class="status" role="alert"></div><section id="result" class="result hidden" aria-live="polite"><small>MÃ 2FA</small><div id="code" class="code">------</div><div class="row" style="justify-content:center"><button id="copy" class="outline" type="button">Sao chép mã</button><small id="countdown"></small></div></section>
 <footer>Website chỉ dành cho tài khoản được cấp quyền. Mã thay đổi sau mỗi 30 giây.</footer></main>
 </body></html>
