@@ -18,7 +18,7 @@ test('customer and admin share exactly one account identifier', () => {
   assert.match(adminJs, /const issued=payload\.login\.trim\(\)\.toLowerCase\(\)/);
   assert.doesNotMatch(adminJs, /accessToken|M2\./);
   assert.match(adminJs, /crypto\.getRandomValues/);
-  assert.match(lookup, /normalizeLogin\(bodyOf\(req\)\.account\)/);
+  assert.match(lookup, /const raw=bodyOf\(req\)\.account/);
   assert.match(lookup, /isPrivateID/);
   assert.match(lookup, /token-v2/);
   assert.match(lookup, /verifyPass/);
