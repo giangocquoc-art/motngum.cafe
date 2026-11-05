@@ -1,9 +1,9 @@
 # Motngum 2FA — Internal TOTP Viewer
 
-Private admin controls mapping of account identifiers to TOTP secrets and distinct access codes. The public page accepts exactly the account identifier set in the admin form, and returns a six-digit TOTP for a matching active account. No second PIN field or M2 token is used. Only deploy for accounts you administer with the owner's authorization.
+Private admin controls mapping of account identifiers to TOTP secrets and distinct access codes. The public page accepts a single secret 128-bit random account ID (32 hex characters), exactly matching the admin-entered ID, and returns TOTP for a matching enabled account. Legacy M2 bearer credentials remain supported for pre-migration accounts with verified scrypt PINs. Only deploy for accounts you administer with the owner's authorization.
 
 ## Stack
-Plain HTML/CSS/JS (white UI), Vercel Node.js functions, Neon PostgreSQL, AES-256-GCM encrypted TOTP secrets, legacy scrypt access-code hashes (unused by customer flow). Domain: 2fa.motngum.cafe.
+Plain HTML/CSS/JS (white UI), Vercel Node.js functions, Neon PostgreSQL, AES-256-GCM encrypted TOTP secrets, scrypt access-code hashes for legacy M2 customer flow. Domain: 2fa.motngum.cafe.
 
 ## Required Vercel environment variables (server-only)
 - `DATABASE_URL` — Neon PostgreSQL connection string.
