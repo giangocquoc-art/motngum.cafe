@@ -35,7 +35,7 @@ test('a partial storage failure restores the old records and draft, with an expl
 });
 
 test('checkpoint journal keeps learned question/answer cues out of the self-recall turn',()=>{
- const ui=boot('day2-bird',7);until(ui,'lesson');ui.get('journalToggle').click();assert.equal(ui.get('journalWords').disabled,true);assert.equal(ui.get('journalReview').disabled,true);const text=ui.get('journalContent').children.map(c=>c.textContent).join(' ');assert.equal(text.includes('十块钱'),false);assert.equal(text.includes('我叫安'),false);
+ const ui=boot('day2-bird',7);until(ui,'lesson');ui.get('journalToggle').click();assert.equal(ui.get('journalWords').disabled,true);assert.equal(ui.get('journalReview').disabled,true);const text=ui.get('journalContent').children.map(c=>c.textContent).join(' ');assert.equal(text.includes('十块钱'),false);assert.equal(text.includes('我叫安'),false);for(let i=0;i<50&&!ui.get('journalNext').disabled;i++)ui.get('journalNext').click();const actions=ui.get('journalContent').children.find(c=>c.className==='journal-actions');assert.ok(actions.children.some(c=>c.textContent==='Đọc lại từ đầu'));assert.equal(actions.children.some(c=>c.textContent==='Mở góc ôn'),false);
 });
 
 test('damaged local JSON is preserved and offers a recovery copy instead of overwriting the route',()=>{
