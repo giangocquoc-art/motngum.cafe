@@ -108,16 +108,13 @@ function harness(sharedStorage={},options={}){
 test('new learners meet every accepted answer form in short pages before practice',()=>{
  const t=harness(),e=t.e;e.startBtn.click();e.interludeContinue.click();
  assert.equal(e.storyInterlude.dataset.kind,'model');assert.equal(e.dialogueText.textContent,Content.scenes[0].guidedModel.zh);
- assert.equal(e.interludeAlternatives.hidden,true);assert.equal(e.interludePageLabel.textContent,'Cách 1 / 5');
+ assert.equal(e.interludeAlternatives.hidden,true);assert.equal(e.interludePageLabel.textContent,'Cách 1 / 2');
  assert.equal(e.answerForm.hidden,true);e.answerInput.value='我很好';e.answerForm.fire('submit');
  assert.equal(JSON.parse(t.sharedStorage['hai-que-huong-progress-v3']).history.length,0);
  e.listenBtn.click();assert.equal(t.spoken[0],Content.scenes[0].guidedModel.zh);
- e.interludeContinue.click();assert.equal(e.dialogueText.textContent,'我还好。');assert.match(e.interludeStory.textContent,/chưa thấy thật khỏe/);assert.equal(e.answerForm.hidden,true);assert.equal(e.interludePageLabel.textContent,'Cách 2 / 5');
- e.interludePrev.click();assert.equal(e.dialogueText.textContent,Content.scenes[0].guidedModel.zh);assert.equal(e.interludePageLabel.textContent,'Cách 1 / 5');assert.equal(e.answerForm.hidden,true);
- e.interludeContinue.click();
- e.interludeContinue.click();assert.equal(e.dialogueText.textContent,'很好。 / 还好。');assert.match(e.interludeStory.textContent,/có thể lược 我/);assert.equal(e.answerForm.hidden,true);
- e.interludeContinue.click();assert.equal(e.dialogueText.textContent,'我很好，谢谢。');assert.match(e.interludeStory.textContent,/nối 谢谢/);assert.equal(e.answerForm.hidden,true);
- e.interludeContinue.click();assert.equal(e.dialogueText.textContent,'我还好，谢谢。');assert.match(e.interludeStory.textContent,/thêm 谢谢/);assert.equal(e.interludePageLabel.textContent,'Cách 5 / 5');assert.equal(e.answerForm.hidden,true);
+ e.interludeContinue.click();assert.equal(e.dialogueText.textContent,Content.scenes[0].guidedModel.alternatives[0].zh);assert.match(e.interludeStory.textContent,/lược 我/);assert.equal(e.answerForm.hidden,true);assert.equal(e.interludePageLabel.textContent,'Cách 2 / 2');
+ e.interludePrev.click();assert.equal(e.dialogueText.textContent,Content.scenes[0].guidedModel.zh);assert.equal(e.interludePageLabel.textContent,'Cách 1 / 2');assert.equal(e.answerForm.hidden,true);
+ e.interludeContinue.click();assert.equal(e.dialogueText.textContent,Content.scenes[0].guidedModel.alternatives[0].zh);
  e.interludeContinue.click();assert.equal(e.answerForm.hidden,false);
  e.answerInput.value='我很好';e.answerForm.fire('submit');const saved=JSON.parse(t.sharedStorage['hai-que-huong-progress-v3']);
  assert.equal(saved.history[0].hint,true);assert.equal(saved.history[0].status,'correct');
@@ -141,8 +138,7 @@ test('the price question and bà Lưu’s response precede the thanks model with
  e.listenBtn.click();assert.equal(t.spoken.at(-1),Content.scenes[5].zh);e.interludeContinue.click();
  assert.equal(e.storyInterlude.dataset.kind,'model');assert.equal(e.speaker.textContent,Content.scenes[5].guidedModel.speaker+' · nhắc An');
  assert.equal(e.dialogueText.textContent,Content.scenes[5].guidedModel.zh);assert.deepEqual(JSON.parse(st[key]).history,history);
- e.interludeContinue.click();assert.equal(e.dialogueText.textContent,"谢谢您。");assert.equal(e.answerForm.hidden,true);
- e.interludeContinue.click();assert.equal(e.dialogueText.textContent,"谢谢奶奶。");assert.equal(e.answerForm.hidden,true);
+ e.interludeContinue.click();assert.equal(e.dialogueText.textContent,"谢谢您。 / 谢谢奶奶。");assert.equal(e.answerForm.hidden,true);
  e.interludeContinue.click();
  assert.equal(e.answerForm.hidden,false);assert.equal(e.answerInput.value,'谢');
  e.answerInput.value='谢谢';e.answerForm.fire('submit');saved=JSON.parse(st[key]);
@@ -347,7 +343,7 @@ test('V6 story narration playback and keyboard focus follow the visible page',()
  e.listenBtn.click();assert.equal(t.spoken[0],B.beats[0].zh);
  e.interludeContinue.click();
  assert.equal(t.document.activeElement.id,'interludeContinue');e.listenBtn.click();assert.equal(t.spoken[1],Content.scenes[0].guidedModel.zh);
- for(let page=0;page<4;page++){e.interludeContinue.click();assert.equal(t.document.activeElement.id,'interludeContinue')}
+ for(let page=0;page<Content.scenes[0].guidedModel.alternatives.length;page++){e.interludeContinue.click();assert.equal(t.document.activeElement.id,'interludeContinue')}
  e.interludeContinue.click();
  assert.equal(t.document.activeElement.id,'answerInput');
  e.listenBtn.click();assert.equal(t.spoken[2],Content.scenes[0].zh);
