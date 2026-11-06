@@ -257,6 +257,20 @@
         "mobile": "backgrounds/mobile/mobile-bedroom-v3.webp"
       },
       "compact": "flat/backgrounds/bedroom-compact.svg"
+    },
+    "day2-kitchen": {
+      "desktop": "backgrounds/day2-kitchen-v1.webp",
+      "mobile": "backgrounds/mobile/mobile-day2-kitchen-v2.webp",
+      "wide": "backgrounds/panorama/day2-kitchen-panorama-v1.webp",
+      "compact": "backgrounds/panorama/day2-kitchen-panorama-v1.webp",
+      "metadata": {
+        "role": "Independent standard, near-square mobile-stage, wide desktop and short-landscape kitchen plates for An’s second morning; no people, birds or learned text.",
+        "styleAuthority": "Approved live Chim Sẻ noodle-shop hand-ink watercolor background",
+        "composition": "Approved in art/layouts/day2-kitchen-review.md",
+        "mobileComposition": "Near-square stage framing for the actual phone art viewport; window, table, bag and perch remain in frame",
+        "wideComposition": "Independent 3:1 panorama fitted to very wide desktop story stages",
+        "compactComposition": "The same center-safe panorama fits short landscape stages with a tuned object position"
+      }
     }
   },
   "scenes": {
@@ -3806,6 +3820,114 @@
       "bytes": 410,
       "authoringSource": "../scene-flat-art.js",
       "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "backgrounds/day2-kitchen-v1.png": {
+      "role": "Landscape kitchen background for An’s second morning",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "format": "PNG",
+      "alpha": false,
+      "prompt": "Create an everyday Chengdu family kitchen in the approved Chim Sẻ picture-book style, matching the live noodle-shop-order-v5: slightly wavering dark brown-black hand ink, imperfect contours, simple everyday forms, quiet mostly-flat watercolor, warm low-contrast paper grain, muted ochre, faded teal, sage, tan and warm gray. Morning breakfast table with two cups, bread and one small plain closed diary beside the faded-blue school bag on a nearby chair; clearly distinct objects. Wood chairs, modest counter, shelf and leafy window. Wide 16:9, quiet low-detail left third for HTML dialogue, calm right-side sprite zone, table anchoring lower picture. Background only: no people, birds, bird decorations, text, marks, labels, steam, captions or UI. Preserve the generated approved scene composition; the small blank diary was added in a restrained edit.",
+      "styleReference": "backgrounds/noodle-shop-order-v5.webp",
+      "generatedWith": "OpenAI ImageGen; edited to add a blank diary",
+      "generationDate": "2026-11-07"
+    },
+    "backgrounds/day2-kitchen-v1.webp": {
+      "role": "Landscape kitchen background for An’s second morning",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Create an everyday Chengdu family kitchen in the approved Chim Sẻ picture-book style, matching the live noodle-shop-order-v5: slightly wavering dark brown-black hand ink, imperfect contours, simple everyday forms, quiet mostly-flat watercolor, warm low-contrast paper grain, muted ochre, faded teal, sage, tan and warm gray. Morning breakfast table with two cups, bread and one small plain closed diary beside the faded-blue school bag on a nearby chair; clearly distinct objects. Wood chairs, modest counter, shelf and leafy window. Wide 16:9, quiet low-detail left third for HTML dialogue, calm right-side sprite zone, table anchoring lower picture. Background only: no people, birds, bird decorations, text, marks, labels, steam, captions or UI. Preserve the generated approved scene composition; the small blank diary was added in a restrained edit.",
+      "styleReference": "backgrounds/noodle-shop-order-v5.webp",
+      "master": "backgrounds/day2-kitchen-v1.png",
+      "masterFormat": "PNG",
+      "bytes": 232896
+    },
+    "backgrounds/mobile/mobile-day2-kitchen-v1.png": {
+      "role": "Portrait 3:4 kitchen background independently composed for mobile",
+      "dimensions": {
+        "width": 864,
+        "height": 1821
+      },
+      "format": "PNG",
+      "alpha": false,
+      "prompt": "Recompose the approved modest Chengdu family kitchen as a very tall 9:19 phone scene, not a desktop crop. Match the approved Chim Sẻ hand-ink watercolor style and noodle-shop-order-v5: slightly wavering dark contours, ordinary imperfect forms, quiet watercolor washes, warm paper grain, muted ochre, faded teal, sage, tan and warm gray. Keep upper area calm for HTML dialogue, leafy window fully in the upper-right safe area with a clear sill for one separately rendered blue sparrow, broad uncluttered wall through the middle for two sprites, and breakfast table across the lower third. Show two cups, bread, one small blank closed diary, and the complete faded-blue school backpack plus chair on the right, fully inside the frame. Ensure props stay inside the center 90% safe zone. Background only: no people, birds, bird-shaped ornaments, writing, text, labels, steam, captions or UI.",
+      "styleReference": "backgrounds/noodle-shop-order-v5.webp",
+      "generatedWith": "OpenAI ImageGen; independent 9:19 recomposition for the 390×844 mobile viewport",
+      "generationDate": "2026-11-07"
+    },
+    "backgrounds/mobile/mobile-day2-kitchen-v1.webp": {
+      "role": "Portrait 3:4 kitchen background independently composed for mobile",
+      "dimensions": {
+        "width": 864,
+        "height": 1821
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Recompose the approved modest Chengdu family kitchen as a very tall 9:19 phone scene, not a desktop crop. Match the approved Chim Sẻ hand-ink watercolor style and noodle-shop-order-v5: slightly wavering dark contours, ordinary imperfect forms, quiet watercolor washes, warm paper grain, muted ochre, faded teal, sage, tan and warm gray. Keep upper area calm for HTML dialogue, leafy window fully in the upper-right safe area with a clear sill for one separately rendered blue sparrow, broad uncluttered wall through the middle for two sprites, and breakfast table across the lower third. Show two cups, bread, one small blank closed diary, and the complete faded-blue school backpack plus chair on the right, fully inside the frame. Ensure props stay inside the center 90% safe zone. Background only: no people, birds, bird-shaped ornaments, writing, text, labels, steam, captions or UI.",
+      "styleReference": "backgrounds/noodle-shop-order-v5.webp",
+      "master": "backgrounds/mobile/mobile-day2-kitchen-v1.png",
+      "masterFormat": "PNG",
+      "bytes": 204104
+    },
+    "backgrounds/panorama/day2-kitchen-panorama-v1.png": {
+      "role": "Independent 3:1 panoramic kitchen composition for ultra-wide desktop and short-landscape story viewports",
+      "dimensions": {
+        "width": 2172,
+        "height": 724
+      },
+      "format": "PNG",
+      "alpha": false,
+      "prompt": "Use approved day2-kitchen-v1.png as style and room reference. Match its warm textured paper, slightly uneven hand-ink contours, muted watercolor, and modest Chengdu home. Coherent 3:1 panorama of the same breakfast kitchen. Put window/counter in upper-middle and a shallow breakfast table plus faded-blue school bag in lower-middle; leave left low-detail for dialogue. Keep essential detail within central 55 percent of image height. No people, birds, bird-shaped decorations, learned text, labels, food steam or watermark. Quiet early-morning light.",
+      "styleReference": "backgrounds/day2-kitchen-v1.webp",
+      "generatedWith": "OpenAI ImageGen; independent 3:1 panorama for ultra-wide desktop and short landscape",
+      "generationDate": "2026-11-07"
+    },
+    "backgrounds/panorama/day2-kitchen-panorama-v1.webp": {
+      "role": "Independent 3:1 panoramic kitchen composition for ultra-wide desktop and short-landscape story viewports",
+      "dimensions": {
+        "width": 2172,
+        "height": 724
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Use approved day2-kitchen-v1.png as style and room reference. Match its warm textured paper, slightly uneven hand-ink contours, muted watercolor, and modest Chengdu home. Coherent 3:1 panorama of the same breakfast kitchen. Put window/counter in upper-middle and a shallow breakfast table plus faded-blue school bag in lower-middle; leave left low-detail for dialogue. Keep essential detail within central 55 percent of image height. No people, birds, bird-shaped decorations, learned text, labels, food steam or watermark. Quiet early-morning light.",
+      "styleReference": "backgrounds/day2-kitchen-v1.webp",
+      "master": "backgrounds/panorama/day2-kitchen-panorama-v1.png",
+      "masterFormat": "PNG",
+      "bytes": 169016
+    },
+    "backgrounds/mobile/mobile-day2-kitchen-v2.png": {
+      "role": "Near-square kitchen plate composed for the top scene area on portrait phones",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "format": "PNG",
+      "alpha": false,
+      "prompt": "Recompose the approved day-two kitchen into a near-square image for the actual story stage, around 390×362 pixels, not a full-height phone wallpaper. Match the warm paper, hand-inked slightly uneven contours and muted watercolor of the approved scene. Keep the leafy window and a clean windowsill/perch upper-right, modest kitchen counter, breakfast table across the lower third, two cups, bread, blank diary, faded-blue school bag by chair on right. Calm low-detail left. Keep all important objects inside the central 90 percent. No people, birds, writing, pseudo-text, steam or UI.",
+      "styleReference": "backgrounds/day2-kitchen-v1.webp",
+      "generatedWith": "OpenAI ImageGen; independent near-square composition for the 390×844 story-stage viewport",
+      "generationDate": "2026-11-07"
+    },
+    "backgrounds/mobile/mobile-day2-kitchen-v2.webp": {
+      "role": "Near-square kitchen plate composed for the top scene area on portrait phones",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "Recompose the approved day-two kitchen into a near-square image for the actual story stage, around 390×362 pixels, not a full-height phone wallpaper. Match the warm paper, hand-inked slightly uneven contours and muted watercolor of the approved scene. Keep the leafy window and a clean windowsill/perch upper-right, modest kitchen counter, breakfast table across the lower third, two cups, bread, blank diary, faded-blue school bag by chair on right. Calm low-detail left. Keep all important objects inside the central 90 percent. No people, birds, writing, pseudo-text, steam or UI.",
+      "styleReference": "backgrounds/day2-kitchen-v1.webp",
+      "master": "backgrounds/mobile/mobile-day2-kitchen-v2.png",
+      "masterFormat": "PNG",
+      "bytes": 203452
     }
   },
   "spriteCharacters": {

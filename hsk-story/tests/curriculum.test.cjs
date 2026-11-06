@@ -49,6 +49,24 @@ test("all ten stable lesson records point to the blueprint objective IDs",()=>{
  assert.equal(JSON.stringify(actual),JSON.stringify(expected));
  assert.equal(new Set(blueprint.objectives.map(o=>o.id)).size,blueprint.objectives.length);
 });
+test("HSK1 stage report separates mandatory story learning from optional review",()=>{
+ const report=blueprint.report(syllabus,require("../future-acts.js"));
+ assert.equal(report.pilotStageCoverage.length,8);
+ assert.deepEqual(Array.from(report.pilotStageCoverage,x=>x.objectiveId),Array.from(blueprint.objectives,x=>x.id));
+ const recallScenes={"introduce-self":[7],"student-identity":[7],price:[8],"order-noodles":[9]};
+ for(const row of report.pilotStageCoverage){
+  assert.equal(row.introduction.complete,true,row.objectiveId+" has an authored introduction");
+  assert.equal(row.commonStoryReuse.complete,false,row.objectiveId+" must not mistake optional review for story reuse");
+  assert.deepEqual(Array.from(row.independentRecall.curriculumSceneIds),recallScenes[row.objectiveId]||[],row.objectiveId+" reports only its separate authored recall task");
+  const individuallyMeasured=["price","order-noodles"].includes(row.objectiveId);
+  assert.equal(row.independentRecall.complete,individuallyMeasured,row.objectiveId+" only counts an objective-specific response as recall evidence");
+  assert.deepEqual(Array.from(row.independentRecall.sharedAssessmentSceneIds),["introduce-self","student-identity"].includes(row.objectiveId)?[7]:[]);
+  assert.match(row.sequenceStatus,/individually measured recall incomplete/);
+  assert.equal(row.releaseReady,false,row.objectiveId+" remains locked until content and educator review are complete");
+ }
+ assert.deepEqual(Array.from(report.incompletePilotSequences),Array.from(blueprint.objectives,x=>x.id));
+ assert.ok(report.optionalReviewSequences.length>0,"optional cards stay visible as optional support, not mandatory coverage");
+});
 test("lesson assessment evidence credits only what its answer evaluates",()=>{
  const expected=["greeting","introduce-self","student-identity","numbers","order-noodles","gratitude","farewell"];
  assert.deepEqual(Array.from(syllabus.scenes.slice(0,7),s=>s.assessmentObjectiveIds[0]),expected);

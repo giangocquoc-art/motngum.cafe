@@ -5,6 +5,7 @@ var positions=manifest.scenes["hsk1.e01.arrival-greeting"].actors;
 function copy(value){return JSON.parse(JSON.stringify(value))}
 function actor(name,index){var a=copy(positions[Math.min(index,1)]);a.character=name;a.expression=name==="an"?"thinking":name==="mother"?"gentle":name==="xiaoyu"?"friendly":name==="wang"?"smile":"neutral";return a}
 function group(names){return names.map(function(name,index){var a=actor(name,index),pos={left:index*34,bottom:0,width:32};a.desktop=copy(pos);a.mobile=copy(pos);return a})}
+function kitchenGroup(names){return names.map(function(name,index){var a=actor(name,index);a.desktop=copy(index===0?{left:0,bottom:28,width:33}:{left:50,bottom:28,width:42});a.mobile=copy(index===0?{left:5,bottom:35,width:35}:{left:45,bottom:35,width:38});a.tablet=copy(index===0?{left:22,bottom:0,width:22}:{left:54,bottom:0,width:23});a.wide=copy({left:names.length===3?[6,24,42][index]:index===0?4:68,bottom:0,width:names.length===3?14:16});a.compact=copy({left:names.length===3?[8,25,42][index]:index===0?26:47,bottom:0,width:names.length===3?14:15});return a})}
 AnBranchStory.scenes.forEach(function(node){
  var scene=copy(manifest.scenes[base[node.place]||base.street]);
  if(node.id==="school-gate"){scene=copy(manifest.scenes["hsk1.e01.xiaoyu-friendship"]);scene.actors=group(["an","wang","xiaoyu"])}
@@ -15,12 +16,23 @@ AnBranchStory.scenes.forEach(function(node){
   var names=["an"];if(/Mẹ/.test(node.speaker)||/home-|breakfast|arrival/.test(node.id))names.push("mother");
   if(/guest-prep/.test(node.id))names=["an","xiaoyu"];
   scene.actors=names.map(actor);
+  if(["day2-arrival","day2-guest-arrives","day2-home-quiet","day2-breakfast","day2-confession","day2-mother-explains","day2-guest-prep"].includes(node.id)){
+   scene.background="day2-kitchen";
+   scene.actorRegion={desktop:{left:45,right:3},mobile:{left:3,right:3},tablet:{left:3,right:3},wide:{left:28,right:3},compact:{left:0,right:0}};
+   scene.actors=kitchenGroup(names);
+   scene.sparrow.desktop={left:92,top:30};
+   scene.sparrow.mobile={left:82,top:10};
+   scene.sparrow.compact={left:94,top:54};
+   scene.sparrow.compactFlight=true;
+   scene.sparrow.flight=false;
+  }
  }
  if(node.place==="class"&&/Vương/.test(node.speaker))scene.actors=[actor("an",0),actor("wang",1)];
  if(node.id==="day2-bird-teacher")scene.actors=group(["an","wang","xiaoyu"]);
  if(node.id==="arrival"||node.id==="arrival-mother")scene.actors=[actor("an",0),actor("mother",1)];
  if(node.id==="walk-home"){scene=copy(manifest.scenes["hsk1.e01.walk-home"]);scene.actors=group(["an","mother","xiaoyu"]);}
  if(/lost-diary|search-alone/.test(node.id))scene.actors[0].expression="awkward";
+ else if(node.id==="day2-home-quiet")scene.actors[0].expression="awkward";
  else if(/epilogue|confession|bird-team/.test(node.id))scene.actors[0].expression="smile";
  else if(/school|watch/.test(node.id))scene.actors[0].expression="shy";
  else if(/search-friend|search-teacher/.test(node.id))scene.actors[0].expression="determined";

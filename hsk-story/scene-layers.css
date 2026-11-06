@@ -28,10 +28,12 @@
 .cs-foreground img{position:absolute;transform:translate(-50%,-50%);display:block;width:0;height:auto;max-width:none;object-fit:contain}
 .cs-counter-occluder:where(div) img{position:absolute;transform:translate(-50%,-50%);width:0;height:auto;object-fit:contain;clip-path:none!important}
 .chimse-art[data-composition="portrait"] .cs-actor{left:var(--actor-mobile-left);bottom:var(--actor-mobile-bottom);width:min(var(--actor-mobile-width),100cqh)}
-.chimse-art[data-composition="portrait"][data-tablet-portrait="true"] .cs-actor{left:var(--actor-tablet-left,var(--actor-mobile-left));bottom:var(--actor-tablet-bottom,var(--actor-mobile-bottom));width:min(var(--actor-tablet-width,var(--actor-mobile-width)),100cqh)}
+.chimse-art[data-tablet-portrait="true"] .cs-actor{left:var(--actor-tablet-left,var(--actor-mobile-left));bottom:var(--actor-tablet-bottom,var(--actor-mobile-bottom));width:min(var(--actor-tablet-width,var(--actor-mobile-width)),100cqh)}
 .chimse-art[data-composition="portrait"] .cs-sparrow{left:var(--sparrow-mobile-left);top:var(--sparrow-mobile-top)}
+.chimse-art[data-composition="ultra-wide"] .cs-actor{left:var(--actor-wide-left,var(--actor-left));bottom:var(--actor-wide-bottom,var(--actor-bottom));width:min(var(--actor-wide-width,var(--actor-width)),100cqh)}
 .chimse-art[data-composition="short-landscape"] .cs-actor{left:var(--actor-compact-left,var(--actor-left));bottom:var(--actor-compact-bottom,var(--actor-bottom));width:min(var(--actor-compact-width,var(--actor-width)),100cqh)}
 .chimse-art[data-composition="short-landscape"] .cs-sparrow{left:var(--sparrow-compact-left,var(--sparrow-left));top:var(--sparrow-compact-top,var(--sparrow-top));width:min(8vw,34px)}
+.chimse-art[data-composition="short-landscape"] .cs-scene[data-background="day2-kitchen"] .cs-background img{object-position:center 65%}
 #storyStage .story-ui{top:calc(var(--scene-header,56px) + 8px);bottom:auto;left:12px;right:auto;width:min(520px,40vw);max-width:none;max-height:none;overflow:visible}
 #storyStage:has(.chimse-art[data-composition="portrait"]) .story-ui{width:calc(100% - 24px)}
 #storyStage .scene-day{display:none}

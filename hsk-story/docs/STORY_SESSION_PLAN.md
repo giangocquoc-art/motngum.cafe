@@ -38,6 +38,8 @@ At the end of either arrival route (`arrival-street` or `arrival-mother`), the p
 
 Tasks 0–6 are the existing guided practice scenes. Their appearance in a story segment means practice in context; a response there is not relabeled as an independent checkpoint. Tasks 7–9 are the existing separate typed-response checkpoints for self-introduction, recalling the price previously read in story context, and ordering. Task 8 is not an independent listening assessment. Story choices, callbacks, route memories, and narrative reuse create no language evidence.
 
+The blueprint report's `pilotStageCoverage` separates introduction, common-story reuse, individually measured independent recall, and optional review. On the current content, all eight candidate objectives have an introduction but no mandatory common-story reuse. Price and noodle-order have objective-specific recall checkpoints. Task 7 is one combined response for name and student identity, so it is recorded as a shared assessment opportunity and does **not** count as independent evidence for either objective on its own. The remaining objectives do not yet have an independent checkpoint. Optional review cards are listed separately and cannot fill these mandatory story-stage gaps.
+
 The segment durations are editorial targets, not measured session analytics. A future interface may show the target duration or chapter name, but must continue to use the established story and learning runtimes for actual progression and evidence.
 
 ## Audit

@@ -13,6 +13,8 @@ const sceneManifest = sceneBox.HSKSceneManifest;
 const flatBox = {};
 vm.runInNewContext(fs.readFileSync(path.join(root, 'scene-flat-art.js'), 'utf8'), flatBox);
 const flat = flatBox.HSKFlatArt;
+const rendererBox = { HSKSceneManifest: sceneManifest, HSKFlatArt: flat };
+vm.runInNewContext(fs.readFileSync(path.join(root, 'scene-renderer.js'), 'utf8'), rendererBox);
 const catalog = JSON.parse(fs.readFileSync(path.join(artRoot, 'flat/catalog.json'), 'utf8'));
 
 function readArt(relativePath) {
@@ -31,7 +33,8 @@ function svgSize(svg, label) {
 test('native art catalog covers all responsive scenes and separate authored layers', () => {
   assert.equal(catalog.authoringSource, 'scene-flat-art.js');
   assert.match(catalog.authority, /Production hsk\.motngum\.cafe/);
-  assert.deepEqual(Object.keys(catalog.backgrounds).sort(), Object.keys(manifest.backgrounds).sort());
+  const nativeBackgrounds=Object.entries(manifest.backgrounds).filter(([,plates])=>plates.desktop.startsWith('flat/')&&plates.mobile.startsWith('flat/')).map(([id])=>id).sort();
+  assert.deepEqual(Object.keys(catalog.backgrounds).sort(), nativeBackgrounds);
 
   for (const [backgroundId, variants] of Object.entries(catalog.backgrounds)) {
     assert.deepEqual(Object.keys(variants).sort(), ['compact', 'desktop', 'mobile'], `${backgroundId} has desktop, mobile and compact plates`);
@@ -52,6 +55,32 @@ test('native art catalog covers all responsive scenes and separate authored laye
       assert.equal(svg, flat.prop(prop, variant === 'mobile', variant === 'compact'), `${prop}/${variant} matches the authoring output`);
     }
   }
+});
+
+test('generated day-two kitchen plates stay raster assets with their authored responsive sizes',()=>{
+  const kitchen=manifest.backgrounds['day2-kitchen'];
+  assert.ok(kitchen,'day-two kitchen has a dedicated art entry');
+  assert.deepEqual({desktop:kitchen.desktop,mobile:kitchen.mobile,wide:kitchen.wide,compact:kitchen.compact},{desktop:'backgrounds/day2-kitchen-v1.webp',mobile:'backgrounds/mobile/mobile-day2-kitchen-v2.webp',wide:'backgrounds/panorama/day2-kitchen-panorama-v1.webp',compact:'backgrounds/panorama/day2-kitchen-panorama-v1.webp'});
+  for(const [file,dimensions] of [[kitchen.desktop,[1672,941]],[kitchen.mobile,[1254,1254]],[kitchen.wide,[2172,724]],[kitchen.compact,[2172,724]]]){
+    const metadata=manifest.assetCatalog[file];
+    assert.ok(metadata,`${file} has a provenance entry`);
+    assert.deepEqual([metadata.dimensions.width,metadata.dimensions.height],dimensions,file);
+    assert.equal(metadata.alpha,false,file);
+    assert.ok(fs.existsSync(path.join(artRoot,file)),`${file} exists in the checkout`);
+    assert.ok(fs.existsSync(path.join(artRoot,metadata.master)),`${metadata.master} master exists in the checkout`);
+  }
+});
+
+test('responsive scene selector shares exact raster variant and fallback across stage shapes',()=>{
+  const renderer=rendererBox.HSKSceneLayers,scene={background:'day2-kitchen'},kitchen=sceneManifest.backgrounds['day2-kitchen'];
+  const select=(width,height,portrait)=>renderer.responsiveMode(scene,kitchen,{width,height},portrait).variant;
+  assert.equal(select(390,362,true),'mobile','phone story stage uses the near-square plate');
+  assert.equal(select(768,474,true),'desktop','tablet art stage near 16:9 keeps the wide plate');
+  assert.equal(select(1365,423,false),'wide','ultrawide desktop uses the panorama');
+  assert.equal(select(844,156,false),'compact','short landscape uses the panorama');
+  assert.equal(renderer.variantAsset(kitchen,select(844,156,false)),kitchen.compact);
+  assert.equal(renderer.responsiveMode(scene,{desktop:'d',mobile:'m'},{width:844,height:156},false).variant,'desktop','missing compact art falls back with desktop coordinates');
+  assert.equal(renderer.responsiveMode(scene,{desktop:'d',mobile:'m'},{width:1365,height:423},false).variant,'desktop','missing wide art falls back with desktop coordinates');
 });
 
 test('sprite specs retain semantic frame indices while resolving each expression to its own SVG', () => {
