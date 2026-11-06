@@ -127,6 +127,7 @@ test("Day-two noodle-shop scene opens with a greeting that fits every available 
  const scene=D.byId["day2-liu"];
  assert.match(scene.story,/Bà Lưu nhận ra hai đứa/);
  assert.match(scene.story,/Hai đứa tới rồi à/);
+ assert.match(scene.story,/bước vào.*ngồi cạnh chiếc bàn chung/);
  assert.doesNotMatch(scene.story,/Vào ngồi một lát không/);
  const ids=E.availableOptions(scene,go(CARE,"day2-liu")).map(option=>option.id);
  assert.ok(ids.includes("liu-ask"),"the greeting can naturally lead An to ask how bà Lưu is");
