@@ -31,7 +31,7 @@ test("First-scene check-in, curriculum target, and review item stay aligned; 你
  assert.ok(curriculum.scenes[1].words.some(([phrase])=>phrase==="你好"));
 });
 test("every accepted first check-in form has a localized guided page",()=>{
- const first=content.scenes[0];assert.equal(content.version,"1.0.5");
+ const first=content.scenes[0];assert.equal(content.version,"1.0.6");
  assert.deepEqual(Array.from(first.answers),["我很好","很好","我很好，谢谢","我很好谢谢"]);
  assert.deepEqual(Array.from(first.naturalAnswers),["我还好","还好","我还好，谢谢","我还好谢谢"]);
  const alternative=first.guidedModel.alternatives[0],short=first.guidedModel.alternatives[1],courtesy=first.guidedModel.alternatives[2],courtesyNatural=first.guidedModel.alternatives[3];
@@ -43,6 +43,22 @@ test("every accepted first check-in form has a localized guided page",()=>{
  const accepted=first.answers.concat(first.naturalAnswers);
  assert.ok(accepted.every(answer=>taught.some(example=>core.normalize(example)===core.normalize(answer))),"every accepted first-task form is shown before practice");
  assert.ok(first.naturalAnswers.includes("我还好"));assert.equal(content.validate(curriculum).length,0);
+});
+test("accepted HSK1 answers in the name, counting, and noodle scenes are taught before practice",()=>{
+ const cases=[
+  {id:1,answers:["我叫安","我叫明安","我是安"],expect:["我叫安","我叫明安","我是安"]},
+  {id:3,answers:["三个学生","有三个学生","三个人","有三个人","三个"],expect:["三个学生","有三个学生","三个人","有三个人","三个"]},
+  {id:4,answers:["我想吃面条","我要面条","一碗面条","我想要一碗面条"],expect:["我想吃面条","我要面条","一碗面条","我想要一碗面条"]}
+ ];
+ for(const row of cases){
+  const scene=content.scenes[row.id],model=scene.guidedModel;
+  const taught=[model.zh].concat(model.alternatives.flatMap(page=>page.zh.split("/").map(value=>value.trim())));
+  assert.deepEqual(taught.map(core.normalize),row.expect.map(core.normalize),`scene ${row.id} teaches each accepted response in order`);
+  assert.ok(row.answers.every(answer=>taught.some(example=>core.normalize(example)===core.normalize(answer))),`scene ${row.id} does not assess an untaught answer`);
+  assert.ok(model.alternatives.every(page=>page.title&&page.story&&page.py&&page.vi),`scene ${row.id} alternatives explain their context`);
+ }
+ assert.match(content.scenes[4].guidedModel.alternatives[1].story,/quán ăn/);
+ assert.match(content.scenes[3].guidedModel.alternatives[0].story,/有/);
 });
 test("Every scene has a nonempty localized Mandarin response and accepted answers",()=>{
  content.scenes.forEach((scene,i)=>{assert.ok(scene.zh&&scene.py&&scene.vi&&scene.speaker&&scene.request);

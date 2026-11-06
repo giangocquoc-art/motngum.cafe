@@ -79,5 +79,10 @@ The shared database URL record applies to both Preview and Production, so migrat
 ### Noodle-shop continuity correction — 2026-11-07
 
 - The day-two noodle-shop scene now opens with bà Lưu greeting An and Tiểu Vũ, matching the available choices to ask after her, offer help, or ask where the noodles go. A regression test checks the setup and eligible choices.
-- All 408 Node tests pass. The serial Edge branch-integration run passed three route states (`care`, `curious-phone`, and `brave-landscape`; 384 states total). Exact-SHA GitHub and Vercel checks for this local correction are pending until it is committed and pushed.
+- All 408 Node tests passed for that correction. The serial Edge branch-integration run passed three route states (`care`, `curious-phone`, and `brave-landscape`; 384 states total). Exact-SHA regression passed for `d8d22c01099cb2cbff3b5bea8b0afc86a915f549` in [run 42261967686](https://github.com/giangocquoc-art/motngum.cafe/actions/runs/42261967686); its browser job is still running. Vercel has not listed a deployment for that SHA.
 - This wording correction does not change scene IDs, accepted language answers, learning evidence, or saved route structure. Educator and native-speaker review remain open.
+
+### HSK1 accepted-answer teaching coverage — 2026-11-07
+
+- The name, counting, and noodle-order practice pages now explain every answer form they accept, with Hanzi, Pinyin, Vietnamese meaning, and a short context note. Stable scene IDs, answer keys, and save data are unchanged. Content manifest is version 1.0.6.
+- All 409 local Node tests pass; graph audit passes with no consequence or convergence gaps; package-input audit passes. Exact-SHA CI and Vercel evidence for this content update are pending. Editorial and qualified Mandarin review remain open, especially whether each concise restaurant response sounds natural across regions.
