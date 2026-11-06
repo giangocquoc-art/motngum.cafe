@@ -54,3 +54,9 @@ The shared database URL record applies to both Preview and Production, so migrat
 - GitHub deployment metadata records a successful `Preview – motngum-cafe-er65` for this exact SHA: [open Preview](https://motngum-cafe-er65-nbasozm21-peter-pans-projects-898306ed.vercel.app/duong-re/).
 - An unauthenticated HTTP request reaches Vercel SSO (`200`, page title `Login – Vercel`), so it does not establish that the game UI loaded or passed runtime checks. The Preview remains access-protected; review it in a signed-in Edge session before treating visual verification as complete.
 - Four other connected Vercel project checks still report `build-rate-limit`, including `hsk-hai-que-huong`. No production deployment or domain change was made. The successful Preview is on the separate project named above; it must not be described as the production site or as the `hsk-hai-que-huong` deployment.
+
+### Saved first-segment boundary — 2026-11-06 — `2dd6062c83d276e838769fa73970bd0c71c3ab97`
+
+- Local checks: all 405 Node tests passed; graph audit passed (42 nodes, 37 options, no consequence or convergence gaps); Edge session-boundary smoke passed at 320×568, 667×375, and 1024×768; route browser check passed 360 states across desktop, portrait phone, and landscape phone.
+- Exact-SHA GitHub checks passed: [HSK Story Regression run 42197570898](https://github.com/giangocquoc-art/motngum.cafe/actions/runs/42197570898) and [HSK Branching Novel Browser Smoke run 42197570722](https://github.com/giangocquoc-art/motngum.cafe/actions/runs/42197570722).
+- Vercel checks for this SHA remain blocked by the connected account's build rate limit (`retry in 24 hours`). No new deployment was produced. Preview UI, authenticated progress sync, and physical-device behavior therefore remain unverified; production and the custom domain were not changed.
