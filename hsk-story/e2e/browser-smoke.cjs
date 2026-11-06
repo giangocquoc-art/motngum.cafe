@@ -214,6 +214,14 @@ async function goStory(page,label){
    }
    await page.locator("#interludeContinue").click();
    if(paymentModel){
+    while(await visible(page,'#storyInterlude')&&await page.locator('#interludeContinue').innerText()==='Cách nói tiếp →'){
+     assert.equal(await visible(page,'#interludeContinue'),true,'Each authored model page must keep its continue action visible');
+     await page.locator('#interludeContinue').click();
+    }
+    if(await visible(page,'#storyInterlude')){
+     assert.equal(await visible(page,'#interludeContinue'),true,'The final authored model page must keep its action visible');
+     await page.locator('#interludeContinue').click();
+    }
     assert.equal(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking');
     assert.notEqual(await page.locator('#stageIllustration [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking','the model speaker returns to listening when the actual question resumes');
    }
@@ -539,7 +547,7 @@ async function verifyKeyboard(browser,device){
  const page=await ctx.newPage();watch(page,'keyboard');page.setDefaultTimeout(8000);
  try{
   await page.goto(ROOT+'/?play=hsk1',{waitUntil:'domcontentloaded'});
-  for(let n=0;n<4&&await page.locator('#storyInterlude').isVisible();n++)await page.locator('#interludeContinue').click();
+  for(let n=0;n<12&&await page.locator('#storyInterlude').isVisible();n++)await page.locator('#interludeContinue').click();
   if(device.name==='phone'){
    const insetStyle=await page.addStyleTag({content:'.game-top{padding-top:42px!important}'});
    await page.waitForFunction(()=>Math.abs(parseFloat(document.querySelector('#storyStage').style.getPropertyValue('--scene-header'))-document.querySelector('.game-top').getBoundingClientRect().bottom)<1);

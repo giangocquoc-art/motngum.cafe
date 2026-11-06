@@ -1,6 +1,6 @@
 const {test}=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 function load(file){const box={module:{exports:{}}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,"..",file),"utf8"),box);return box.module.exports}
-const content=load("content-manifest.js"),curriculum=load("curriculum-data.js"),review=load("review-data.js");
+const content=load("content-manifest.js"),curriculum=load("curriculum-data.js"),review=load("review-data.js"),core=load("game-core.js");
 test("V7 content manifest passes linked curriculum contract",()=>assert.deepEqual(Array.from(content.validate(curriculum)),[]));
 test("Five acts are fixed HSK1 through HSK5",()=>assert.deepEqual(Array.from(content.chapters,v=>v.lvl),[1,2,3,4,5]));
 test("Existing ten numbered scene IDs are preserved for V3-V6 saves",()=>assert.deepEqual(Array.from(content.scenes,v=>v.id),[0,1,2,3,4,5,6,7,8,9]));
@@ -30,11 +30,18 @@ test("First-scene check-in, curriculum target, and review item stay aligned; 你
  assert.ok(content.scenes[1].zh.includes("你好"));
  assert.ok(curriculum.scenes[1].words.some(([phrase])=>phrase==="你好"));
 });
-test("a natural alternative for the first check-in is taught in all three forms",()=>{
- const first=content.scenes[0];assert.equal(content.version,"1.0.4");
- const alternative=first.guidedModel.alternatives[0],courtesy=first.guidedModel.alternatives[1];
+test("every accepted first check-in form has a localized guided page",()=>{
+ const first=content.scenes[0];assert.equal(content.version,"1.0.5");
+ assert.deepEqual(Array.from(first.answers),["我很好","很好","我很好，谢谢","我很好谢谢"]);
+ assert.deepEqual(Array.from(first.naturalAnswers),["我还好","还好","我还好，谢谢","我还好谢谢"]);
+ const alternative=first.guidedModel.alternatives[0],short=first.guidedModel.alternatives[1],courtesy=first.guidedModel.alternatives[2],courtesyNatural=first.guidedModel.alternatives[3];
  assert.equal(alternative.zh,"我还好。");assert.equal(alternative.py,"Wǒ hái hǎo.");assert.equal(alternative.vi,"Con vẫn ổn ạ.");
+ assert.equal(short.zh,"很好。 / 还好。");assert.equal(short.py,"Hěn hǎo. / Hái hǎo.");assert.equal(short.vi,"Ổn ạ. / Vẫn ổn ạ.");assert.match(short.label,/bỏ 我/);
  assert.equal(courtesy.zh,"我很好，谢谢。");assert.equal(courtesy.py,"Wǒ hěn hǎo, xièxie.");assert.equal(courtesy.vi,"Con ổn ạ, cảm ơn mẹ.");
+ assert.equal(courtesyNatural.zh,"我还好，谢谢。");assert.equal(courtesyNatural.py,"Wǒ hái hǎo, xièxie.");assert.equal(courtesyNatural.vi,"Con vẫn ổn ạ, cảm ơn mẹ.");
+ const taught=[first.guidedModel.zh].concat(first.guidedModel.alternatives.flatMap(row=>row.zh.split("/").map(value=>value.trim())));
+ const accepted=first.answers.concat(first.naturalAnswers);
+ assert.ok(accepted.every(answer=>taught.some(example=>core.normalize(example)===core.normalize(answer))),"every accepted first-task form is shown before practice");
  assert.ok(first.naturalAnswers.includes("我还好"));assert.equal(content.validate(curriculum).length,0);
 });
 test("Every scene has a nonempty localized Mandarin response and accepted answers",()=>{

@@ -55,4 +55,10 @@ Sổ tay có ba ngăn; ngăn câu đã gặp/ôn được khóa trong lượt t�
 
 Đã có audit package/manifest, trigger CI cho module dùng chung, bộ kiểm tra dấu vân tay của 48 đơn vị học liệu (10 bài + 8 mục tiêu pilot + 30 đề xuất tương lai) và ledger duyệt trống. Sửa học liệu làm receipt cũ hết hiệu lực; receipt không tự mở bậc. Bộ hướng dẫn thử người học ở `LEARNER_PILOT_PROTOCOL.md` đã sẵn sàng, chưa có người tham gia.
 
+## Cập nhật pilot câu hỏi thăm — 07/11/2026
+
+Rà lại các câu trả lời được chấp nhận ở lượt đầu cho thấy người mới có thể gặp bốn cách diễn đạt mà chỉ thấy một phần trong mẫu trước khi làm. Giữ nguyên ID bài và toàn bộ đáp án được chấp nhận; bổ sung mẫu có Hanzi, Pinyin, nghĩa Việt và bối cảnh cho `我还好`, câu đáp ngắn `很好 / 还好`, và hai cách cảm ơn. Mỗi cách xuất hiện trên một trang truyện riêng; người chơi có thể quay lại trang trước. Chỉ sau trang cuối mới mở bài luyện và ghi nhận đã xem trợ giúp. Sổ từ và metadata mục tiêu greeting đã được cập nhật; manifest tăng từ 1.0.4 lên 1.0.5. Đây là cập nhật biên tập pilot, chưa phải nội dung được giáo viên/người bản ngữ duyệt và không làm HSK1 thành giáo trình đầy đủ.
+
+Kiểm tra trên Edge ở desktop, điện thoại dọc/ngang và tablet, gồm trạng thái bàn phím: 791 trạng thái bố cục đạt; các trang mẫu giữ nút thao tác trong cùng viewport. Toàn bộ 406 kiểm thử Node đạt; audit đồ thị ghi 42 nút, 12 điểm chọn, 37 phương án, 10 nhiệm vụ chung và không có thiếu hệ quả/hội tụ. Audit gói cục bộ đạt, nhưng báo cáo tiếp tục để CI exact-SHA, deployment/runtime Preview và duyệt chuyên môn ở trạng thái pending. Không có deployment mới hoặc thay đổi production trong lượt này.
+
 Neon Preview child và migration 003 đã thực hiện; Vercel Preview có URL DB nhạy cảm riêng theo nhánh. Chưa chứng minh OAuth/đồng bộ/AI/email trên host. Auth vẫn dùng origin production trong mã hiện có, Google callback Preview cần cấu hình phù hợp; email và giới hạn AI dùng chung giữa các instance còn là đầu việc mở. Chưa bổ sung âm thanh đã được giáo viên duyệt, kiểm thiết bị thật, bản đồ học hoàn chỉnh hay phát hành HSK2–6. Các mốc M1–M6 không được đánh dấu hoàn tất chỉ từ đợt code này.

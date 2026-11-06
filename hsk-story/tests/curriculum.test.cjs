@@ -21,6 +21,18 @@ test("first objective and hint describe the check-in An actually hears",()=>{
  assert.ok(!objective.candidateContent.vocabulary.includes("你好"));
  assert.ok(blueprint.objectives.find(item=>item.id==="introduce-self").candidateContent.vocabulary.includes("你好"));
 });
+test("first check-in lesson, notebook inventory, and candidate objective cover the authored forms",()=>{
+ const expected=[
+  ["我还好","wǒ hái hǎo","con vẫn ổn ạ"],
+  ["很好","hěn hǎo","ổn ạ (đáp ngắn, lược 我)"],
+  ["还好","hái hǎo","vẫn ổn ạ (đáp ngắn, lược 我)"],
+  ["谢谢","xièxie","cảm ơn mẹ"]
+ ];
+ const words=syllabus.scenes[0].words,objective=blueprint.objectives.find(item=>item.id==="greeting");
+ expected.forEach(row=>assert.ok(words.some(actual=>JSON.stringify(actual)===JSON.stringify(row)),row[0]+" notebook entry"));
+ expected.forEach(([phrase])=>assert.ok(objective.candidateContent.vocabulary.includes(phrase),phrase+" objective vocabulary"));
+ assert.equal(syllabus.validate().join(","),"");
+});
 test("first self-introduction gives An's name forms and prepares the teacher's question",()=>{
  const task=content.scenes[1],gate=beats.beats.find(beat=>beat.id==="gate");
  assert.match(task.request,/thường dùng tên 安/);assert.match(task.request,/đầy đủ là 明安/);

@@ -60,3 +60,10 @@ The shared database URL record applies to both Preview and Production, so migrat
 - Local checks: all 405 Node tests passed; graph audit passed (42 nodes, 37 options, no consequence or convergence gaps); Edge session-boundary smoke passed at 320×568, 667×375, and 1024×768; route browser check passed 360 states across desktop, portrait phone, and landscape phone.
 - Exact-SHA GitHub checks passed: [HSK Story Regression run 42197570898](https://github.com/giangocquoc-art/motngum.cafe/actions/runs/42197570898) and [HSK Branching Novel Browser Smoke run 42197570722](https://github.com/giangocquoc-art/motngum.cafe/actions/runs/42197570722).
 - Vercel checks for this SHA remain blocked by the connected account's build rate limit (`retry in 24 hours`). No new deployment was produced. Preview UI, authenticated progress sync, and physical-device behavior therefore remain unverified; production and the custom domain were not changed.
+
+### HSK1 guided-response pages — 2026-11-07
+
+- Preserved HSK1 scene IDs and answer keys; manifest 1.0.5 now teaches all accepted first check-in forms with localized Hanzi, Pinyin, and Vietnamese meaning. Long alternatives appear as individual pages with previous/next navigation; the test opens only after the final page.
+- All 406 Node tests passed. The story-plan audit passed for 42 nodes, 12 choice nodes, 37 options, 10 common tasks, and 1,259,712 structurally checked paths, with zero consequence or convergence gaps. The release package audit reports local package inputs `pass`; external evidence remains pending.
+- Edge browser smoke passed 791 measured layout states for desktop, phone portrait/landscape, tablet, tablet landscape, and keyboard-open phone/tablet states. The branch integration browser passed 384 states across three routes (123, 136, and 125); each retained ten learning tasks and legacy progress markers.
+- These are local checks on the current working tree. Exact-SHA CI, the protected Preview runtime, external account synchronization, qualified language review, and physical-device review are still pending. No Preview or Production deployment was made and the custom domain was not changed.

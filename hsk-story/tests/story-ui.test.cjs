@@ -75,7 +75,7 @@ test("learning metadata places both noodle lessons at Grandma Liu’s shop",()=>
  for(const id of [4,5]){assert.equal(Content.scenes[id].place,"noodle-shop");assert.match(M.scenes[id].topic,/Quán mì bà Lưu/)}
  assert.match(Content.scenes[4].tag,/QUÁN BÀ LƯU/);assert.match(Content.scenes[5].tag,/BÀ LƯU TÍNH TIỀN/);
 });
-function dismissStory(e){if(!e.skillPanel.hidden){e.skillSkip.click();e.skillSkip.click()}for(let n=0;n<4&&!e.storyInterlude.hidden;n++)e.interludeContinue.click()}
+function dismissStory(e){if(!e.skillPanel.hidden){e.skillSkip.click();e.skillSkip.click()}for(let n=0;n<12&&!e.storyInterlude.hidden;n++)e.interludeContinue.click()}
 function finishEncounter(e,routeIndex=0){
  if(e.encounterPanel.hidden)return;
  e.encounterActions.children[0].click();e.encounterActions.children[1].click();
@@ -105,15 +105,19 @@ function harness(sharedStorage={},options={}){
  return {e:dom,document,sharedStorage,spoken,window}
 }
 
-test('new learners meet a spoken model before answering and retain truthful guidance credit',()=>{
+test('new learners meet every accepted answer form in short pages before practice',()=>{
  const t=harness(),e=t.e;e.startBtn.click();e.interludeContinue.click();
  assert.equal(e.storyInterlude.dataset.kind,'model');assert.equal(e.dialogueText.textContent,Content.scenes[0].guidedModel.zh);
- assert.equal(e.interludeAlternatives.hidden,false);assert.equal(e.interludeAlternatives.children.length,2);
- assert.match(e.interludeAlternatives.children[0].textContent,/我还好。.*Wǒ hái hǎo\..*Con vẫn ổn ạ\./);
- assert.match(e.interludeAlternatives.children[1].textContent,/我很好，谢谢。.*Wǒ hěn hǎo, xièxie\..*Con ổn ạ, cảm ơn mẹ\./);
+ assert.equal(e.interludeAlternatives.hidden,true);assert.equal(e.interludePageLabel.textContent,'Cách 1 / 5');
  assert.equal(e.answerForm.hidden,true);e.answerInput.value='我很好';e.answerForm.fire('submit');
  assert.equal(JSON.parse(t.sharedStorage['hai-que-huong-progress-v3']).history.length,0);
  e.listenBtn.click();assert.equal(t.spoken[0],Content.scenes[0].guidedModel.zh);
+ e.interludeContinue.click();assert.equal(e.dialogueText.textContent,'我还好。');assert.match(e.interludeStory.textContent,/chưa thấy thật khỏe/);assert.equal(e.answerForm.hidden,true);assert.equal(e.interludePageLabel.textContent,'Cách 2 / 5');
+ e.interludePrev.click();assert.equal(e.dialogueText.textContent,Content.scenes[0].guidedModel.zh);assert.equal(e.interludePageLabel.textContent,'Cách 1 / 5');assert.equal(e.answerForm.hidden,true);
+ e.interludeContinue.click();
+ e.interludeContinue.click();assert.equal(e.dialogueText.textContent,'很好。 / 还好。');assert.match(e.interludeStory.textContent,/có thể lược 我/);assert.equal(e.answerForm.hidden,true);
+ e.interludeContinue.click();assert.equal(e.dialogueText.textContent,'我很好，谢谢。');assert.match(e.interludeStory.textContent,/nối 谢谢/);assert.equal(e.answerForm.hidden,true);
+ e.interludeContinue.click();assert.equal(e.dialogueText.textContent,'我还好，谢谢。');assert.match(e.interludeStory.textContent,/thêm 谢谢/);assert.equal(e.interludePageLabel.textContent,'Cách 5 / 5');assert.equal(e.answerForm.hidden,true);
  e.interludeContinue.click();assert.equal(e.answerForm.hidden,false);
  e.answerInput.value='我很好';e.answerForm.fire('submit');const saved=JSON.parse(t.sharedStorage['hai-que-huong-progress-v3']);
  assert.equal(saved.history[0].hint,true);assert.equal(saved.history[0].status,'correct');
@@ -307,7 +311,7 @@ test('V6 prologue blocks quiz until acknowledged and resumes after reload',()=>{
  assert.equal(e.storyInterlude.hidden,false);
  e.interludeContinue.click();
  assert.equal(e.storyInterlude.hidden,false);assert.equal(e.dialogueText.textContent,Content.scenes[0].guidedModel.zh);
- e.interludeContinue.click();
+ e.interludeContinue.click();e.interludeContinue.click();e.interludeContinue.click();e.interludeContinue.click();e.interludeContinue.click();
  assert.equal(e.storyInterlude.hidden,true);
  assert.equal(e.answerForm.hidden,false);
  assert.equal(e.learningStrip.hidden,true);
@@ -341,6 +345,7 @@ test('V6 story narration playback and keyboard focus follow the visible page',()
  e.listenBtn.click();assert.equal(t.spoken[0],B.beats[0].zh);
  e.interludeContinue.click();
  assert.equal(t.document.activeElement.id,'interludeContinue');e.listenBtn.click();assert.equal(t.spoken[1],Content.scenes[0].guidedModel.zh);
+ for(let page=0;page<4;page++){e.interludeContinue.click();assert.equal(t.document.activeElement.id,'interludeContinue')}
  e.interludeContinue.click();
  assert.equal(t.document.activeElement.id,'answerInput');
  e.listenBtn.click();assert.equal(t.spoken[2],Content.scenes[0].zh);
