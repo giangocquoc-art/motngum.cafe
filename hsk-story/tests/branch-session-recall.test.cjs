@@ -47,7 +47,7 @@ test("arrival recall shows only a Vietnamese cue before the first attempt",()=>{
  assert.equal(ui.phase(),"session-recall");
  const content=ui.get("content");
  const visible=JSON.stringify(content.children.map(child=>({text:child.textContent,children:child.children?.map(item=>item.textContent)})));
- assert.match(visible,/Mẹ thấy An còn ngập ngừng nên hỏi xem con có ổn không/);
+ assert.match(visible,/Mẹ hỏi An có ổn không\. An muốn nói mình vẫn ổn/);
  assert.doesNotMatch(visible,/[\u3400-\u9fff]|pinyin|đáp án|gợi ý|ví dụ|我很好/i);
  assert.equal(ui.get("sessionRecallInput").value,"");
  assert.equal(ui.get("journalToggle").disabled,true);
@@ -59,7 +59,13 @@ test("plot choices are clearly separated from graded language answers",()=>{
  const ui=boot("arrival",0);while(ui.phase()!=="lesson")ui.get("nextBtn").click();
  ui.get("answerInput").value="我很好";ui.get("content").children.find(child=>child.tagName==="FORM").fire("submit");
  assert.equal(ui.phase(),"feedback");ui.get("nextBtn").click();assert.equal(ui.phase(),"choose");
- assert.ok(ui.get("content").children.flatMap(child=>[child,...child.children]).some(child=>child.textContent.includes("lựa chọn của câu chuyện")&&child.textContent.includes("chưa cần học thuộc")));
+ assert.ok(ui.get("content").children.flatMap(child=>[child,...child.children]).some(child=>child.textContent.includes("Theo ý tiếng Việt")&&child.textContent.includes("chưa cần học thuộc")));
+});
+
+test("a natural check-in reply is taught with Hanzi, Pinyin, and Vietnamese before recall",()=>{
+ const ui=boot("arrival",0);while(ui.phase()!=="model")ui.get("nextBtn").click();
+ const copy=ui.get("content").children.map(child=>child.textContent).join(" ");
+ assert.match(copy,/我还好。/);assert.match(copy,/Wǒ hái hǎo\./);assert.match(copy,/Con vẫn ổn ạ\./);
 });
 
 test("the same recall follows both arrival choices and keeps their story memories separate",()=>{

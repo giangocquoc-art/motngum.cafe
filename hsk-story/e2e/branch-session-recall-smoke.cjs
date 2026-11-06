@@ -12,10 +12,10 @@ const executable=process.env.HSK_BROWSER_BIN||"C:\\Program Files (x86)\\Microsof
    const E=AnBranchEngine,D=AnBranchStory,L=ChimSeBranchLearning;let s=E.fresh();
    for(let i=0;s.node!=="school-gate"&&i<60;i++){const n=D.byId[s.node],o=n.kind==="choice"?E.availableOptions(n,s)[0]:null;const r=E.step(s,o?o.id:"next");if(!r.ok)throw Error(r.error);s=r.state}
    const h=Array(L.total).fill(null);h[0]={status:"correct",attempts:0,hint:false};
-   localStorage.setItem(D.storageKey,E.exportSave(s));localStorage.setItem(L.storageKey,JSON.stringify(h));localStorage.setItem("chimse-branch-session-recall-v1",JSON.stringify(ChimSeBranchSessionRecall.fresh()));
+   localStorage.setItem(D.storageKey,E.exportSave(s));localStorage.setItem(L.storageKey,JSON.stringify(h));localStorage.setItem("chimse-branch-session-recall-v1",JSON.stringify({version:1,status:"unseen",attempts:0,helpUsed:false}));
   });await page.reload();
   assert.equal(await page.locator("#branchShell").getAttribute("data-phase"),"session-recall");
-  const initial=await page.locator("#content").innerText();assert.match(initial,/Mẹ thấy An còn ngập ngừng nên hỏi xem con có ổn không/);assert.doesNotMatch(initial,/[\u3400-\u9fff]|Pinyin|Gợi ý:/);
+  const initial=await page.locator("#content").innerText();assert.match(initial,/Mẹ hỏi An có ổn không\. An muốn nói mình vẫn ổn/);assert.doesNotMatch(initial,/[\u3400-\u9fff]|Pinyin|Gợi ý:/);
   await page.locator("#sessionRecallInput").fill("答错");await page.locator("#nextBtn").click();assert.match(await page.locator("#inputMessage").innerText(),/Mẹ đang hỏi xem An có ổn không/);
   let saved=JSON.parse(await page.evaluate(()=>localStorage.getItem("chimse-branch-session-recall-v1")));assert.equal(saved.attempts,1);assert.equal(saved.status,"in-progress");assert.doesNotMatch(JSON.stringify(saved),/答错/);
   await page.reload();assert.equal(await page.locator("#branchShell").getAttribute("data-phase"),"session-recall");assert.equal(await page.locator("#sessionRecallInput").inputValue(),"");

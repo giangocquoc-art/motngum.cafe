@@ -30,6 +30,12 @@ test("First-scene check-in, curriculum target, and review item stay aligned; 你
  assert.ok(content.scenes[1].zh.includes("你好"));
  assert.ok(curriculum.scenes[1].words.some(([phrase])=>phrase==="你好"));
 });
+test("a natural alternative for the first check-in is taught in all three forms",()=>{
+ const first=content.scenes[0];assert.equal(content.version,"1.0.3");
+ const alternative=first.guidedModel.alternatives[0];
+ assert.equal(alternative.zh,"我还好。");assert.equal(alternative.py,"Wǒ hái hǎo.");assert.equal(alternative.vi,"Con vẫn ổn ạ.");
+ assert.ok(first.naturalAnswers.includes("我还好"));assert.equal(content.validate(curriculum).length,0);
+});
 test("Every scene has a nonempty localized Mandarin response and accepted answers",()=>{
  content.scenes.forEach((scene,i)=>{assert.ok(scene.zh&&scene.py&&scene.vi&&scene.speaker&&scene.request);
  assert.ok(scene.answers.length>0);
