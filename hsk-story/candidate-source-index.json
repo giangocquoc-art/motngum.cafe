@@ -2,397 +2,475 @@
   "edition": "HSK 3.0 · 2025-11 syllabus",
   "sourceUrl": "https://hsk.cn-bj.ufileos.com/3.0/%E6%96%B0%E7%89%88HSK%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B21219.pdf",
   "pageConvention": "pypdf zero-based page index = printed page + 2; PDF one-based page number = printed page + 3.",
-  "extractionDate": "2026-10-30",
+  "extractionDate": "2026-11-06",
   "vocabularyRows": {
     "2:306": {
       "hanzi": "帮忙",
       "pinyin": "bāngmáng",
-      "printedPage": 84
+      "printedPage": 84,
+      "sourceHash": "a370def131c411368b6e5a984e39c70df81908ef6e0018734a93fc442ed01e7e"
     },
     "2:315": {
       "hanzi": "车站",
       "pinyin": "chēzhàn",
-      "printedPage": 84
+      "printedPage": 84,
+      "sourceHash": "0147447eca751bbdc3d125cdd9c2c87dcd0997ab1f2edd66ddfad0c82ba94cc1"
     },
     "2:335": {
       "hanzi": "地铁",
       "pinyin": "dìtiě",
-      "printedPage": 85
+      "printedPage": 85,
+      "sourceHash": "052d839396e0d1993fd7cbec5597a12fbac0872fa0bbbcfa88d9c48cbe1cc17a"
     },
     "2:343": {
       "hanzi": "告诉",
       "pinyin": "gàosu",
-      "printedPage": 85
+      "printedPage": 85,
+      "sourceHash": "3553ea064e92d1081c08d10a96bab9af2fcdfd2f1c071dc8715af9da48a04d18"
     },
     "2:346": {
       "hanzi": "公交车",
       "pinyin": "gōngjiāochē",
-      "printedPage": 85
+      "printedPage": 85,
+      "sourceHash": "a6a41173988ac7d23f6e20907733d0e0e165018fa4adddb5741abe12352d64e9"
     },
     "2:365": {
       "hanzi": "记得",
       "pinyin": "jìde",
-      "printedPage": 86
+      "printedPage": 86,
+      "sourceHash": "d1b82e23b678cdec9a69242529be976a97b4ed387f7dba023ef7414f52415210"
     },
     "2:378": {
       "hanzi": "开始",
       "pinyin": "kāishǐ",
-      "printedPage": 86
+      "printedPage": 86,
+      "sourceHash": "9eefcd9a0bb01dc0564af39902da795556071a9a67ce2bece209566182d93596"
     },
     "2:386": {
       "hanzi": "快要",
       "pinyin": "kuàiyào",
-      "printedPage": 86
+      "printedPage": 86,
+      "sourceHash": "87f28569d5b44a3c095b736eee6a3171206eed261b30c29fe1a3ec50f12ca654"
     },
     "2:393": {
       "hanzi": "路上",
       "pinyin": "lùshang",
-      "printedPage": 86
+      "printedPage": 86,
+      "sourceHash": "abc798f256ea90dc85215b481ad5ab9c6e2dd3b4a0f747f3b2569d0bb5c82629"
     },
     "2:413": {
       "hanzi": "旁边",
       "pinyin": "pángbiān",
-      "printedPage": 87
+      "printedPage": 87,
+      "sourceHash": "9af03aab588d18a36ded88bc1d36c0d23c4979f767a97ef81ae7a275ef3d61ad"
     },
     "2:416": {
       "hanzi": "票",
       "pinyin": "piào",
-      "printedPage": 87
+      "printedPage": 87,
+      "sourceHash": "f137af9435e2d4622edd35b68b02a44963b2fbe8f50c980e1a34dea8af6b88a4"
     },
     "2:419": {
       "hanzi": "前面",
       "pinyin": "qiánmiàn",
-      "printedPage": 87
+      "printedPage": 87,
+      "sourceHash": "c130704893d6cb17ffbdf84464dd4c927e8450de6168bbbb9b002f5e79b57508"
     },
     "2:424": {
       "hanzi": "商场",
       "pinyin": "shāngchǎng",
-      "printedPage": 87
+      "printedPage": 87,
+      "sourceHash": "252d4be3a3521589437ddf2aa8026034e25b4a786964b3505e0a9b3e2cb60c85"
     },
     "2:439": {
       "hanzi": "所以",
       "pinyin": "suǒyǐ",
-      "printedPage": 87
+      "printedPage": 87,
+      "sourceHash": "571c9e9d2f285ce20315d0419e94b7d25c85a4d6c6ef4d01044bd68eb18a0dd7"
     },
     "2:466": {
       "hanzi": "颜色",
       "pinyin": "yánsè",
-      "printedPage": 88
+      "printedPage": 88,
+      "sourceHash": "df75bb486f098c3a4f7def70176c946709f7349173acf42c0e657b8433aafd58"
     },
-    "2:473": {
+    "2:472": {
       "hanzi": "一起",
       "pinyin": "yìqǐ",
-      "printedPage": 88
+      "printedPage": 88,
+      "sourceHash": "2125471a6ed119fb518543f7e978a3889c68e10882770e7f356bdcf8394260c8"
     },
-    "2:476": {
+    "2:475": {
       "hanzi": "因为",
       "pinyin": "yīnwèi",
-      "printedPage": 88
+      "printedPage": 88,
+      "sourceHash": "ca45f6fb1e9473fb439cc029650ff4163763d46f06d97bc1435f9221d47ad02a"
     },
     "2:493": {
       "hanzi": "准备",
       "pinyin": "zhǔnbèi",
-      "printedPage": 89
+      "printedPage": 89,
+      "sourceHash": "de14d53e48aa64c08d3b08f275d8044e098798f921b2c213325229538ffe7aa3"
     },
     "3:511": {
       "hanzi": "办法",
       "pinyin": "bànfǎ",
-      "printedPage": 89
+      "printedPage": 89,
+      "sourceHash": "0e44f23dbde36d2a7b152c68d72b2b652abe26a368c34dbaed78645e55d948fa"
     },
     "3:546": {
       "hanzi": "参加",
       "pinyin": "cānjiā",
-      "printedPage": 90
+      "printedPage": 90,
+      "sourceHash": "06d395e833b8a34ea97ab903a4734d375a32420ac588ef02a69a159867522a64"
     },
     "3:572": {
       "hanzi": "打算",
       "pinyin": "dǎsuàn",
-      "printedPage": 91
+      "printedPage": 91,
+      "sourceHash": "73bbddb74a29ca4041de1adaf2e81a2d2b332b037692333211690100929104f0"
     },
     "3:650": {
       "hanzi": "故事",
       "pinyin": "gùshi",
-      "printedPage": 93
+      "printedPage": 93,
+      "sourceHash": "ab7c72e80e29e792de6eb519a46bd5759e6bc1d81e117198f6b3bd4a8d4126fc"
     },
     "3:671": {
       "hanzi": "后来",
       "pinyin": "hòulái",
-      "printedPage": 93
+      "printedPage": 93,
+      "sourceHash": "363af3aadd37e9219b7b49d640091426ab5b8b2a5652ba5b64f81b9d140a70eb"
     },
-    "3:702": {
+    "3:701": {
       "hanzi": "见面",
       "pinyin": "jiànmiàn",
-      "printedPage": 94
+      "printedPage": 94,
+      "sourceHash": "1b7556c868db94548772ac24aab24bdf858f90d59dbfdd23f047a9441ddced19"
     },
     "3:724": {
       "hanzi": "决定",
       "pinyin": "juédìng",
-      "printedPage": 95
+      "printedPage": 95,
+      "sourceHash": "bb8ce522214f684bafdee970e638b04f5a67572deef91becbeb7a058682c8362"
     },
     "3:813": {
       "hanzi": "然后",
       "pinyin": "ránhòu",
-      "printedPage": 97
+      "printedPage": 97,
+      "sourceHash": "7ef5721da2895aa90c2d040ef79da90323b0ef36fc9a262125bc46fd7c8dface"
     },
     "3:816": {
       "hanzi": "认为",
       "pinyin": "rènwéi",
-      "printedPage": 97
+      "printedPage": 97,
+      "sourceHash": "f1547ffd7c34882c2704ecb7ebfb58830e8c95c853e494342ee575b8a983e7be"
     },
     "3:860": {
       "hanzi": "同意",
       "pinyin": "tóngyì",
-      "printedPage": 98
+      "printedPage": 98,
+      "sourceHash": "cce9ca39f1014298d979a6558e508ee1663db57b146510785473b002f61b85a6"
     },
     "3:868": {
       "hanzi": "完成",
       "pinyin": "wánchéng",
-      "printedPage": 98
+      "printedPage": 98,
+      "sourceHash": "d8e0e5659f59795c169e1152d0931d994647d6bf7c919645123bfee4bce3a02b"
     },
     "3:878": {
       "hanzi": "文化",
       "pinyin": "wénhuà",
-      "printedPage": 98
+      "printedPage": 98,
+      "sourceHash": "24792f395cf9a41721896196ec2c114ccbf85e99d2f8af921061b54446458914"
     },
     "3:890": {
       "hanzi": "先",
       "pinyin": "xiān",
-      "printedPage": 99
+      "printedPage": 99,
+      "sourceHash": "21de3ef1674a2abc38c1715efab6dbb5311d1ee25ff267538b25865fe4ec385b"
     },
-    "3:927": {
+    "3:930": {
       "hanzi": "以前",
       "pinyin": "yǐqián",
-      "printedPage": 100
+      "printedPage": 100,
+      "sourceHash": "f0991903a9a603dd3c6ec8c402a0f366ac00662129b0bc8544795f72decca891"
     },
     "3:939": {
       "hanzi": "应该",
       "pinyin": "yīnggāi",
-      "printedPage": 100
+      "printedPage": 100,
+      "sourceHash": "b3718456eb286dd9e03e8fb0950992f609b68cd6180b38e0c08b0abdc545ff52"
     },
     "3:997": {
       "hanzi": "最后",
       "pinyin": "zuìhòu",
-      "printedPage": 101
+      "printedPage": 101,
+      "sourceHash": "0433cd673d42293995f27331530d882933c6afbd29bb9ced06cbbe7356428e94"
     },
     "4:1192": {
       "hanzi": "反对",
       "pinyin": "fǎnduì",
-      "printedPage": 106
+      "printedPage": 106,
+      "sourceHash": "08fc18886662be1588c29b85e95d4c5fb4fcbc66e5ab0ec2be23131fe987b503"
     },
-    "4:1215": {
+    "4:1214": {
       "hanzi": "负责",
       "pinyin": "fùzé",
-      "printedPage": 107
+      "printedPage": 107,
+      "sourceHash": "8cf61d0ad4b43a8aee779d7c031740483fcd48dad0702544a85eba607ff96f36"
     },
-    "4:1354": {
+    "4:1352": {
       "hanzi": "建议",
       "pinyin": "jiànyì",
-      "printedPage": 110
+      "printedPage": 110,
+      "sourceHash": "2a8fbb99e500d0dbaf6656c777bc5de29f616edb9e0696da991c1d4f8c8eb5c6"
     },
-    "4:1382": {
+    "4:1384": {
       "hanzi": "结果",
       "pinyin": "jiéguǒ",
-      "printedPage": 111
+      "printedPage": 111,
+      "sourceHash": "af88ff79069fe506578c68a0af9416d2142f6730c3b6ccaa8cba3c7fd7c67819"
     },
     "4:1736": {
       "hanzi": "条件",
       "pinyin": "tiáojiàn",
-      "printedPage": 120
+      "printedPage": 120,
+      "sourceHash": "deec76c5d25b80227c920e0c5a98aba9e436d1c107da5cb5c075940eaa5e7746"
     },
     "4:1745": {
       "hanzi": "通知",
       "pinyin": "tōngzhī",
-      "printedPage": 120
+      "printedPage": 120,
+      "sourceHash": "dfafae4dc03687893cd7d0af6d0c61056b63626c97ba5bf11983b79aabc254ec"
     },
     "4:1811": {
       "hanzi": "消息",
       "pinyin": "xiāoxi",
-      "printedPage": 122
+      "printedPage": 122,
+      "sourceHash": "a0b8d0cb2ce434bc16eab6335364f0518e2f2bd54f19538413d790fa0ca4aca8"
     },
-    "4:1868": {
+    "4:1870": {
       "hanzi": "意见",
       "pinyin": "yìjiàn",
-      "printedPage": 123
+      "printedPage": 123,
+      "sourceHash": "16efd3918e5014b3b19e9da8dfc1da02123aa2116c76c04e3b012c27c7728d84"
     },
     "4:1871": {
       "hanzi": "因此",
       "pinyin": "yīncǐ",
-      "printedPage": 123
+      "printedPage": 123,
+      "sourceHash": "b8a9902e5fe3bc0ff0919e1b35816b2e1e2e5fa04928d34a27229dc20172dc15"
     },
     "4:1902": {
       "hanzi": "原因",
       "pinyin": "yuányīn",
-      "printedPage": 124
+      "printedPage": 124,
+      "sourceHash": "4872c421fb350b35d41889015c8a6af6635a8bbe0085e8485312d6edebdeb3a8"
     },
     "4:1930": {
       "hanzi": "整理",
       "pinyin": "zhěnglǐ",
-      "printedPage": 125
+      "printedPage": 125,
+      "sourceHash": "e78ca604ad9056901642aa7487e3a6878dbd5f0a64f2c45bad635d5e0554a2cb"
     },
-    "4:1935": {
+    "4:1937": {
       "hanzi": "证明",
       "pinyin": "zhèngmíng",
-      "printedPage": 125
+      "printedPage": 125,
+      "sourceHash": "1a91e161080ea6e757b469604e98d8258533b7572d0fd006264d9e677a09f789"
     },
-    "4:1939": {
+    "4:1943": {
       "hanzi": "支持",
       "pinyin": "zhīchí",
-      "printedPage": 125
+      "printedPage": 125,
+      "sourceHash": "8fe6dc5fa4296fe0d987234c2debb9e0283a39a85bc6af58ddecc1230abe972d"
     },
-    "5:2045": {
+    "5:2048": {
       "hanzi": "彼此",
       "pinyin": "bǐcǐ",
-      "printedPage": 128
+      "printedPage": 128,
+      "sourceHash": "244be665138dcd7b44cf42a0b1700bb44629396d8c24538e3e61ef5254d17d43"
     },
-    "5:2050": {
+    "5:2053": {
       "hanzi": "毕竟",
       "pinyin": "bìjìng",
-      "printedPage": 128
+      "printedPage": 128,
+      "sourceHash": "eb09f33f8220daf24a56681268eea2657ab2e95ff2409f83a2e196dc526fbbcb"
     },
     "5:2062": {
       "hanzi": "表达",
       "pinyin": "biǎodá",
-      "printedPage": 128
+      "printedPage": 128,
+      "sourceHash": "f3c4f15fcdc41b018b1f33676e627e8168b77ec4b8065e9de7b5fe0b9bf28667"
     },
     "5:2098": {
       "hanzi": "曾经",
       "pinyin": "céngjīng",
-      "printedPage": 129
+      "printedPage": 129,
+      "sourceHash": "b1cb143d5b6e6c77022099211205a5a3690bfb12eebfc345193884c32cca8549"
     },
     "5:2187": {
       "hanzi": "传统",
       "pinyin": "chuántǒng",
-      "printedPage": 131
+      "printedPage": 131,
+      "sourceHash": "d5aafd2805dcf2ae34f61e7539ae400b1b3360f56edacf7a804478f1302a030e"
     },
     "5:2201": {
       "hanzi": "从而",
       "pinyin": "cóng’ér",
-      "printedPage": 132
+      "printedPage": 132,
+      "sourceHash": "1285936f760142b892597bbc3cd81be1782838433bcf203bab4f9a658e2ec77b"
     },
     "5:2267": {
       "hanzi": "的确",
       "pinyin": "díquè",
-      "printedPage": 133
+      "printedPage": 133,
+      "sourceHash": "c3264a16c07ae646b7024f4977a80bdf88293a6d18fc8e7072507e89a9740931"
     },
     "5:2331": {
       "hanzi": "反而",
       "pinyin": "fǎn’ér",
-      "printedPage": 135
+      "printedPage": 135,
+      "sourceHash": "84df358b239b41b138390e79c4dc52d2d5ba53230826567626bb11c608c474cc"
     },
     "5:2343": {
       "hanzi": "仿佛",
       "pinyin": "fǎngfú",
-      "printedPage": 135
+      "printedPage": 135,
+      "sourceHash": "8be56b330bc9a7de6299840b8c1572cff45ed946a2f723f5fe58779236c361c4"
     },
-    "5:2355": {
+    "5:2354": {
       "hanzi": "分析",
       "pinyin": "fēnxī",
-      "printedPage": 135
+      "printedPage": 135,
+      "sourceHash": "2ae36ef55923351bc7a09dd905b342b74f04427789fc878b64bc7082ef70a552"
     },
     "5:2433": {
       "hanzi": "观点",
       "pinyin": "guāndiǎn",
-      "printedPage": 137
+      "printedPage": 137,
+      "sourceHash": "ad0f6da97e78d3099598d8c6ff3cd08506f0f67bfabd95c95c13b89cb494c51f"
     },
     "5:2452": {
       "hanzi": "果然",
       "pinyin": "guǒrán",
-      "printedPage": 138
+      "printedPage": 138,
+      "sourceHash": "4e68b843a8c89a493e1caa2db2df363cd67b426c810f3b7515019e6d32dd7fb7"
     },
     "5:2571": {
       "hanzi": "简直",
       "pinyin": "jiǎnzhí",
-      "printedPage": 141
+      "printedPage": 141,
+      "sourceHash": "dd0c554bf99ba35940be9dfcfd6b2d0a2654e462602cfe889ff455b7e396df38"
     },
-    "5:2603": {
+    "5:2604": {
       "hanzi": "结论",
       "pinyin": "jiélùn",
-      "printedPage": 142
+      "printedPage": 142,
+      "sourceHash": "28c0d154ef317858f72563ea6aae89fe590dc7f66dba33a597de1a2f532fea43"
     },
-    "5:2610": {
+    "5:2608": {
       "hanzi": "尽量",
       "pinyin": "jǐnliàng",
-      "printedPage": 142
+      "printedPage": 142,
+      "sourceHash": "decd65d312e0c834d6dbbf58c0504d5b9974d2c2ad078de6f841bdbd8577841f"
     },
     "5:2703": {
       "hanzi": "理由",
       "pinyin": "lǐyóu",
-      "printedPage": 144
+      "printedPage": 144,
+      "sourceHash": "acc72b98f6c980969be893d8e0ae117d0e801f08aa5c26637d9c46d9904c74de"
     },
     "5:3249": {
       "hanzi": "相当",
       "pinyin": "xiāngdāng",
-      "printedPage": 158
+      "printedPage": 158,
+      "sourceHash": "09e047ea9b997cd4111dee7ea600290a4ed4220af178edf8e31ba0420b50805a"
     },
-    "5:3280": {
+    "5:3278": {
       "hanzi": "欣赏",
       "pinyin": "xīnshǎng",
-      "printedPage": 158
+      "printedPage": 158,
+      "sourceHash": "68b6985ec543c846871a20f3445d742f0c5585796235f1082da9f040f8f88ff0"
     },
-    "5:3399": {
+    "5:3398": {
       "hanzi": "优美",
       "pinyin": "yōuměi",
-      "printedPage": 161
+      "printedPage": 161,
+      "sourceHash": "3604b99f7f831377e40fd6d589c266f7fff72218145cedd0412cdad3f553d8c8"
     },
-    "5:3482": {
+    "5:3481": {
       "hanzi": "针对",
       "pinyin": "zhēnduì",
-      "printedPage": 164
+      "printedPage": 164,
+      "sourceHash": "4dbd10755e293ef5ff910ce5f00aae590c485b0c6047a1ebe6badb1bc52b3d32"
     },
     "5:3586": {
       "hanzi": "总之",
       "pinyin": "zǒngzhī",
-      "printedPage": 166
+      "printedPage": 166,
+      "sourceHash": "dce7a16569240961a3c17f71cfede0ef6a14513a33e330caac5a961234947ed7"
     },
-    "6:4307": {
+    "6:4308": {
       "hanzi": "进而",
       "pinyin": "jìn’ér",
-      "printedPage": 184
+      "printedPage": 184,
+      "sourceHash": "c180774391b450f4129cb9d277af939ec43d237dc47189ef016df2959b92f93f"
     },
-    "6:4437": {
+    "6:4439": {
       "hanzi": "立场",
       "pinyin": "lìchǎng",
-      "printedPage": 187
+      "printedPage": 187,
+      "sourceHash": "0e3f392c82b10684b2e90ae50c9cb9ac62312016813e9beecc9ba22dbfd9f172"
     },
-    "6:4638": {
+    "6:4637": {
       "hanzi": "前提",
       "pinyin": "qiántí",
-      "printedPage": 192
+      "printedPage": 192,
+      "sourceHash": "c7bd3c17d94118148bb029520b59e15bef1fecb7abeaec4036e979fe36df9b17"
     },
-    "6:4663": {
+    "6:4655": {
       "hanzi": "倾向",
       "pinyin": "qīngxiàng",
-      "printedPage": 193
+      "printedPage": 193,
+      "sourceHash": "cd72df2a49c4ddb450ddbd07823881c25c6d6b35b7ff6508461804f837f536d6"
     },
-    "6:4758": {
+    "6:4760": {
       "hanzi": "涉及",
       "pinyin": "shèjí",
-      "printedPage": 195
+      "printedPage": 195,
+      "sourceHash": "3818515993d68dccda861a99cdab825ee507cce1e490dba05772f23844a14ca6"
     },
     "6:4939": {
       "hanzi": "推测",
       "pinyin": "tuīcè",
-      "printedPage": 200
+      "printedPage": 200,
+      "sourceHash": "faec95ced19ee894e8727fcd5e89c2461e8e5ed5f76c86afb113714d322d3e90"
     },
-    "6:5040": {
+    "6:5038": {
       "hanzi": "相应",
       "pinyin": "xiāngyìng",
-      "printedPage": 202
+      "printedPage": 202,
+      "sourceHash": "9bde72c28eb64bae88b200bc0e8b1c89dd88b438598bb20891a1cc6fc76aea30"
     },
     "6:5085": {
       "hanzi": "叙述",
       "pinyin": "xùshù",
-      "printedPage": 204
+      "printedPage": 204,
+      "sourceHash": "03ffc15678c447daa49814e91d3ce604ac6530c8fc29ef86b7d465627330bb97"
     },
-    "6:5216": {
+    "6:5219": {
       "hanzi": "原材料",
       "pinyin": "yuáncáiliào",
-      "printedPage": 207
+      "printedPage": 207,
+      "sourceHash": "9a120027a2b5a83a7a90383df8eb1da178a7d935074d2507d978079b2866b378"
     },
     "6:5291": {
       "hanzi": "证实",
       "pinyin": "zhèngshí",
-      "printedPage": 209
+      "printedPage": 209,
+      "sourceHash": "3cc7eb27eebe13391d6a9a3fdec6eec6999d3c4a78c86b11a3b000f456287055"
     }
   },
   "characterRefsByTargetLevel": {
@@ -1566,5 +1644,609 @@
       398,
       399
     ]
+  },
+  "sourceSha256": "d8b6646599bc9a0c9616a4cb06d4b37461f8792f70a3171016d00fcd8eda09ad",
+  "levelOneCandidateRefs": {
+    "greeting": {
+      "status": "candidate-source-locators; alignment and educator review pending",
+      "tasks": [
+        {
+          "id": "hsk30:l1:task:006",
+          "printedPage": 3,
+          "sourceHash": "fa07c62c1a8495f74ab71b7ec66fd2f376a2b78c188a07113e9fecc9d40d1ad9"
+        }
+      ],
+      "topics": [
+        {
+          "id": "hsk30:2025-11:l1:topic:a02.b01.c01",
+          "printedPage": 56,
+          "sourceHash": "dea888c43e0e5fddd6bcacb615f345212eb8463510ff60b59b8b26091e036b47"
+        }
+      ],
+      "vocabulary": [
+        {
+          "candidateTerm": "你",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0146",
+          "serial": 146,
+          "printedPage": 80,
+          "sourceHash": "6e73bd22cbeef2b33c490b3c9df563f4cf2eba7a774ed014a1d0d9c0a041ba68"
+        },
+        {
+          "candidateTerm": "还",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0067",
+          "serial": 67,
+          "printedPage": 78,
+          "sourceHash": "48337face2bf72294a9ca733f59ea9940102c6ff8cde05e8037238cc3813d01c"
+        },
+        {
+          "candidateTerm": "好",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0071",
+          "serial": 71,
+          "printedPage": 78,
+          "sourceHash": "a08df1ba51690da48ba3c905efd5dc0d2f935c37bbec2bf0204218c62b4de714"
+        },
+        {
+          "candidateTerm": "吗",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0115",
+          "serial": 115,
+          "printedPage": 79,
+          "sourceHash": "7de7fe4687e7a321614ee867d16d81037f0cec3908e8b569694ff5660f9fedce"
+        },
+        {
+          "candidateTerm": "我",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0221",
+          "serial": 221,
+          "printedPage": 82,
+          "sourceHash": "89d365f40e5caae76a501680fabdb4bfbea39f330e1b537c95fa5953ac4f6233"
+        },
+        {
+          "candidateTerm": "很",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0079",
+          "serial": 79,
+          "printedPage": 78,
+          "sourceHash": "451991ba9983cc6f044e967a046c88483e7077efaa6ceb8a2237728a7a8929ad"
+        },
+        {
+          "candidateTerm": "你好",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0147",
+          "serial": 147,
+          "printedPage": 80,
+          "sourceHash": "9e72fced8df5af6c9ed5fcf07d81acbca16b07c09dd070b0c0c205b91c7c3bb9"
+        }
+      ],
+      "grammar": [
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r009",
+          "printedPage": 383,
+          "pageRowOrdinal": 9,
+          "sourceHash": "a2c0669259574cac97ccbcded569e9050399d35caf1b76fc65c7f16ba60b8910"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r015",
+          "printedPage": 383,
+          "pageRowOrdinal": 15,
+          "sourceHash": "6991d1c85a59835217c1fe83f0035a6cddb669beb893cf0400524a0038cf72f9"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r019",
+          "printedPage": 383,
+          "pageRowOrdinal": 19,
+          "sourceHash": "debd811aaf40afe23dbe7507091c2f84a7d1d9e471c817de5435c090a79669b0"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r026",
+          "printedPage": 383,
+          "pageRowOrdinal": 26,
+          "sourceHash": "dca269cc17b7e2c6824bec6b2084df522f0e9df60dc16f492732cdba4cdf0d16"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r016",
+          "printedPage": 384,
+          "pageRowOrdinal": 16,
+          "sourceHash": "c62ff3e677aca1512cbc9e22db820d2510ee021f0836d3db06ca16007cf6bc1d"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r020",
+          "printedPage": 384,
+          "pageRowOrdinal": 20,
+          "sourceHash": "f954fc1dbc062617809d20febd6120f8afc6c1e828b7a75e1c4166b03d48b1c4"
+        }
+      ]
+    },
+    "introduce-self": {
+      "status": "candidate-source-locators; alignment and educator review pending",
+      "tasks": [
+        {
+          "id": "hsk30:l1:task:001",
+          "printedPage": 2,
+          "sourceHash": "c1f8294852987bb4f5ca91a447e63e5ce4ac8d81f0fbe06f0863622602580457"
+        }
+      ],
+      "topics": [
+        {
+          "id": "hsk30:2025-11:l1:topic:a01.b01.c01",
+          "printedPage": 56,
+          "sourceHash": "00e3195e783044fe2f2b512b64b7acfa52e1b617caab5f12ab0d668ca1b6304d"
+        }
+      ],
+      "vocabulary": [
+        {
+          "candidateTerm": "我",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0221",
+          "serial": 221,
+          "printedPage": 82,
+          "sourceHash": "89d365f40e5caae76a501680fabdb4bfbea39f330e1b537c95fa5953ac4f6233"
+        },
+        {
+          "candidateTerm": "叫",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0091",
+          "serial": 91,
+          "printedPage": 79,
+          "sourceHash": "fbde5314cba23afad901afb658c12e155db9675a5bec7d7df4b405472a6a343f"
+        },
+        {
+          "candidateTerm": "名字",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0128",
+          "serial": 128,
+          "printedPage": 80,
+          "sourceHash": "1b9f3156f6525263ddd2cf0df09cd0aaed9ce9a2f7e652e469558eb1e42270e0"
+        },
+        {
+          "candidateTerm": "你好",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0147",
+          "serial": 147,
+          "printedPage": 80,
+          "sourceHash": "9e72fced8df5af6c9ed5fcf07d81acbca16b07c09dd070b0c0c205b91c7c3bb9"
+        },
+        {
+          "candidateTerm": "你",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0146",
+          "serial": 146,
+          "printedPage": 80,
+          "sourceHash": "6e73bd22cbeef2b33c490b3c9df563f4cf2eba7a774ed014a1d0d9c0a041ba68"
+        }
+      ],
+      "grammar": [
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r008",
+          "printedPage": 383,
+          "pageRowOrdinal": 8,
+          "sourceHash": "d1f35b331cb7423a0d70c7bbba825fd3da006d7c3d64ab94fd000a2b96cb7983"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r009",
+          "printedPage": 383,
+          "pageRowOrdinal": 9,
+          "sourceHash": "a2c0669259574cac97ccbcded569e9050399d35caf1b76fc65c7f16ba60b8910"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r015",
+          "printedPage": 384,
+          "pageRowOrdinal": 15,
+          "sourceHash": "5999b23e65a82da72a41f7a876875c2ed8542ff893a1063f055a5d3ae4226cf3"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r021",
+          "printedPage": 384,
+          "pageRowOrdinal": 21,
+          "sourceHash": "7aeebafcfcbcb9cb908b1ef01321eb436568336903c1d25f38425f40b91f097d"
+        }
+      ]
+    },
+    "student-identity": {
+      "status": "candidate-source-locators; alignment and educator review pending",
+      "tasks": [
+        {
+          "id": "hsk30:l1:task:001",
+          "printedPage": 2,
+          "sourceHash": "c1f8294852987bb4f5ca91a447e63e5ce4ac8d81f0fbe06f0863622602580457"
+        },
+        {
+          "id": "hsk30:l1:task:012",
+          "printedPage": 4,
+          "sourceHash": "bd57f5bf4c77794fd45501c87461fb9793c5a7806053c85304e6da80b8a2589a"
+        },
+        {
+          "id": "hsk30:l1:task:013",
+          "printedPage": 5,
+          "sourceHash": "2f72ac845d5bc270c241e1ab216655986f7ae7d283bc5900c89fc44922c30f14"
+        }
+      ],
+      "topics": [
+        {
+          "id": "hsk30:2025-11:l1:topic:a01.b01.c02",
+          "printedPage": 56,
+          "sourceHash": "ef12595fc2f1c8f469848f15289d3553d4b117035af4d64dd167f6c6c855a6a6"
+        },
+        {
+          "id": "hsk30:2025-11:l1:topic:a03.b01.c03",
+          "printedPage": 56,
+          "sourceHash": "2745ec02eb588b2a1186bd4e149351e52d828bca5cfe9493395196f04fbe254b"
+        },
+        {
+          "id": "hsk30:2025-11:l1:topic:a03.b02.c01",
+          "printedPage": 56,
+          "sourceHash": "677c9e15ec845fef940ef836b016ea42c42c0e24ca75a40a6bf9743f0092b764"
+        }
+      ],
+      "vocabulary": [
+        {
+          "candidateTerm": "学生",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0248",
+          "serial": 248,
+          "printedPage": 83,
+          "sourceHash": "45b9f9ebd64faedfa0e5d4c3a57a0fa404e40bb3b3108c858cb66d3954836652"
+        },
+        {
+          "candidateTerm": "我",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0221",
+          "serial": 221,
+          "printedPage": 82,
+          "sourceHash": "89d365f40e5caae76a501680fabdb4bfbea39f330e1b537c95fa5953ac4f6233"
+        },
+        {
+          "candidateTerm": "是",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0188",
+          "serial": 188,
+          "printedPage": 81,
+          "sourceHash": "2784dd91cc81e8a7a3caea02ea169922f69144add84c4a8dd71e8a443ce59a23"
+        }
+      ],
+      "grammar": [
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r009",
+          "printedPage": 383,
+          "pageRowOrdinal": 9,
+          "sourceHash": "a2c0669259574cac97ccbcded569e9050399d35caf1b76fc65c7f16ba60b8910"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r026",
+          "printedPage": 383,
+          "pageRowOrdinal": 26,
+          "sourceHash": "dca269cc17b7e2c6824bec6b2084df522f0e9df60dc16f492732cdba4cdf0d16"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r020",
+          "printedPage": 384,
+          "pageRowOrdinal": 20,
+          "sourceHash": "f954fc1dbc062617809d20febd6120f8afc6c1e828b7a75e1c4166b03d48b1c4"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r025",
+          "printedPage": 384,
+          "pageRowOrdinal": 25,
+          "sourceHash": "d2f61eaa0cb1f47a3ec6d3d1a396b1f35c0df75e976fa65f4507049c335134ba"
+        }
+      ]
+    },
+    "numbers": {
+      "status": "candidate-source-locators; alignment and educator review pending",
+      "tasks": [
+        {
+          "id": "hsk30:l1:task:003",
+          "printedPage": 2,
+          "sourceHash": "06c0d5d20c3b457caf0167579c6dc7e463058509eab8f0f81da8156c7dbeb0bc"
+        }
+      ],
+      "topics": [
+        {
+          "id": "hsk30:2025-11:l1:topic:a01.b03.c02",
+          "printedPage": 56,
+          "sourceHash": "07c3a037a790148c48e4a86e8220f60cc886624873a43b5d4f5574fa19e30f8e"
+        },
+        {
+          "id": "hsk30:2025-11:l1:topic:a01.b02.c01",
+          "printedPage": 56,
+          "sourceHash": "f80c6b43ef6a3c2b2738f307ddc44c1a1db01e2b54069684a9413939f4a9224d"
+        }
+      ],
+      "vocabulary": [
+        {
+          "candidateTerm": "二",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0049",
+          "serial": 49,
+          "printedPage": 78,
+          "sourceHash": "6d11bd90718b242f7d64ff165a076b8e5c2e9b8f5957c027f95598684c81fda7"
+        },
+        {
+          "candidateTerm": "三",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0173",
+          "serial": 173,
+          "printedPage": 81,
+          "sourceHash": "7188f5488a9f61a8a1237e658ebd97d561c2da8a7eee6ec8cd770bfd9ee33528"
+        },
+        {
+          "candidateTerm": "一",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0254",
+          "serial": 254,
+          "printedPage": 83,
+          "sourceHash": "f1f8679a6c4d82214cf3aafd6aee3fe9a272112a1c7d8018f6e05c70b3b40e2d"
+        },
+        {
+          "candidateTerm": "个",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0060",
+          "serial": 60,
+          "printedPage": 78,
+          "sourceHash": "9ec1f7f42b390cfc73061f718a8f5075e3e411caee3d62ec86f88d39244c2459"
+        }
+      ],
+      "grammar": [
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r011",
+          "printedPage": 383,
+          "pageRowOrdinal": 11,
+          "sourceHash": "d945cfcc5f36437ef59d17af1153d36d26e6f41ba8805ed5bbce8614fd5a6e80"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r012",
+          "printedPage": 383,
+          "pageRowOrdinal": 12,
+          "sourceHash": "1d117b3dfc115673952ab335f1f26609693fabaa3e8bf08c9020fed6ebcb6839"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r005",
+          "printedPage": 384,
+          "pageRowOrdinal": 5,
+          "sourceHash": "116c1b5732ae731f235881021aa0bb6a0e92eec066b8516b24a9d190a312e6f9"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r009",
+          "printedPage": 384,
+          "pageRowOrdinal": 9,
+          "sourceHash": "abce1056f0fe0101e2f4ac5a7af61216b8072ed89667eada62cfe312a3cf8931"
+        }
+      ]
+    },
+    "order-noodles": {
+      "status": "candidate-source-locators; alignment and educator review pending",
+      "tasks": [
+        {
+          "id": "hsk30:l1:task:007",
+          "printedPage": 3,
+          "sourceHash": "6af9d6eb2321b19838eab7cfed808c14b49dd45b96c1572cb2c0033af6e98424"
+        },
+        {
+          "id": "hsk30:l1:task:015",
+          "printedPage": 5,
+          "sourceHash": "d0534afbb97b4b2d9983fcf090dc6943bdc050829fecaab44f9e965154e094a3"
+        }
+      ],
+      "topics": [
+        {
+          "id": "hsk30:2025-11:l1:topic:a02.b02.c01",
+          "printedPage": 56,
+          "sourceHash": "b044c64322e46ccab4338c22b6ea947c530ea751acff3c8d6554aba1c10a425d"
+        },
+        {
+          "id": "hsk30:2025-11:l1:topic:a02.b02.c02",
+          "printedPage": 56,
+          "sourceHash": "515da74e1a507a9b9247236d7412745bb11fc9d05704ff06bc700a3333c7c8de"
+        },
+        {
+          "id": "hsk30:2025-11:l1:topic:a05.b01.c01",
+          "printedPage": 57,
+          "sourceHash": "7b2f8fa332464a3a6757398a01ffc795832a7113098aa911d51bf3fe04bebb9f"
+        }
+      ],
+      "vocabulary": [
+        {
+          "candidateTerm": "吃",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0021",
+          "serial": 21,
+          "printedPage": 77,
+          "sourceHash": "8fb759126112287e9cf47e01b6ac662f237b50cce632d86241abeeefd6a16db3"
+        },
+        {
+          "candidateTerm": "我",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0221",
+          "serial": 221,
+          "printedPage": 82,
+          "sourceHash": "89d365f40e5caae76a501680fabdb4bfbea39f330e1b537c95fa5953ac4f6233"
+        },
+        {
+          "candidateTerm": "想",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0233",
+          "serial": 233,
+          "printedPage": 82,
+          "sourceHash": "012d49d9b941d8d06bc53b459ef315966032292e780ae7808ce3382f16880832"
+        },
+        {
+          "candidateTerm": "面条",
+          "relation": "closest-listed-form",
+          "id": "hsk30:vocab:0127",
+          "serial": 127,
+          "printedPage": 80,
+          "sourceHash": "d9b4b337af16d9a48561c9098fbd03e7097ed8e7581623eadef6cfe90b5842fc"
+        }
+      ],
+      "grammar": [
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r005",
+          "printedPage": 383,
+          "pageRowOrdinal": 5,
+          "sourceHash": "9f5cd848a246b16d851481ef203f9e593455ce9eee7b44ae0e7015fe8d1f213a"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r003",
+          "printedPage": 384,
+          "pageRowOrdinal": 3,
+          "sourceHash": "a9301b80cbda53386ac0cb1c35caed0a1cb39ef50e6a24f4667f06f88e9ea6e0"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r015",
+          "printedPage": 384,
+          "pageRowOrdinal": 15,
+          "sourceHash": "5999b23e65a82da72a41f7a876875c2ed8542ff893a1063f055a5d3ae4226cf3"
+        }
+      ]
+    },
+    "price": {
+      "status": "candidate-source-locators; alignment and educator review pending",
+      "tasks": [
+        {
+          "id": "hsk30:l1:task:009",
+          "printedPage": 4,
+          "sourceHash": "795dee24b33abeb4160f5bba60ef4fab2082848cb8eedf8e6affdd37158d1fe8"
+        }
+      ],
+      "topics": [
+        {
+          "id": "hsk30:2025-11:l1:topic:a02.b04.c02",
+          "printedPage": 56,
+          "sourceHash": "463d570c15bd06dcf6e57213344fa57e6e1fa084197b788d4f1ea6f620810940"
+        }
+      ],
+      "vocabulary": [
+        {
+          "candidateTerm": "块",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0105",
+          "serial": 105,
+          "printedPage": 79,
+          "sourceHash": "ff81c6cc9fbefe9cc50b029bc9865d6ac86a76c1701e6783796cdcf4f8f98b1f"
+        },
+        {
+          "candidateTerm": "钱",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0164",
+          "serial": 164,
+          "printedPage": 81,
+          "sourceHash": "829bc6ab4f1084009742f66cfb1d261fa6801bd63402a450b368c2a0c951dfa6"
+        },
+        {
+          "candidateTerm": "十",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0184",
+          "serial": 184,
+          "printedPage": 81,
+          "sourceHash": "9efc485e4bc34724dfe86b0fe9913c2f249d7b2dcade0053053d81c67f8dc422"
+        }
+      ],
+      "grammar": [
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r011",
+          "printedPage": 383,
+          "pageRowOrdinal": 11,
+          "sourceHash": "d945cfcc5f36437ef59d17af1153d36d26e6f41ba8805ed5bbce8614fd5a6e80"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r012",
+          "printedPage": 383,
+          "pageRowOrdinal": 12,
+          "sourceHash": "1d117b3dfc115673952ab335f1f26609693fabaa3e8bf08c9020fed6ebcb6839"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p385:r009",
+          "printedPage": 385,
+          "pageRowOrdinal": 9,
+          "sourceHash": "296977e328eede6f72a563ed6ddaf518aa838c5b9c396ab79a22c62d1314cc47"
+        }
+      ]
+    },
+    "gratitude": {
+      "status": "candidate-source-locators; alignment and educator review pending",
+      "tasks": [
+        {
+          "id": "hsk30:l1:task:006",
+          "printedPage": 3,
+          "sourceHash": "fa07c62c1a8495f74ab71b7ec66fd2f376a2b78c188a07113e9fecc9d40d1ad9"
+        }
+      ],
+      "topics": [
+        {
+          "id": "hsk30:2025-11:l1:topic:a02.b01.c01",
+          "printedPage": 56,
+          "sourceHash": "dea888c43e0e5fddd6bcacb615f345212eb8463510ff60b59b8b26091e036b47"
+        }
+      ],
+      "vocabulary": [
+        {
+          "candidateTerm": "谢谢",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0241",
+          "serial": 241,
+          "printedPage": 83,
+          "sourceHash": "447c75da3804784f310c2528f2cf77556e5f7e3330ac53a878e6805f3a617fdf"
+        }
+      ],
+      "grammar": []
+    },
+    "farewell": {
+      "status": "candidate-source-locators; alignment and educator review pending",
+      "tasks": [
+        {
+          "id": "hsk30:l1:task:006",
+          "printedPage": 3,
+          "sourceHash": "fa07c62c1a8495f74ab71b7ec66fd2f376a2b78c188a07113e9fecc9d40d1ad9"
+        }
+      ],
+      "topics": [
+        {
+          "id": "hsk30:2025-11:l1:topic:a02.b01.c01",
+          "printedPage": 56,
+          "sourceHash": "dea888c43e0e5fddd6bcacb615f345212eb8463510ff60b59b8b26091e036b47"
+        }
+      ],
+      "vocabulary": [
+        {
+          "candidateTerm": "明天",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0130",
+          "serial": 130,
+          "printedPage": 80,
+          "sourceHash": "a299a8ac33b922ece21cca5d906d8728163ca4db6ec3e98e2bc072751ac6f636"
+        },
+        {
+          "candidateTerm": "好",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0071",
+          "serial": 71,
+          "printedPage": 78,
+          "sourceHash": "a08df1ba51690da48ba3c905efd5dc0d2f935c37bbec2bf0204218c62b4de714"
+        }
+      ],
+      "grammar": [
+        {
+          "id": "hsk30:2025-11:l1:grammar:p383:r014",
+          "printedPage": 383,
+          "pageRowOrdinal": 14,
+          "sourceHash": "7bffd56501b79269e968feff56574a50643ca1adb6a2c7654f6bd1ba38ad7d08"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p384:r018",
+          "printedPage": 384,
+          "pageRowOrdinal": 18,
+          "sourceHash": "96518d0b5c3a31699c629820ec5e6fb90e08ad64876ddabebaffe41db88103ec"
+        },
+        {
+          "id": "hsk30:2025-11:l1:grammar:p385:r011",
+          "printedPage": 385,
+          "pageRowOrdinal": 11,
+          "sourceHash": "62269bc709cecb510277b6cd79101dc91e3aa3b244af927bc5c576a4eaf10750"
+        }
+      ]
+    }
   }
 }

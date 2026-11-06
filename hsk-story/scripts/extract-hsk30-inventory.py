@@ -19,7 +19,7 @@ from pypdf import PdfReader
 
 SOURCE_URL = "https://hsk.cn-bj.ufileos.com/3.0/%E6%96%B0%E7%89%88HSK%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B21219.pdf"
 SOURCE_EDITION = "HSK 3.0 syllabus, 2025-11"
-SOURCE_SHA256 = "ec74ce0439e837bbb15154be13e747ae798903b2fd3a331629df6c3b45504941"
+SOURCE_SHA256 = "d8b6646599bc9a0c9616a4cb06d4b37461f8792f70a3171016d00fcd8eda09ad"
 NORMALIZATION_VERSION = 2
 PAGE_OFFSET = 2  # pypdf's zero-based page index = printed page + 2
 TASK_RANGES = {1: (2, 5), 2: (6, 10), 3: (11, 17), 4: (18, 28), 5: (29, 36), 6: (37, 44)}

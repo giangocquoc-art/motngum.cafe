@@ -17,7 +17,7 @@ test('pinned source inventory covers all five components for HSK 3.0 levels 1–
   assert.equal(inventory.schemaVersion, 3);
   assert.equal(inventory.normalizationVersion, 2);
   assert.equal(inventory.edition, 'HSK 3.0 syllabus, 2025-11');
-  assert.equal(inventory.sourceSha256, 'ec74ce0439e837bbb15154be13e747ae798903b2fd3a331629df6c3b45504941');
+  assert.equal(inventory.sourceSha256, 'd8b6646599bc9a0c9616a4cb06d4b37461f8792f70a3171016d00fcd8eda09ad');
   assert.match(inventory.scope, /levels 1–6 only/);
   assert.match(inventory.scope, /HSK 7–9 task section begins on printed page 45/);
   assert.deepEqual(Object.keys(inventory.levelCounts), ['1', '2', '3', '4', '5', '6']);
@@ -91,6 +91,31 @@ test('pinned source inventory covers all five components for HSK 3.0 levels 1–
   assert.equal(Object.values(inventory.grammarPages).flat().length, 17);
   assert.equal(Object.values(inventory.grammarSourceRows).flat().length, 459);
   assert.equal(Object.values(inventory.topics).flatMap(level => level.nodes).length, 512);
+});
+
+test('HSK1 objective crosswalk stores only hash-pinned candidate locators', () => {
+  const refs = blueprint.candidateSourceIndex.levelOneCandidateRefs;
+  assert.deepEqual(Object.keys(refs).sort(), ['farewell', 'gratitude', 'greeting', 'introduce-self', 'numbers', 'order-noodles', 'price', 'student-identity'].sort());
+  for (const objective of blueprint.objectives) {
+    const candidate = refs[objective.id];
+    assert.ok(candidate, `candidate locators for ${objective.id}`);
+    assert.match(candidate.status, /pending/);
+    assert.deepEqual(objective.officialItemIds, [], `no official match claimed for ${objective.id}`);
+    const locatorGroups = [candidate.tasks, candidate.topics, candidate.vocabulary, candidate.grammar];
+    for (const group of locatorGroups) {
+      for (const locator of group) {
+        assert.match(locator.id, /^hsk30:/);
+        assert.match(locator.sourceHash, /^[a-f0-9]{64}$/);
+      }
+    }
+    for (const locator of candidate.tasks) assert.ok(inventory.tasks['1'].some(row => row.id === locator.id && row.sourceHash === locator.sourceHash));
+    for (const locator of candidate.topics) assert.ok(inventory.topics['1'].nodes.some(row => row.id === locator.id && row.sourceHash === locator.sourceHash));
+    for (const locator of candidate.vocabulary) assert.ok(inventory.vocabulary.some(row => row.id === locator.id && row.level === 1 && row.serial === locator.serial && row.sourceHash === locator.sourceHash));
+    for (const locator of candidate.grammar) assert.ok(inventory.grammarSourceRows['1'].some(row => row.id === locator.id && row.sourceHash === locator.sourceHash));
+    assert.ok(candidate.vocabulary.every(row => row.relation === 'exact-form' || row.relation === 'closest-listed-form'));
+  }
+  assert.equal(blueprint.report().officiallyVerifiedObjectives, 0);
+  assert.equal(blueprint.report().officiallyVerifiedItems, 0);
 });
 
 test('headerless HSK6 p399 grammar rows retain source-cell anchors from p398', () => {

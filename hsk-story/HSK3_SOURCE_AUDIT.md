@@ -11,6 +11,12 @@
 - Direct official PDF: https://hsk.cn-bj.ufileos.com/3.0/%E6%96%B0%E7%89%88HSK%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B21219.pdf
 - Page numbers below are the printed page numbers in that PDF. The syllabus organizes each level by tasks, topics, vocabulary, Chinese characters, and grammar.
 
+### Current official-file snapshot — 2026-11-06
+
+The publisher's [current syllabus page](https://www.chinesetest.cn/syllabus) still links to the 2025-11 HSK 3.0 edition. The linked PDF was downloaded twice on 2026-11-06 and returned the same SHA-256 `d8b6646599bc9a0c9616a4cb06d4b37461f8792f70a3171016d00fcd8eda09ad`; its metadata shows 406 pages and a 2026-10-30 modification time. This replaces the previous pinned-file checksum `ec74ce0439e837bbb15154be13e747ae798903b2fd3a331629df6c3b45504941` while keeping the same published edition and effective date.
+
+Re-extraction from the current file reproduced all 136 task counts, 512 topic nodes, 1,940 recognition-character counts, 17 grammar-page hashes, and 459 grammar-row hashes from the previous inventory. All 5,400 vocabulary row IDs, levels, serial ranges, and printed pages remain structurally valid, but 2,172 normalized row hashes differ. Of 78 selected HSK2–6 candidate vocabulary references, 25 still have the same Hanzi and Pinyin in the current PDF but now use a different serial. The candidate index and future-plan serials are updated to this current snapshot; the source row hashes are retained for audit. This confirms the linked file changed, but does not establish why it changed or validate any instructional match. All content matching and educator-review statuses remain pending.
+
 ## Level map
 
 Each page number is the section's starting page. These are locators for teacher review, not references to matched items. See `learning-blueprint.js` for the machine-readable objective registry, per-component review state, story stages, and release gates.

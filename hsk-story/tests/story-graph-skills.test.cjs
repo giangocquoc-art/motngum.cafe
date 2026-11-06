@@ -157,15 +157,18 @@ test("future candidate vocabulary, grammar, and characters resolve to independen
  const index=B.candidateSourceIndex,inventory=B.syllabusInventory,all=B.makeFutureObjectives(F);
  const inventoryIds=new Set([...inventory.vocabulary,...Object.values(inventory.characters).flat(),...Object.values(inventory.grammarPages).flat()].map(item=>item.id));
  assert.equal(index.sourceUrl,B.source.url);
+ assert.equal(index.sourceSha256,inventory.sourceSha256);
  assert.equal(Object.keys(index.vocabularyRows).length,78);
  assert.equal(Object.values(index.characterRefsByTargetLevel).reduce((sum,chars)=>sum+Object.keys(chars).length,0),151);
- assert.equal(index.vocabularyRows["6:4758"].hanzi,"涉及");
+ assert.equal(index.vocabularyRows["6:4760"].hanzi,"涉及");
  assert.equal(index.vocabularyRows["6:4939"].hanzi,"推测");
- assert.equal(index.vocabularyRows["6:5216"].hanzi,"原材料");
+ assert.equal(index.vocabularyRows["6:5219"].hanzi,"原材料");
  for(const objective of all.filter(x=>x.level>1)){
   for(const word of objective.candidateContent.vocabulary){
    const ref=index.vocabularyRows[objective.level+":"+word.candidateRowNumber];
    assert.deepEqual([word.hanzi,word.pinyin,word.printedPage],[ref.hanzi,ref.pinyin,ref.printedPage]);
+   const sourceRow=inventory.vocabulary[word.candidateRowNumber-1];
+   assert.deepEqual([sourceRow.id,sourceRow.level,sourceRow.printedPage,sourceRow.sourceHash],["hsk30:vocab:"+String(word.candidateRowNumber).padStart(4,"0"),objective.level,ref.printedPage,ref.sourceHash]);
    const inventoryRef=objective.candidateSourceRefs.vocabulary.candidateRows.find(item=>item.rowNumber===word.candidateRowNumber);
    assert.equal(inventoryRef.sourceInventoryId,"hsk30:vocab:"+String(word.candidateRowNumber).padStart(4,"0"));assert.ok(inventoryIds.has(inventoryRef.sourceInventoryId));
   }
