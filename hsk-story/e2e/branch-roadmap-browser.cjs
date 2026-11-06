@@ -194,6 +194,8 @@ async function runViewport(browser, viewport) {
   assert.equal(await panel.evaluate(node => node.open), true);
   const tutorInput = panel.locator("[data-branch-tutor-input]");
   assert.equal(await tutorInput.evaluate(node => document.activeElement === node), true, "focus enters tutor prompt");
+  assert.equal(await tutorInput.evaluate(node => getComputedStyle(node).outlineStyle), "solid", "keyboard focus remains visible on the tutor prompt");
+  assert.equal(await tutorInput.evaluate(node => getComputedStyle(node).outlineWidth), "3px", "the tutor prompt uses the shared visible focus indicator");
   await layout(page, `${viewport.name} tutor open`, ["#branchTutorPanel h2", "#branchTutorPanel textarea", "#branchTutorPanel [data-branch-tutor-send]"]);
   await stageVisibleAboveTutor(page, `${viewport.name} tutor open`);
   await tutorInput.fill("delay please");
