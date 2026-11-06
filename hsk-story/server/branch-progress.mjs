@@ -41,7 +41,7 @@ export function sanitizeSnapshot(raw) {
   if (raw.version === 2 && raw.recall == null) throw invalid();
   let recall;
   try { recall = raw.version === 1 ? Recall.fresh() : Recall.clean(raw.recall); } catch { throw invalid(); }
-  if (!recall || (recall.status === 'in-progress' && (replay.node !== 'school-gate' || !path.some(item => item.at === 'arrival')))) throw invalid();
+  if (!recall || (recall.status === 'in-progress' && (replay.node !== 'school-gate' || !path.some(item => item.at === 'arrival'))) || (recall.boundary !== 'continued' && recall.status !== 'unseen' && (replay.node !== 'school-gate' || !path.some(item => item.at === 'arrival')))) throw invalid();
   const result = {version: 2, path, learning, draft, recall};
   if (JSON.stringify(result).length > 120000) throw invalid();
   return result;

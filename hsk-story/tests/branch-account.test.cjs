@@ -91,10 +91,10 @@ test('a newer record appearing during account use blocks sync and owner changes 
 
 test('v1 migrates to v2, recall sync preserves terminal records through rewind, and newer data stays untouched',()=>{
  const old={version:1,path:[],learning:Array(10).fill(null),draft:null},migrated=C.normalize(old);
- assert.equal(migrated.version,2);assert.deepEqual(migrated.recall,{version:1,status:'unseen',attempts:0,helpUsed:false});
- const s=storage(),snapshot=C.empty();snapshot.recall={version:1,status:'unassisted',attempts:1,helpUsed:false};C.apply(s,snapshot);assert.deepEqual(C.capture(s).recall,snapshot.recall);assert.equal(C.hasProgress(snapshot),true);
+ assert.equal(migrated.version,2);assert.deepEqual(migrated.recall,{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'});
+ const s=storage(),snapshot=C.empty();snapshot.recall={version:2,status:'unassisted',attempts:1,helpUsed:false,boundary:'continued'};C.apply(s,snapshot);assert.deepEqual(C.capture(s).recall,snapshot.recall);assert.equal(C.hasProgress(snapshot),true);
  const before=JSON.stringify({...snapshot,version:3}),raw=JSON.parse(before);assert.throws(()=>C.normalize(raw));assert.equal(JSON.stringify(raw),before);
- s.setItem(C.keys.recall,'{"version":2,"future":true}');const unchanged=s.getItem(C.keys.recall);assert.throws(()=>C.apply(s,snapshot));assert.equal(s.getItem(C.keys.recall),unchanged);
+ s.setItem(C.keys.recall,'{"version":3,"future":true}');const unchanged=s.getItem(C.keys.recall);assert.throws(()=>C.apply(s,snapshot));assert.equal(s.getItem(C.keys.recall),unchanged);
 });
 test('recall rejects invalid states and only allows in-progress at the school gate after arrival',()=>{
  const snapshot=C.empty();snapshot.recall={version:1,status:'in-progress',attempts:0,helpUsed:false};assert.throws(()=>C.normalize(snapshot));

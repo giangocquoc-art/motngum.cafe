@@ -8,6 +8,7 @@ async function snapshot(page){return page.evaluate(()=>{const root=document.quer
   if(s.node==='walk-home'&&!s.lesson)assert.equal(await page.locator('#placeLabel').textContent(),'Đầu ngõ gần nhà');if(s.node==='school-gate'&&!s.lesson)assert.equal(await page.locator('#placeLabel').textContent(),'Lớp học');if(s.lesson==='6')assert.equal(await page.locator('#placeLabel').textContent(),'Đường về nhà');
   if(s.phase==='choose'){const wanted=route.map[s.node]||s.choices[0];for(let j=0;j<s.choices.length;j++){const card=await page.locator('[data-choice]').getAttribute('data-choice');if(card===wanted)break;await page.getByRole('button',{name:'Cách khác →',exact:true}).click()}assert.equal(await page.locator('[data-choice]').getAttribute('data-choice'),wanted);await page.locator('#nextBtn').click();}
   else if(s.phase==='session-recall'){await page.locator('#sessionRecallInput').fill('我很好');await page.locator('#nextBtn').click();}
+  else if(s.phase==='session-close'){await page.locator('.session-boundary-actions button').click();await page.locator('#nextBtn').click();}
   else if(s.phase==='lesson'){const answer=await page.evaluate(i=>HSKContent.scenes[Number(i)].answers[0],s.lesson);if(!wrongChecked){await page.locator('#answerInput').fill('不对');await page.locator('.lesson-form button.primary').click();assert.ok((await page.locator('#inputMessage').textContent()).length);wrongChecked=true;}await page.locator('#answerInput').fill(answer);await page.locator('.lesson-form button.primary').click();}
   else await page.locator('#nextBtn').click();
  }

@@ -5,7 +5,7 @@ const {boot}=require("./helpers/branch-ui-fixture.cjs");
 
 test("session recall starts cleanly and stores only bounded outcome state",()=>{
  const started=Recall.start(null);
- assert.deepEqual(started,{version:1,status:"in-progress",attempts:0,helpUsed:false});
+ assert.deepEqual(started,{version:2,status:"in-progress",attempts:0,helpUsed:false,boundary:"pending"});
  assert.deepEqual(Recall.clean({...started,answer:"我很好",pinyin:"private"}),started);
  assert.equal(Recall.storageKey,"chimse-branch-session-recall-v1");
 });
@@ -13,7 +13,7 @@ test("session recall starts cleanly and stores only bounded outcome state",()=>{
 test("wrong answers retry without finishing or changing narrative state",()=>{
  let state=Recall.start(Recall.fresh());
  state=Recall.fail(state);state=Recall.fail(state);
- assert.deepEqual(state,{version:1,status:"in-progress",attempts:2,helpUsed:false});
+ assert.deepEqual(state,{version:2,status:"in-progress",attempts:2,helpUsed:false,boundary:"pending"});
  assert.equal(Recall.isFinished(state),false);
  assert.equal(Recall.fail({...state,attempts:100}).attempts,100);
 });
@@ -37,9 +37,34 @@ test("unassisted success and skip remain distinct terminal outcomes",()=>{
 });
 
 test("malformed and newer sidecars are not normalized into a fresh answer",()=>{
- assert.throws(()=>Recall.clean({version:2,status:"independent",attempts:1,helpUsed:false}),error=>error.code==="newer");
+ assert.throws(()=>Recall.clean({version:3,status:"independent",attempts:1,helpUsed:false}),error=>error.code==="newer");
  assert.throws(()=>Recall.clean({version:1,status:"in-progress",attempts:-1,helpUsed:false}));
  assert.throws(()=>Recall.finish(Recall.start(null),"answer"));
+});
+
+test("session boundary pauses and resumes without changing the story path",()=>{
+ let state=Recall.finish(Recall.start(null),"correct");
+ assert.equal(state.boundary,"pending");
+ state=Recall.pause(state);assert.equal(state.boundary,"paused");
+ assert.equal(Recall.continueSession(state).boundary,"continued");
+ assert.equal(Recall.pause(Recall.start(null)).boundary,"pending");
+ assert.throws(()=>Recall.clean({version:2,status:"in-progress",attempts:1,helpUsed:false,boundary:"paused"}));
+ assert.throws(()=>Recall.clean({version:2,status:"unassisted",attempts:1,helpUsed:false,boundary:"invalid"}));
+ const legacy=Recall.clean({version:1,status:"unassisted",attempts:1,helpUsed:false});
+ assert.deepEqual(legacy,{version:2,status:"unassisted",attempts:1,helpUsed:false,boundary:"continued"});
+});
+
+test("completed recall offers a saved pause before entering class",()=>{
+ const ui=boot("school-gate",1,{seed:{[Recall.storageKey]:JSON.stringify({version:2,status:"unassisted",attempts:1,helpUsed:false,boundary:"pending"})}});
+ assert.equal(ui.phase(),"session-close");
+ const storyBefore=ui.values.get("hai-que-huong-branching-novel-v1"),historyBefore=ui.values.get("chimse-branch-learning-v1");
+ let visible=ui.get("content").children.map(x=>x.textContent).join(" ");assert.match(visible,/An chợt nhớ được câu trả lời/);
+ ui.get("content").children.flatMap(x=>x.children||[]).find(x=>x.textContent.includes("Dừng ở đây")).click();
+ assert.equal(JSON.parse(ui.values.get(Recall.storageKey)).boundary,"paused");assert.equal(ui.phase(),"session-close");
+ const resumed=boot("school-gate",1,{seed:{[Recall.storageKey]:ui.values.get(Recall.storageKey)}});
+ assert.equal(resumed.phase(),"session-close");assert.match(resumed.get("content").children.map(x=>x.textContent).join(" "),/Đã lưu ở cổng trường/);
+ resumed.get("nextBtn").click();assert.equal(JSON.parse(resumed.values.get(Recall.storageKey)).boundary,"continued");assert.equal(resumed.phase(),"read");
+ assert.equal(resumed.values.get("hai-que-huong-branching-novel-v1"),storyBefore);assert.equal(resumed.values.get("chimse-branch-learning-v1"),historyBefore);
 });
 
 test("arrival recall shows only a Vietnamese cue before the first attempt",()=>{
