@@ -1,4 +1,4 @@
-# HSK 1 — Ma trận đối chiếu nội dung học (30/10/2026)
+# HSK 1 — Ma trận đối chiếu nội dung học (07/11/2026)
 
 **Trạng thái: PILOT / CHƯA ĐẠT CHỨNG NHẬN ĐẦY ĐỦ HSK1.** Đây là bảng gắn cốt truyện với cấu trúc đại cương, KHÔNG phải kết quả đã đối chiếu từng mục từ vựng/ngữ pháp của syllabus chính thức.
 
@@ -20,6 +20,23 @@
 | Nghe | Browser TTS ở nhánh luyện riêng | Chỉ có event speech ended | Thiếu audio thu âm chuẩn và kiểm tra nghe thật |
 | Nói | Browser speech recognition thử nghiệm | Không chấm | Thiếu đánh giá phát âm, thanh điệu |
 | Ôn lặp | Interval 1–3–7–14 ngày | Lưu riêng ở browser | Chưa chứng minh hiệu quả với người học thật |
+
+## Độ phủ gặp lại trong tuyến truyện bắt buộc
+
+Mỗi mục tiêu cần được gặp, dùng lại trong tình huống khác và tự nhớ lại sau lần dùng. Bộ ôn tự chọn không thay thế một lượt bắt buộc trên tuyến chung. Đối chiếu hiện tại:
+
+| Mục tiêu | Lần gặp trong truyện | Lượt tự nhớ bắt buộc sau đó | Trạng thái |
+| --- | --- | --- | --- |
+| Hỏi thăm và đáp lời | Cảnh 0 | Chỉ có thẻ ôn tự chọn | Thiếu reuse và checkpoint trên tuyến chung |
+| Giới thiệu tên | Cảnh 1 | Cảnh 7, chung câu hỏi với student-identity | Có checkpoint; thiếu reuse riêng trên tuyến chung |
+| Xác nhận là học sinh | Cảnh 2 | Cảnh 7 | Có checkpoint; thiếu reuse riêng trên tuyến chung |
+| Đếm người trong lớp | Cảnh 3 | Thẻ trắc nghiệm tự chọn `three-students` | Chỉ có nhận diện; thiếu tự nhớ độc lập bắt buộc |
+| Gọi món | Cảnh 4 | Cảnh 9 | Có checkpoint; thiếu reuse riêng trên tuyến chung |
+| Hiểu giá | Cảnh 5 | Cảnh 8 | Có checkpoint; thiếu reuse riêng trên tuyến chung |
+| Cảm ơn | Cảnh 5 | Chỉ có thẻ ôn tự chọn | Thiếu reuse và checkpoint trên tuyến chung |
+| Hẹn gặp ngày mai | Cảnh 6 | Chỉ có thẻ ôn tự chọn | Thiếu reuse và checkpoint trên tuyến chung |
+
+Vì vậy cả tám mục tiêu vẫn là mục tiêu pilot ứng viên; báo cáo blueprint hiện đánh dấu chúng thiếu chuỗi bắt buộc đầy đủ. Các biến thể trong trang mẫu bắt buộc đã được thêm vào bản đồ từ vựng ứng viên và sổ từ ở cảnh tương ứng. Đây là ghi nhận nội dung Chim Sẻ đã dạy, chưa phải xác nhận chúng thuộc danh mục HSK 3.0.
 
 ## 23 bài ôn biên soạn từ các cảnh
 | Cảnh đã xong | Item | Dạng |

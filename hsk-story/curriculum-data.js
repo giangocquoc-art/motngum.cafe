@@ -12,12 +12,12 @@ var levels=[
 ];
 var scenes=[
 {id:0,objectiveIds:["greeting"],assessmentObjectiveIds:["greeting"],kind:"practice",objective:"Đáp lời mẹ hỏi thăm",topic:"Gia đình · Hỏi thăm",words:[["你还好吗","nǐ hái hǎo ma","con ổn không?"],["我很好","wǒ hěn hǎo","con ổn ạ"],["我还好","wǒ hái hǎo","con vẫn ổn ạ"],["很好","hěn hǎo","ổn ạ (đáp ngắn, lược 我)"],["还好","hái hǎo","vẫn ổn ạ (đáp ngắn, lược 我)"],["谢谢","xièxie","cảm ơn mẹ"]],reviewOf:[]},
-{id:1,objectiveIds:["greeting","introduce-self"],assessmentObjectiveIds:["introduce-self"],kind:"practice",objective:"Giới thiệu tên Minh An",topic:"Trường học · Làm quen",words:[["你好","nǐ hǎo","xin chào"],["我叫安","wǒ jiào Ān","mình tên An"],["名字","míngzi","tên"]],reviewOf:[0]},
-{id:2,objectiveIds:["introduce-self","student-identity"],assessmentObjectiveIds:["student-identity"],kind:"practice",objective:"Xác nhận mình là học sinh",topic:"Trường học · Bạn mới",words:[["学生","xuésheng","học sinh"],["我是","wǒ shì","mình là"]],reviewOf:[1]},
-{id:3,objectiveIds:["student-identity","numbers"],assessmentObjectiveIds:["numbers"],kind:"practice",objective:"Đếm học sinh khi chia nhóm",topic:"Lớp học · Số đếm",words:[["一二三","yī èr sān","một hai ba"],["三个","sān ge","ba người/vật"]],reviewOf:[2]},
-{id:4,objectiveIds:["order-noodles"],assessmentObjectiveIds:["order-noodles"],kind:"practice",objective:"Gọi món muốn ăn",topic:"Quán mì bà Lưu · Gọi món",words:[["我想吃","wǒ xiǎng chī","mình muốn ăn"],["面条","miàntiáo","mì"]],reviewOf:[0]},
-{id:5,objectiveIds:["order-noodles","price","gratitude"],assessmentObjectiveIds:["gratitude"],kind:"practice",objective:"Hiểu giá tiền và cảm ơn",topic:"Quán mì bà Lưu · Tính tiền",words:[["十块钱","shí kuài qián","mười tệ"],["谢谢","xièxie","cảm ơn"]],reviewOf:[4]},
-{id:6,objectiveIds:["farewell"],assessmentObjectiveIds:["farewell"],kind:"practice",objective:"Đồng ý lời mời và hẹn gặp",topic:"Đường về · Bạn bè",words:[["明天","míngtiān","ngày mai"],["好","hǎo","được"]],reviewOf:[0,2]},
+{id:1,objectiveIds:["greeting","introduce-self"],assessmentObjectiveIds:["introduce-self"],kind:"practice",objective:"Giới thiệu tên Minh An",topic:"Trường học · Làm quen",words:[["你好","nǐ hǎo","xin chào"],["我叫安","wǒ jiào Ān","mình tên An"],["我叫明安","wǒ jiào Míng’ān","mình tên Minh An"],["我是安","wǒ shì Ān","mình là An"],["名字","míngzi","tên"]],reviewOf:[0]},
+{id:2,objectiveIds:["introduce-self","student-identity"],assessmentObjectiveIds:["student-identity"],kind:"practice",objective:"Xác nhận mình là học sinh",topic:"Trường học · Bạn mới",words:[["学生","xuésheng","học sinh"],["我是","wǒ shì","mình là"],["是","shì","vâng; là"],["对","duì","đúng vậy"]],reviewOf:[1]},
+{id:3,objectiveIds:["student-identity","numbers"],assessmentObjectiveIds:["numbers"],kind:"practice",objective:"Đếm học sinh khi chia nhóm",topic:"Lớp học · Số đếm",words:[["一二三","yī èr sān","một hai ba"],["三个","sān ge","ba người/vật"],["有","yǒu","có"],["人","rén","người"]],reviewOf:[2]},
+{id:4,objectiveIds:["order-noodles"],assessmentObjectiveIds:["order-noodles"],kind:"practice",objective:"Gọi món muốn ăn",topic:"Quán mì bà Lưu · Gọi món",words:[["我想吃","wǒ xiǎng chī","mình muốn ăn"],["我想要","wǒ xiǎng yào","mình muốn lấy"],["我要","wǒ yào","mình lấy / mình muốn"],["一碗","yì wǎn","một bát"],["碗","wǎn","bát"],["面条","miàntiáo","mì"]],reviewOf:[0]},
+{id:5,objectiveIds:["order-noodles","price","gratitude"],assessmentObjectiveIds:["gratitude"],kind:"practice",objective:"Hiểu giá tiền và cảm ơn",topic:"Quán mì bà Lưu · Tính tiền",words:[["十块钱","shí kuài qián","mười tệ"],["谢谢","xièxie","cảm ơn"],["您","nín","ngài / bà (lịch sự)"],["奶奶","nǎinai","bà"]],reviewOf:[4]},
+{id:6,objectiveIds:["farewell"],assessmentObjectiveIds:["farewell"],kind:"practice",objective:"Đồng ý lời mời và hẹn gặp",topic:"Đường về · Bạn bè",words:[["明天","míngtiān","ngày mai"],["好","hǎo","được"],["好的","hǎo de","được nhé"],["好啊","hǎo a","được chứ"],["可以","kěyǐ","được / có thể"],["明天见","míngtiān jiàn","mai gặp nhé"]],reviewOf:[0,2]},
 {id:7,objectiveIds:["introduce-self","student-identity"],assessmentObjectiveIds:["introduce-self","student-identity"],kind:"checkpoint",objective:"Tự giới thiệu bằng tiếng Trung",topic:"Kiểm tra · Giới thiệu",words:[],reviewOf:[1,2]},
 {id:8,objectiveIds:["price"],assessmentObjectiveIds:["price"],kind:"checkpoint",objective:"Nhớ giá bát mì ở quán bà Lưu",topic:"Kiểm tra · Đọc và nhớ ngữ cảnh",words:[],reviewOf:[5]},
 {id:9,objectiveIds:["order-noodles"],assessmentObjectiveIds:["order-noodles"],kind:"checkpoint",objective:"Tự gọi món đã học",topic:"Kiểm tra · Diễn đạt",words:[],reviewOf:[4]}
@@ -36,6 +36,6 @@ function validate(){
  if(scenes.slice(7).some(function(s){return s.kind!=="checkpoint"||!s.reviewOf.length}))problems.push("Must include exactly three recall checkpoints");
  return problems;
 }
-return {version:"2026-10-30-hsk3.0-v4",source:source,levels:levels,scenes:scenes,validate:validate};
+return {version:"2026-11-07-hsk3.0-v5",source:source,levels:levels,scenes:scenes,validate:validate};
 })();
 if(typeof module!=="undefined"&&module.exports)module.exports=HSKCurriculum;
