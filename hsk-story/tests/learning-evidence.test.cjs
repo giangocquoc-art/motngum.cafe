@@ -43,7 +43,7 @@ test('damaged local JSON is preserved and offers a recovery copy instead of over
 });
 
 test('classroom art alias still uses the canonical practice scene for the tutor server',()=>{
- const ui=boot('school-gate',1);let synced;ui.box.ChimSeBranchTutor={sync(value){synced=value}};until(ui,'lesson');assert.equal(synced.sceneId,'hsk1.e01.school-introduction');assert.equal(synced.available,true);
+ const ui=boot('school-gate',1);let synced;ui.box.ChimSeBranchTutor={sync(value){synced=value}};assert.equal(ui.phase(),'session-recall');ui.get('sessionRecallInput').value='我很好';ui.get('nextBtn').click();until(ui,'lesson');assert.equal(synced.sceneId,'hsk1.e01.school-introduction');assert.equal(synced.available,true);
 });
 
 test('Sẻ reacts to difficulty and progress without changing the chosen story',()=>{

@@ -79,7 +79,7 @@ async function reconcile(remote){
 }
 async function branchClient(){
  if(branch)return branch;
- var files=[["HSKContent","/content-manifest.js"],["HSKCore","/game-core.js"],["HSKCurriculum","/curriculum-data.js"],["AnBranchStory","/duong-re/branch-data.js"],["AnBranchEngine","/duong-re/branch-engine.js"],["ChimSeBranchLearning","/duong-re/branch-learning.js"],["ChimseBranchAccount","/branch-account.js"]];
+ var files=[["HSKContent","/content-manifest.js"],["HSKCore","/game-core.js"],["HSKCurriculum","/curriculum-data.js"],["AnBranchStory","/duong-re/branch-data.js"],["AnBranchEngine","/duong-re/branch-engine.js"],["ChimSeBranchLearning","/duong-re/branch-learning.js"],["ChimSeBranchSessionRecall","/duong-re/session-recall.js"],["ChimseBranchAccount","/branch-account.js"]];
  for(var item of files)if(!window[item[0]])await new Promise((resolve,reject)=>{var script=document.createElement("script");script.src=item[1];script.onload=resolve;script.onerror=()=>reject(Error("Chưa tải được sổ truyện."));document.head.appendChild(script)});
  branch=window.ChimseBranchAccount;branch.onStatus(function(value){branchState=value;render()});return branch;
 }

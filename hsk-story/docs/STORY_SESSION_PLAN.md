@@ -1,6 +1,6 @@
 # Story session plan — HSK1 pilot
 
-This file describes optional 10–15 minute reading sessions for the existing two-day branching story. The seven segments partition all 42 story nodes, including route and ending nodes. They organize the existing story; they do not change its choices, routes, saves, learning tasks, or progress rules.
+This file describes editorially targeted 10–15 minute reading sessions for the existing two-day branching story. The seven segments partition all 42 story nodes, including route and ending nodes. They organize the existing story; they do not change its choices, routes, saves, learning tasks, or progress rules. Session duration is not measured yet.
 
 All eight HSK1 objective links are candidate editorial crosswalks. The syllabus item mapping and qualified Mandarin educator review remain pending. The plan does not claim full HSK1 coverage, exam readiness, or teacher approval. HSK2–6 remain outline-only.
 
@@ -31,6 +31,8 @@ Treat the lookup as display metadata. It is not a route selector, lesson prerequ
 | 7 | Gặp lại bà Lưu | `day2-liu`, `day2-night` | — | `price`, `order-noodles` |
 
 The ordered task-to-segment mapping is total and unique: tasks 0–9 map to segments 1–6, with tasks 7–9 grouped in segment 6 because the existing learning runtime presents them at the `day2-bird` anchor. Segment 7 contains story reuse and no learning task. Segment-level `primaryObjectiveIds` limit the number of goals shown together; `taskObjectiveRefs` separately preserve the existing task-to-assessment-objective crosswalk (including all checkpoint objectives for tasks 7–9). These links are candidate mappings pending educator review; they do not assert that every story passage teaches or assesses an objective.
+
+At the end of either arrival route (`arrival-street` or `arrival-mother`), the player reaches an unscored recall prompt at `school-gate`, before common task 1. It asks An to remember his reply to his mother. It is an authored retention probe for the first practice, not a graded HSK checkpoint and not yet validated with learners. A wrong answer can be retried; optional help is gated until after an attempt; skipping records only that it was skipped. Raw text is not persisted. Story route memories and learning evidence remain unchanged.
 
 ## Exposure and evidence
 

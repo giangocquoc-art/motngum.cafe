@@ -7,7 +7,7 @@ Người chơi chính: người Việt mới học. Mục tiêu nhịp chơi: m�
 | Mốc | Việc / đầu ra | Trạng thái và điều kiện còn lại |
 | --- | --- | --- |
 | M0 | Cố định baseline `31fa2f1`, nguồn art và các khóa lưu; tách metadata production/Preview; cập nhật tài liệu hiện hành | Đang tích hợp. `docs/DELIVERY_GATES.md` ghi bằng chứng nền tảng thực tế; READY không chứng minh nội dung đã nghiệm thu. |
-| M1 | Một chặng mẫu có ngữ cảnh, lựa chọn, hệ quả, vận dụng, tự nhớ và điểm dừng; xem đủ các tuyến | Đang triển khai. `story-session-plan.js` phân đoạn nội dung hiện có; không gọi việc gắn metadata là đã chứng minh thời lượng hoặc hiệu quả học. |
+| M1 | Một chặng mẫu có ngữ cảnh, lựa chọn, hệ quả, vận dụng, tự nhớ và điểm dừng; xem đủ các tuyến | Đang triển khai. Pilot tự nhớ không chấm điểm sau hai nhánh tới trường đã có, lưu trạng thái tiếp tục nhưng không lưu câu trả lời. Chưa có lượt chơi trọn chặng với người mới, đo thời lượng hoặc duyệt chuyên môn. |
 | M2 | Rà 10 bài, 12 lựa chọn/37 phương án; ký ức, tranh, Pinyin, gợi ý, sổ tay, ôn tập | Audit đồ thị và dữ liệu tự động; còn vòng duyệt tiếng Trung/người học, kiểm cảnh trên thiết bị thật. |
 | M3 | OAuth, đồng bộ hai thiết bị, migration, AI ở truyện mới, email lỗi | Kiểm trên Preview riêng và cơ sở dữ liệu riêng; không sửa production để thử. Ghi riêng kết quả mock và dịch vụ thật. |
 | M4 | Thử 10–15 người mới; đo thao tác, hiểu truyện, nhớ sau 24h/7 ngày và vận dụng | Chưa tổ chức; cần người tham gia đồng ý. Mục tiêu pilot: 80% hoàn thành chặng đầu không được chỉ thao tác, không phải chứng nhận học tốt. |
@@ -23,7 +23,7 @@ Người chơi chính: người Việt mới học. Mục tiêu nhịp chơi: m�
 - Nền tảng: save tương thích, revision/conflict, guest/owner, AI fallback/cảnh báo, log tối giản.
 - QA: kiểm độc lập kết quả nhóm; CI, mọi phương án/điều kiện, lỗi và phục hồi, thiết bị thật và người học thật.
 
-Ponytail điều phối khi có công cụ; ECC chia nhóm có phạm vi rõ. Phiên hiện tại áp dụng skill Ponytail và dùng agent sẵn có vì không có tool điều phối Ponytail riêng.
+Ponytail cần điều phối khi công cụ được cung cấp; trong runtime đã kiểm tra lần này không tìm thấy công cụ/plugin Ponytail. ECC đã chia các phần rà soát thành nhóm session/M1, đối chiếu HSK1 và tài khoản/đồng bộ; integrator chịu trách nhiệm ghép và xác minh.
 
 ## Hợp đồng và tính trung thực
 
@@ -41,7 +41,9 @@ Không thêm tiền ảo, bảng xếp hạng, phạt mất chuỗi, AI sinh c�
 
 ## Đợt triển khai kỹ thuật đầu tiên
 
-Đã bổ sung phân đoạn 7 chặng trong code, audit đủ 37 phương án và mục tiêu chung; chưa đo được thời lượng chặng với người học. Luồng mới có Hỏi Sẻ theo scene chuẩn, dùng ngữ cảnh do server cung cấp, khóa ở checkpoint; câu trả lời dài có điều hướng tin/trang và hủy request cũ. Gợi ý có sẵn vẫn dùng được khi dịch vụ lỗi. Phản ứng Sẻ theo lượt sai/trợ giúp/đúng không đổi đường truyện.
+Đã bổ sung phân đoạn 7 chặng trong code, audit đủ 37 phương án và mục tiêu chung; chưa đo được thời lượng chặng với người học. Chặng đầu có lượt tự nhớ tiếng Trung không chấm điểm sau nhánh An nhìn quanh hoặc đi cùng mẹ, trước hoạt động học tiếp theo. Sai được thử lại; gợi ý chỉ mở sau lượt thử; bỏ qua được; save chỉ ghi số lượt/trạng thái/trợ giúp, không ghi câu đã nhập. Hồi tưởng giữ riêng với save truyện và bằng chứng HSK. Phần này đã qua test logic và Edge smoke ở điện thoại dọc; cần mở rộng kiểm tra viewport và kiểm luồng save tích hợp trước khi coi M1 qua cổng.
+
+Tài khoản: lớp snapshot client/server đã được rà riêng cho nâng cấp v1→v2, snapshot phiên bản mới hơn và rollback khi ghi lỗi. Cần chạy lại cùng toàn suite sau khi tích hợp với lượt tự nhớ. Kết quả trên local không chứng minh đồng bộ dịch vụ thật trên Preview.
 
 Sổ tay có ba ngăn; ngăn câu đã gặp/ôn được khóa trong lượt tự nhớ. Bằng chứng từng lần thử theo cùng draft/account snapshot, phân biệt mẫu/gợi ý/tự sửa; save cũ không bị tự điền sự kiện lịch sử. Luyện thêm tối đa 5 bài đã mở ghi riêng với lịch ôn; giữ đuôi 30 sự kiện mỗi bài cùng tổng số/tổng hợp/số đã lược, không gọi đuôi là toàn bộ lịch sử. Có rollback khi ghi localStorage dở, nút thử lưu lại và xuất bản sao nguyên chuỗi JSON bị hỏng.
 

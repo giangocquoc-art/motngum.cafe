@@ -3,11 +3,12 @@ import { userFor } from './auth.mjs';
 import { bodyJSON, originFor, json, publicError } from './http.mjs';
 import Engine from '../duong-re/branch-engine.js';
 import Learning from '../duong-re/branch-learning.js';
+import Recall from '../duong-re/session-recall.js';
 
 const invalid = () => Object.assign(new Error('Invalid branch snapshot'), { status: 400 });
 const plain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 export function sanitizeSnapshot(raw) {
-  if (!plain(raw) || raw.version !== 1 || !Array.isArray(raw.path) || raw.path.length > 50 || !Array.isArray(raw.learning) || raw.learning.length !== 10) throw invalid();
+  if (!plain(raw) || ![1, 2].includes(raw.version) || !Array.isArray(raw.path) || raw.path.length > 50 || !Array.isArray(raw.learning) || raw.learning.length !== 10) throw invalid();
   const path = raw.path.map(item => {
     if (!plain(item) || typeof item.at !== 'string' || typeof item.choice !== 'string' || item.at.length > 100 || item.choice.length > 100) throw invalid();
     return { at: item.at, choice: item.choice };
@@ -37,7 +38,11 @@ export function sanitizeSnapshot(raw) {
       draft.helpSources = allowed.filter(value => d.helpSources.includes(value));
     }
   }
-  const result = {version: 1, path, learning, draft};
+  if (raw.version === 2 && raw.recall == null) throw invalid();
+  let recall;
+  try { recall = raw.version === 1 ? Recall.fresh() : Recall.clean(raw.recall); } catch { throw invalid(); }
+  if (!recall || (recall.status === 'in-progress' && (replay.node !== 'school-gate' || !path.some(item => item.at === 'arrival')))) throw invalid();
+  const result = {version: 2, path, learning, draft, recall};
   if (JSON.stringify(result).length > 120000) throw invalid();
   return result;
 }

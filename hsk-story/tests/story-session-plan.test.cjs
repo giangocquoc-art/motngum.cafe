@@ -25,6 +25,9 @@ test("session plan partitions all 42 nodes, 10 tasks, and eight candidate object
 });
 
 test("common tasks keep guided exposure separate from independent recall", () => {
+  const arrival = plan.segmentById.arrival;
+  assert.deepEqual(arrival.independentRecall, { sceneId: "school-gate", after: ["arrival-street", "arrival-mother"], beforeTaskId: 1, scored: false });
+  assert.match(arrival.stageNote, /unscored recall prompt appears before task 1/);
   for (let index = 0; index < 7; index++) {
     assert.equal(curriculum.scenes[index].kind, "practice");
     assert.match(plan.getSegmentForTask(index).stage, /practice|reuse/);
