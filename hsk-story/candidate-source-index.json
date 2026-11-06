@@ -471,6 +471,186 @@
       "pinyin": "zhèngshí",
       "printedPage": 209,
       "sourceHash": "3cc7eb27eebe13391d6a9a3fdec6eec6999d3c4a78c86b11a3b000f456287055"
+    },
+    "1:44": {
+      "hanzi": "对",
+      "pinyin": "duì",
+      "printedPage": 78,
+      "sourceHash": "2b744c3c35c2dcf75ca03a7a9a79f537d1c4357030fac221090a0c45c6a5cd18"
+    },
+    "1:88": {
+      "hanzi": "见",
+      "pinyin": "jiàn",
+      "printedPage": 79,
+      "sourceHash": "a447339f22fe2ccaec0b78e060d86d41116060773805aa6db8d1bd7ab847165c"
+    },
+    "1:102": {
+      "hanzi": "可以",
+      "pinyin": "kěyǐ",
+      "printedPage": 79,
+      "sourceHash": "5021d0d302a829854ca1548ed5bc4b7348def915e7956a09d76ebcd1cd45de7e"
+    },
+    "1:150": {
+      "hanzi": "您",
+      "pinyin": "nín",
+      "printedPage": 80,
+      "sourceHash": "2295eaf9982256f9f9b95d5ebabf3a780c043389406dca8ff1f6b871e6b8cd47"
+    },
+    "1:170": {
+      "hanzi": "人",
+      "pinyin": "rén",
+      "printedPage": 81,
+      "sourceHash": "6363aa8753090e722a583045bdbeadce3363677e98432c3f2c4ebd2dc62c501e"
+    },
+    "1:188": {
+      "hanzi": "是",
+      "pinyin": "shì",
+      "printedPage": 81,
+      "sourceHash": "2784dd91cc81e8a7a3caea02ea169922f69144add84c4a8dd71e8a443ce59a23"
+    },
+    "1:241": {
+      "hanzi": "谢谢",
+      "pinyin": "xièxie",
+      "printedPage": 83,
+      "sourceHash": "447c75da3804784f310c2528f2cf77556e5f7e3330ac53a878e6805f3a617fdf"
+    },
+    "1:252": {
+      "hanzi": "要",
+      "pinyin": "yào",
+      "printedPage": 83,
+      "sourceHash": "f7aa388373b8f78645a33fa001464ba6e3ca7c86ef0cfb1be973021790753957"
+    },
+    "1:263": {
+      "hanzi": "有",
+      "pinyin": "yǒu",
+      "printedPage": 83,
+      "sourceHash": "fb5ffcf85e330a1713994251877537304bc82d53ff66c53d2c6b9ec23ea3ac52"
+    },
+    "1:67": {
+      "hanzi": "还",
+      "pinyin": "hái",
+      "printedPage": 78,
+      "sourceHash": "48337face2bf72294a9ca733f59ea9940102c6ff8cde05e8037238cc3813d01c"
+    },
+    "1:71": {
+      "hanzi": "好",
+      "pinyin": "hǎo",
+      "printedPage": 78,
+      "sourceHash": "a08df1ba51690da48ba3c905efd5dc0d2f935c37bbec2bf0204218c62b4de714"
+    },
+    "1:79": {
+      "hanzi": "很",
+      "pinyin": "hěn",
+      "printedPage": 78,
+      "sourceHash": "451991ba9983cc6f044e967a046c88483e7077efaa6ceb8a2237728a7a8929ad"
+    },
+    "1:115": {
+      "hanzi": "吗",
+      "pinyin": "ma",
+      "printedPage": 79,
+      "sourceHash": "7de7fe4687e7a321614ee867d16d81037f0cec3908e8b569694ff5660f9fedce"
+    },
+    "1:146": {
+      "hanzi": "你",
+      "pinyin": "nǐ",
+      "printedPage": 80,
+      "sourceHash": "6e73bd22cbeef2b33c490b3c9df563f4cf2eba7a774ed014a1d0d9c0a041ba68"
+    },
+    "1:147": {
+      "hanzi": "你好",
+      "pinyin": "nǐ hǎo",
+      "printedPage": 80,
+      "sourceHash": "9e72fced8df5af6c9ed5fcf07d81acbca16b07c09dd070b0c0c205b91c7c3bb9"
+    },
+    "1:221": {
+      "hanzi": "我",
+      "pinyin": "wǒ",
+      "printedPage": 82,
+      "sourceHash": "89d365f40e5caae76a501680fabdb4bfbea39f330e1b537c95fa5953ac4f6233"
+    },
+    "1:91": {
+      "hanzi": "叫",
+      "pinyin": "jiào",
+      "printedPage": 79,
+      "sourceHash": "fbde5314cba23afad901afb658c12e155db9675a5bec7d7df4b405472a6a343f"
+    },
+    "1:128": {
+      "hanzi": "名字",
+      "pinyin": "míngzi",
+      "printedPage": 80,
+      "sourceHash": "1b9f3156f6525263ddd2cf0df09cd0aaed9ce9a2f7e652e469558eb1e42270e0"
+    },
+    "1:248": {
+      "hanzi": "学生",
+      "pinyin": "xuéshēng",
+      "printedPage": 83,
+      "sourceHash": "45b9f9ebd64faedfa0e5d4c3a57a0fa404e40bb3b3108c858cb66d3954836652"
+    },
+    "1:49": {
+      "hanzi": "二",
+      "pinyin": "èr",
+      "printedPage": 78,
+      "sourceHash": "6d11bd90718b242f7d64ff165a076b8e5c2e9b8f5957c027f95598684c81fda7"
+    },
+    "1:60": {
+      "hanzi": "个",
+      "pinyin": "gè",
+      "printedPage": 78,
+      "sourceHash": "9ec1f7f42b390cfc73061f718a8f5075e3e411caee3d62ec86f88d39244c2459"
+    },
+    "1:173": {
+      "hanzi": "三",
+      "pinyin": "sān",
+      "printedPage": 81,
+      "sourceHash": "7188f5488a9f61a8a1237e658ebd97d561c2da8a7eee6ec8cd770bfd9ee33528"
+    },
+    "1:254": {
+      "hanzi": "一",
+      "pinyin": "yī",
+      "printedPage": 83,
+      "sourceHash": "f1f8679a6c4d82214cf3aafd6aee3fe9a272112a1c7d8018f6e05c70b3b40e2d"
+    },
+    "1:21": {
+      "hanzi": "吃",
+      "pinyin": "chī",
+      "printedPage": 77,
+      "sourceHash": "8fb759126112287e9cf47e01b6ac662f237b50cce632d86241abeeefd6a16db3"
+    },
+    "1:127": {
+      "hanzi": "面条儿",
+      "pinyin": "miàntiáor",
+      "printedPage": 80,
+      "sourceHash": "d9b4b337af16d9a48561c9098fbd03e7097ed8e7581623eadef6cfe90b5842fc"
+    },
+    "1:233": {
+      "hanzi": "想",
+      "pinyin": "xiǎng",
+      "printedPage": 82,
+      "sourceHash": "012d49d9b941d8d06bc53b459ef315966032292e780ae7808ce3382f16880832"
+    },
+    "1:105": {
+      "hanzi": "块",
+      "pinyin": "kuài",
+      "printedPage": 79,
+      "sourceHash": "ff81c6cc9fbefe9cc50b029bc9865d6ac86a76c1701e6783796cdcf4f8f98b1f"
+    },
+    "1:164": {
+      "hanzi": "钱",
+      "pinyin": "qián",
+      "printedPage": 81,
+      "sourceHash": "829bc6ab4f1084009742f66cfb1d261fa6801bd63402a450b368c2a0c951dfa6"
+    },
+    "1:184": {
+      "hanzi": "十",
+      "pinyin": "shí",
+      "printedPage": 81,
+      "sourceHash": "9efc485e4bc34724dfe86b0fe9913c2f249d7b2dcade0053053d81c67f8dc422"
+    },
+    "1:130": {
+      "hanzi": "明天",
+      "pinyin": "míngtiān",
+      "printedPage": 80,
+      "sourceHash": "a299a8ac33b922ece21cca5d906d8728163ca4db6ec3e98e2bc072751ac6f636"
     }
   },
   "characterRefsByTargetLevel": {
@@ -1665,14 +1845,6 @@
       ],
       "vocabulary": [
         {
-          "candidateTerm": "你",
-          "relation": "exact-form",
-          "id": "hsk30:vocab:0146",
-          "serial": 146,
-          "printedPage": 80,
-          "sourceHash": "6e73bd22cbeef2b33c490b3c9df563f4cf2eba7a774ed014a1d0d9c0a041ba68"
-        },
-        {
           "candidateTerm": "还",
           "relation": "exact-form",
           "id": "hsk30:vocab:0067",
@@ -1689,12 +1861,36 @@
           "sourceHash": "a08df1ba51690da48ba3c905efd5dc0d2f935c37bbec2bf0204218c62b4de714"
         },
         {
+          "candidateTerm": "很",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0079",
+          "serial": 79,
+          "printedPage": 78,
+          "sourceHash": "451991ba9983cc6f044e967a046c88483e7077efaa6ceb8a2237728a7a8929ad"
+        },
+        {
           "candidateTerm": "吗",
           "relation": "exact-form",
           "id": "hsk30:vocab:0115",
           "serial": 115,
           "printedPage": 79,
           "sourceHash": "7de7fe4687e7a321614ee867d16d81037f0cec3908e8b569694ff5660f9fedce"
+        },
+        {
+          "candidateTerm": "你",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0146",
+          "serial": 146,
+          "printedPage": 80,
+          "sourceHash": "6e73bd22cbeef2b33c490b3c9df563f4cf2eba7a774ed014a1d0d9c0a041ba68"
+        },
+        {
+          "candidateTerm": "你好",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0147",
+          "serial": 147,
+          "printedPage": 80,
+          "sourceHash": "9e72fced8df5af6c9ed5fcf07d81acbca16b07c09dd070b0c0c205b91c7c3bb9"
         },
         {
           "candidateTerm": "我",
@@ -1705,20 +1901,12 @@
           "sourceHash": "89d365f40e5caae76a501680fabdb4bfbea39f330e1b537c95fa5953ac4f6233"
         },
         {
-          "candidateTerm": "很",
+          "candidateTerm": "谢谢",
           "relation": "exact-form",
-          "id": "hsk30:vocab:0079",
-          "serial": 79,
-          "printedPage": 78,
-          "sourceHash": "451991ba9983cc6f044e967a046c88483e7077efaa6ceb8a2237728a7a8929ad"
-        },
-        {
-          "candidateTerm": "你好",
-          "relation": "exact-form",
-          "id": "hsk30:vocab:0147",
-          "serial": 147,
-          "printedPage": 80,
-          "sourceHash": "9e72fced8df5af6c9ed5fcf07d81acbca16b07c09dd070b0c0c205b91c7c3bb9"
+          "id": "hsk30:vocab:0241",
+          "serial": 241,
+          "printedPage": 83,
+          "sourceHash": "447c75da3804784f310c2528f2cf77556e5f7e3330ac53a878e6805f3a617fdf"
         }
       ],
       "grammar": [
@@ -1758,7 +1946,8 @@
           "pageRowOrdinal": 20,
           "sourceHash": "f954fc1dbc062617809d20febd6120f8afc6c1e828b7a75e1c4166b03d48b1c4"
         }
-      ]
+      ],
+      "lexicalNotes": []
     },
     "introduce-self": {
       "status": "candidate-source-locators; alignment and educator review pending",
@@ -1778,14 +1967,6 @@
       ],
       "vocabulary": [
         {
-          "candidateTerm": "我",
-          "relation": "exact-form",
-          "id": "hsk30:vocab:0221",
-          "serial": 221,
-          "printedPage": 82,
-          "sourceHash": "89d365f40e5caae76a501680fabdb4bfbea39f330e1b537c95fa5953ac4f6233"
-        },
-        {
           "candidateTerm": "叫",
           "relation": "exact-form",
           "id": "hsk30:vocab:0091",
@@ -1802,6 +1983,14 @@
           "sourceHash": "1b9f3156f6525263ddd2cf0df09cd0aaed9ce9a2f7e652e469558eb1e42270e0"
         },
         {
+          "candidateTerm": "你",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0146",
+          "serial": 146,
+          "printedPage": 80,
+          "sourceHash": "6e73bd22cbeef2b33c490b3c9df563f4cf2eba7a774ed014a1d0d9c0a041ba68"
+        },
+        {
           "candidateTerm": "你好",
           "relation": "exact-form",
           "id": "hsk30:vocab:0147",
@@ -1810,12 +1999,20 @@
           "sourceHash": "9e72fced8df5af6c9ed5fcf07d81acbca16b07c09dd070b0c0c205b91c7c3bb9"
         },
         {
-          "candidateTerm": "你",
+          "candidateTerm": "是",
           "relation": "exact-form",
-          "id": "hsk30:vocab:0146",
-          "serial": 146,
-          "printedPage": 80,
-          "sourceHash": "6e73bd22cbeef2b33c490b3c9df563f4cf2eba7a774ed014a1d0d9c0a041ba68"
+          "id": "hsk30:vocab:0188",
+          "serial": 188,
+          "printedPage": 81,
+          "sourceHash": "2784dd91cc81e8a7a3caea02ea169922f69144add84c4a8dd71e8a443ce59a23"
+        },
+        {
+          "candidateTerm": "我",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0221",
+          "serial": 221,
+          "printedPage": 82,
+          "sourceHash": "89d365f40e5caae76a501680fabdb4bfbea39f330e1b537c95fa5953ac4f6233"
         }
       ],
       "grammar": [
@@ -1842,6 +2039,16 @@
           "printedPage": 384,
           "pageRowOrdinal": 21,
           "sourceHash": "7aeebafcfcbcb9cb908b1ef01321eb436568336903c1d25f38425f40b91f097d"
+        }
+      ],
+      "lexicalNotes": [
+        {
+          "type": "proper-name",
+          "terms": [
+            "明安",
+            "安"
+          ],
+          "note": "Tên riêng của An là ngữ liệu câu chuyện; không xem là từ vựng HSK1 chỉ vì các chữ cấu thành xuất hiện riêng lẻ trong danh sách."
         }
       ]
     },
@@ -1883,12 +2090,20 @@
       ],
       "vocabulary": [
         {
-          "candidateTerm": "学生",
+          "candidateTerm": "对",
           "relation": "exact-form",
-          "id": "hsk30:vocab:0248",
-          "serial": 248,
-          "printedPage": 83,
-          "sourceHash": "45b9f9ebd64faedfa0e5d4c3a57a0fa404e40bb3b3108c858cb66d3954836652"
+          "id": "hsk30:vocab:0044",
+          "serial": 44,
+          "printedPage": 78,
+          "sourceHash": "2b744c3c35c2dcf75ca03a7a9a79f537d1c4357030fac221090a0c45c6a5cd18"
+        },
+        {
+          "candidateTerm": "是",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0188",
+          "serial": 188,
+          "printedPage": 81,
+          "sourceHash": "2784dd91cc81e8a7a3caea02ea169922f69144add84c4a8dd71e8a443ce59a23"
         },
         {
           "candidateTerm": "我",
@@ -1899,12 +2114,12 @@
           "sourceHash": "89d365f40e5caae76a501680fabdb4bfbea39f330e1b537c95fa5953ac4f6233"
         },
         {
-          "candidateTerm": "是",
+          "candidateTerm": "学生",
           "relation": "exact-form",
-          "id": "hsk30:vocab:0188",
-          "serial": 188,
-          "printedPage": 81,
-          "sourceHash": "2784dd91cc81e8a7a3caea02ea169922f69144add84c4a8dd71e8a443ce59a23"
+          "id": "hsk30:vocab:0248",
+          "serial": 248,
+          "printedPage": 83,
+          "sourceHash": "45b9f9ebd64faedfa0e5d4c3a57a0fa404e40bb3b3108c858cb66d3954836652"
         }
       ],
       "grammar": [
@@ -1932,7 +2147,8 @@
           "pageRowOrdinal": 25,
           "sourceHash": "d2f61eaa0cb1f47a3ec6d3d1a396b1f35c0df75e976fa65f4507049c335134ba"
         }
-      ]
+      ],
+      "lexicalNotes": []
     },
     "numbers": {
       "status": "candidate-source-locators; alignment and educator review pending",
@@ -1965,6 +2181,22 @@
           "sourceHash": "6d11bd90718b242f7d64ff165a076b8e5c2e9b8f5957c027f95598684c81fda7"
         },
         {
+          "candidateTerm": "个",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0060",
+          "serial": 60,
+          "printedPage": 78,
+          "sourceHash": "9ec1f7f42b390cfc73061f718a8f5075e3e411caee3d62ec86f88d39244c2459"
+        },
+        {
+          "candidateTerm": "人",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0170",
+          "serial": 170,
+          "printedPage": 81,
+          "sourceHash": "6363aa8753090e722a583045bdbeadce3363677e98432c3f2c4ebd2dc62c501e"
+        },
+        {
           "candidateTerm": "三",
           "relation": "exact-form",
           "id": "hsk30:vocab:0173",
@@ -1981,12 +2213,12 @@
           "sourceHash": "f1f8679a6c4d82214cf3aafd6aee3fe9a272112a1c7d8018f6e05c70b3b40e2d"
         },
         {
-          "candidateTerm": "个",
+          "candidateTerm": "有",
           "relation": "exact-form",
-          "id": "hsk30:vocab:0060",
-          "serial": 60,
-          "printedPage": 78,
-          "sourceHash": "9ec1f7f42b390cfc73061f718a8f5075e3e411caee3d62ec86f88d39244c2459"
+          "id": "hsk30:vocab:0263",
+          "serial": 263,
+          "printedPage": 83,
+          "sourceHash": "fb5ffcf85e330a1713994251877537304bc82d53ff66c53d2c6b9ec23ea3ac52"
         }
       ],
       "grammar": [
@@ -2013,6 +2245,15 @@
           "printedPage": 384,
           "pageRowOrdinal": 9,
           "sourceHash": "abce1056f0fe0101e2f4ac5a7af61216b8072ed89667eada62cfe312a3cf8931"
+        }
+      ],
+      "lexicalNotes": [
+        {
+          "type": "composed",
+          "terms": [
+            "三个"
+          ],
+          "note": "Cụm được ghép từ các mục riêng 三 và 个; đây là liên hệ từ vựng ứng viên, chưa phải xác nhận của giáo viên."
         }
       ]
     },
@@ -2057,6 +2298,14 @@
           "sourceHash": "8fb759126112287e9cf47e01b6ac662f237b50cce632d86241abeeefd6a16db3"
         },
         {
+          "candidateTerm": "面条",
+          "relation": "closest-listed-form",
+          "id": "hsk30:vocab:0127",
+          "serial": 127,
+          "printedPage": 80,
+          "sourceHash": "d9b4b337af16d9a48561c9098fbd03e7097ed8e7581623eadef6cfe90b5842fc"
+        },
+        {
           "candidateTerm": "我",
           "relation": "exact-form",
           "id": "hsk30:vocab:0221",
@@ -2073,12 +2322,12 @@
           "sourceHash": "012d49d9b941d8d06bc53b459ef315966032292e780ae7808ce3382f16880832"
         },
         {
-          "candidateTerm": "面条",
-          "relation": "closest-listed-form",
-          "id": "hsk30:vocab:0127",
-          "serial": 127,
-          "printedPage": 80,
-          "sourceHash": "d9b4b337af16d9a48561c9098fbd03e7097ed8e7581623eadef6cfe90b5842fc"
+          "candidateTerm": "要",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0252",
+          "serial": 252,
+          "printedPage": 83,
+          "sourceHash": "f7aa388373b8f78645a33fa001464ba6e3ca7c86ef0cfb1be973021790753957"
         }
       ],
       "grammar": [
@@ -2099,6 +2348,23 @@
           "printedPage": 384,
           "pageRowOrdinal": 15,
           "sourceHash": "5999b23e65a82da72a41f7a876875c2ed8542ff893a1063f055a5d3ae4226cf3"
+        }
+      ],
+      "lexicalNotes": [
+        {
+          "type": "closest-listed-form",
+          "terms": [
+            "面条"
+          ],
+          "note": "Dòng ứng viên gần nhất trong danh sách là 面条儿; cần giáo viên xác nhận cách dùng dạng rút gọn trong bài."
+        },
+        {
+          "type": "outside-level-vocabulary",
+          "terms": [
+            "碗",
+            "一碗"
+          ],
+          "note": "Không có dòng từ vựng HSK1 cho 碗 trong các dòng đã trích; giữ như từ hỗ trợ bối cảnh và không tính là mục HSK1."
         }
       ]
     },
@@ -2163,6 +2429,15 @@
           "pageRowOrdinal": 9,
           "sourceHash": "296977e328eede6f72a563ed6ddaf518aa838c5b9c396ab79a22c62d1314cc47"
         }
+      ],
+      "lexicalNotes": [
+        {
+          "type": "composed",
+          "terms": [
+            "十块钱"
+          ],
+          "note": "Cụm giá được cấu thành từ các mục riêng 十、块、钱; liên kết này chưa xác nhận độ phù hợp của bài."
+        }
       ]
     },
     "gratitude": {
@@ -2183,6 +2458,14 @@
       ],
       "vocabulary": [
         {
+          "candidateTerm": "您",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0150",
+          "serial": 150,
+          "printedPage": 80,
+          "sourceHash": "2295eaf9982256f9f9b95d5ebabf3a780c043389406dca8ff1f6b871e6b8cd47"
+        },
+        {
           "candidateTerm": "谢谢",
           "relation": "exact-form",
           "id": "hsk30:vocab:0241",
@@ -2191,7 +2474,16 @@
           "sourceHash": "447c75da3804784f310c2528f2cf77556e5f7e3330ac53a878e6805f3a617fdf"
         }
       ],
-      "grammar": []
+      "grammar": [],
+      "lexicalNotes": [
+        {
+          "type": "outside-level-vocabulary",
+          "terms": [
+            "奶奶"
+          ],
+          "note": "Không có dòng từ vựng HSK1 cho 奶奶 trong danh sách đã trích; giữ như cách xưng hô được hỗ trợ trong truyện, không tính là mục HSK1."
+        }
+      ]
     },
     "farewell": {
       "status": "candidate-source-locators; alignment and educator review pending",
@@ -2211,20 +2503,36 @@
       ],
       "vocabulary": [
         {
-          "candidateTerm": "明天",
-          "relation": "exact-form",
-          "id": "hsk30:vocab:0130",
-          "serial": 130,
-          "printedPage": 80,
-          "sourceHash": "a299a8ac33b922ece21cca5d906d8728163ca4db6ec3e98e2bc072751ac6f636"
-        },
-        {
           "candidateTerm": "好",
           "relation": "exact-form",
           "id": "hsk30:vocab:0071",
           "serial": 71,
           "printedPage": 78,
           "sourceHash": "a08df1ba51690da48ba3c905efd5dc0d2f935c37bbec2bf0204218c62b4de714"
+        },
+        {
+          "candidateTerm": "见",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0088",
+          "serial": 88,
+          "printedPage": 79,
+          "sourceHash": "a447339f22fe2ccaec0b78e060d86d41116060773805aa6db8d1bd7ab847165c"
+        },
+        {
+          "candidateTerm": "可以",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0102",
+          "serial": 102,
+          "printedPage": 79,
+          "sourceHash": "5021d0d302a829854ca1548ed5bc4b7348def915e7956a09d76ebcd1cd45de7e"
+        },
+        {
+          "candidateTerm": "明天",
+          "relation": "exact-form",
+          "id": "hsk30:vocab:0130",
+          "serial": 130,
+          "printedPage": 80,
+          "sourceHash": "a299a8ac33b922ece21cca5d906d8728163ca4db6ec3e98e2bc072751ac6f636"
         }
       ],
       "grammar": [
@@ -2245,6 +2553,17 @@
           "printedPage": 385,
           "pageRowOrdinal": 11,
           "sourceHash": "62269bc709cecb510277b6cd79101dc91e3aa3b244af927bc5c576a4eaf10750"
+        }
+      ],
+      "lexicalNotes": [
+        {
+          "type": "composed",
+          "terms": [
+            "好的",
+            "好啊",
+            "明天见"
+          ],
+          "note": "Các cụm thoại được ghép từ 好、明天、见; cụm nguyên dạng không được ghi nhận là dòng từ vựng riêng trong danh sách."
         }
       ]
     }

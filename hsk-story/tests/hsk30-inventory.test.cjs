@@ -111,6 +111,13 @@ test('HSK1 objective crosswalk stores only hash-pinned candidate locators', () =
     for (const locator of candidate.tasks) assert.ok(inventory.tasks['1'].some(row => row.id === locator.id && row.sourceHash === locator.sourceHash));
     for (const locator of candidate.topics) assert.ok(inventory.topics['1'].nodes.some(row => row.id === locator.id && row.sourceHash === locator.sourceHash));
     for (const locator of candidate.vocabulary) assert.ok(inventory.vocabulary.some(row => row.id === locator.id && row.level === 1 && row.serial === locator.serial && row.sourceHash === locator.sourceHash));
+    for (const locator of candidate.vocabulary) {
+      const indexedWord = blueprint.candidateSourceIndex.vocabularyRows[`1:${locator.serial}`];
+      assert.deepEqual([indexedWord.printedPage, indexedWord.sourceHash], [locator.printedPage, locator.sourceHash]);
+      assert.ok(['exact-form', 'closest-listed-form'].includes(locator.relation));
+      assert.equal(locator.relation === 'exact-form', indexedWord.hanzi === locator.candidateTerm);
+    }
+    assert.ok(Array.isArray(candidate.lexicalNotes), `lexical scope notes for ${objective.id}`);
     for (const locator of candidate.grammar) assert.ok(inventory.grammarSourceRows['1'].some(row => row.id === locator.id && row.sourceHash === locator.sourceHash));
     assert.ok(candidate.vocabulary.every(row => row.relation === 'exact-form' || row.relation === 'closest-listed-form'));
   }

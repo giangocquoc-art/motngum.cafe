@@ -50,7 +50,7 @@ Each page number is the section's starting page. These are locators for teacher 
 
 The registry contains eight HSK1 candidate goals linked to the existing ten lesson/checkpoint records, plus six curated story-spine candidates for each of HSK2–6. Each future candidate includes vocabulary serials and exact printed pages checked against `candidate-source-index.json`, target-level grammar entries with page locators, and every candidate Hanzi's recognition-list level, ordinal, and printed page. Candidate references link to stable IDs in the full locator inventory. Task/topic cues, planned practice skills, exam-section references, prerequisites, episode intro/reuse/checkpoint links, and hint policy are also recorded. These candidates are **not a complete instructional map or teacher-approved match**.
 
-`candidate-source-index.json` is a focused extraction fixture for the pinned official PDF. It records 78 selected vocabulary row references, 151 per-level character locators, and 46 target-level grammar entry locators. Validators compare candidate content against this independent fixture, including the selected row Hanzi/Pinyin/page, character-list ordinal/page, and target-level grammar source/page. The fixture improves traceability but does not replace human review of task/topic alignment, grammar use in dialogue, Pinyin, glosses, or instructional suitability.
+`candidate-source-index.json` is a focused extraction fixture for the pinned official PDF. It records 108 selected vocabulary row references (78 for future candidate strands and 30 HSK1 candidate rows), 151 per-level character locators, and 46 target-level grammar entry locators. Validators compare candidate content against this independent fixture, including the selected row Hanzi/Pinyin/page, character-list ordinal/page, and target-level grammar source/page. The fixture improves traceability but does not replace human review of task/topic alignment, grammar use in dialogue, Pinyin, glosses, or instructional suitability.
 
 Each objective carries a stable ID, level, topic, candidate task, prerequisite IDs, five section locators, item-review status for each component, candidate language content, story practice stages, hint rules, and educator sign-off. A component may later be marked `reviewed-match` only when exact official item IDs are recorded; `reviewed-no-match` records a reviewed gap without claiming a match. A level remains locked until its objectives, language content, practice sequence, official mapping, and educator review are complete.
 
@@ -72,6 +72,23 @@ The labels below are authored lesson goals. Their HSK 3.0 page references are ca
 | `price` | 5, 8 | 1 | Scene 8 is text-based recall, not listening evidence; `price-ten` is optional reuse |
 | `gratitude` | 5 | 1 | Scene 5 evaluates thanks; reuse and typed recall are optional review items |
 | `farewell` | 6 | 1 | Scene 6 evaluates accepting the invitation; later reading and typed recall are optional review items |
+
+### HSK1 candidate vocabulary spot-check — 2026-11-07
+
+The pinned PDF was downloaded from the official syllabus link and its SHA-256 matched the committed snapshot. The complete HSK1 vocabulary pages were extracted locally with the repository's pinned extraction routine. Nine missing exact-form references were added to the candidate fixture: `谢谢`, `是`, `对`, `人`, `有`, `要`, `您`, `见`, and `可以`. The validator now checks each HSK1 candidate word's serial, source page, hash, and exact/closest-form relation against the pinned inventory. This only proves that a candidate form appears in the pinned vocabulary list; it does not verify that the goal, scene, or activity is an appropriate HSK match.
+
+| Objective | Candidate vocabulary evidence | Scope still requiring editorial/teacher review |
+| --- | --- | --- |
+| `greeting` | Added `谢谢` beside the existing check-in words | Ensure thanks is taught in a relevant exchange and not counted as part of the check-in objective without evidence |
+| `introduce-self` | Added `是` to `我叫` / `我是` candidates | `明安` and `安` are character names, not automatically HSK vocabulary targets |
+| `student-identity` | Added `对` to `学生` / `是` candidates | Confirm the scene actually teaches the intended identity reply |
+| `numbers` | Added `有` and `人`; `三` and `个` already exist | `三个` is a composed phrase, not a separate vocabulary-row match |
+| `order-noodles` | Added `要`; `面条` remains linked as a closest-listed form to `面条儿` | `碗` / `一碗` are story support words, not HSK1 vocabulary-row matches; review natural Chengdu usage |
+| `price` | `十`, `块`, and `钱` already have separate candidate rows | `十块钱` is composed from these rows; goal-to-task alignment still needs review |
+| `gratitude` | Added `您` beside `谢谢` | `奶奶` is a story address term, not an HSK1 vocabulary-row match |
+| `farewell` | Added `见` and `可以` beside `明天` / `好` | `好的`, `好啊`, and `明天见` are composed expressions, not separate vocabulary-row matches |
+
+These scope notes are candidate-level documentation only. All five component matches, Chinese/Pinyin/gloss accuracy, teacher sign-off, and release status remain pending; the verified official-item count remains zero.
 
 ## Verification gaps
 

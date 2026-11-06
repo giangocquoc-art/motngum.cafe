@@ -194,6 +194,18 @@ function validate(curriculum,content,skill,encounter,futureActs,review){
   (o.prerequisiteIds||[]).forEach(function(pid){var prior=ids.get(pid);if(!prior||positions.get(pid)>=positions.get(o.id)||prior.level>o.level){problems.push("Unknown, forward, or cross-level-invalid prerequisite "+pid+"/"+o.id);return;}if(prior.level===o.level){var earlierIntro=introOrder(prior),dependentIntro=introOrder(o);if(earlierIntro<0||dependentIntro<0||earlierIntro>dependentIntro||(earlierIntro===dependentIntro&&positions.get(pid)>=positions.get(o.id)))problems.push("Prerequisite prior exposure must be introduced before its dependent objective: "+pid+"/"+o.id);}});
   if(o.level===1){
    if(!Array.isArray(o.curriculumSceneIds)||!o.curriculumSceneIds.length)problems.push("Missing HSK1 scene crosswalk: "+o.id);
+   var levelOneRefs=candidateSourceIndex&&candidateSourceIndex.levelOneCandidateRefs&&candidateSourceIndex.levelOneCandidateRefs[o.id];
+   if(!levelOneRefs||!String(levelOneRefs.status||"").includes("pending")||!Array.isArray(levelOneRefs.vocabulary)||!Array.isArray(levelOneRefs.lexicalNotes))problems.push("Missing pending HSK1 source evidence or vocabulary scope notes: "+o.id);
+   else{
+    var seenCandidateVocab=new Set();
+    levelOneRefs.vocabulary.forEach(function(ref){
+     var key="1:"+ref.serial,word=candidateSourceIndex.vocabularyRows&&candidateSourceIndex.vocabularyRows[key],sourceRow=syllabusInventory&&syllabusInventory.vocabulary.find(function(row){return row.serial===ref.serial;});
+     var exactForm=word&&ref.relation==="exact-form"&&word.hanzi===ref.candidateTerm,closestForm=word&&ref.relation==="closest-listed-form"&&word.hanzi!==ref.candidateTerm;
+     if(!Number.isInteger(ref.serial)||ref.id!=="hsk30:vocab:"+String(ref.serial).padStart(4,"0")||seenCandidateVocab.has(ref.id)||!word||!sourceRow||sourceRow.level!==1||sourceRow.id!==ref.id||sourceRow.printedPage!==ref.printedPage||sourceRow.sourceHash!==ref.sourceHash||(!exactForm&&!closestForm)||word.printedPage!==ref.printedPage||word.sourceHash!==ref.sourceHash)problems.push("Invalid HSK1 candidate vocabulary locator: "+o.id+"/"+ref.id);
+     seenCandidateVocab.add(ref.id);
+    });
+    if(levelOneRefs.lexicalNotes.some(function(note){return !note||!["composed","closest-listed-form","outside-level-vocabulary","proper-name"].includes(note.type)||!Array.isArray(note.terms)||!note.terms.length||!note.note;}))problems.push("Malformed HSK1 lexical scope note: "+o.id);
+   }
    (o.curriculumSceneIds||[]).forEach(function(i){var scene=curriculum.scenes[i];if(!scene||!scene.objectiveIds||!scene.objectiveIds.includes(o.id))problems.push("Broken bidirectional HSK1 scene crosswalk: "+o.id+"/"+i);});
    var stages=o.storyStages||{};["introSceneIds","reuseSceneIds","checkpointSceneIds"].forEach(function(key){if(!Array.isArray(stages[key])||stages[key].some(function(i){return !curriculum.scenes[i]||!o.curriculumSceneIds.includes(i);}))problems.push("Unknown or unmapped HSK1 story stage: "+o.id+"/"+key);});
    (stages.reuseSceneIds||[]).concat(stages.checkpointSceneIds||[]).forEach(function(i){var scene=curriculum.scenes[i];if(scene&&!(scene.assessmentObjectiveIds||[]).includes(o.id))problems.push("Story stage does not assess the mapped objective: "+o.id+"/"+i);});

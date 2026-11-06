@@ -160,7 +160,7 @@ test("future candidate vocabulary, grammar, and characters resolve to independen
  const inventoryIds=new Set([...inventory.vocabulary,...Object.values(inventory.characters).flat(),...Object.values(inventory.grammarPages).flat()].map(item=>item.id));
  assert.equal(index.sourceUrl,B.source.url);
  assert.equal(index.sourceSha256,inventory.sourceSha256);
- assert.equal(Object.keys(index.vocabularyRows).length,78);
+ assert.equal(Object.keys(index.vocabularyRows).length,108);
  assert.equal(Object.values(index.characterRefsByTargetLevel).reduce((sum,chars)=>sum+Object.keys(chars).length,0),151);
  assert.equal(index.vocabularyRows["6:4760"].hanzi,"涉及");
  assert.equal(index.vocabularyRows["6:4939"].hanzi,"推测");
