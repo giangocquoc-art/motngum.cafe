@@ -32,6 +32,8 @@ Desktop / tablet ngang
 
 Điện thoại dọc dùng nền gần vuông vì vùng tranh trong game chỉ cao khoảng 360 px ở máy 390×844; không dùng hình nền dọc cao rồi cắt giữa. Cảnh ngang rất thấp và desktop siêu rộng dùng các biến thể riêng. Chỉ có một Sẻ do renderer vẽ; nền không có chim, hình chim hay tranh chim hoàn chỉnh.
 
+Máy tính bảng dọc trong khoảng 691–1100 px dùng bố cục tablet riêng. Bộ chọn của renderer không dựa vào tỉ lệ vùng tranh (vốn thấp hơn tỉ lệ màn hình do hội thoại nằm phía dưới), mà dựa vào hướng và chiều rộng viewport.
+
 ## Cảnh sử dụng
 
 | ID | Người trong cảnh | Vật thể và hành động chính |
@@ -48,9 +50,9 @@ Desktop / tablet ngang
 
 - [x] Chủ dự án duyệt sơ đồ nhân vật, bàn ăn và một Sẻ.
 - [x] Chọn art direction theo production hiện hành thay cho bản màu nước chưa duyệt.
-- [x] Tạo bốn nền SVG native từ `scene-flat-art.js`: desktop, portrait, ultra-wide và short-landscape.
-- [x] Renderer và manifest trỏ tới đúng bốn biến thể native.
-- [ ] Chụp và duyệt cảnh tích hợp với lời thoại đúng node ở desktop, điện thoại dọc, tablet và điện thoại ngang.
+- [x] Tạo năm nền SVG native từ `scene-flat-art.js`: desktop, portrait, tablet-portrait, ultra-wide và short-landscape.
+- [x] Renderer và manifest trỏ tới đúng năm biến thể native; script dựng và kiểm tra drift đã được thêm.
+- [x] Kiểm cảnh tích hợp `branch.day2-arrival` tại 1365×900 (wide), 768×1024 (tablet dọc), 390×844 (điện thoại dọc) và 844×390 (điện thoại ngang thấp). Mỗi kích thước chọn đúng nền, giữ một Sẻ, khớp người nói “Mẹ” với nhân vật mẹ và không làm trang cuộn.
 - [ ] Kiểm từng nhánh bếp để đúng người nói, biểu cảm, đạo cụ và chỉ một Sẻ.
 
-Lưu ý: các ảnh chụp layout trước đây được tạo bằng cách gắn art của `day2-arrival` lên trang vẫn đang hiển thị node mở đầu. Chúng chỉ là phép dò kích thước/tọa độ, không được tính là kiểm duyệt cảnh tích hợp.
+Lưu ý: các ảnh chụp layout trước đây được tạo bằng cách gắn art của `day2-arrival` lên trang vẫn đang hiển thị node mở đầu. Chúng chỉ là phép dò kích thước/tọa độ, không được tính là kiểm duyệt cảnh tích hợp. Lượt kiểm tra mới đã seed đúng node; checklist duyệt toàn bộ biến thể/nội dung khác vẫn mở.
