@@ -39,7 +39,14 @@ async function history(page,i){return page.evaluate(i=>JSON.parse(localStorage.g
  assert.equal(await page.locator('#branchArt [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
  assert.notEqual(await page.locator('#branchArt [data-character="liu"]').getAttribute('data-expression'),'speaking');
  assert.equal(await history(page,5),null,'hearing a model does not complete the thanks task');
- await page.locator('#nextBtn').click();
+ const thanksModelPages=await page.evaluate(()=>1+HSKContent.scenes[5].guidedModel.alternatives.length);
+ for(let i=0;i<thanksModelPages;i++){
+  await page.locator('#nextBtn').click();
+  if(i<thanksModelPages-1){
+   assert.equal(await page.locator('#speaker').innerText(),'小雨 · Tiểu Vũ · nhắc An');
+   assert.equal(await history(page,5),null,'each thanks example stays before the learner response');
+  }
+ }
  assert.equal(await page.locator('#speaker').innerText(),'刘奶奶 · Bà Lưu');
  assert.notEqual(await page.locator('#branchArt [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
  // Every authored question exposes its request and its available help within the viewport.
