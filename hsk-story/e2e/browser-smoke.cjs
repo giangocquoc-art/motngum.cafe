@@ -432,7 +432,8 @@ async function goReview(page,label,withStory){
  const oldV3=await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v3"));
  const oldV4=await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v4"));
  const first=await page.evaluate(()=>HSKReviewData.items[0]);
- const idx=first.options.findIndex(x=>x[0]===first.correct);
+ const idx=await page.evaluate(id=>HSKReviewCore.presentationOptions(HSKReviewData,HSKReviewCore.read(localStorage,HSKReviewData),id).findIndex(x=>x[0]===HSKReviewData.items.find(item=>item.id===id).correct),first.id);
+ assert.equal(await page.locator('#choiceOptions button').nth(idx).innerText(),first.options.find(x=>x[0]===first.correct)[1],'the shuffled presentation still keeps the answer attached to its authored ID');
  await page.locator("#choiceOptions button").nth(idx).click();
  await auditLayout(page,label,'review-first-feedback');
  assert.equal(await page.locator("#independentCount").textContent(),"1");
@@ -440,7 +441,8 @@ async function goReview(page,label,withStory){
  await page.locator("#nextBtn").click();
  await page.locator("#hintBtn").click();
  const second=await page.evaluate(()=>HSKReviewData.items[1]);
- await page.locator("#choiceOptions button").nth(second.options.findIndex(x=>x[0]===second.correct)).click();
+ const secondIdx=await page.evaluate(id=>HSKReviewCore.presentationOptions(HSKReviewData,HSKReviewCore.read(localStorage,HSKReviewData),id).findIndex(x=>x[0]===HSKReviewData.items.find(item=>item.id===id).correct),second.id);
+ await page.locator("#choiceOptions button").nth(secondIdx).click();
  assert.equal(await page.locator("#assistedCount").textContent(),"1");
  await page.locator("#nextBtn").click();
  await page.locator("#skipBtn").click();
@@ -464,7 +466,7 @@ async function goReview(page,label,withStory){
   const item=await page.evaluate(()=>HSKReviewData.items.find(x=>x.question===document.querySelector('#questionPrompt').textContent));
   assert.ok(item,'Active review item must be authored');
   if(item.kind==='typed'){await page.locator('#typedAnswer').fill(item.answers[0]);await page.locator('#submitTyped').click()}
-  else await page.locator('#choiceOptions button').nth(item.options.findIndex(x=>x[0]===item.correct)).click();
+  else{const idx=await page.evaluate(id=>HSKReviewCore.presentationOptions(HSKReviewData,HSKReviewCore.read(localStorage,HSKReviewData),id).findIndex(x=>x[0]===HSKReviewData.items.find(item=>item.id===id).correct),item.id);await page.locator('#choiceOptions button').nth(idx).click()}
   await auditLayout(page,label,'review-feedback-'+(n+5));await page.locator('#nextBtn').click();
  }
  assert.equal(await page.locator('#dueCount').textContent(),'0');await auditLayout(page,label,'review-finished');

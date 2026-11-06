@@ -60,7 +60,7 @@ function render(){
  $("skipBtn").hidden=finished;
  $("sampleBtn").hidden=finished||!hasAttempt;
  clearChildren($("choiceOptions"));
- if(choice)active.options.forEach(function(opt){
+ if(choice)C.presentationOptions(D,progress,active.id).forEach(function(opt){
   var b=document.createElement("button");b.type="button";b.textContent=opt[1];b.disabled=finished;
   b.addEventListener("click",function(){submit({type:"answer",value:opt[0]})});
   $("choiceOptions").appendChild(b);

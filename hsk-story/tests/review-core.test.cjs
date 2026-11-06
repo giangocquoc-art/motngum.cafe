@@ -11,6 +11,24 @@ test("Gate6 pilot data: 23 authored items, including 9 typed tasks (not full HSK
  assert.equal(D.items.filter(x=>x.kind==="typed").length,9);
  assert.ok(D.source.syllabusStatus.includes("pending"));
 });
+test("Gate6 multiple-choice order distributes correct positions and remains stable after reload",()=>{
+ const choiceItems=D.items.filter(item=>item.options),positions=choiceItems.map(item=>{
+  const order=R.presentationOptions(D,R.initial(),item.id);
+  assert.deepEqual(Array.from(order.map(option=>option[0]).sort()),Array.from(item.options.map(option=>option[0]).sort()));
+  return order.findIndex(option=>option[0]===item.correct);
+ });
+ assert.deepEqual(Array.from(new Set(positions)).sort(),[0,1,2]);
+ assert.ok(positions.filter(position=>position===0).length<choiceItems.length,"authored order must not put every correct option first");
+ const item=choiceItems[0],story=v3(item.after+1);let state=R.initial(),seen=[];
+ ["2026-10-26","2026-10-27","2026-10-30","2026-11-06"].forEach(day=>{
+  const before=R.presentationOptions(D,state,item.id),roundTrip=R.clean(JSON.parse(JSON.stringify(state)),D);
+  assert.deepEqual(Array.from(R.presentationOptions(D,roundTrip,item.id).map(option=>option[0])),Array.from(before.map(option=>option[0])));
+  seen.push(before.findIndex(option=>option[0]===item.correct));
+  state=R.act(D,state,item.id,{type:"answer",value:item.correct},day,Core,story).state;
+ });
+ assert.deepEqual(Array.from(new Set(seen.slice(0,3))).sort(),[0,1,2],"the correct position rotates through saved review stages");
+ assert.deepEqual(Array.from(R.presentationOptions(D,state,"self-introduction")),[]);
+});
 test("Gate6 never unlock items for merely seeing chapter00 or accessing HSK index",()=>{
  assert.deepEqual(Array.from(R.queue(D,null,R.initial(),TODAY)),[]);
  assert.deepEqual(Array.from(R.queue(D,{v:2,history:Array(10).fill({status:"correct"})},R.initial(),TODAY)),[]);

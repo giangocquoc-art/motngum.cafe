@@ -148,8 +148,16 @@ var HSKReviewCore=(function(){"use strict";
   saveEvent(state,id,day,"practice",action,out.result);
   return Object.assign({state:state},out);
  }
+ function presentationOptions(data,rawState,id){
+  var item=data.items.find(it=>it.id===id);if(!item||!Array.isArray(item.options))return [];
+  var state=clean(rawState,data),record=state.items[id],events=state.events[id],summary=events&&events.summary||{};
+  var completed=(summary.independent||0)+(summary.assisted||0)+(summary.sample||0)+(summary.skipped||0);
+  var stage=record&&Number.isInteger(record.stage)?record.stage:0;
+  var offset=(data.items.indexOf(item)+stage+completed)%item.options.length;
+  return item.options.slice(offset).concat(item.options.slice(0,offset)).map(function(option){return option.slice()});
+ }
  function read(storage,data){try{return clean(JSON.parse(storage.getItem(KEY)||"null"),data)}catch(e){return initial()}}
  function write(storage,data,raw){try{storage.setItem(KEY,JSON.stringify(clean(raw,data)));return true}catch(e){return false}}
- var api={key:KEY,intervals:STAGES,maxEventsPerItem:MAX_EVENTS_PER_ITEM,initial:initial,clean:clean,plusDays:plusDays,completedPrefix:completedPrefix,combineProgress:combineProgress,readStoryProgress:readStoryProgress,storyHref:storyHref,unlocked:unlocked,isDue:isDue,queue:queue,practiceQueue:practiceQueue,report:report,act:act,practice:practice,practiceAttempts:function(raw,id){return trailingPractice(raw,id).fails},read:read,write:write};
+ var api={key:KEY,intervals:STAGES,maxEventsPerItem:MAX_EVENTS_PER_ITEM,initial:initial,clean:clean,plusDays:plusDays,completedPrefix:completedPrefix,combineProgress:combineProgress,readStoryProgress:readStoryProgress,storyHref:storyHref,unlocked:unlocked,isDue:isDue,queue:queue,practiceQueue:practiceQueue,report:report,act:act,practice:practice,presentationOptions:presentationOptions,practiceAttempts:function(raw,id){return trailingPractice(raw,id).fails},read:read,write:write};
  if(typeof module!=="undefined"&&module.exports)module.exports=api;return api;
 })();
