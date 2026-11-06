@@ -61,7 +61,7 @@
     "an": {
       "identity": "11-year-old boy; short tousled black hair; mustard yellow hoodie; faded blue-green backpack",
       "sprite": "flat/characters/an-listening.svg",
-      "poses": "characters/an-expressions-v5.webp",
+      "poses": "characters/an-expressions-v3.webp",
       "posesOrder": [
         "neutral/listening",
         "curious",
@@ -90,7 +90,7 @@
       "icon": "brand/flat-sparrow.svg",
       "transparent": true,
       "legacySprite": "characters/sparrow.webp",
-      "poses": "characters/sparrow-expressions-v3.webp",
+      "poses": "characters/sparrow-expressions-v2.webp",
       "posesOrder": [
         "curious",
         "listening",
@@ -259,17 +259,18 @@
       "compact": "flat/backgrounds/bedroom-compact.svg"
     },
     "day2-kitchen": {
-      "desktop": "backgrounds/day2-kitchen-v1.webp",
-      "mobile": "backgrounds/mobile/mobile-day2-kitchen-v2.webp",
-      "wide": "backgrounds/panorama/day2-kitchen-panorama-v1.webp",
-      "compact": "backgrounds/panorama/day2-kitchen-panorama-v1.webp",
+      "desktop": "flat/backgrounds/day2-kitchen.svg",
+      "mobile": "flat/backgrounds/day2-kitchen-portrait.svg",
+      "tablet": "flat/backgrounds/day2-kitchen-tablet.svg",
+      "wide": "flat/backgrounds/day2-kitchen-wide.svg",
+      "compact": "flat/backgrounds/day2-kitchen-compact.svg",
       "metadata": {
-        "role": "Independent standard, near-square mobile-stage, wide desktop and short-landscape kitchen plates for An’s second morning; no people, birds or learned text.",
-        "styleAuthority": "Approved live Chim Sẻ noodle-shop hand-ink watercolor background",
+        "role": "Responsive native-flat home kitchen for An’s second morning; no people, birds or learned text.",
+        "styleAuthority": "Current production art on hsk.motngum.cafe",
         "composition": "Approved in art/layouts/day2-kitchen-review.md",
-        "mobileComposition": "Near-square stage framing for the actual phone art viewport; window, table, bag and perch remain in frame",
-        "wideComposition": "Independent 3:1 panorama fitted to very wide desktop story stages",
-        "compactComposition": "The same center-safe panorama fits short landscape stages with a tuned object position"
+        "mobileComposition": "Independent square composition fitted to the portrait phone story-stage viewport",
+        "wideComposition": "Independent 3:1 composition for very wide desktop story stages",
+        "compactComposition": "Independent low-height scene for short landscape viewports"
       }
     }
   },
@@ -2146,19 +2147,6 @@
       "masterFormat": "PNG",
       "bytes": 1512950
     },
-    "characters/mother-expressions-v2.webp": {
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/mother-expressions-v2.png",
-      "role": "Mother expression atlas refreshed to match the Chim Sẻ hand-ink and watercolor style; low bun, rust jacket, cream shirt and tote preserved.",
-      "prompt": "Use Chim Sẻ style source and An v4 as strict drawing references; preserve Mother identity from v1: adult Chinese woman, low dark bun, rust jacket, cream shirt, tote strap. 3x2 transparent atlas, six expressions in order neutral, gentle, speaking, laughing, concerned, thinking. Slightly uneven hand-ink contours, muted flat gouache/watercolor, restrained paper grain, clear expressive faces; no glow, vignette, background, labels or extra figures. Keep all art clear of cell boundaries.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 323654
-    },
     "characters/xiaoyu-expressions-v1.webp": {
       "dimensions": {
         "width": 1536,
@@ -2184,19 +2172,6 @@
       "format": "WebP",
       "masterFormat": "PNG",
       "bytes": 1343100
-    },
-    "characters/wang-expressions-v2.webp": {
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/wang-expressions-v2.png",
-      "role": "Cô Vương expression atlas v2; same teacher identity and wardrobe, redrawn with broader hand-ink shapes and restrained watercolor to align with An v4 and the Chim Sẻ style source.",
-      "prompt": "Refinement of Wang v2 candidate, preserving the clean 3x2 layout and identity. Style anchors: Chim Se style source, An v4, Mother v2. Identity: Wang v1. Preserve the adult teacher's short rounded bob, round glasses, sage cardigan, cream blouse and brown notebook. Use broad simple hair masses with a few loose ink strokes, slightly uneven dark contours, flat muted watercolor, very restrained blush and texture. Keep six row-major expressions: neutral, smiling, speaking, thinking, worried, surprised. True alpha, safe transparent gutters, no backdrop, gradient, shadow, glow, labels or extra figures.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 1152660
     },
     "characters/liu-expressions-v1.webp": {
       "dimensions": {
@@ -2236,204 +2211,6 @@
       "format": "WebP",
       "masterFormat": "PNG",
       "bytes": 1432176
-    },
-    "layers/noodle-table-apron-v2.webp": {
-      "dimensions": {
-        "width": 1774,
-        "height": 889
-      },
-      "alpha": true,
-      "master": "layers/noodle-table-apron-v2.png",
-      "role": "Deeper wooden table apron, aligned with the v1 tabletop for foreground body occlusion.",
-      "prompt": "Extend the matching front apron down to conceal the seated children below the table edge. Keep the top rim aligned to the tabletop, transparent background, warm imperfect hand ink and flat muted watercolor. No top surface, legs, food, people, birds or text.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 417482
-    },
-    "characters/an-expressions-v4.webp": {
-      "role": "Legacy An atlas v4; retained as a source/provenance asset after the v5 style and seam correction.",
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "format": "WebP",
-      "alpha": true,
-      "prompt": "Transparent 3x2 An atlas. Identity: art/reference/an-model-v1.png; line and color: art/reference/chim-se-style-source-v1.png. Same 11-year-old boy, child proportions, broad uneven black hair clumps, mustard hoodie and faded blue-green backpack straps. Row-major: listening, curious, confused/awkward, thinking, shy/sad, quiet relieved smile. Clear expressions through simple facial marks and gesture, slightly wobbly dark ink, flat muted watercolor, subtle paper grain, minimal shading. No dense hair/fabric hatch, gloss, background, borders, text, extra figures or birds.",
-      "master": "characters/an-expressions-v4.png",
-      "masterFormat": "PNG",
-      "bytes": 298662
-    },
-    "characters/xiaoyu-expressions-v2.webp": {
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/xiaoyu-expressions-v2.png",
-      "source": "characters/xiaoyu-expressions-v2-source.png",
-      "role": "Tiểu Vũ standing expression atlas v2; identity preserved, line density and muted watercolor aligned to current Chim Sẻ character style.",
-      "prompt": "Use case: illustration-story\nAsset type: production sprite atlas candidate, six expression busts for a visual novel\nReferences: Chim Sẻ style source controls imperfect line and muted palette; An v4 controls simplified line density/texture; xiaoyu-v2 controls Tiểu Vũ identity, 11-year-old boy, short dark tousled hair, blue jacket, cream shirt, navy backpack straps.\nPrompt: Render exactly one 3-column by 2-row transparent atlas, six consistent chest-up views of the same boy at identical scale and angle. Broad uneven hair clumps, slight natural asymmetry, child proportions. Row-major: neutral listening with closed small mouth; warm shy smile; speaking with a small open mouth; laugh with crescent eyes; startled round mouth and lifted brows; thoughtful sideways glance with one hand holding a strap. Clear at 120–220 px sprite height. Simple children's storybook drawing, few confident but wobbly dark pen strokes, broad imperfect masses, flat opaque watercolor and extremely sparse paper texture. Exact 1536×1024 canvas, six equal 512×512 cells, transparent safety margins, no marks across seams. Muted sky blue jacket, cream shirt, charcoal hair, faded navy straps, warm skin. No text, borders, background, glow, shadow, hair strands, hatch, speckles, gloss, gradients, extra figures or birds.\n\nPost-generation layout normalization: each 512×512 generated cell was cropped, scaled uniformly to 448×448 with Lanczos and centered in a transparent 512×512 cell. This creates a 32 px alpha gutter without redrawing the character. Output atlas remains 1536×1024 RGBA.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 886502
-    },
-    "characters/xiaoyu-noodle-expressions-v2.webp": {
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/xiaoyu-noodle-expressions-v2.png",
-      "source": "characters/xiaoyu-noodle-expressions-v2-source.png",
-      "role": "Seated Tiểu Vũ expression atlas v2; same face, broad hair masses, blue jacket and subdued ink/watercolor as standing v2, with hands above the shared tabletop.",
-      "prompt": "Use case: illustration-story\nAsset type: transparent seated character atlas for the Chim Sẻ noodle-shop visual novel scene\nReferences: new standing xiaoyu-expressions-v2 controls face identity, broad hair clumps, blue jacket, cream shirt, navy straps and ink style; Chim Sẻ style source controls line and palette; seated xiaoyu-noodle v1 controls pose only.\nPrompt: Make a matching 3-column by 2-row atlas of the same 11-year-old boy, seated at a shared table. Each chest-up sprite keeps the same seated shoulders and torso turn, elbows resting softly, hands just above the unseen tabletop. Keep the broad uneven dark hair clumps and face like the standing atlas. Six row-major expressions: attentive neutral closed mouth; shy friendly smile; speaking small open mouth; natural closed-eye laugh; surprised round mouth; thoughtful sideways glance with one hand gently near a strap. Imperfect dark ink, simple broad shapes, flat quiet watercolor and sparse paper grain. Exact 1536×1024 canvas, six equal 512×512 cells, centered figures with clear transparent margins. Sky-blue jacket, cream shirt, charcoal hair, faded navy straps, warm skin. No table, food, backdrop, text, labels, borders, glow, shadow, extra people or birds.\n\nPost-generation layout normalization: each 512×512 generated cell was cropped, scaled uniformly to 448×448 with Lanczos and centered in a transparent 512×512 cell. This creates a 32 px alpha gutter without redrawing the character. Output atlas remains 1536×1024 RGBA.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 947880
-    },
-    "characters/xiaoyu-noodle-expressions-v3.webp": {
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/xiaoyu-noodle-expressions-v3.png",
-      "source": "characters/xiaoyu-noodle-expressions-v3-source.png",
-      "role": "Seated Tiểu Vũ expression atlas v3; hands rest on the unseen table, backpack set aside beside the stool outside the crop, face and hand-ink/watercolor style matched to standing v2.",
-      "prompt": "Use case: illustration-story\nAsset type: six-frame transparent seated character sprite sheet for the noodle-shop scene\nReferences: standing xiaoyu-expressions-v2 controls face, broad hair, blue jacket, cream shirt and ink style; Chim Sẻ style source controls line/palette; xiaoyu-noodle-expressions-v1 controls pose only.\nPrompt: Render exactly six expressions of the same 11-year-old boy seated at a table in a 3-column by 2-row sprite sheet. He has set his backpack beside the stool, outside the crop. In every frame both forearms extend down; both hands rest on the invisible tabletop at the lower edge of frame. Same arms, hands, shoulder pose, torso turn, clothing and scale in all cells; vary only facial expression and slight head angle. Do not hold his chest, touch shoulders or grip a strap. Row-major: neutral attentive closed mouth; small friendly smile; speaking subtle open mouth; closed-eye laugh; surprised round mouth; thoughtful sideways glance while fingers remain on table. Keep child identity, face and broad dark hair like the standing atlas. Simple imperfect storybook dark ink, broad shapes, flat muted watercolor, sparse paper grain. Exact 1536×1024 canvas; six equal 512×512 cells; centered, transparent margins. Sky-blue jacket, cream shirt, charcoal hair, warm skin. No table, food, background, labels, text, borders, glow, shadows, extra figures, bird or backpack.\n\nPost-generation layout normalization: each 512×512 generated cell was cropped, scaled uniformly to 448×448 with Lanczos and centered in a transparent 512×512 cell. This creates a 32 px alpha gutter without redrawing the character. Output atlas remains 1536×1024 RGBA.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 1022228
-    },
-    "characters/xiaoyu-noodle-expressions-v4.webp": {
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/xiaoyu-noodle-expressions-v4.png",
-      "source": "characters/candidates/xiaoyu-noodle-expression-atlas-v1.png",
-      "role": "Owner-style seated Tiểu Vũ atlas for noodle ordering and payment; six consistent table poses and clearly distinct expressions.",
-      "prompt": "References: owner-approved Chim Sẻ An–Sẻ style source for broad imperfect ink, quiet flat watercolor and sparse texture; xiaoyu-v2 identity reference; the seated single-sprite pilot for pose. Transparent 3×2 atlas, row-major: attentive neutral, shy smile, speaking, laughing, surprised, thoughtful. Preserve the same 11-year-old boy, broad dark hair masses, blue jacket, cream shirt, scale, seated shoulders and hands resting at table edge. Keep expressions readable at 96–160px. No background, bird, food, text, glow or vignette. ECC passed packing/composite review; viewed in both noodle scenes at phone portrait, short phone landscape and desktop.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 968730
-    },
-    "characters/liu-expressions-v2.webp": {
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/liu-expressions-v2.png",
-      "source": "characters/liu-expressions-v2-source.png",
-      "role": "Bà Lưu expression atlas v2; preserves the elderly noodle-shop owner identity, blue kerchief, cream blouse and navy apron, redrawn to match the current Chim Sẻ hand-ink and muted watercolor style.",
-      "prompt": "Use case: transparent six-expression story character atlas for the noodle-shop owner.\nReferences: liu-v2.png preserves identity and wardrobe only; art/reference/chim-se-style-source-v1.png controls line, color and everyday storybook feeling; an-expressions-v4.png controls simplified face marks and low line density.\n\nPrompt: Edit and redraw the existing 3-column by 2-row Bà Lưu atlas while keeping her exact elderly noodle-shop woman identity: round softly lined face, short silver hair, muted blue kerchief, cream short-sleeved blouse and plain navy apron. Same chest-up pose, scale, clothing and silhouette through every frame. Row-major expressions: open-eyed neutral with closed mouth; kind small closed-mouth smile; warm mild speaking face with small readable open mouth (not laughing); soft laugh with crescent eyes; curious with slightly raised brows and closed mouth; quietly determined, kind attentive eyes and closed mouth. Draw a hand-made children's story illustration with broad simple forms, slightly uneven dark ink contours, few loose hair strokes, mostly flat muted watercolor and very light grain inside the color shapes. Keep the texture restrained and shading minimal. No glow, gradient, vignette, background pixels, airbrushed blush, glossy highlights, patterned fabric, many hair strands, polished anime finish, text, labels, borders, bird or extra figures. True transparent background around every silhouette and a generous clear gutter between all cells.\n\nPost-generation layout normalization: crop each generated 512×512 cell, scale uniformly to 448×448 with Lanczos, and center on a 512×512 transparent cell. This adds a 32 px alpha gutter without redrawing the character. Runtime PNG master: 1536×1024 RGBA. Lossless WebP is encoded from BGRA to preserve RGBA pixels exactly.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 1064474
-    },
-    "characters/receptionist-expressions-v2.webp": {
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/receptionist-expressions-v2.png",
-      "source": "characters/receptionist-expressions-v2-source.png",
-      "role": "School receptionist expression atlas v2; preserves low ponytail, no glasses, teal-gray jacket and cream blouse, redrawn to match the current Chim Sẻ hand-ink and muted watercolor style.",
-      "prompt": "Use case: transparent six-expression atlas for the school receptionist in the lost-notebook office branch.\nReferences: receptionist-expressions-v1.png and receptionist-v2.png preserve face/wardrobe identity only; art/reference/chim-se-style-source-v1.png controls line, color and everyday storybook feeling; an-expressions-v4.png controls simplified facial marks and low rendering density.\n\nPrompt: Redraw the receptionist as one adult Chinese woman with a low dark ponytail tied at the nape, no glasses, muted teal-gray jacket and cream blouse. Keep her distinct from cô Vương (short bob and glasses), Bà Lưu (elderly, blue kerchief and navy apron), and Mother (low bun and rust jacket). Render one exact 3-column by 2-row transparent atlas. Same chest-up pose, scale, outfit and silhouette in every cell. Row-major frame meanings: attentive neutral with closed mouth; warm welcoming small smile; gentle speaking with a small open mouth; listening with softened eyes and closed mouth; mildly puzzled with slightly raised brows; reassuring with a calm supportive smile. Change only the face and slight head angle. Use broad simple hair masses, a few loose marks, slightly uneven dark ink contours with varied pressure, flat quiet muted watercolor and very restrained inner shading. Keep the imperfect marks coherent and repeatable; do not render a polished portrait. No dense hair strands, glossy highlights, patterned fabric, airbrushed blush, gradients, glow, vignette, background pixels, shadow, text, labels, borders, props, bird, or extra figures. Keep every mark within its cell and leave generous true-alpha transparent gutters between cells.\n\nPost-generation layout normalization: crop each generated 512×512 cell, scale uniformly to 448×448 with Lanczos, and center on a 512×512 transparent cell. This creates a 32 px alpha gutter without redrawing. Runtime PNG master is 1536×1024 RGBA; lossless WebP is encoded from BGRA to preserve RGBA pixels exactly.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 982780
-    },
-    "characters/an-noodle-seated-v3.webp": {
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/an-noodle-seated-v3.png",
-      "source": "characters/an-noodle-seated-v3-shy-source.png",
-      "generatedSources": [
-        "characters/an-noodle-seated-v3-shy-source.png",
-        "characters/an-noodle-seated-v3-curious-source.png",
-        "characters/an-noodle-seated-v3-thinking-source.png",
-        "characters/an-noodle-seated-v3-awkward-source.png",
-        "characters/an-noodle-seated-v3-smile-source.png",
-        "characters/an-noodle-seated-v3-listening-source.png"
-      ],
-      "promptFile": "characters/an-noodle-seated-v3.prompt.txt",
-      "role": "Legacy seated An atlas v3; retained as a source/provenance asset after the v4 style refresh.",
-      "prompt": "Chim Sẻ — Minh An seated noodle-shop expression atlas v3\n\nReferences and roles\n- art/reference/an-model-v1.png and characters/an-expressions-v4.png: An's boy identity, child proportions, face, tousled dark hair, ochre hoodie and faded teal straps.\n- art/reference/chim-se-style-source-v1.png: imperfect dark ink, muted hand-painted palette and restrained texture.\n- characters/an-noodle-seated-v1.png: seated posture and hand placement only; do not copy its dense hair strands or heavy shading.\n- The approved neutral base below controls scale, face/shoulder geometry and hand/table baseline for the sibling frames.\n\nEvery frame is one independent transparent PNG, 1254x1254, with the same camera and seated pose. Preserve the complete sprite, keep a transparent safe margin on every side, use broad uneven hair locks, sparse pen marks, mostly flat muted watercolor, very restrained shading, and slight natural asymmetry. Do not add a background, glow, halo, cast shadow, table, food, writing, bird, or extra person. Do not idealize An.\n\nRow-major frame order and emotional direction\n0 shy — approved neutral base: closed mouth, sidelong/downcast attentive gaze, tucked shoulders; shy and observant.\n1 curious — one brow raised, eyes attentive toward friend, small open mouth; interested, not startled.\n2 thinking — eyes glance upward/sideways, one hand gently at chin, other hand rests at tabletop; reflective.\n3 awkward — gaze dips sideways, inner brows lift, small hesitant open mouth; unsure while asking.\n4 smile — small uneven closed-mouth relieved smile; warm, not a broad perfect grin.\n5 listening — gaze directed to the speaker, one brow slightly raised, modestly parted mouth; calm and receptive, distinct from shy.\n\nThe AI-generated source frames passed a visual review. Their union alpha>16 bounds fit inside one shared source crop at x=149,y=159,width=994,height=1069. Pack every frame with this same crop/scale into a 448x448 safe area, center on a 512x512 transparent cell (32px gutter), and place cells row-major in a 1536x1024 RGBA atlas. Preserve all six frame indices and existing runtime aliases.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 841948
-    },
-    "characters/an-expressions-v5.webp": {
-      "role": "Minh An expression atlas v5; selected flatter hand-ink pilot for all non-seated story scenes.",
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "format": "WebP",
-      "alpha": true,
-      "prompt": "Use case: illustration-story\nAsset type: transparent 3×2 character atlas for the Chim Sẻ narrative learning game\nPrimary request: six chest-up expression poses of the same ordinary 11-year-old Vietnamese boy Minh An, hand-inked everyday storybook style.\nSubject: soft round child face, short messy charcoal hair, mustard-yellow hoodie, faded blue-green backpack straps. Thoughtful and a little awkward, not a perfect hero.\nStyle: imperfect but coherent human pen drawing; slightly shaky dark ink outlines with varied width, broad simple shapes, flat muted watercolor fills, very little shading, nearly no gradients or brush texture, light paper grain only. Hair uses a small number of broad clumps and a few loose strokes. Keep facial marks simple and expressive, with natural asymmetry.\nComposition: exact 1536×1024 transparent canvas, 3 columns × 2 rows, six equal 512×512 cells. Same face, camera, head size, outfit and shoulder baseline. Row-major: neutral attentive with slight uncertainty; curious with one brow lifted; awkward with eyes down and aside; thinking with one hand at chin; shy with tucked shoulders; small uneven relieved smile. Plenty of transparent padding in every cell.\nConstraints: true alpha outside the figures, all marks inside each cell, expressions readable at sprite size, same identity and clothing in every pose.\nAvoid: polished/anime perfection, dense hair strands, cross-hatching, airbrushed blush, gradients, realistic skin detail, clothing texture marks, dramatic shadows, background, black matte, vignette, glow, halo, borders, text, labels, extra people, birds or props.\nBuilt-in ImageGen tool; generated as a style pilot without atlas references so the current rendering style would not dominate the simpler brief. The source PNG is served losslessly as WebP; cell order preserves v4 indices.",
-      "master": "characters/an-expressions-v5.png",
-      "masterFormat": "PNG",
-      "bytes": 213024
-    },
-    "characters/an-noodle-seated-v4.webp": {
-      "role": "Minh An seated noodle-shop expression atlas v4; six frames in the selected An v5 line and color style.",
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "alpha": true,
-      "master": "characters/an-noodle-seated-v4.png",
-      "source": "characters/an-noodle-seated-v4.png",
-      "generatedSources": [],
-      "promptFile": "characters/an-noodle-seated-v4.prompt.txt",
-      "prompt": "Chim Sẻ — Minh An seated noodle-shop expression atlas v4 style pilot\n\nGeneration method: built-in ImageGen, using art/characters/an-noodle-seated-v3.png as the pose, frame and hand-placement reference and art/characters/an-expressions-v5.png as the identity and simplified-linework reference.\n\nCanvas and layout: transparent RGBA 1536×1024; three columns by two rows, six 512×512 cells. Exact existing seated framing, shoulder baseline, torso turn and table-edge hand position. No table, food, room, other people, sparrow, labels or pseudo-writing.\n\nIdentity: Minh An, 11-year-old Vietnamese boy; tousled charcoal hair, round child face, mustard hoodie, faded blue-green backpack straps. Same face, size, outfit and pose in every cell.\n\nFrame order: 0 shy/listening, 1 curious, 2 thoughtful with hand at chin, 3 awkward, 4 small uneven smile, 5 speaking. Expressions are carried by eye direction, eyebrows, mouth and slight head angle, not body or outfit changes.\n\nStyle: follow An v5's broad, slightly imperfect ink lines, simplified hair clumps, quiet mostly-flat muted watercolor, minimal shading and sparse paper grain. Avoid the denser hair strokes, fabric marks, cheek airbrush, glow, gradients and polished anime finish of the earlier seated sheet. The existing v3 pose sheet was used only to preserve staging, not as the rendering authority.\n\nAlpha verification: checked the generated atlas and the lossless WebP at 1536×1024; all four-pixel internal row/column seams contain no alpha above 16. Keep this master/source and prompt alongside the served WebP.",
-      "format": "WebP",
-      "masterFormat": "PNG",
-      "bytes": 217500
-    },
-    "characters/sparrow-expressions-v3.webp": {
-      "role": "Single Sparrow mascot expression sheet; each pose normalized into a 32 px transparent gutter to prevent atlas edge clipping and bleed.",
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "format": "WebP",
-      "alpha": true,
-      "prompt": "Art was not redrawn. This v3 runtime atlas is a layout-normalized derivative of v2: each original 512×512 cell was uniformly scaled to 448×448 and centered on a transparent 512×512 cell. The 32 px safe gutter prevents wing/feather edges from touching or leaking across neighboring sprite crops. Frame order and expression identity are unchanged.",
-      "master": "characters/sparrow-expressions-v3.png",
-      "masterFormat": "PNG",
-      "bytes": 909680
-    },
-    "characters/xiaoyu-expressions-v3.webp": {
-      "role": "Tiểu Vũ standing six-expression atlas v3; aligned with the approved An–Sẻ ink and watercolor style and reviewed at scene scale.",
-      "dimensions": {
-        "width": 1536,
-        "height": 1024
-      },
-      "format": "WebP",
-      "alpha": true,
-      "master": "characters/xiaoyu-expressions-v3.png",
-      "masterFormat": "PNG",
-      "generatedSource": "characters/candidates/xiaoyu-expressions-v3-candidate.png",
-      "promptFile": "characters/xiaoyu-expressions-v3.prompt.txt",
-      "frames": {
-        "0": "neutral attentive",
-        "1": "shy crooked smile",
-        "2": "speaking",
-        "3": "gentle laugh",
-        "4": "surprised",
-        "5": "thoughtful holding strap"
-      },
-      "prompt": "Chim Sẻ · Tiểu Vũ standing expression atlas v3\n\nGeneration: ImageGen using the approved Chim Sẻ style source, An v5, and the reviewed Tiểu Vũ model pilot v3 as references. The v3 model pilot controls Xiao identity, blue jacket, cream shirt, backpack straps, proportions and pose language.\n\nCanvas: 1536×1024 transparent RGBA, six equal 512×512 cells, 3 columns × 2 rows. Keep full canvas and its 10 px outer alpha margin; no crop. Row-major mapping: 0 neutral attentive; 1 shy crooked smile; 2 speaking; 3 gentle laugh; 4 surprised; 5 thoughtful with hand on strap. Expression is carried by eyes, eyebrows, mouth and slight head angle; preserve identity, proportions, clothing and scale.\n\nStyle: broad, naturally imperfect dark ink; muted matte watercolor; sparse surface texture and shading; ordinary childlike features, not idealized. Keep strokes and emotional details legible at 96 px. No text, background, glow, extra figures or birds.\n\nECC review: model pilot v3 passed style/readability gate. Atlas v3 passed 96 px expression and alpha/seam gate; live scene composite was then checked on desktop and 390×844 portrait. Desktop scale matches An, mobile uses portrait classroom plate with separated actors and exactly one Sparrow. Candidate approved to replace standing Tiểu Vũ v2 in the story scenes.",
-      "bytes": 1214190
     },
     "flat/backgrounds/arrival-street.svg": {
       "role": "Native flat backgrounds asset; Production cba551bd style",
@@ -3820,114 +3597,6 @@
       "bytes": 410,
       "authoringSource": "../scene-flat-art.js",
       "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
-    },
-    "backgrounds/day2-kitchen-v1.png": {
-      "role": "Landscape kitchen background for An’s second morning",
-      "dimensions": {
-        "width": 1672,
-        "height": 941
-      },
-      "format": "PNG",
-      "alpha": false,
-      "prompt": "Create an everyday Chengdu family kitchen in the approved Chim Sẻ picture-book style, matching the live noodle-shop-order-v5: slightly wavering dark brown-black hand ink, imperfect contours, simple everyday forms, quiet mostly-flat watercolor, warm low-contrast paper grain, muted ochre, faded teal, sage, tan and warm gray. Morning breakfast table with two cups, bread and one small plain closed diary beside the faded-blue school bag on a nearby chair; clearly distinct objects. Wood chairs, modest counter, shelf and leafy window. Wide 16:9, quiet low-detail left third for HTML dialogue, calm right-side sprite zone, table anchoring lower picture. Background only: no people, birds, bird decorations, text, marks, labels, steam, captions or UI. Preserve the generated approved scene composition; the small blank diary was added in a restrained edit.",
-      "styleReference": "backgrounds/noodle-shop-order-v5.webp",
-      "generatedWith": "OpenAI ImageGen; edited to add a blank diary",
-      "generationDate": "2026-11-07"
-    },
-    "backgrounds/day2-kitchen-v1.webp": {
-      "role": "Landscape kitchen background for An’s second morning",
-      "dimensions": {
-        "width": 1672,
-        "height": 941
-      },
-      "format": "WebP",
-      "alpha": false,
-      "prompt": "Create an everyday Chengdu family kitchen in the approved Chim Sẻ picture-book style, matching the live noodle-shop-order-v5: slightly wavering dark brown-black hand ink, imperfect contours, simple everyday forms, quiet mostly-flat watercolor, warm low-contrast paper grain, muted ochre, faded teal, sage, tan and warm gray. Morning breakfast table with two cups, bread and one small plain closed diary beside the faded-blue school bag on a nearby chair; clearly distinct objects. Wood chairs, modest counter, shelf and leafy window. Wide 16:9, quiet low-detail left third for HTML dialogue, calm right-side sprite zone, table anchoring lower picture. Background only: no people, birds, bird decorations, text, marks, labels, steam, captions or UI. Preserve the generated approved scene composition; the small blank diary was added in a restrained edit.",
-      "styleReference": "backgrounds/noodle-shop-order-v5.webp",
-      "master": "backgrounds/day2-kitchen-v1.png",
-      "masterFormat": "PNG",
-      "bytes": 232896
-    },
-    "backgrounds/mobile/mobile-day2-kitchen-v1.png": {
-      "role": "Portrait 3:4 kitchen background independently composed for mobile",
-      "dimensions": {
-        "width": 864,
-        "height": 1821
-      },
-      "format": "PNG",
-      "alpha": false,
-      "prompt": "Recompose the approved modest Chengdu family kitchen as a very tall 9:19 phone scene, not a desktop crop. Match the approved Chim Sẻ hand-ink watercolor style and noodle-shop-order-v5: slightly wavering dark contours, ordinary imperfect forms, quiet watercolor washes, warm paper grain, muted ochre, faded teal, sage, tan and warm gray. Keep upper area calm for HTML dialogue, leafy window fully in the upper-right safe area with a clear sill for one separately rendered blue sparrow, broad uncluttered wall through the middle for two sprites, and breakfast table across the lower third. Show two cups, bread, one small blank closed diary, and the complete faded-blue school backpack plus chair on the right, fully inside the frame. Ensure props stay inside the center 90% safe zone. Background only: no people, birds, bird-shaped ornaments, writing, text, labels, steam, captions or UI.",
-      "styleReference": "backgrounds/noodle-shop-order-v5.webp",
-      "generatedWith": "OpenAI ImageGen; independent 9:19 recomposition for the 390×844 mobile viewport",
-      "generationDate": "2026-11-07"
-    },
-    "backgrounds/mobile/mobile-day2-kitchen-v1.webp": {
-      "role": "Portrait 3:4 kitchen background independently composed for mobile",
-      "dimensions": {
-        "width": 864,
-        "height": 1821
-      },
-      "format": "WebP",
-      "alpha": false,
-      "prompt": "Recompose the approved modest Chengdu family kitchen as a very tall 9:19 phone scene, not a desktop crop. Match the approved Chim Sẻ hand-ink watercolor style and noodle-shop-order-v5: slightly wavering dark contours, ordinary imperfect forms, quiet watercolor washes, warm paper grain, muted ochre, faded teal, sage, tan and warm gray. Keep upper area calm for HTML dialogue, leafy window fully in the upper-right safe area with a clear sill for one separately rendered blue sparrow, broad uncluttered wall through the middle for two sprites, and breakfast table across the lower third. Show two cups, bread, one small blank closed diary, and the complete faded-blue school backpack plus chair on the right, fully inside the frame. Ensure props stay inside the center 90% safe zone. Background only: no people, birds, bird-shaped ornaments, writing, text, labels, steam, captions or UI.",
-      "styleReference": "backgrounds/noodle-shop-order-v5.webp",
-      "master": "backgrounds/mobile/mobile-day2-kitchen-v1.png",
-      "masterFormat": "PNG",
-      "bytes": 204104
-    },
-    "backgrounds/panorama/day2-kitchen-panorama-v1.png": {
-      "role": "Independent 3:1 panoramic kitchen composition for ultra-wide desktop and short-landscape story viewports",
-      "dimensions": {
-        "width": 2172,
-        "height": 724
-      },
-      "format": "PNG",
-      "alpha": false,
-      "prompt": "Use approved day2-kitchen-v1.png as style and room reference. Match its warm textured paper, slightly uneven hand-ink contours, muted watercolor, and modest Chengdu home. Coherent 3:1 panorama of the same breakfast kitchen. Put window/counter in upper-middle and a shallow breakfast table plus faded-blue school bag in lower-middle; leave left low-detail for dialogue. Keep essential detail within central 55 percent of image height. No people, birds, bird-shaped decorations, learned text, labels, food steam or watermark. Quiet early-morning light.",
-      "styleReference": "backgrounds/day2-kitchen-v1.webp",
-      "generatedWith": "OpenAI ImageGen; independent 3:1 panorama for ultra-wide desktop and short landscape",
-      "generationDate": "2026-11-07"
-    },
-    "backgrounds/panorama/day2-kitchen-panorama-v1.webp": {
-      "role": "Independent 3:1 panoramic kitchen composition for ultra-wide desktop and short-landscape story viewports",
-      "dimensions": {
-        "width": 2172,
-        "height": 724
-      },
-      "format": "WebP",
-      "alpha": false,
-      "prompt": "Use approved day2-kitchen-v1.png as style and room reference. Match its warm textured paper, slightly uneven hand-ink contours, muted watercolor, and modest Chengdu home. Coherent 3:1 panorama of the same breakfast kitchen. Put window/counter in upper-middle and a shallow breakfast table plus faded-blue school bag in lower-middle; leave left low-detail for dialogue. Keep essential detail within central 55 percent of image height. No people, birds, bird-shaped decorations, learned text, labels, food steam or watermark. Quiet early-morning light.",
-      "styleReference": "backgrounds/day2-kitchen-v1.webp",
-      "master": "backgrounds/panorama/day2-kitchen-panorama-v1.png",
-      "masterFormat": "PNG",
-      "bytes": 169016
-    },
-    "backgrounds/mobile/mobile-day2-kitchen-v2.png": {
-      "role": "Near-square kitchen plate composed for the top scene area on portrait phones",
-      "dimensions": {
-        "width": 1254,
-        "height": 1254
-      },
-      "format": "PNG",
-      "alpha": false,
-      "prompt": "Recompose the approved day-two kitchen into a near-square image for the actual story stage, around 390×362 pixels, not a full-height phone wallpaper. Match the warm paper, hand-inked slightly uneven contours and muted watercolor of the approved scene. Keep the leafy window and a clean windowsill/perch upper-right, modest kitchen counter, breakfast table across the lower third, two cups, bread, blank diary, faded-blue school bag by chair on right. Calm low-detail left. Keep all important objects inside the central 90 percent. No people, birds, writing, pseudo-text, steam or UI.",
-      "styleReference": "backgrounds/day2-kitchen-v1.webp",
-      "generatedWith": "OpenAI ImageGen; independent near-square composition for the 390×844 story-stage viewport",
-      "generationDate": "2026-11-07"
-    },
-    "backgrounds/mobile/mobile-day2-kitchen-v2.webp": {
-      "role": "Near-square kitchen plate composed for the top scene area on portrait phones",
-      "dimensions": {
-        "width": 1254,
-        "height": 1254
-      },
-      "format": "WebP",
-      "alpha": false,
-      "prompt": "Recompose the approved day-two kitchen into a near-square image for the actual story stage, around 390×362 pixels, not a full-height phone wallpaper. Match the warm paper, hand-inked slightly uneven contours and muted watercolor of the approved scene. Keep the leafy window and a clean windowsill/perch upper-right, modest kitchen counter, breakfast table across the lower third, two cups, bread, blank diary, faded-blue school bag by chair on right. Calm low-detail left. Keep all important objects inside the central 90 percent. No people, birds, writing, pseudo-text, steam or UI.",
-      "styleReference": "backgrounds/day2-kitchen-v1.webp",
-      "master": "backgrounds/mobile/mobile-day2-kitchen-v2.png",
-      "masterFormat": "PNG",
-      "bytes": 203452
     }
   },
   "spriteCharacters": {
@@ -3991,7 +3660,7 @@
       "metadata": {
         "authoringSource": "scene-flat-art.js",
         "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
-        "archivedRaster": "characters/an-expressions-v5.webp",
+        "archivedRaster": "characters/an-expressions-v3.webp",
         "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
       }
     },
@@ -4024,7 +3693,7 @@
       "metadata": {
         "authoringSource": "scene-flat-art.js",
         "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
-        "archivedRaster": "characters/sparrow-expressions-v3.webp",
+        "archivedRaster": "characters/sparrow-expressions-v2.webp",
         "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
       }
     },
@@ -4047,7 +3716,7 @@
       "metadata": {
         "authoringSource": "scene-flat-art.js",
         "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
-        "archivedRaster": "characters/mother-expressions-v2.webp",
+        "archivedRaster": "characters/mother-expressions-v1.webp",
         "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
       },
       "format": "svg",
@@ -4080,7 +3749,7 @@
       "metadata": {
         "authoringSource": "scene-flat-art.js",
         "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
-        "archivedRaster": "characters/xiaoyu-expressions-v3.webp",
+        "archivedRaster": "characters/xiaoyu-expressions-v1.webp",
         "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
       },
       "format": "svg",
@@ -4113,7 +3782,7 @@
       "metadata": {
         "authoringSource": "scene-flat-art.js",
         "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
-        "archivedRaster": "characters/wang-expressions-v2.webp",
+        "archivedRaster": "characters/wang-expressions-v1.webp",
         "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
       },
       "format": "svg",
@@ -4146,7 +3815,7 @@
       "metadata": {
         "authoringSource": "scene-flat-art.js",
         "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
-        "archivedRaster": "characters/liu-expressions-v2.webp",
+        "archivedRaster": "characters/liu-expressions-v1.webp",
         "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
       },
       "format": "svg",
@@ -4179,7 +3848,7 @@
       "metadata": {
         "authoringSource": "scene-flat-art.js",
         "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
-        "archivedRaster": "characters/receptionist-expressions-v2.webp",
+        "archivedRaster": "characters/receptionist-expressions-v1.webp",
         "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
       },
       "format": "svg",
@@ -4213,7 +3882,7 @@
       "metadata": {
         "authoringSource": "scene-flat-art.js",
         "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
-        "archivedRaster": "characters/an-noodle-seated-v4.webp",
+        "archivedRaster": "characters/an-noodle-seated-v1.webp",
         "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
       },
       "format": "svg",
@@ -4247,7 +3916,7 @@
       "metadata": {
         "authoringSource": "scene-flat-art.js",
         "styleAuthority": "Production hsk.motngum.cafe / cba551bd7810d7bd86f70611f1bb8f46a289f23a",
-        "archivedRaster": "characters/xiaoyu-noodle-expressions-v4.webp",
+        "archivedRaster": "characters/xiaoyu-noodle-expressions-v1.webp",
         "role": "Independent native flat expression states; frame numbers retain the existing story semantics, each state has its own SVG."
       },
       "format": "svg",

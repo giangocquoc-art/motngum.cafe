@@ -20,8 +20,9 @@ AnBranchStory.scenes.forEach(function(node){
    scene.background="day2-kitchen";
    scene.actorRegion={desktop:{left:45,right:3},mobile:{left:3,right:3},tablet:{left:3,right:3},wide:{left:28,right:3},compact:{left:0,right:0}};
    scene.actors=kitchenGroup(names);
-   scene.sparrow.desktop={left:92,top:30};
+   scene.sparrow.desktop={left:70,top:12};
    scene.sparrow.mobile={left:82,top:10};
+   scene.sparrow.wide={left:70,top:12};
    scene.sparrow.compact={left:94,top:54};
    scene.sparrow.compactFlight=true;
    scene.sparrow.flight=false;

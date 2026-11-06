@@ -37,17 +37,27 @@ test('native art catalog covers all responsive scenes and separate authored laye
   assert.deepEqual(Object.keys(catalog.backgrounds).sort(), nativeBackgrounds);
 
   for (const [backgroundId, variants] of Object.entries(catalog.backgrounds)) {
-    assert.deepEqual(Object.keys(variants).sort(), ['compact', 'desktop', 'mobile'], `${backgroundId} has desktop, mobile and compact plates`);
+    const expectedVariants = backgroundId === 'day2-kitchen' ? ['compact', 'desktop', 'mobile', 'tablet', 'wide'] : ['compact', 'desktop', 'mobile'];
+    assert.deepEqual(Object.keys(variants).sort(), expectedVariants, `${backgroundId} has its authored responsive plates`);
     for (const [variant, file] of Object.entries(variants)) {
       const svg = readArt(file);
       svgSize(svg, `${backgroundId}/${variant}`);
       assert.doesNotMatch(svg, /<text\b|<image\b|data-character=|class="cs-(?:wing|eyes-|bird-feet)/i, `${backgroundId}/${variant} contains no baked learning text or actors`);
       assert.doesNotMatch(svg, /sparrow|bird|xiaoyu|receptionist|classmates/i, `${backgroundId}/${variant} has no duplicate cast/Sẻ layer`);
-      assert.equal(svg, flat.background(backgroundId, variant === 'mobile', variant === 'compact'), `${backgroundId}/${variant} matches the authored native output`);
+      assert.equal(svg, flat.background(backgroundId, variant === 'mobile', variant === 'compact', variant === 'wide', variant === 'tablet'), `${backgroundId}/${variant} matches the authored native output`);
     }
   }
 
   assert.deepEqual(Object.keys(catalog.props).sort(), ['bowl', 'counter', 'menu', 'steam', 'table-apron', 'table-top']);
+  for (const [file, metadata] of Object.entries(manifest.assetCatalog)) {
+    assert.ok(fs.existsSync(path.join(artRoot, file)), `${file} catalog asset exists`);
+    if (metadata.master) assert.ok(fs.existsSync(path.join(artRoot, metadata.master)), `${file} master asset exists`);
+  }
+  for (const [name, sprite] of Object.entries(manifest.spriteCharacters)) {
+    assert.ok(fs.existsSync(path.join(artRoot, sprite.metadata.archivedRaster)), `${name} archived source exists`);
+  }
+  assert.ok(fs.existsSync(path.join(artRoot, manifest.characters.an.poses)), 'An identity reference resolves to a real asset');
+  assert.ok(fs.existsSync(path.join(artRoot, manifest.characters.sparrow.poses)), 'Sẻ identity reference resolves to a real asset');
   for (const [prop, variants] of Object.entries(catalog.props)) {
     for (const [variant, file] of Object.entries(variants)) {
       const svg = readArt(file);
@@ -57,25 +67,28 @@ test('native art catalog covers all responsive scenes and separate authored laye
   }
 });
 
-test('generated day-two kitchen plates stay raster assets with their authored responsive sizes',()=>{
+test('day-two kitchen uses the current native-flat style in all five story-stage compositions',()=>{
   const kitchen=manifest.backgrounds['day2-kitchen'];
   assert.ok(kitchen,'day-two kitchen has a dedicated art entry');
-  assert.deepEqual({desktop:kitchen.desktop,mobile:kitchen.mobile,wide:kitchen.wide,compact:kitchen.compact},{desktop:'backgrounds/day2-kitchen-v1.webp',mobile:'backgrounds/mobile/mobile-day2-kitchen-v2.webp',wide:'backgrounds/panorama/day2-kitchen-panorama-v1.webp',compact:'backgrounds/panorama/day2-kitchen-panorama-v1.webp'});
-  for(const [file,dimensions] of [[kitchen.desktop,[1672,941]],[kitchen.mobile,[1254,1254]],[kitchen.wide,[2172,724]],[kitchen.compact,[2172,724]]]){
-    const metadata=manifest.assetCatalog[file];
-    assert.ok(metadata,`${file} has a provenance entry`);
-    assert.deepEqual([metadata.dimensions.width,metadata.dimensions.height],dimensions,file);
-    assert.equal(metadata.alpha,false,file);
-    assert.ok(fs.existsSync(path.join(artRoot,file)),`${file} exists in the checkout`);
-    assert.ok(fs.existsSync(path.join(artRoot,metadata.master)),`${metadata.master} master exists in the checkout`);
-  }
+  assert.deepEqual({desktop:kitchen.desktop,mobile:kitchen.mobile,tablet:kitchen.tablet,wide:kitchen.wide,compact:kitchen.compact},{desktop:'flat/backgrounds/day2-kitchen.svg',mobile:'flat/backgrounds/day2-kitchen-portrait.svg',tablet:'flat/backgrounds/day2-kitchen-tablet.svg',wide:'flat/backgrounds/day2-kitchen-wide.svg',compact:'flat/backgrounds/day2-kitchen-compact.svg'});
+  assert.deepEqual(Object.keys(catalog.backgrounds['day2-kitchen']).sort(),['compact','desktop','mobile','tablet','wide']);
+  assert.equal(manifest.assetCatalog['backgrounds/day2-kitchen-v1.webp'],undefined,'the superseded watercolor plate is not catalogued as release art');
+  assert.equal(flat.background('day2-kitchen',false,false,false),readArt(kitchen.desktop));
+  assert.equal(flat.background('day2-kitchen',true,false,false),readArt(kitchen.mobile));
+  assert.equal(flat.background('day2-kitchen',false,false,false,true),readArt(kitchen.tablet));
+  assert.equal(flat.background('day2-kitchen',false,false,true),readArt(kitchen.wide));
+  assert.equal(flat.background('day2-kitchen',false,true,false),readArt(kitchen.compact));
+  assert.match(kitchen.metadata.styleAuthority,/current production art/i);
+  assert.equal(require('node:child_process').spawnSync(process.execPath,[path.join(root,'scripts/build-kitchen-art.cjs'),'--check'],{encoding:'utf8'}).status,0,'static scene plates can be regenerated from the shared authoring source');
 });
 
-test('responsive scene selector shares exact raster variant and fallback across stage shapes',()=>{
+test('responsive scene selector shares exact authored variant and fallback across stage shapes',()=>{
   const renderer=rendererBox.HSKSceneLayers,scene={background:'day2-kitchen'},kitchen=sceneManifest.backgrounds['day2-kitchen'];
   const select=(width,height,portrait)=>renderer.responsiveMode(scene,kitchen,{width,height},portrait).variant;
   assert.equal(select(390,362,true),'mobile','phone story stage uses the near-square plate');
-  assert.equal(select(768,474,true),'desktop','tablet art stage near 16:9 keeps the wide plate');
+  assert.equal(select(768,474,true),'tablet','portrait tablet gets an authored composition that keeps the backpack in frame');
+  assert.equal(select(390,362,true),'mobile','phone story stage uses the near-square plate');
+  assert.equal(select(1024,700,true),'tablet','large portrait tablet keeps the tablet composition');
   assert.equal(select(1365,423,false),'wide','ultrawide desktop uses the panorama');
   assert.equal(select(844,156,false),'compact','short landscape uses the panorama');
   assert.equal(renderer.variantAsset(kitchen,select(844,156,false)),kitchen.compact);

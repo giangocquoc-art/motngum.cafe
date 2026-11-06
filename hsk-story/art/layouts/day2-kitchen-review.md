@@ -1,95 +1,56 @@
-# Day 2 kitchen — approved composition and asset record
+# Bếp nhà An — bố cục đã duyệt
 
-**Status: approved by the owner.** Desktop and mobile plates were generated as separate compositions and connected to the listed morning scenes. Background artwork contains no people or bird; the renderer adds one live Sẻ sprite.
+**Phạm vi duyệt:** sơ đồ bố cục. **Nét vẽ:** theo nền phẳng, màu dịu và đường mực hơi lệch đang chạy trên `hsk.motngum.cafe`. Bộ nền màu nước từng thử không phải tài sản được duyệt và không còn được runtime tham chiếu.
 
-## Narrative coverage
+## Lớp của cảnh
 
-One kitchen set supports `day2-arrival`, `day2-home-quiet`, `day2-guest-arrives`, `day2-breakfast`, `day2-confession`, `day2-mother-explains`, and `day2-guest-prep`. It replaces the misleading bedroom plate for morning dialogue; `day2-night` stays in the bedroom.
+1. **Bối cảnh:** bếp nhà An với cửa sổ, quầy, bàn ăn, ghế, cặp và quyển sổ. Mỗi tỷ lệ có bố cục riêng; không đưa nhân vật, chim, chữ học hoặc UI vào nền.
+2. **Nhân vật:** An và mẹ là sprite độc lập; Tiểu Vũ chỉ xuất hiện khi An chuẩn bị đón bạn. Mỗi người có biểu cảm và vị trí theo cảnh.
+3. **Hội thoại:** lời dẫn, câu tiếng Trung, Pinyin và thao tác tiếp tục do HTML đảm nhiệm.
+4. **Chuyển động:** chớp mắt nhẹ, Sẻ nghiêng đầu/vỗ cánh và phản hồi chạm; không làm cảnh chuyển động liên tục.
 
-The scene needs to read as An's home in Chengdu at breakfast time. Keep the lived-in ordinary details and restrained expression of the currently approved Chim Sẻ production art: slightly uneven ink contours, flat muted colors, warm paper, simple readable silhouettes. No lettering, lesson text, captions, labels, or generated pseudo-writing in either plate.
-
-## Shared staging rules
-
-- Background plate contains the kitchen, table, chair, window/counter, breakfast setting, and school bag; it contains no people or live bird. Keep the table and doorway/window geometry consistent between device plates.
-- Runtime character sprites provide An and Mother; `day2-guest-prep` adds Tiểu Vũ. Do not paint these characters into a background.
-- The renderer adds exactly one live Sẻ sprite. Place its perch on the window frame or curtain rail, away from all faces and from the dialogue card. Do not paint another bird, bird-shaped decoration, or second mascot into the plate.
-- On the guest-prep scene, the paper drawing may be a separate prop only after its own approval. To avoid reading as a second Sẻ, show just a few unfinished pencil marks at the paper edge, not a complete bird silhouette. Otherwise omit it from the art; the story text can carry the detail.
-- Keep the school bag and diary visually distinct: bag on or beside the chair, diary peeking out or lying beside it as described. No legible marks on the diary.
-- Do not draw steam/food effects into the plate; any later animation is a separate approved layer.
-
-## Standard 16:9 plate — tablet and medium-width composition
-
-**Canvas direction:** 16:9 landscape, used when the art stage is close to that ratio (including tablet portrait). Ultra-wide desktop stages use the separately composed 3:1 panorama below.
+## Sơ đồ đã được chủ dự án duyệt
 
 ```text
-┌──────────────────────────────────────────────────────────────────┐
-│ quiet window / soft morning light      shelf + small kitchen     │
-│      one clear perch for Sẻ             counter, no writing      │
-│                                                                  │
-│ left: uncluttered wall / table edge     An + Mother sprite zone  │
-│ dialogue card must stay readable       (faces in upper half)    │
-│                                                                  │
-│       breakfast table + two cups, bread; chair + faded-blue bag  │
-└──────────────────────────────────────────────────────────────────┘
+Desktop / tablet ngang
+┌──────────────────────────────────────────────────────────────┐
+│ khoảng tường thoáng       cửa sổ + một chỗ đậu Sẻ            │
+│                                      quầy bếp                  │
+│                                                              │
+│                An          đồ ăn       mẹ       cặp + ghế    │
+└──────────────────────────────────────────────────────────────┘
+
+Điện thoại dọc
+┌──────────────────────┐
+│ cửa sổ, một chỗ đậu  │
+│                      │
+│ An              mẹ   │
+│                      │
+│ bàn ăn, sổ, cặp      │
+└──────────────────────┘
 ```
 
-Keep the left third low-detail and low-contrast because the current wide story dialogue card occupies that side. Keep the character zone on the right visually quiet behind faces. The table should anchor the lower part of the picture without covering sprite faces or the Sẻ perch. `day2-guest-prep` has two sprites, An and Tiểu Vũ; Mother stays off-stage for that beat.
+Điện thoại dọc dùng nền gần vuông vì vùng tranh trong game chỉ cao khoảng 360 px ở máy 390×844; không dùng hình nền dọc cao rồi cắt giữa. Cảnh ngang rất thấp và desktop siêu rộng dùng các biến thể riêng. Chỉ có một Sẻ do renderer vẽ; nền không có chim, hình chim hay tranh chim hoàn chỉnh.
 
-## Mobile story-stage plate — independent near-square composition
+## Cảnh sử dụng
 
-**Canvas direction:** near-square, composed for the actual top-of-screen game stage (about 390×362 on a 390×844 phone), not a full-height phone wallpaper. The first 9:19 draft is retained in the asset catalog as superseded source material; it cropped the window and table when placed in the real game stage.
-
-```text
-┌───────────────────────────┐
-│ upper window, one Sẻ perch │
-│ quiet wall / window light │
-│                           │
-│ An face       Mom face    │  ← below the measured dialogue card
-│ (Xiao Yu joins to side or │
-│  next to An on guest beat)│
-│                           │
-│ visible table and bag     │
-└───────────────────────────┘
-```
-
-Place the perch near a top corner, outside the faces and the scene controls. Keep all faces visible in the stage; do not rely on a fixed-height guess in the artwork. Put the breakfast table across the lower third as context, not as a foreground occluder over character faces. Preserve enough horizontal separation for three faces during `day2-guest-prep`; if that cannot be done at the existing sprite sizes, use a closer two-person framing for kitchen scenes and transition to a distinct doorway composition for the friend arrival, pending its own review.
-
-## Panorama plate — ultra-wide desktop and short landscape
-
-**Canvas:** 2172×724 (3:1), used on ultra-wide desktop stages and centered into the short game stage at phone landscape sizes such as 844×390. The CSS story reader reserves most of the phone viewport, leaving a stage near 156 px tall; the background therefore uses a safe lower-center crop instead of shrinking the reader or clipping sprites. The panorama retains the kitchen window/counter, a narrow breakfast table, and the school bag. Dialogue overlay stays in the quiet left area. Desktop sprites are kept clear of breakfast and the bag. On short landscape, An and Mother shift left while Sẻ makes a small flight beat beside the bag, away from the top-right control.
-
-```text
-┌──────────────────────────────────────────────────────────────────────┐
-│ blank left wall / overlay     window + counter       Sẻ perch        │
-│                                                                        │
-│                          An          Mother         clear control     │
-│                 table + breakfast / diary / faded-blue bag             │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
-This variant is a composition for very wide stages, not a crop from the standard desktop plate or portrait. The 390×844 phone and 768×1024 tablet stages select their own compositions/plates.
-
-## Beat-to-prop consistency
-
-| Beat | People in frame | Visible story details |
+| ID | Người trong cảnh | Vật thể và hành động chính |
 |---|---|---|
-| `day2-arrival` | An, Mother | warm breakfast; school bag and diary; morning window |
-| `day2-home-quiet` | An, Mother | two cups; chair leg near An, matching his awkward moment |
-| `day2-guest-arrives` | An, Mother | same kitchen; clear table corner for preparing; no Tiểu Vũ yet |
-| `day2-breakfast` / choice results | An, Mother | bag open enough for lunchbox/diary context; no written labels |
-| `day2-confession` | An, Mother | hands resting on table, calm listening posture |
-| `day2-mother-explains` | An, Mother | closed/neutral book or dictionary with no legible pseudo-text |
-| `day2-guest-prep` | An, Tiểu Vũ; Mother may stay off-stage | chairs pulled out; optional partial unfinished drawing prop only if approved |
+| `day2-arrival` | An, mẹ | Bữa sáng; An tìm quyển sổ cạnh cặp. |
+| `day2-home-quiet` | An, mẹ | Hai chiếc cốc; An vụng về mắc quai cặp vào ghế. |
+| `day2-guest-arrives` | An, mẹ | Chừa góc bàn để chuẩn bị đón Tiểu Vũ; bạn chưa vào khung. |
+| `day2-breakfast` và các nhánh | An, mẹ | Mẹ xếp hộp cơm; An kiểm tra ngăn cặp. |
+| `day2-confession` | An, mẹ | Mẹ lắng nghe khi An kể chuyện hôm trước. |
+| `day2-mother-explains` | An, mẹ | Hai mẹ con mở sổ/từ điển không có chữ giả. |
+| `day2-guest-prep` | An, Tiểu Vũ | Dọn chỗ cho bạn; mẹ rời khung. |
 
-Mood is carried by each existing character pose and small posture changes, not a new polished or idealized model. The composition must preserve the important faces at phone width and leave the learning interaction in HTML outside the artwork.
+## Trạng thái nghiệm thu
 
-## Approved and implemented
+- [x] Chủ dự án duyệt sơ đồ nhân vật, bàn ăn và một Sẻ.
+- [x] Chọn art direction theo production hiện hành thay cho bản màu nước chưa duyệt.
+- [x] Tạo bốn nền SVG native từ `scene-flat-art.js`: desktop, portrait, ultra-wide và short-landscape.
+- [x] Renderer và manifest trỏ tới đúng bốn biến thể native.
+- [ ] Chụp và duyệt cảnh tích hợp với lời thoại đúng node ở desktop, điện thoại dọc, tablet và điện thoại ngang.
+- [ ] Kiểm từng nhánh bếp để đúng người nói, biểu cảm, đạo cụ và chỉ một Sẻ.
 
-- [x] Owner approved the current composition.
-- [x] Omit the paper drawing from the background; there is no second bird silhouette.
-- [x] Keep Tiểu Vũ on-stage only for `day2-guest-prep`; Mother is off-stage for that beat.
-- [x] Generate a standard 16:9 plate, a near-square phone-stage composition, and a 3:1 panorama for ultra-wide desktop/short landscape; keep PNG masters and optimized WebP runtime assets in `art/manifest.json`.
-- [x] Inspect the rendered desktop and 390×844 phone plates with the actual An/Mother/Sẻ sprites; the backpack, diary, table, faces and single perch remain visible.
-- [x] Inspect the rendered 768×1024 tablet plate; its 1.61:1 stage selects the desktop plate with only a shallow crop, preserving the kitchen anchors.
-- [x] Add and inspect a separate 3:1 short-landscape panorama, with sprite positions that keep faces in frame and keep Sẻ clear of the “Sẻ nói nhỏ” control.
-
+Lưu ý: các ảnh chụp layout trước đây được tạo bằng cách gắn art của `day2-arrival` lên trang vẫn đang hiển thị node mở đầu. Chúng chỉ là phép dò kích thước/tọa độ, không được tính là kiểm duyệt cảnh tích hợp.
