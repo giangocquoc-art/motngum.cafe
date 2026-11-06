@@ -66,6 +66,7 @@ test("a natural check-in reply is taught with Hanzi, Pinyin, and Vietnamese befo
  const ui=boot("arrival",0);while(ui.phase()!=="model")ui.get("nextBtn").click();
  const copy=ui.get("content").children.map(child=>child.textContent).join(" ");
  assert.match(copy,/我还好。/);assert.match(copy,/Wǒ hái hǎo\./);assert.match(copy,/Con vẫn ổn ạ\./);
+ assert.match(copy,/我很好，谢谢。/);assert.match(copy,/Wǒ hěn hǎo, xièxie\./);assert.match(copy,/cảm ơn mẹ/);
 });
 
 test("the same recall follows both arrival choices and keeps their story memories separate",()=>{

@@ -18,6 +18,8 @@ test("first objective and hint describe the check-in An actually hears",()=>{
  assert.match(first.request,/đáp lời mẹ/);
  assert.match(first.hint,/Mẹ đang hỏi thăm An/);
  assert.doesNotMatch(first.hint,/你 là|很 là|吗 đặt cuối/);
+ assert.ok(!objective.candidateContent.vocabulary.includes("你好"));
+ assert.ok(blueprint.objectives.find(item=>item.id==="introduce-self").candidateContent.vocabulary.includes("你好"));
 });
 test("first self-introduction gives An's name forms and prepares the teacher's question",()=>{
  const task=content.scenes[1],gate=beats.beats.find(beat=>beat.id==="gate");

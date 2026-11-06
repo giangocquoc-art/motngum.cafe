@@ -91,7 +91,7 @@ function harness(sharedStorage={},options={}){
   click(){(this.listeners.click||[]).forEach(f=>f({preventDefault(){}}))},fire(k,args={}){(this.listeners[k]||[]).forEach(f=>f({preventDefault(){},...args}))}
  }}
  ids.forEach(id=>dom[id]=element(id));
- ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyEcho","storyInterlude","vocabRevealBtn","learningStrip","encounterPanel","encounterAnswerForm","encounterContinue","encounterHint","encounterSample","skillPanel","skillListen","practiceOpenBtn","worldPanel"].forEach(id=>dom[id].hidden=true);
+ ["gameOverlay","notebookPanel","completionPane","assistBtn","nextBtn","sentenceBuilder","retakeExamBtn","storyChoicePanel","storyChoiceOutcome","storyBeat","storyEcho","storyInterlude","interludeAlternatives","vocabRevealBtn","learningStrip","encounterPanel","encounterAnswerForm","encounterContinue","encounterHint","encounterSample","skillPanel","skillListen","practiceOpenBtn","worldPanel"].forEach(id=>dom[id].hidden=true);
  const nav=element("nav");
  document={body:{style:{},classList:{s:new Set,add(k){this.s.add(k)},remove(k){this.s.delete(k)},contains(k){return this.s.has(k)}}},activeElement:null,listeners:{},getElementById(id){if(!dom[id])throw Error("Missing DOM ID "+id);return dom[id]},querySelector(q){return q==="nav"?nav:null},createElement(tag){return element("new-"+tag)},querySelectorAll(){return []},addEventListener(k,f){(this.listeners[k]??=[]).push(f)}};
  const localStorage={getItem(k){return sharedStorage[k]||null},setItem(k,v){sharedStorage[k]=v}};
@@ -108,6 +108,9 @@ function harness(sharedStorage={},options={}){
 test('new learners meet a spoken model before answering and retain truthful guidance credit',()=>{
  const t=harness(),e=t.e;e.startBtn.click();e.interludeContinue.click();
  assert.equal(e.storyInterlude.dataset.kind,'model');assert.equal(e.dialogueText.textContent,Content.scenes[0].guidedModel.zh);
+ assert.equal(e.interludeAlternatives.hidden,false);assert.equal(e.interludeAlternatives.children.length,2);
+ assert.match(e.interludeAlternatives.children[0].textContent,/我还好。.*Wǒ hái hǎo\..*Con vẫn ổn ạ\./);
+ assert.match(e.interludeAlternatives.children[1].textContent,/我很好，谢谢。.*Wǒ hěn hǎo, xièxie\..*Con ổn ạ, cảm ơn mẹ\./);
  assert.equal(e.answerForm.hidden,true);e.answerInput.value='我很好';e.answerForm.fire('submit');
  assert.equal(JSON.parse(t.sharedStorage['hai-que-huong-progress-v3']).history.length,0);
  e.listenBtn.click();assert.equal(t.spoken[0],Content.scenes[0].guidedModel.zh);

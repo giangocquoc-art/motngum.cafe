@@ -322,6 +322,13 @@ function renderStoryInterlude(){
  $("storyInterlude").dataset.kind=model?"model":dialogue?"dialogue":"story";
  if(!b)return false;
  $("interludeHeading").textContent=b.title;$("interludeStory").textContent=b.story;
+ var alternatives=$("interludeAlternatives");alternatives.replaceChildren();
+ if(model&&Array.isArray(model.alternatives)&&model.alternatives.length){
+  model.alternatives.forEach(function(alt){
+   var row=document.createElement("p");row.className="interlude-alternative";
+   row.textContent=[alt.label,alt.zh,alt.py,alt.vi].filter(Boolean).join(" ");alternatives.appendChild(row);
+  });alternatives.hidden=false;
+ }else alternatives.hidden=true;
  $("speaker").textContent=model?(model.speaker||SCENES[state.step].speaker)+" · nhắc An":dialogue?b.speaker:"旁白 · Người kể chuyện";$("sceneTag").textContent=model?"CÂU AN TẬP NÓI":dialogue?"TRÒ CHUYỆN":"TRANG TRUYỆN";
  $("interludeContinue").textContent=model?"Thử nói cùng An ↗":dialogue?b.continueLabel:"Đọc tiếp câu chuyện ↗";
  if(model&&(model.speakerCharacter||SCENES[state.step].speakerCharacter))HSKSceneLayers.setSpeaker($("stageIllustration"),model.speakerCharacter||SCENES[state.step].speakerCharacter);

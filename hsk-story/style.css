@@ -101,6 +101,7 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 .story-interlude h3{font-family:"Playfair Display","Noto Sans SC",serif;font-size:20px;margin:8px 0}
 .story-interlude p{font-size:12px;line-height:1.85;color:#584d41;margin:6px 0}
 .story-interlude .interlude-translation{font-size:11px;color:#887361;border-top:1px solid #cdb79f;padding-top:8px}
+.interlude-alternatives{border-top:1px solid #cdb79f;margin-top:8px;padding-top:4px}.interlude-alternative{font-size:11px!important;line-height:1.5!important;margin:5px 0!important;color:#584d41}.interlude-alternative::first-line{font-weight:700}
 .interlude-continue{margin-top:8px;background:#a74d36;color:white;border:1px solid #8d3f2c;font-size:12px;font-weight:700;padding:11px 16px}
 .interlude-continue:hover{background:#803923}
 .vocab-reveal{border:1px dashed #9c826b;background:#fbf4e6;color:#805037;font-size:11px;padding:8px 11px;margin:5px 0 9px;text-align:left}
