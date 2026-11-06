@@ -140,10 +140,34 @@ test("Helping the classroom sparrow with Xiao Yu depends on prior friendship his
  assert.ok(E.conditionText(D.byId["day2-bird"],friend).join(" ").toLowerCase().includes("tranh chim sẻ"));
  assert.equal(E.step(solo,"bird-with-friend").ok,false);
 });
-test("Every authorized choice updates memory/relationships without treating Chinese fluency as character morality",()=>{
+test("Every authorized choice records plot memory and applies only its authored effects",()=>{
  const b=next(E.fresh(),"hold-mother");assert.equal(b.traits.empathy,2);assert.equal(b.relationships.mother,3);assert.equal(b.journal.length,1);
  assert.ok(b.journal[0].memory.includes("mẹ"));assert.equal("languageScore" in b,false);
  const wrong=E.step(b,"ask-teacher");assert.equal(wrong.ok,false);assert.equal(b.path.length,1);
+});
+test("staff-office answers do not change relationships with absent people",()=>{
+ const state=go({arrival:"look-around","school-gate":"watch-first","lost-diary":"solo-search"},"staff-office");
+ for(const id of ["say-clearly","say-simple","ask-again"]){
+  const option=D.byId["staff-office"].options.find(item=>item.id===id),after=next(state,id);
+  assert.deepEqual(after.relationships,state.relationships,id+" has no relationship event for someone absent from the counter scene");
+  assert.notDeepEqual(after.traits,state.traits,id+" still records An's chosen response style");
+  assert.ok(option.reply&&option.memory,id+" keeps its own response and memory");
+ }
+});
+test("story replies, props, and callbacks agree on what An said, asked, and wrote",()=>{
+ const option=(scene,id)=>D.byId[scene].options.find(item=>item.id===id),laterText=id=>D.callbacks.find(item=>item.choice===id)?.text||D.scenes.flatMap(scene=>scene.echoes||[]).find(item=>item.if===id)?.text;
+ assert.match(option("noodle-order","share-bowl").reply,/đặt bát mì ở giữa/);
+ assert.match(laterText("share-bowl"),/chia nhau nửa bát mì/);
+ assert.match(option("night","write-promise").reply,/gạch dưới hai chữ 再试/);
+ assert.match(laterText("day2-letter-brave"),/Hai chữ 再试/);
+ assert.doesNotMatch(laterText("day2-letter-brave"),/勇敢/);
+ const ask=option("day2-breakfast","ask-diary-question");
+ assert.match(ask.zh,/是什么意思/);assert.match(ask.vi,/có nghĩa là gì/);
+ assert.match(D.byId["day2-mother-explains"].story,/tìm được nghĩa của chữ An hỏi/);
+ assert.match(laterText("ask-diary-question"),/hiểu nghĩa của chữ cậu hỏi mẹ/);
+ const greet=option("day2-liu","liu-ask");assert.match(greet.vi,/Hỏi thăm bà/);assert.match(greet.reply,/Bà khỏe, cảm ơn/);
+ const menu=option("day2-liu","liu-menu");assert.match(menu.zh,/这个字怎么读/);assert.match(menu.vi,/một chữ mới/);assert.match(menu.reply,/một chữ trên bảng/);
+ assert.match(laterText("liu-menu"),/một chữ An hỏi/);
 });
 test("Typed variants use authored deterministic choices only, and locked utterances cannot bypass condition",()=>{
  const scene=D.byId["school-gate"];assert.equal(E.resolveTyped(scene,"老师，可以帮帮我吗？").id,"ask-teacher");assert.equal(E.resolveTyped(scene,"老师帮帮我").id,"ask-teacher");
