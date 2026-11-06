@@ -29,7 +29,8 @@ test("help is unavailable before a real attempt and finishes as assisted",()=>{
 
 test("unassisted success and skip remain distinct terminal outcomes",()=>{
  const started=Recall.start(null);
- assert.equal(Recall.finish(started,"correct").status,"independent");
+ assert.equal(Recall.finish(started,"correct").status,"unassisted");
+ assert.equal(Recall.clean({version:1,status:"independent",attempts:1,helpUsed:false}).status,"unassisted");
  const skipped=Recall.finish(Recall.fail(started),"skipped");
  assert.equal(skipped.status,"skipped");assert.equal(skipped.attempts,1);
  assert.equal(Recall.finish(skipped,"correct").status,"skipped");
@@ -46,12 +47,19 @@ test("arrival recall shows only a Vietnamese cue before the first attempt",()=>{
  assert.equal(ui.phase(),"session-recall");
  const content=ui.get("content");
  const visible=JSON.stringify(content.children.map(child=>({text:child.textContent,children:child.children?.map(item=>item.textContent)})));
- assert.match(visible,/An nhớ lại cuộc trò chuyện với mẹ/);
+ assert.match(visible,/Mẹ thấy An còn ngập ngừng nên hỏi xem con có ổn không/);
  assert.doesNotMatch(visible,/[\u3400-\u9fff]|pinyin|đáp án|gợi ý|ví dụ|我很好/i);
  assert.equal(ui.get("sessionRecallInput").value,"");
  assert.equal(ui.get("journalToggle").disabled,true);
  assert.equal(ui.get("sparrowBtn").disabled,true);
  assert.equal(JSON.parse(ui.values.get(Recall.storageKey)).status,"in-progress");
+});
+
+test("plot choices are clearly separated from graded language answers",()=>{
+ const ui=boot("arrival",0);while(ui.phase()!=="lesson")ui.get("nextBtn").click();
+ ui.get("answerInput").value="我很好";ui.get("content").children.find(child=>child.tagName==="FORM").fire("submit");
+ assert.equal(ui.phase(),"feedback");ui.get("nextBtn").click();assert.equal(ui.phase(),"choose");
+ assert.ok(ui.get("content").children.flatMap(child=>[child,...child.children]).some(child=>child.textContent.includes("lựa chọn của câu chuyện")&&child.textContent.includes("chưa cần học thuộc")));
 });
 
 test("the same recall follows both arrival choices and keeps their story memories separate",()=>{
@@ -72,6 +80,7 @@ test("failed recall retries, help is gated, and accepted answer stores no raw te
  const storyBefore=ui.values.get("hai-que-huong-branching-novel-v1"),historyBefore=ui.values.get("chimse-branch-learning-v1");
  ui.get("sessionRecallInput").value="不对";
  ui.get("nextBtn").click();
+ assert.match(ui.get("inputMessage").textContent,/Mẹ đang hỏi xem An có ổn không/);
  let state=JSON.parse(ui.values.get(Recall.storageKey));
  assert.equal(state.attempts,1);assert.equal(state.status,"in-progress");
  assert.equal(ui.values.get("hai-que-huong-branching-novel-v1"),storyBefore);

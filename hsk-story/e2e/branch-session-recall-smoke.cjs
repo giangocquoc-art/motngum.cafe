@@ -15,13 +15,13 @@ const executable=process.env.HSK_BROWSER_BIN||"C:\\Program Files (x86)\\Microsof
    localStorage.setItem(D.storageKey,E.exportSave(s));localStorage.setItem(L.storageKey,JSON.stringify(h));localStorage.setItem("chimse-branch-session-recall-v1",JSON.stringify(ChimSeBranchSessionRecall.fresh()));
   });await page.reload();
   assert.equal(await page.locator("#branchShell").getAttribute("data-phase"),"session-recall");
-  const initial=await page.locator("#content").innerText();assert.match(initial,/An nhớ lại cuộc trò chuyện/);assert.doesNotMatch(initial,/[\u3400-\u9fff]|Pinyin|Gợi ý:/);
-  await page.locator("#sessionRecallInput").fill("答错");await page.locator("#nextBtn").click();
+  const initial=await page.locator("#content").innerText();assert.match(initial,/Mẹ thấy An còn ngập ngừng nên hỏi xem con có ổn không/);assert.doesNotMatch(initial,/[\u3400-\u9fff]|Pinyin|Gợi ý:/);
+  await page.locator("#sessionRecallInput").fill("答错");await page.locator("#nextBtn").click();assert.match(await page.locator("#inputMessage").innerText(),/Mẹ đang hỏi xem An có ổn không/);
   let saved=JSON.parse(await page.evaluate(()=>localStorage.getItem("chimse-branch-session-recall-v1")));assert.equal(saved.attempts,1);assert.equal(saved.status,"in-progress");assert.doesNotMatch(JSON.stringify(saved),/答错/);
   await page.reload();assert.equal(await page.locator("#branchShell").getAttribute("data-phase"),"session-recall");assert.equal(await page.locator("#sessionRecallInput").inputValue(),"");
   await page.getByRole("button",{name:"Nhắc An một chút"}).click();assert.match(await page.locator("#content").innerText(),/có thể bắt đầu câu trả lời bằng 我/);
   for(const viewport of [{width:320,height:568},{width:667,height:375},{width:1024,height:768}]){
-   await page.setViewportSize(viewport);
+   await page.setViewportSize(viewport);await page.waitForTimeout(160);
    const geometry=await page.evaluate(()=>{const shell=document.querySelector("#branchShell"),next=document.querySelector("#nextBtn"),stage=document.querySelector("#stage"),reader=document.querySelector(".branch-reader"),r=next.getBoundingClientRect();return {overflow:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,buttonVisible:r.width>0&&r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight,stageHeight:stage.getBoundingClientRect().height,readerHeight:reader.getBoundingClientRect().height,shellHeight:shell.getBoundingClientRect().height,viewportHeight:innerHeight}});
    assert.equal(geometry.overflow,false,JSON.stringify({viewport,geometry}));assert.equal(geometry.buttonVisible,true,JSON.stringify({viewport,geometry}));assert.ok(geometry.stageHeight>0&&geometry.readerHeight>0,JSON.stringify({viewport,geometry}));assert.ok(geometry.shellHeight<=geometry.viewportHeight+1,JSON.stringify({viewport,geometry}));
   }

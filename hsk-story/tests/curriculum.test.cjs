@@ -1,6 +1,7 @@
 const {test}=require("node:test");const assert=require("node:assert/strict");const {readFileSync}=require("node:fs");const {runInNewContext}=require("node:vm");const path=require("node:path");
 function get(file){const x={module:{exports:{}}};runInNewContext(readFileSync(path.join(__dirname,"..",file),"utf8"),x);return x.module.exports}
 const syllabus=get("curriculum-data.js"),blueprint=get("learning-blueprint.js"),content=get("content-manifest.js");
+const beats=get("story-beats.js");
 test("HSK 3.0 roadmap includes levels 1 to 6 with pinned source and pending review state",()=>{
  assert.deepEqual(Array.from(syllabus.levels,x=>x.level),[1,2,3,4,5,6]);
  assert.equal(syllabus.source.framework,"HSK 3.0");assert.equal(syllabus.source.edition,"2025-11");assert.equal(syllabus.source.effective,"2026-07");
@@ -17,6 +18,11 @@ test("first objective and hint describe the check-in An actually hears",()=>{
  assert.match(first.request,/đáp lời mẹ/);
  assert.match(first.hint,/Mẹ đang hỏi thăm An/);
  assert.doesNotMatch(first.hint,/你 là|很 là|吗 đặt cuối/);
+});
+test("first self-introduction gives An's name forms and prepares the teacher's question",()=>{
+ const task=content.scenes[1],gate=beats.beats.find(beat=>beat.id==="gate");
+ assert.match(task.request,/thường dùng tên 安/);assert.match(task.request,/đầy đủ là 明安/);
+ assert.match(gate.story,/Cô Vương.*hỏi tên em/);
 });
 test("all ten stable lesson records point to the blueprint objective IDs",()=>{
  const expected=syllabus.scenes.map((_,index)=>blueprint.objectives.filter(o=>o.curriculumSceneIds.includes(index)).map(o=>o.id).sort());

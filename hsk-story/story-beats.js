@@ -2,7 +2,7 @@
 var HSKStoryBeats=(function(){"use strict";
 var beats=[
 {id:"arrival",before:0,title:"Trước cổng trường mới",zh:"我们到了。",py:"Wǒmen dào le.",vi:"Tới nơi rồi.",story:"Sáng hôm sau, An theo mẹ tới trường mới ở Thành Đô, tay siết quai cặp. Quyển sổ mẹ mở tối qua vẫn nằm trong cặp. Mẹ thấy con ngập ngừng, bèn hỏi thăm."},
-{id:"gate",before:1,title:"Cánh cổng trường",zh:"安站在学校门口。",py:"Ān zhàn zài xuéxiào ménkǒu.",vi:"An đứng trước cổng trường.",story:"An vẫn bối rối trước cổng trường, lo mình tìm nhầm lớp. Một cô giáo bước tới mỉm cười; An quay sang chào cô, lòng nhẹ đi đôi chút."},
+{id:"gate",before:1,title:"Cánh cổng trường",zh:"安站在学校门口。",py:"Ān zhàn zài xuéxiào ménkǒu.",vi:"An đứng trước cổng trường.",story:"Cô Vương mỉm cười chào An rồi hỏi tên em. Tiểu Vũ chừa cho An một chỗ ngồi. An muốn đáp lời cô trước, nhưng trong đầu chỉ có quá nhiều điều mới."},
 {id:"lunch",before:4,title:"Mùi hương trong ngõ",zh:"安和小雨在面馆里。",py:"Ān hé Xiǎoyǔ zài miànguǎn lǐ.",vi:"An và Tiểu Vũ đang ở trong quán mì.",story:"Quyển sổ mẹ tặng đã được tìm lại. Tan học, An và Tiểu Vũ ghé quán mì nhỏ cuối ngõ; An phân vân trước bảng món, nên Tiểu Vũ khích lệ bạn thử gọi món."},
 {id:"noodle-price-question",before:5,kind:"dialogue",speaker:"小雨 · Tiểu Vũ",speakerCharacter:"xiaoyu",title:"Tiểu Vũ hỏi giá",zh:"一碗面多少钱？",py:"Yì wǎn miàn duōshao qián?",vi:"Một bát mì bao nhiêu tiền ạ?",story:"Gọi món xong, Tiểu Vũ quay sang bà Lưu hỏi giá. An nghe bạn hỏi rồi nhìn theo, đợi bà trả lời.",continueLabel:"Bà Lưu trả lời →"},
 {id:"noodle-price-response",before:5,kind:"scene-dialogue",sourceSceneId:5,title:"Bà Lưu báo giá",story:"Bà Lưu báo giá. An nhẩm lại con số vừa nghe trước khi trả tiền.",continueLabel:"An đáp lời bà →"},

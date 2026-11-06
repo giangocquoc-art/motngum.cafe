@@ -41,7 +41,9 @@ Không thêm tiền ảo, bảng xếp hạng, phạt mất chuỗi, AI sinh c�
 
 ## Đợt triển khai kỹ thuật đầu tiên
 
-Đã bổ sung phân đoạn 7 chặng trong code, audit đủ 37 phương án và mục tiêu chung; chưa đo được thời lượng chặng với người học. Chặng đầu có lượt tự nhớ tiếng Trung không chấm điểm sau nhánh An nhìn quanh hoặc đi cùng mẹ, trước hoạt động học tiếp theo. Sai được thử lại; gợi ý chỉ mở sau lượt thử; bỏ qua được; save chỉ ghi số lượt/trạng thái/trợ giúp, không ghi câu đã nhập. Hồi tưởng giữ riêng với save truyện và bằng chứng HSK. Phần này đã qua test logic và Edge smoke ở điện thoại dọc; cần mở rộng kiểm tra viewport và kiểm luồng save tích hợp trước khi coi M1 qua cổng.
+Đã bổ sung phân đoạn 7 chặng trong code, audit đủ 37 phương án và mục tiêu chung; chưa đo được thời lượng chặng với người học. Chặng đầu có lượt tự nhớ tiếng Trung không chấm điểm sau nhánh An nhìn quanh hoặc đi cùng mẹ, trước hoạt động học tiếp theo. Sai được thử lại; gợi ý chỉ mở sau lượt thử; bỏ qua được; save chỉ ghi số lượt/trạng thái/trợ giúp, không ghi câu đã nhập. Trạng thái `unassisted` là một lượt tự nhớ không trợ giúp, không phải kết luận đã thành thạo; `independent` cũ được chuẩn hóa tương thích. Hồi tưởng giữ riêng với save truyện và bằng chứng HSK. Edge qua 320×568, 667×375, 1024×768; cả job browser riêng và Real Chromium desktop/mobile đã qua trên SHA `4dbe678`. M1 vẫn chưa qua cổng vì chưa có lượt chơi trọn chặng với người học, đo thời lượng hay duyệt chuyên môn.
+
+Rà độc lập HSK1 phát hiện cue recall ban đầu mơ hồ; copy đã làm rõ mẹ hỏi An có ổn không mà chưa hiển thị chữ Trung trước lần thử. Các lựa chọn cốt truyện hiện ghi rõ chọn theo ý tiếng Việt, không cần học thuộc câu Trung. Lời dẫn trước task giới thiệu tên được nối trực tiếp với cô Vương hỏi An; tên dùng thường ngày 安 và tên đầy đủ 明安 được giải thích. Đây là hiệu chỉnh biên tập, chưa phải duyệt tiếng Trung chuyên môn.
 
 Tài khoản: lớp snapshot client/server đã được rà riêng cho nâng cấp v1→v2, snapshot phiên bản mới hơn và rollback khi ghi lỗi. Cần chạy lại cùng toàn suite sau khi tích hợp với lượt tự nhớ. Kết quả trên local không chứng minh đồng bộ dịch vụ thật trên Preview.
 

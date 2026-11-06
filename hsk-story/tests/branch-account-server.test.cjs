@@ -10,6 +10,6 @@ test('server sync accepts skipped learning evidence, including prior hint use, w
 
 test('server upgrades v1, validates v2 recall and retains terminal recall after rewind',()=>{
  const v1={version:1,path:[],learning:Array(10).fill(null),draft:null};const migrated=sanitizeSnapshot(v1);assert.equal(migrated.version,2);assert.equal(migrated.recall.status,'unseen');
- migrated.recall={version:1,status:'independent',attempts:1,helpUsed:false};assert.deepEqual(sanitizeSnapshot(migrated).recall,migrated.recall);
+ migrated.recall={version:1,status:'unassisted',attempts:1,helpUsed:false};assert.deepEqual(sanitizeSnapshot(migrated).recall,migrated.recall);
  migrated.recall={version:1,status:'in-progress',attempts:0,helpUsed:false};assert.throws(()=>sanitizeSnapshot(migrated));migrated.version=3;assert.throws(()=>sanitizeSnapshot(migrated));
 });

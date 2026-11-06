@@ -92,7 +92,7 @@ test('a newer record appearing during account use blocks sync and owner changes 
 test('v1 migrates to v2, recall sync preserves terminal records through rewind, and newer data stays untouched',()=>{
  const old={version:1,path:[],learning:Array(10).fill(null),draft:null},migrated=C.normalize(old);
  assert.equal(migrated.version,2);assert.deepEqual(migrated.recall,{version:1,status:'unseen',attempts:0,helpUsed:false});
- const s=storage(),snapshot=C.empty();snapshot.recall={version:1,status:'independent',attempts:1,helpUsed:false};C.apply(s,snapshot);assert.deepEqual(C.capture(s).recall,snapshot.recall);assert.equal(C.hasProgress(snapshot),true);
+ const s=storage(),snapshot=C.empty();snapshot.recall={version:1,status:'unassisted',attempts:1,helpUsed:false};C.apply(s,snapshot);assert.deepEqual(C.capture(s).recall,snapshot.recall);assert.equal(C.hasProgress(snapshot),true);
  const before=JSON.stringify({...snapshot,version:3}),raw=JSON.parse(before);assert.throws(()=>C.normalize(raw));assert.equal(JSON.stringify(raw),before);
  s.setItem(C.keys.recall,'{"version":2,"future":true}');const unchanged=s.getItem(C.keys.recall);assert.throws(()=>C.apply(s,snapshot));assert.equal(s.getItem(C.keys.recall),unchanged);
 });
@@ -104,7 +104,7 @@ test('recall rejects invalid states and only allows in-progress at the school ga
 
 test('a storage failure during apply rolls back path, evidence and recall together',()=>{
  const inner=storage(),s={...inner},initial=C.empty();C.apply(s,initial);const keys=[C.keys.path,C.keys.learning,C.keys.draft,C.keys.recall,require('../duong-re/branch-learning.js').objectiveStorageKey],before=keys.map(k=>inner.getItem(k));
- let fail=true;s.setItem=(key,value)=>{if(key===C.keys.recall&&fail){fail=false;throw new Error('quota')}inner.setItem(key,value)};let next=state();next.recall={version:1,status:'independent',attempts:1,helpUsed:false};assert.throws(()=>C.apply(s,next));assert.deepEqual(keys.map(k=>inner.getItem(k)),before);
+ let fail=true;s.setItem=(key,value)=>{if(key===C.keys.recall&&fail){fail=false;throw new Error('quota')}inner.setItem(key,value)};let next=state();next.recall={version:1,status:'unassisted',attempts:1,helpUsed:false};assert.throws(()=>C.apply(s,next));assert.deepEqual(keys.map(k=>inner.getItem(k)),before);
 });
 
 test('a newer cloud snapshot is rejected before any local bytes change',async()=>{
