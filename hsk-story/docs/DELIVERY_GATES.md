@@ -75,3 +75,9 @@ The shared database URL record applies to both Preview and Production, so migrat
 - ECC audit found that all 14 current multiple-choice review cards authored the correct option first. Rendering now rotates the option array deterministically from the item order plus its saved stage and completed review events. The grader still validates the stable answer ID; a reload presents the same order, and a later completed review rotates positions. No save schema or schedule intervals changed.
 - Verification on the working tree: all 407 Node tests passed; the dedicated review browser flow passed at phone and landscape sizes; the full Edge browser smoke passed 791 layout states. The release package and graph audits pass; package audit still labels hosted/expert gates pending.
 - This correction is not yet accompanied by a user memory study; reviewer/native-speaker and educator sign-off remain open.
+
+### Noodle-shop continuity correction — 2026-11-07
+
+- The day-two noodle-shop scene now opens with bà Lưu greeting An and Tiểu Vũ, matching the available choices to ask after her, offer help, or ask where the noodles go. A regression test checks the setup and eligible choices.
+- All 408 Node tests pass. The serial Edge branch-integration run passed three route states (`care`, `curious-phone`, and `brave-landscape`; 384 states total). Exact-SHA GitHub and Vercel checks for this local correction are pending until it is committed and pushed.
+- This wording correction does not change scene IDs, accepted language answers, learning evidence, or saved route structure. Educator and native-speaker review remain open.

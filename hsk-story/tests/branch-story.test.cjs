@@ -123,6 +123,15 @@ test("Helping Liu yesterday grants a distinct trust task today, not otherwise av
  assert.ok(E.ending(chosen).extra.some(x=>x.includes("kệ mì")));
  assert.equal(E.step(stranger,"liu-stock").ok,false);
 });
+test("Day-two noodle-shop scene opens with a greeting that fits every available response",()=>{
+ const scene=D.byId["day2-liu"];
+ assert.match(scene.story,/Bà Lưu nhận ra hai đứa/);
+ assert.match(scene.story,/Hai đứa tới rồi à/);
+ assert.doesNotMatch(scene.story,/Vào ngồi một lát không/);
+ const ids=E.availableOptions(scene,go(CARE,"day2-liu")).map(option=>option.id);
+ assert.ok(ids.includes("liu-ask"),"the greeting can naturally lead An to ask how bà Lưu is");
+ assert.ok(ids.includes("liu-help"),"the surrounding work can lead An to offer help");
+});
 test("Helping the classroom sparrow with Xiao Yu depends on prior friendship history",()=>{
  const friend=go(CARE,"day2-bird"),solo=go(WONDER,"day2-bird");
  assert.ok(E.availableOptions(D.byId["day2-bird"],friend).some(o=>o.id==="bird-with-friend"));
