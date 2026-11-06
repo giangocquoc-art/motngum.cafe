@@ -14,6 +14,10 @@ The report derives one playable HSK level, eight candidate objectives from uniqu
 
 The existing browser and human review gates still require their own successful evidence on the release SHA; a local audit is not a substitute.
 
+### Exact-SHA evidence — 2026-11-06
+
+Commit `01c2a99fbc33a1d4d67991524ea45b5f2b17b6c5` has successful GitHub Actions results for both configured checks: [HSK Story Regression run 42180445500](https://github.com/giangocquoc-art/motngum.cafe/actions/runs/42180445500) passed the Node regression suite and real Chromium desktop/mobile story smoke; [standalone Chromium run 42180445517](https://github.com/giangocquoc-art/motngum.cafe/actions/runs/42180445517) passed its browser smoke. The local branch-rewind Edge check also passed. These checks cover code and browser flows, not qualified language review, physical-device review, hosted OAuth/AI/email, or learner outcomes. The generated release audit continues to report its generic external evidence fields as pending because it does not ingest these run receipts.
+
 ## Connected platform snapshot (2026-11-04)
 
 The initial platform snapshot was read-only; no rows or secret values were inspected. The following authorized Preview isolation work is recorded separately below.
