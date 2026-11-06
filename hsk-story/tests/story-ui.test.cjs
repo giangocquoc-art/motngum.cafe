@@ -141,6 +141,8 @@ test('the price question and bà Lưu’s response precede the thanks model with
  e.listenBtn.click();assert.equal(t.spoken.at(-1),Content.scenes[5].zh);e.interludeContinue.click();
  assert.equal(e.storyInterlude.dataset.kind,'model');assert.equal(e.speaker.textContent,Content.scenes[5].guidedModel.speaker+' · nhắc An');
  assert.equal(e.dialogueText.textContent,Content.scenes[5].guidedModel.zh);assert.deepEqual(JSON.parse(st[key]).history,history);
+ e.interludeContinue.click();assert.equal(e.dialogueText.textContent,"谢谢您。");assert.equal(e.answerForm.hidden,true);
+ e.interludeContinue.click();assert.equal(e.dialogueText.textContent,"谢谢奶奶。");assert.equal(e.answerForm.hidden,true);
  e.interludeContinue.click();
  assert.equal(e.answerForm.hidden,false);assert.equal(e.answerInput.value,'谢');
  e.answerInput.value='谢谢';e.answerForm.fire('submit');saved=JSON.parse(st[key]);

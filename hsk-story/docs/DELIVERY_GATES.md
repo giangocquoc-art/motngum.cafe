@@ -84,5 +84,5 @@ The shared database URL record applies to both Preview and Production, so migrat
 
 ### HSK1 accepted-answer teaching coverage — 2026-11-07
 
-- The name, counting, and noodle-order practice pages now explain every answer form they accept, with Hanzi, Pinyin, Vietnamese meaning, and a short context note. Stable scene IDs, answer keys, and save data are unchanged. Content manifest is version 1.0.6.
+- The self-introduction, student identity, counting, noodle-order, thanks, and farewell practice pages now explain every answer form they accept, with Hanzi, Pinyin, Vietnamese meaning, and a short context note. Stable scene IDs, answer keys, and save data are unchanged. Content manifest is version 1.0.8.
 - All 409 local Node tests pass; graph audit passes with no consequence or convergence gaps; package-input audit passes. Exact-SHA CI and Vercel evidence for this content update are pending. Editorial and qualified Mandarin review remain open, especially whether each concise restaurant response sounds natural across regions.

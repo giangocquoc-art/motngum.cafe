@@ -31,7 +31,7 @@ test("First-scene check-in, curriculum target, and review item stay aligned; 你
  assert.ok(curriculum.scenes[1].words.some(([phrase])=>phrase==="你好"));
 });
 test("every accepted first check-in form has a localized guided page",()=>{
- const first=content.scenes[0];assert.equal(content.version,"1.0.6");
+ const first=content.scenes[0];assert.equal(content.version,"1.0.8");
  assert.deepEqual(Array.from(first.answers),["我很好","很好","我很好，谢谢","我很好谢谢"]);
  assert.deepEqual(Array.from(first.naturalAnswers),["我还好","还好","我还好，谢谢","我还好谢谢"]);
  const alternative=first.guidedModel.alternatives[0],short=first.guidedModel.alternatives[1],courtesy=first.guidedModel.alternatives[2],courtesyNatural=first.guidedModel.alternatives[3];
@@ -47,8 +47,11 @@ test("every accepted first check-in form has a localized guided page",()=>{
 test("accepted HSK1 answers in the name, counting, and noodle scenes are taught before practice",()=>{
  const cases=[
   {id:1,answers:["我叫安","我叫明安","我是安"],expect:["我叫安","我叫明安","我是安"]},
+  {id:2,answers:["是，我是学生","我是学生","对我是学生","对，我是学生"],expect:["我是学生","是，我是学生","对，我是学生"]},
   {id:3,answers:["三个学生","有三个学生","三个人","有三个人","三个"],expect:["三个学生","有三个学生","三个人","有三个人","三个"]},
-  {id:4,answers:["我想吃面条","我要面条","一碗面条","我想要一碗面条"],expect:["我想吃面条","我要面条","一碗面条","我想要一碗面条"]}
+  {id:4,answers:["我想吃面条","我要面条","一碗面条","我想要一碗面条"],expect:["我想吃面条","我要面条","一碗面条","我想要一碗面条"]},
+  {id:5,answers:["谢谢","谢谢您","谢谢奶奶"],expect:["谢谢","谢谢您","谢谢奶奶"]},
+  {id:6,answers:["好","好的","好啊","可以","好的明天见"],expect:["好","好的","好啊","可以","好的，明天见"]}
  ];
  for(const row of cases){
   const scene=content.scenes[row.id],model=scene.guidedModel;
@@ -59,6 +62,8 @@ test("accepted HSK1 answers in the name, counting, and noodle scenes are taught 
  }
  assert.match(content.scenes[4].guidedModel.alternatives[1].story,/quán ăn/);
  assert.match(content.scenes[3].guidedModel.alternatives[0].story,/有/);
+ assert.match(content.scenes[5].guidedModel.alternatives[0].story,/您/);
+ assert.match(content.scenes[6].guidedModel.alternatives[1].story,/thân mật/);
 });
 test("Every scene has a nonempty localized Mandarin response and accepted answers",()=>{
  content.scenes.forEach((scene,i)=>{assert.ok(scene.zh&&scene.py&&scene.vi&&scene.speaker&&scene.request);
