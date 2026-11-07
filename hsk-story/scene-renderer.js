@@ -99,7 +99,7 @@ function mount(host,id,options){
   }
   // Portrait noodle composition reserves the actual dialogue height before placing any art.
   // Keep sprite proportions; only room/furniture plates adapt to the available picture area.
-  var noodlePortrait=nativeArt&&portrait&&activeScene.background==='noodle-shop',noodleLandscape=nativeArt&&noodleCompact,noodleTop=card?card.bottom-r.top+10:header+8,noodleHeight=Math.max(1,r.height-noodleTop),w=r.width,h=noodleHeight;
+  var noodlePortrait=nativeArt&&(portrait||tabletPortrait)&&activeScene.background==='noodle-shop',noodleLandscape=nativeArt&&noodleCompact,noodleTop=card?card.bottom-r.top+10:header+8,noodleHeight=Math.max(1,r.height-noodleTop),w=r.width,h=noodleHeight;
   // Preserve a readable face guide on narrow phone art plates; grow the actor
   // around its source-position center, then keep the guide itself in the stage.
   if(nativeArt&&r.width<=360&&activeScene.background!=='noodle-shop'){host.querySelectorAll('.cs-actor[data-source-position]').forEach(function(actor){var f=actor.dataset.face.split(',').map(Number),fx=Math.max(.01,f[2]-f[0]),fy=Math.max(.01,f[3]-f[1]),minimum=Math.max(28/fx,28/fy),size=Math.max(actor.getBoundingClientRect().width,minimum),cx=parseFloat(actor.style.left),cy=parseFloat(actor.style.top),minX=-((f[0]+f[2])/2-.5)*size,maxX=r.width-((f[0]+f[2])/2-.5)*size,minY=(card?card.bottom-r.top+6:header+6)-size*(f[1]-.5),maxY=r.height-size*(f[3]-.5);actor.style.width=size+'px';actor.style.left=Math.max(minX,Math.min(maxX,cx))+'px';actor.style.top=Math.max(minY,Math.min(maxY,cy))+'px'})}

@@ -203,6 +203,7 @@
     "noodle-shop": {
       "desktop": "flat/backgrounds/noodle-shop.svg",
       "mobile": "flat/backgrounds/noodle-shop-portrait.svg",
+      "tablet": "flat/backgrounds/noodle-shop-portrait.svg",
       "legacyDesktop": "backgrounds/noodle-shop.webp",
       "legacyMobile": "backgrounds/mobile/mobile-noodle-shop-v2.webp",
       "metadata": {
