@@ -11,7 +11,7 @@ const CARE={"arrival":"hold-mother","school-gate":"ask-friend","lost-diary":"fri
 const WONDER={"arrival":"look-around","school-gate":"watch-first","lost-diary":"solo-search","staff-office":"ask-again","canteen":"read-menu","noodle-order":"try-hot","walk-home":"keep-secret","night":"write-question","day2-breakfast":"ask-diary-question","day2-bird":"bird-quiet","day2-liu":"liu-menu","day2-night":"day2-letter-curious"};
 
 test("Two-day graph has no cycles, dead nodes, missing links or shortcuts around canon",()=>{
- const v=E.validate();assert.deepEqual(Array.from(v.errors),[]);assert.equal(v.branchNodes,12);assert.equal(v.nodeCount,42);
+ const v=E.validate();assert.deepEqual(Array.from(v.errors),[]);assert.equal(v.branchNodes,12);assert.equal(v.nodeCount,45);
  assert.ok(v.structuralPaths>4000);assert.equal(D.scenes.filter(x=>x.kind==="ending").length,1);
  assert.equal(D.byId.epilogue.kind,"milestone");
 });
@@ -77,7 +77,7 @@ test("Every available choice keeps its authored consequence through save replay 
 });
 test("Three distinct An personalities arise from different coherent two-day playthroughs",()=>{
  const b=go(BRAVE),c=go(CARE),w=go(WONDER);
- assert.equal(b.node,"day2-epilogue");assert.equal(b.done,true);
+ assert.equal(b.node,"week-later-ending");assert.equal(b.done,true);
  assert.equal(E.ending(b).key,"courage");assert.equal(E.ending(c).key,"empathy");assert.equal(E.ending(w).key,"curiosity");
  assert.notDeepEqual(b.relationships,c.relationships);assert.notDeepEqual(c.flags,w.flags);
  assert.ok(E.ending(c).extra.some(x=>x.includes("Tiểu Vũ")));
@@ -97,6 +97,14 @@ test("Existing day-one v1 save resumes at end of day one then continues forward 
  const day2=next(restored,"next");assert.equal(day2.node,"day2-arrival");
  const routed=next(day2,"next");assert.equal(routed.node,"day2-guest-arrives");
  assert.equal(routed.flags["invite-friend"],true);assert.equal(routed.journal.length,8);
+});
+test("A completed two-day save resumes from its former ending and keeps its chosen memories",()=>{
+ const completedDayTwo=go(CARE,"day2-epilogue"),saved=E.exportSave(completedDayTwo),restored=E.load(saved);
+ assert.equal(restored.node,"day2-epilogue");assert.equal(restored.done,false);
+ assert.deepEqual(restored.path,completedDayTwo.path);assert.deepEqual(restored.journal,completedDayTwo.journal);
+ assert.equal(restored.flags["day2-letter-kind"],true);
+ const continued=next(restored,"next");assert.equal(continued.node,"week-later-shop");
+ assert.equal(continued.journal.length,completedDayTwo.journal.length);
 });
 test("Day-two invitation opens an actual unique visit; without invitation scene never appears",()=>{
  const invited=go(CARE,"day2-arrival"),other=go(BRAVE,"day2-arrival");

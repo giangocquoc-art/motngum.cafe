@@ -52,12 +52,12 @@ function audit() {
   for (const source of story.scenes) for (const targetId of edges(source)) {
     if (plan.getSegmentForScene(targetId).order < plan.getSegmentForScene(source.id).order) errors.push("non-forward story edge: " + source.id + " → " + targetId);
   }
-  return { errors, nodeCount: story.scenes.length, choiceNodeCount: story.scenes.filter(node => node.kind === "choice").length, optionCount: options.length, taskCount: content.scenes.length, objectiveCount: blueprint.objectives.length, segmentCount: plan.segments.length, structuralPaths: engine.validate().structuralPaths, visibleConsequences, convergence };
+  return { errors, nodeCount: story.scenes.length, choiceNodeCount: story.scenes.filter(node => node.kind === "choice").length, optionCount: options.length, taskCount: learning.total, legacyTaskCount: content.scenes.length, objectiveCount: blueprint.objectives.length, segmentCount: plan.segments.length, structuralPaths: engine.validate().structuralPaths, visibleConsequences, convergence };
 }
 if (require.main === module) {
   const report = audit();
   console.log(`Story session audit: ${report.errors.length ? "FAIL" : "PASS"}`);
-  console.log(`${report.nodeCount} nodes; ${report.choiceNodeCount} choice nodes; ${report.optionCount} options; ${report.taskCount} common tasks; ${report.objectiveCount} HSK1 candidate objectives; ${report.segmentCount} segments.`);
+  console.log(`${report.nodeCount} nodes; ${report.choiceNodeCount} choice nodes; ${report.optionCount} options; ${report.taskCount} branch tasks (${report.legacyTaskCount} legacy HSK1 lesson scenes retained); ${report.objectiveCount} HSK1 candidate objectives; ${report.segmentCount} segments.`);
   console.log(`Engine validator confirms ${report.structuralPaths} structural paths; checks are graph-based and do not enumerate those paths.`);
   console.log(`Later consequence gaps: ${report.visibleConsequences.length}; next-anchor convergence gaps: ${report.convergence.length}.`);
   report.errors.forEach(error => console.error("- " + error));

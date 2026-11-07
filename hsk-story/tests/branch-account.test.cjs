@@ -1,6 +1,7 @@
 const test=require('node:test'), assert=require('node:assert/strict');
 const C=require('../branch-account.js'), E=require('../duong-re/branch-engine.js');
 function storage(){const m=new Map();return {getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)}}
+function goPathToOldEnding(){let s=E.fresh(),limit=0;while(s.node!=="day2-epilogue"){if(++limit>70)throw Error("Could not reach former ending");const scene=E.data.byId[s.node],choice=scene.kind==="choice"?E.availableOptions(scene,s)[0].id:"next",out=E.step(s,choice);if(!out.ok)throw Error(out.error);s=out.state;}return s.path;}
 function state(){const s=E.fresh(), out=E.step(s,E.data.byId[s.node].kind==='choice'?E.availableOptions(E.data.byId[s.node],s)[0].id:'next'); assert.ok(out.ok);return C.normalize({version:1,path:out.state.path,learning:Array(10).fill(null),draft:null})}
 function server(){const users=new Map();return {users,fetch:async (_url,opts)=>{let owner=opts.headers['X-Chimse-Owner'], row=users.get(owner)||{revision:0,snapshot:null};if(opts.method==='PUT'){let data=JSON.parse(opts.body);if(data.revision!==row.revision)return {ok:false,status:409,json:async()=>row};row={revision:row.revision+1,snapshot:data.snapshot};users.set(owner,row)}return {ok:true,status:200,json:async()=>row}}}}
 test('uploads guest progress, preserves separate owners and restores guest after signout',async()=>{let s=storage(),srv=server(),a=C.create({storage:s,fetch:srv.fetch}), progress=state(); C.apply(s,progress);assert.ok((await a.reconcile('alice')).ok);assert.deepEqual(srv.users.get('alice').snapshot,progress);assert.ok(await a.beforeSignOut());await a.afterSignOut();assert.deepEqual(C.capture(s),progress);C.apply(s,C.empty());assert.ok((await a.reconcile('alice')).ok);assert.deepEqual(C.capture(s),progress);assert.ok(await a.beforeSignOut());await a.afterSignOut();assert.deepEqual(C.capture(s),C.empty());});
@@ -66,9 +67,9 @@ test('capture and apply preserve newer local records, owner backups, and restore
   [C.keys.path,newer],[C.keys.learning,newer],[L.objectiveStorageKey,newer],[C.keys.draft,newer],
   [C.keys.learning,'[{"status":"correct","attempts":0,"hint":false,"version":2}]'],
   [C.keys.path,'{"version":1,"path":[{"at":"arrival","choice":"hold-mother","version":2}]}'],
-  ['chimse-branch-pending-reply-v1',newer],['chimse-branch-pending-feedback-v1',newer],[C.keys.meta,newer],[C.keys.guest,'{"version":3}'],
-  [C.keys.cache,JSON.stringify({other:{snapshot:{version:3},revision:7,base:C.empty()}})],
-  [C.keys.restore,JSON.stringify([{owner:'other',snapshot:{version:3},at:1}])]
+  ['chimse-branch-pending-reply-v1',newer],['chimse-branch-pending-feedback-v1',newer],[C.keys.meta,newer],[C.keys.guest,'{"version":4}'],
+  [C.keys.cache,JSON.stringify({other:{snapshot:{version:4},revision:7,base:C.empty()}})],
+  [C.keys.restore,JSON.stringify([{owner:'other',snapshot:{version:4},at:1}])]
  ];
  const keys=[...Object.values(C.keys),L.objectiveStorageKey,'chimse-branch-pending-reply-v1','chimse-branch-pending-feedback-v1','hai-que-huong-progress-v3'];
  for(const [key,raw] of cases){
@@ -89,11 +90,13 @@ test('a newer record appearing during account use blocks sync and owner changes 
  assert.equal(requests,requestCount);assert.deepEqual(keys.map(k=>[k,s.getItem(k)]),before);assert.equal(JSON.parse(s.getItem(C.keys.meta)).owner,'alice');
 });
 
-test('v1 migrates to v2, recall sync preserves terminal records through rewind, and newer data stays untouched',()=>{
+test('v1 and v2 migrate to v3, recall sync preserves terminal records through rewind, and newer data stays untouched',()=>{
  const old={version:1,path:[],learning:Array(10).fill(null),draft:null},migrated=C.normalize(old);
- assert.equal(migrated.version,2);assert.deepEqual(migrated.recall,{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'});
+ assert.equal(migrated.version,3);assert.equal(migrated.learning.length,12);assert.deepEqual(migrated.recall,{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'});
+ const oldV2={version:2,path:[],learning:Array(10).fill(null),draft:null,recall:{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'}};assert.equal(C.normalize(oldV2).version,3);
+ const completedPath=E.load({version:1,path:goPathToOldEnding()}).path;const completedV2=C.normalize({version:2,path:completedPath,learning:Array.from({length:10},(_,i)=>i===9?{status:'correct',attempts:1,hint:false}:null),draft:null,recall:{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'}});assert.equal(completedV2.learning[9].status,'correct');assert.deepEqual(completedV2.learning.slice(10),[null,null]);
  const s=storage(),snapshot=C.empty();snapshot.recall={version:2,status:'unassisted',attempts:1,helpUsed:false,boundary:'continued'};C.apply(s,snapshot);assert.deepEqual(C.capture(s).recall,snapshot.recall);assert.equal(C.hasProgress(snapshot),true);
- const before=JSON.stringify({...snapshot,version:3}),raw=JSON.parse(before);assert.throws(()=>C.normalize(raw));assert.equal(JSON.stringify(raw),before);
+ const before=JSON.stringify({...snapshot,version:4}),raw=JSON.parse(before);assert.throws(()=>C.normalize(raw));assert.equal(JSON.stringify(raw),before);
  s.setItem(C.keys.recall,'{"version":3,"future":true}');const unchanged=s.getItem(C.keys.recall);assert.throws(()=>C.apply(s,snapshot));assert.equal(s.getItem(C.keys.recall),unchanged);
 });
 test('recall rejects invalid states and only allows in-progress at the school gate after arrival',()=>{
@@ -108,6 +111,6 @@ test('a storage failure during apply rolls back path, evidence and recall togeth
 });
 
 test('a newer cloud snapshot is rejected before any local bytes change',async()=>{
- const s=storage();C.apply(s,state());s.setItem('hai-que-huong-progress-v3','legacy');const before=[...Object.values(C.keys),'hai-que-huong-progress-v3'].map(k=>[k,s.getItem(k)]);let a=C.create({storage:s,fetch:async()=>({ok:true,status:200,json:async()=>({revision:7,snapshot:{version:3,path:[],learning:[],draft:null}})})});
+ const s=storage();C.apply(s,state());s.setItem('hai-que-huong-progress-v3','legacy');const before=[...Object.values(C.keys),'hai-que-huong-progress-v3'].map(k=>[k,s.getItem(k)]);let a=C.create({storage:s,fetch:async()=>({ok:true,status:200,json:async()=>({revision:7,snapshot:{version:4,path:[],learning:[],draft:null}})})});
  assert.equal((await a.reconcile('alice')).ok,false);assert.deepEqual(before.map(([k])=>[k,s.getItem(k)]),before);
 });

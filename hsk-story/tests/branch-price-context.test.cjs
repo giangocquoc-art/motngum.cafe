@@ -40,3 +40,14 @@ test('a completed thanks task and an existing feedback save never reopen the pri
  assert.equal(feedback.phase(),'listen');assert.equal(feedback.get('branchShell').dataset.lesson,'6');
  const finished=boot('walk-home',10);assert.equal(finished.phase(),'read');until(finished,'choose');assert.equal(finished.get('branchShell').dataset.lesson,'');assert.deepEqual(finished.writes,[]);
 });
+
+test('week-later recalls show a contextual reply after the learner answers',()=>{
+ for(const [anchor,completed,index,answer,reply] of [
+  ['week-later-shop',10,10,'我想吃面条','好，还是老样子。'],
+  ['week-later-home',11,11,'十块钱','你记得真清楚。']
+ ]){
+  const ui=boot(anchor,completed);until(ui,'lesson');assert.equal(ui.get('branchShell').dataset.lesson,String(index));
+  ui.get('answerInput').value=answer;ui.get('content').children.find(child=>child.tagName==='FORM').fire('submit');
+  assert.equal(ui.phase(),'feedback');assert.equal(ui.get('content').children[0].textContent,reply);
+ }
+});

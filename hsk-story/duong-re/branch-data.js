@@ -111,7 +111,10 @@ C("day2-letter-brave","我可以慢慢学，也可以勇敢说。","Wǒ kěyǐ m
 C("day2-letter-kind","我想多听别人说话。","Wǒ xiǎng duō tīng biérén shuōhuà.","Viết rằng mình muốn lắng nghe người khác.","day2-epilogue",{empathy:2},{xiaoyu:1,liu:1},"An nhận ra lắng nghe cũng là một cách mở đường.","An vẽ bốn chiếc ghế bên một bàn ăn ấm.",["我想听别人说话","我想多听"]),
 C("day2-letter-curious","我还有很多问题。","Wǒ hái yǒu hěn duō wèntí.","Giữ lại những câu hỏi chưa được trả lời.","day2-epilogue",{curiosity:2},{wang:1},"An giữ lại câu hỏi mình từng ngại nói ra.","Bên chữ 问题, An chấm thêm một dấu hỏi màu xanh.",["我有很多问题","我还想问"])
 ],[{if:"confess-yesterday",text:"An nhớ buổi sáng mẹ ngồi lại nghe con kể nỗi sợ hôm qua."},{if:"bird-with-friend",text:"Tiểu Vũ vẫn giữ chiếc lông chim sẻ ở góc vở."},{if:"liu-stock",text:"Bà Lưu đã tin giao An chiếc kệ đựng mì, điều An không tưởng tới trong ngày đầu."}]),
-{id:"day2-epilogue",kind:"ending",place:"home",title:"Ngày mai còn một trang nữa",speaker:"Minh An",story:"An khép sổ sau hai ngày đầu tiên. Cậu vẫn đọc nhầm vài chữ, vẫn có chuyện phải lấy hết hơi mới dám hỏi. Nhưng ngoài cửa sổ đã có một lối quen để tới trường, và cậu đã gặp những người mình muốn gặp lại. An đặt bút vào trang tiếp theo, để dành cho ngày mai.",options:[]}
+P("day2-epilogue","home","Ngày mai còn một trang nữa","Minh An","An khép sổ sau hai ngày đầu tiên. Cậu vẫn đọc nhầm vài chữ, vẫn có chuyện phải lấy hết hơi mới dám hỏi. Nhưng ngoài cửa sổ đã có một lối quen để tới trường, và cậu đã gặp những người mình muốn gặp lại. An đặt bút vào trang tiếp theo. Một tuần sau, cậu lại ghé quán mì bà Lưu, lần này muốn thử xem mình còn nhớ được bao nhiêu.","week-later-shop"),
+P("week-later-shop","canteen","Một tuần sau, ở quán mì","刘奶奶 · Bà Lưu","Bà Lưu nhận ra An và Tiểu Vũ. Mùi nước dùng quen thuộc khiến An nhớ đến lần đầu cậu ngồi ở chiếc bàn này. Bà hỏi An muốn ăn gì; cậu không mở sổ, cũng chưa nhìn thực đơn. An hít một hơi, định tự gọi món trước.","week-later-home"),
+P("week-later-home","home","Mẹ hỏi về bữa mì","Mẹ","Tối về, An kể với mẹ chuyện ghé quán bà Lưu. Mẹ hỏi bát mì hôm nay giá bao nhiêu. An nhìn tờ hóa đơn úp cạnh quyển sổ, thử nhớ lại lời bà Lưu trước khi lật nó lên.","week-later-ending"),
+{id:"week-later-ending",kind:"ending",place:"home",title:"Một câu còn nhớ",speaker:"Minh An",story:"An lật hóa đơn lại rồi cất nó vào sổ. Sẻ nghiêng đầu bên cửa sổ, chờ cậu viết xong. Có câu An nhớ ngay, có câu cậu phải nghĩ một lúc; cả hai đều là cách để ngày mai bắt đầu.",options:[]}
 ];
 var callbacks=[
  {choice:"look-around",at:"day2-arrival",text:"An nhớ tấm biển nhỏ trên phố hôm qua. Vẫn còn một chữ cậu chưa hiểu; cậu muốn hỏi Tiểu Vũ khi tới lớp."},
@@ -138,6 +141,6 @@ var callbacks=[
 ];
 var byId=Object.create(null);scenes.forEach(function(s){byId[s.id]=s;});
 var chapters=[{name:"Sáng đầu đến trường",id:"arrival"},{name:"Lớp học mới",id:"school-gate"},{name:"Quyển sổ biến mất",id:"lost-diary"},{name:"Tan học ghé quán",id:"canteen"},{name:"Về đến nhà",id:"walk-home"},{name:"Trang sổ",id:"night"}];
-chapters.push({name:"Sáng thứ hai",id:"day2-arrival"},{name:"Chim sẻ trong lớp",id:"day2-bird"},{name:"Quán mì quen",id:"day2-liu"},{name:"Trang sổ thứ hai",id:"day2-night"});
+chapters.push({name:"Sáng thứ hai",id:"day2-arrival"},{name:"Chim sẻ trong lớp",id:"day2-bird"},{name:"Quán mì quen",id:"day2-liu"},{name:"Trang sổ thứ hai",id:"day2-night"},{name:"Một tuần sau",id:"week-later-shop"});
 return {version:2,storageKey:"hai-que-huong-branching-novel-v1",start:"arrival",scenes:scenes,byId:byId,chapters:chapters,callbacks:callbacks};
 });
