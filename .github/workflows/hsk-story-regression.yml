@@ -4,10 +4,32 @@ on:
     branches: [main]
     paths:
       - "hsk-story/**"
+      - "app/**"
+      - "components/**"
+      - "lib/**"
+      - "public/**"
+      - "integrations/**"
+      - "scripts/**"
+      - "package.json"
+      - "next.config.*"
+      - "vite.config.*"
+      - "postcss.config.*"
+      - "tailwind.config.*"
       - ".github/workflows/hsk-story-regression.yml"
   pull_request:
     paths:
       - "hsk-story/**"
+      - "app/**"
+      - "components/**"
+      - "lib/**"
+      - "public/**"
+      - "integrations/**"
+      - "scripts/**"
+      - "package.json"
+      - "next.config.*"
+      - "vite.config.*"
+      - "postcss.config.*"
+      - "tailwind.config.*"
       - ".github/workflows/hsk-story-regression.yml"
 permissions:
   contents: read
@@ -27,7 +49,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for script in hsk-story/*.js; do node --check "$script"; done
+          while IFS= read -r -d '' script; do node --check "$script"; done < <(find hsk-story -type f -name '*.js' -not -path 'hsk-story/node_modules/*' -not -path 'hsk-story/art/*' -print0)
+      - name: Audit release package inputs
+        run: node hsk-story/scripts/audit-release.cjs --check
       - name: Run HSK regression suite
         run: node --test hsk-story/tests/*.test.cjs
 

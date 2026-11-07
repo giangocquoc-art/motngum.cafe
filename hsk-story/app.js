@@ -6,7 +6,7 @@ var SCENES=HSKContent.scenes,REPLIES=HSKContent.replies;
 var $=function(id){return document.getElementById(id)};
 var KEY="hai-que-huong-progress-v3",PREVIOUS_KEY="hai-que-huong-progress-v2",OLD_KEY="hai-que-huong-progress-v1";
 var state={step:0,history:[],done:false,pinyin:true,vi:true,attempts:0,hintUsed:false,solved:false,busy:false,recognizer:null,draft:"",examHelp:false,storyChoices:{},storyBeats:[],vocabSeen:[],encounter:HSKEncounter.initial(),encounterDraft:"",worldSeen:{},worldFocus:{},worldOpen:false,skillSampler:HSKSkillSampler.initial(),practiceOpen:false};
-var toastTimer=null,returnFocus=null,SCENE_TOTAL=SCENES.length,EXAM_START=HSKCurriculum.scenes.findIndex(function(x){return x.kind==="checkpoint"});
+var toastTimer=null,returnFocus=null,interludeModelStep=-1,interludeModelPage=0,SCENE_TOTAL=SCENES.length,EXAM_START=HSKCurriculum.scenes.findIndex(function(x){return x.kind==="checkpoint"});
 if(typeof HSKStoryThreads==="undefined"||HSKStoryThreads.validate(HSKCurriculum,HSKContent).length||typeof HSKSceneLayers==="undefined"||typeof HSKSaveIO==="undefined"||typeof HSKStoryRuntime==="undefined"||HSKStoryRuntime.version!==4||typeof HSKStoryGraph==="undefined"||HSKStoryGraph.validate(HSKContent,HSKCurriculum,HSKStoryBeats,HSKStoryDirector,HSKEncounter).length||typeof HSKSceneWorld==="undefined"||HSKSceneWorld.validate(HSKStoryGraph).length||typeof HSKSkillSampler==="undefined"||HSKSkillSampler.validate(HSKStoryGraph,HSKCurriculum).length||typeof HSKEncounter==="undefined"||HSKEncounter.validate().length||typeof HSKContent==="undefined"||HSKContent.validate(HSKCurriculum).length||typeof HSKLearningKit==="undefined"||typeof HSKStoryDirector==="undefined"||typeof HSKStoryBeats==="undefined"||HSKStoryBeats.validate(SCENE_TOTAL,EXAM_START).length||HSKStoryDirector.validate(SCENE_TOTAL,EXAM_START).length||HSKCurriculum.validate().length||HSKCurriculum.scenes.length!==SCENE_TOTAL||REPLIES.length!==SCENE_TOTAL)throw Error("Story content contract invalid");
 function readSafe(k){return HSKSaveIO.readSafe(localStorage,k)}
 window.addEventListener("chimse-ai-helped",function(event){
@@ -316,15 +316,21 @@ function pendingModel(){
  return !state.done&&state.step<EXAM_START&&!state.history[state.step]&&!state.vocabSeen.includes(state.step)?SCENES[state.step].guidedModel:null;
 }
 function renderStoryInterlude(){
- var story=HSKStoryBeats.pending(state.step,state.storyBeats),model=!story&&pendingModel(),b=story||model;
+ var story=HSKStoryBeats.pending(state.step,state.storyBeats),model=!story&&pendingModel(),b=story?HSKStoryBeats.resolve(story,HSKContent):model;
+ var dialogue=story&&(story.kind==="dialogue"||story.kind==="scene-dialogue");
+ if(model&&interludeModelStep!==state.step){interludeModelStep=state.step;interludeModelPage=0;}if(!model){interludeModelStep=-1;interludeModelPage=0;}
  $("storyInterlude").hidden=!b;
- $("storyInterlude").dataset.kind=model?"model":"story";
+ $("storyInterlude").dataset.kind=model?"model":dialogue?"dialogue":"story";
  if(!b)return false;
- $("interludeHeading").textContent=b.title;$("interludeStory").textContent=b.story;
- $("speaker").textContent=model?(model.speaker||SCENES[state.step].speaker)+" · nhắc An":"旁白 · Người kể chuyện";$("sceneTag").textContent=model?"CÂU AN TẬP NÓI":"TRANG TRUYỆN";
- $("interludeContinue").textContent=model?"Thử nói cùng An ↗":"Đọc tiếp câu chuyện ↗";
- if(model&&(model.speakerCharacter||SCENES[state.step].speakerCharacter))HSKSceneLayers.setExpression($("stageIllustration"),model.speakerCharacter||SCENES[state.step].speakerCharacter,"speaking");
- $("dialogueText").textContent=b.zh;$("pinyinText").textContent=b.py;$("vietText").textContent=b.vi;
+ var alternatives=$("interludeAlternatives"),pages=model&&Array.isArray(model.alternatives)?model.alternatives:[],pageCount=1+pages.length,modelPage=model?interludeModelPage:0,alternative=model&&modelPage>0?pages[modelPage-1]:null;
+ $("interludeHeading").textContent=alternative?(alternative.title||alternative.label||"Cách nói thêm"):b.title;$("interludeStory").textContent=alternative?(alternative.story||""):b.story;alternatives.replaceChildren();alternatives.hidden=true;
+ $("interludePrev").hidden=!model||pageCount<2;$("interludePageLabel").hidden=!model||pageCount<2;$("interludePrev").disabled=modelPage===0;$("interludePageLabel").textContent="Cách "+(modelPage+1)+" / "+pageCount;
+ $("speaker").textContent=model?(model.speaker||SCENES[state.step].speaker)+" · nhắc An":dialogue?b.speaker:"旁白 · Người kể chuyện";$("sceneTag").textContent=model?"CÂU AN TẬP NÓI":dialogue?"TRÒ CHUYỆN":"TRANG TRUYỆN";
+ $("interludeContinue").textContent=model?(modelPage<pageCount-1?"Cách nói tiếp →":"Thử nói cùng An ↗"):dialogue?b.continueLabel:"Đọc tiếp câu chuyện ↗";
+ if(model&&(model.speakerCharacter||SCENES[state.step].speakerCharacter))HSKSceneLayers.setSpeaker($("stageIllustration"),model.speakerCharacter||SCENES[state.step].speakerCharacter);
+ if(dialogue)HSKSceneLayers.setSpeaker($("stageIllustration"),b.speakerCharacter);
+ $("dialogueText").textContent=alternative?alternative.zh:b.zh;$("pinyinText").textContent=alternative?alternative.py:b.py;$("vietText").textContent=alternative?alternative.vi:b.vi;
+ $("dialogueText").lang="zh-CN";$("pinyinText").lang="zh-Latn-pinyin";
  $("userInstruction").hidden=true;$("sceneObjective").hidden=true;
  $("answerForm").hidden=true;$("sentenceBuilder").hidden=true;$("learningStrip").hidden=true;
  $("vocabRevealBtn").hidden=true;$("openBuilderBtn").hidden=true;$("hintBtn").hidden=true;$("assistBtn").hidden=true;
@@ -333,9 +339,10 @@ function renderStoryInterlude(){
 }
 function continueStoryInterlude(){
  if($("gameOverlay").hidden)return;
- var b=HSKStoryBeats.pending(state.step,state.storyBeats);
+ var b=HSKStoryBeats.pending(state.step,state.storyBeats),model=b?null:pendingModel(),pageCount=model&&Array.isArray(model.alternatives)?1+model.alternatives.length:1;
+ if(model&&interludeModelPage<pageCount-1){interludeModelPage++;renderStep();$("interludeContinue").focus();return;}
  if(b)state.storyBeats=HSKStoryBeats.mark(state.storyBeats,b.id);
- else if(pendingModel()){state.hintUsed=true;state.vocabSeen.push(state.step)}
+ else if(model){state.hintUsed=true;state.vocabSeen.push(state.step);interludeModelPage=0;interludeModelStep=-1;}
  else return;
  save();renderStep();($("storyInterlude").hidden?(state.solved?$("nextBtn"):$("answerInput")):$("interludeContinue")).focus();
 }
@@ -374,7 +381,9 @@ function renderStoryChoice(){
  return true;
 }
 function updateResumeLabel(){
- $("resumeBtn").firstChild.textContent=state.done?"Xem lại câu chuyện ":"Tiếp tục câu chuyện ";
+ var saved=readSafe(KEY),legacy=state.history.some(Boolean)||!!(saved&&saved.v===3&&Array.isArray(saved.history));$("resumeBtn").hidden=!legacy;$("startBtn").hidden=!legacy;
+ $("resumeBtn").firstChild.textContent=state.done?"Xem lại lượt luyện ":"Tiếp tục lượt luyện cũ ";
+ var branch=readSafe("hai-que-huong-branching-novel-v1");if($("branchStart"))$("branchStart").textContent=branch&&branch.version===1&&Array.isArray(branch.path)?"Tiếp tục chuyện của An ↗":"Bước vào câu chuyện ↗";
 }
 function showCompletion(){
  var summary=HSKCore.summarize(state.history,SCENE_TOTAL,EXAM_START);
@@ -460,7 +469,7 @@ function renderStep(){
  if(state.done)showCompletion();
  else {
   var blocked=renderEncounter()||renderSkillSampler()||renderStoryInterlude();
-  if(!blocked&&SCENES[state.step].speakerCharacter)HSKSceneLayers.setExpression($("stageIllustration"),SCENES[state.step].speakerCharacter,"speaking");
+  if(!blocked&&SCENES[state.step].speakerCharacter)HSKSceneLayers.setSpeaker($("stageIllustration"),SCENES[state.step].speakerCharacter);
   if(!blocked&&state.history[state.step])displayResolved();
   $("practiceOpenBtn").hidden=blocked||state.done||state.step<EXAM_START||!HSKSkillSampler.current(state.skillSampler)||!!HSKStoryBeats.pending(state.step,state.storyBeats);
   renderWorld();
@@ -592,6 +601,7 @@ $("tileClear").addEventListener("click",function(){useTile("__clear")});
 $("openBuilderBtn").addEventListener("click",openBuilder);
 $("builderClose").addEventListener("click",function(){$("sentenceBuilder").hidden=true;$("openBuilderBtn").hidden=false;$("gameShell").classList.remove("builder-open");$("openBuilderBtn").focus()});
 $("interludeContinue").addEventListener("click",continueStoryInterlude);
+$("interludePrev").addEventListener("click",function(){if(interludeModelPage<1)return;interludeModelPage--;renderStep();$("interludePrev").focus()});
 $("skillListen").addEventListener("click",playSkillSample);
 $("practiceOpenBtn").addEventListener("click",openPractice);
 $("practiceCloseBtn").addEventListener("click",closePractice);

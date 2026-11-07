@@ -95,7 +95,7 @@ test("Intro four low-stakes visual guesses can be played through and revisited",
  assert.equal(saved(t).quizIndex,4);
  e.nextBtn.click();
  assert.equal(e.position.textContent,"TRANG 09 / 09");assert.equal(saved(t).finished,true);
- assert.match(e.nextBtn.textContent,/HSK 1/);e.nextBtn.click();assert.equal(t.window.location.href,"/?play=hsk1");
+ assert.match(e.nextBtn.textContent,/chuyện của An/);e.nextBtn.click();assert.equal(t.window.location.href,"/duong-re/");
  e.backBtn.click();assert.equal(e.position.textContent,"TRANG 08 / 09");
 });
 test("Intro ending teaches the phrase shown in the scene instead of a different lesson",()=>{
@@ -105,7 +105,7 @@ test("Intro ending teaches the phrase shown in the scene instead of a different 
  assert.equal(phrase.children[0].textContent,"明天见！");
  assert.equal(phrase.children[1].textContent,"Míngtiān jiàn!");
  assert.equal(phrase.children.length,2,"show the translation after the learner makes a meaning choice");
- assert.match(D.stages[8].narrative,/Mẹ.*“明天见！”/);
+ assert.match(D.stages[8].narrative,/mẹ.*“明天见！”/i);
  const question=card.children.find(x=>x.className==="ending-question");
  assert.match(question.textContent,/Mẹ vừa nói câu này/);
  const choices=card.children.find(x=>x.className==="quiz-choices ending-choices");

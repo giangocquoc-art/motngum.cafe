@@ -25,7 +25,9 @@ Trình tự chất lượng: bộ mẫu nhân vật → cảnh quán mì đủ l
 
 ## Phạm vi và tính toàn vẹn
 
-Hoàn thiện Nhập môn, tập HSK1 demo hiện có, tìm sổ, hai lựa chọn, kết thúc và góc ôn. Chưa mở rộng HSK2–5, AI kể truyện tự do, tài khoản hoặc đồng bộ database. Đây chưa phải toàn bộ đại cương HSK1 hay kỳ thi chứng chỉ.
+Lộ trình học dùng HSK 3.0 bậc 1–6, theo bản syllabus 2025-11 có hiệu lực 2026-07; không trộn chương trình sáu cấp cũ. Blueprint ghi năm thành phần và trang nguồn cho cả sáu bậc. Bậc 1 hiện có demo, nhưng đối chiếu từng mục và duyệt giáo viên còn thiếu; bậc 2–6 là khung truyện, chưa có syllabus mapping và không chơi được. Mỗi bậc chỉ phát hành sau khi đối chiếu nội dung, rà tiếng Trung/Pinyin với người đủ chuyên môn và đạt kiểm thử. Xem [HSK3_SOURCE_AUDIT.md](../HSK3_SOURCE_AUDIT.md).
+
+Trong truyện, lựa chọn tạo cảnh phản hồi riêng, ký ức và hệ quả có callback; tuyến hội tụ trước mục tiêu học tiếp. Mọi tuyến có cùng mục tiêu và cơ hội luyện. Sai, xin gợi ý, xem mẫu hoặc bỏ qua chỉ ghi bằng chứng học; không đổi nhánh, quan hệ, tính cách hay kết cục. Bài sai cho thử lại; bỏ qua không được tính là nắm vững. Xem [CONTENT_CONTRACT.md](../CONTENT_CONTRACT.md).
 
 Giữ thứ tự/ID 10 cảnh, tập đáp án chấp nhận, quy tắc trợ giúp và kết quả lưu. V3 `hai-que-huong-progress-v3` là nguồn tiến độ; V4 là shadow. Nhập môn/ôn lưu riêng. Trợ giúp, sổ tay, Sẻ và lời dẫn không tiết lộ đáp án checkpoint. Nhánh phải quay về mục tiêu học bắt buộc. Xem [CONTENT_CONTRACT.md](../CONTENT_CONTRACT.md).
 

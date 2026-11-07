@@ -36,6 +36,13 @@
       "desktop": "flat/backgrounds/bedroom.svg",
       "mobile": "flat/backgrounds/bedroom-portrait.svg",
       "compact": "flat/backgrounds/bedroom-compact.svg"
+    },
+    "day2-kitchen": {
+      "desktop": "flat/backgrounds/day2-kitchen.svg",
+      "mobile": "flat/backgrounds/day2-kitchen-portrait.svg",
+      "tablet": "flat/backgrounds/day2-kitchen-tablet.svg",
+      "wide": "flat/backgrounds/day2-kitchen-wide.svg",
+      "compact": "flat/backgrounds/day2-kitchen-compact.svg"
     }
   },
   "sprites": {
@@ -217,6 +224,19 @@
         0.05,
         0.7,
         0.44
+      ]
+    },
+    "classmate": {
+      "asset": "flat/characters/classmate-sage-v1.webp",
+      "format": "webp",
+      "frameAssets": {
+        "attentive": "flat/characters/classmate-sage-v1.webp"
+      },
+      "face": [
+        0.36,
+        0.13,
+        0.66,
+        0.34
       ]
     }
   },

@@ -126,3 +126,5 @@ body:has(.cs-sparrow) .game-brand-mark {
   .intro-screen .chimse-brand-copy small,
   .review-screen .chimse-brand-copy small { display: none; }
 }
+/* The scene contains the mascot; navigation uses its word seal instead of a second bird. */
+.sparrow-word-seal{display:inline-grid!important;place-items:center;flex:none;background:#daebea;color:#28434b;border:1px solid #546365;border-radius:50%;font-family:"Noto Sans SC",sans-serif;font-size:18px;line-height:1}

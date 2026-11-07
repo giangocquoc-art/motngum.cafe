@@ -5,6 +5,8 @@ var events=[
 {id:"hsk1.e01.story.arrival",before:sceneIds[0],kind:"interlude",sourceId:"arrival"},
 {id:"hsk1.e01.story.gate",before:sceneIds[1],kind:"interlude",sourceId:"gate"},
 {id:"hsk1.e01.story.lunch",before:sceneIds[4],kind:"interlude",sourceId:"lunch"},
+{id:"hsk1.e01.story.noodle-price-question",before:sceneIds[5],kind:"interlude",sourceId:"noodle-price-question"},
+{id:"hsk1.e01.story.noodle-price-response",before:sceneIds[5],kind:"interlude",sourceId:"noodle-price-response"},
 {id:"hsk1.e01.story.homecoming",before:sceneIds[6],kind:"interlude",sourceId:"way-home"},
 {id:"hsk1.e01.story.class-test",before:sceneIds[7],kind:"interlude",sourceId:"school-test"},
 {id:"hsk1.e01.quest.diary",before:sceneIds[4],kind:"encounter",sourceId:"lost-notebook"},
@@ -43,6 +45,7 @@ function validate(content,curriculum,storyBeats,director,encounter){
   if(e.kind==="branch"&&(!director||!director.points.some(p=>p.id===e.sourceId)))problems.push("Missing branch "+e.id);
   if(e.kind==="encounter"&&(!encounter||encounter.content.id!==e.sourceId))problems.push("Missing encounter "+e.id);
  });
+ if(storyBeats&&Array.isArray(storyBeats.beats))storyBeats.beats.forEach(function(beat){var linked=events.filter(e=>e.kind==="interlude"&&e.sourceId===beat.id);if(linked.length!==1||indexOf(linked[0].before)!==beat.before)problems.push("Story dialogue needs one event at its authored scene: "+beat.id);});
  var targets=new Set(),walked=new Set(),current=sceneIds[0];
  sceneIds.forEach(function(id){if(!Object.prototype.hasOwnProperty.call(transitions,id))problems.push("Missing required transition "+id);
   var target=transitions[id];if(target!==null){if(indexOf(target)<0)problems.push("Invalid transition "+id+" -> "+target);else targets.add(target)}

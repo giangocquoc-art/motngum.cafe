@@ -97,11 +97,13 @@ button.notebook-word:hover,button.notebook-word:focus-visible{background:#f4ead7
 
 /* V6 narrative pages and opt-in vocabulary */
 .story-interlude{border:1.5px solid #8d6b55;background:#f8e9d2;padding:14px 19px;margin:0 0 12px;max-height:41vh;overflow:auto}
+.interlude-page-nav{display:flex;align-items:center;gap:8px;margin-top:5px}.interlude-page-nav button{min-height:40px;padding:5px 9px;font-size:11px}.interlude-page-nav span{font-size:10px;color:#745f4e;white-space:nowrap}
 .story-interlude-heading{font-size:9px;font-weight:800;color:#994b37;letter-spacing:1.4px}
 .story-interlude h3{font-family:"Playfair Display","Noto Sans SC",serif;font-size:20px;margin:8px 0}
 .story-interlude p{font-size:12px;line-height:1.85;color:#584d41;margin:6px 0}
 .story-interlude .interlude-translation{font-size:11px;color:#887361;border-top:1px solid #cdb79f;padding-top:8px}
-.interlude-continue{margin-top:8px;background:#a74d36;color:white;border:1px solid #8d3f2c;font-size:12px;font-weight:700;padding:11px 16px}
+.interlude-alternatives{border-top:1px solid #cdb79f;margin-top:8px;padding-top:4px}.interlude-alternative{font-size:11px!important;line-height:1.5!important;margin:5px 0!important;color:#584d41}.interlude-alternative::first-line{font-weight:700}
+.interlude-continue{flex:1 1 auto;min-width:0;margin-top:0;background:#a74d36;color:white;border:1px solid #8d3f2c;font-size:12px;font-weight:700;padding:11px 16px}
 .interlude-continue:hover{background:#803923}
 .vocab-reveal{border:1px dashed #9c826b;background:#fbf4e6;color:#805037;font-size:11px;padding:8px 11px;margin:5px 0 9px;text-align:left}
 .vocab-reveal:hover{background:#f3e2c7}
@@ -478,7 +480,8 @@ body.game-active>.site-header,body.game-active>.sparrow-home,body.game-active>.s
 .game-shell[data-mode] #storyInterlude{margin:0 auto;padding:3px 0;border:0;background:transparent}
 #storyInterlude h3{font-size:19px;margin:3px 0 6px}
 #storyInterlude>p{font-size:12px;line-height:1.5;margin:5px 0}
-#storyInterlude .interlude-continue{min-height:34px;padding:7px 12px;margin-top:5px}
+#storyInterlude .interlude-continue{min-height:34px;padding:7px 12px;margin-top:0}
+#storyInterlude .interlude-page-nav{margin-top:3px}#storyInterlude .interlude-page-nav button{min-height:34px;padding:4px 8px}
 .game-shell[data-mode] #encounterPanel{width:min(100%,920px);margin:0 auto;padding:0;border:0;box-shadow:none;background:transparent;max-height:none;overflow:visible}
 #encounterPanel h3{font-size:18px;margin:3px 0}
 #encounterPanel .encounter-body{font-size:12px;line-height:1.4;margin:5px 0}

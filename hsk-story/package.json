@@ -1,0 +1,17 @@
+{
+  "name": "chim-se",
+  "private": true,
+  "version": "3.1.0",
+  "type": "commonjs",
+  "scripts": {
+    "build:branch-account": "node scripts/build-branch-account.cjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "1.2.0",
+    "better-auth": "1.7.14",
+    "pg": "8.16.3"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

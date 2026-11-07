@@ -130,8 +130,8 @@ async function goIntro(page,label){
  await page.screenshot({path:path.join(OUT,label+"-intro-ending.png"),fullPage:true});
  await page.screenshot({path:path.join(OUT,label+"-intro.png"),fullPage:true});
  await page.locator('#nextBtn').click();
- await page.locator('#gameOverlay').waitFor({state:'visible'});
- assert.equal(await visible(page,'#gameOverlay'),true,'Intro ending must open the story directly');
+ await page.waitForURL('**/duong-re/');
+ assert.equal(await visible(page,'#branchShell'),true,'Intro ending must open the branching story directly');
 }
 async function goStory(page,label){
  await page.goto(ROOT+"/",{waitUntil:"networkidle"});
@@ -150,13 +150,14 @@ async function goStory(page,label){
  assert.ok(features.roadmap.every(x=>!x.visible),'Unplayable roadmap cards should be absent from the opening scene');
  assert.ok(features.roadmap.every(x=>x.role===null&&x.tabIndex===null&&x.disabled==="true"),"HSK2–5 roadmap should not be actionable controls");
  fs.writeFileSync(path.join(OUT,label+"-resource-timings.json"),JSON.stringify(features,null,2));
- await page.locator("#startBtn").click();
+ assert.equal(await page.locator("#branchStart").getAttribute("href"),"/duong-re/", "Home should start the branching story");
+ await page.goto(ROOT+"/?play=hsk1",{waitUntil:"networkidle"});
  assert.equal(await visible(page,"#gameOverlay"),true);
  assert.equal(await page.locator("body").evaluate(el=>el.classList.contains("game-active")),true,"Opening the story should switch to the single-scene game view");
  assert.equal(await page.locator("#heroArt").evaluate(el=>getComputedStyle(el).visibility),"hidden","The home illustration must not render a second Sẻ behind the active story");
  assert.equal(await page.locator("#gameOverlay .cs-sparrow:visible").count(),1,"The active game view should show one Sẻ");
  let finished=false,steps=0,practiceUsed=false,supportUsed=false,arrivalObserved=false,returnedTree=false,streetEchoObserved=false,encounterResumeChecked=false;
- const capturedScenes=new Set();
+ const capturedScenes=new Set();let priceConversation=0;
  for(;steps<100;steps++){
   await auditLayout(page,label,'story-'+steps+'-'+(await page.locator('#stepText').innerText()));
   const artId=await page.locator('#stageIllustration .cs-scene').getAttribute('data-scene');
@@ -166,9 +167,10 @@ async function goStory(page,label){
      await page.waitForFunction(()=>{const menu=[...document.querySelectorAll('#stageIllustration .cs-midground img')],table=[...document.querySelectorAll('#stageIllustration .cs-tabletop img')];return menu.length===1&&table.length===1&&[...menu,...table].every(img=>img.getAttribute('src')&&img.complete&&img.naturalWidth>0)});
       await page.locator('#stageIllustration .cs-midground img').evaluate(img=>img.decode());
       await page.locator('#stageIllustration .cs-tabletop img').evaluate(img=>img.decode());
-     const composition=await page.evaluate(async()=>{const rect=e=>{const r=e.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}};async function paintedBounds(img){const xml=await(await fetch(img.currentSrc)).text(),parsed=new DOMParser().parseFromString(xml,'image/svg+xml'),source=parsed.documentElement,view=source.getAttribute('viewBox').split(/\s+/).map(Number),host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;visibility:hidden;pointer-events:none';const copy=document.importNode(source,true);host.append(copy);document.body.append(host);const boxes=[...copy.querySelectorAll('path,ellipse,circle,rect,polygon')].map(node=>{const b=node.getBBox(),m=node.getCTM(),points=[[b.x,b.y],[b.x+b.width,b.y],[b.x,b.y+b.height],[b.x+b.width,b.y+b.height]].map(([x,y])=>({x:m.a*x+m.c*y+m.e,y:m.b*x+m.d*y+m.f}));return {left:Math.min(...points.map(p=>p.x)),top:Math.min(...points.map(p=>p.y)),right:Math.max(...points.map(p=>p.x)),bottom:Math.max(...points.map(p=>p.y))}});host.remove();const bounds={left:Math.min(...boxes.map(box=>box.left)),top:Math.min(...boxes.map(box=>box.top)),right:Math.max(...boxes.map(box=>box.right)),bottom:Math.max(...boxes.map(box=>box.bottom))},r=img.getBoundingClientRect(),sx=r.width/view[2],sy=r.height/view[3];return {left:r.left+(bounds.left-view[0])*sx,top:r.top+(bounds.top-view[1])*sy,right:r.left+(bounds.right-view[0])*sx,bottom:r.top+(bounds.bottom-view[1])*sy,width:(bounds.right-bounds.left)*sx,height:(bounds.bottom-bounds.top)*sy}}const bg=document.querySelector('#stageIllustration .cs-background img'),art=document.querySelector('#stageIllustration');const bowl=document.querySelector('#stageIllustration .cs-foreground img[data-asset*="/bowl"]');return {menu:await paintedBounds(document.querySelector('#stageIllustration .cs-midground img')),table:rect(document.querySelector('#stageIllustration .cs-tabletop img')),dialogue:rect(document.querySelector('#storyDialogue')),stage:rect(document.querySelector('#storyStage')),layout:art.dataset.composition,background:{naturalWidth:bg.naturalWidth,naturalHeight:bg.naturalHeight,src:bg.currentSrc},bowl:bowl?await paintedBounds(bowl):null}});
+     const composition=await page.evaluate(async()=>{const rect=e=>{const r=e.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}};async function paintedBounds(img){const xml=await(await fetch(img.currentSrc)).text(),parsed=new DOMParser().parseFromString(xml,'image/svg+xml'),source=parsed.documentElement,view=source.getAttribute('viewBox').split(/\s+/).map(Number),host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;visibility:hidden;pointer-events:none';const copy=document.importNode(source,true);host.append(copy);document.body.append(host);const boxes=[...copy.querySelectorAll('path,ellipse,circle,rect,polygon')].map(node=>{const b=node.getBBox(),m=node.getCTM(),points=[[b.x,b.y],[b.x+b.width,b.y],[b.x,b.y+b.height],[b.x+b.width,b.y+b.height]].map(([x,y])=>({x:m.a*x+m.c*y+m.e,y:m.b*x+m.d*y+m.f}));return {left:Math.min(...points.map(p=>p.x)),top:Math.min(...points.map(p=>p.y)),right:Math.max(...points.map(p=>p.x)),bottom:Math.max(...points.map(p=>p.y))}});host.remove();const bounds={left:Math.min(...boxes.map(box=>box.left)),top:Math.min(...boxes.map(box=>box.top)),right:Math.max(...boxes.map(box=>box.right)),bottom:Math.max(...boxes.map(box=>box.bottom))},r=img.getBoundingClientRect(),sx=r.width/view[2],sy=r.height/view[3];return {left:r.left+(bounds.left-view[0])*sx,top:r.top+(bounds.top-view[1])*sy,right:r.left+(bounds.right-view[0])*sx,bottom:r.top+(bounds.bottom-view[1])*sy,width:(bounds.right-bounds.left)*sx,height:(bounds.bottom-bounds.top)*sy}}const bg=document.querySelector('#stageIllustration .cs-background img'),art=document.querySelector('#stageIllustration'),scene=HSKSceneLayers.scenes[art.dataset.artScene],bgSpec=HSKSceneLayers.backgrounds[scene.background],mode=HSKSceneLayers.responsiveMode(scene,bgSpec,document.querySelector('#storyStage').getBoundingClientRect(),matchMedia('(max-width:1100px) and (orientation:portrait)').matches),bowl=document.querySelector('#stageIllustration .cs-foreground img[data-asset*="/bowl"]');return {menu:await paintedBounds(document.querySelector('#stageIllustration .cs-midground img')),table:rect(document.querySelector('#stageIllustration .cs-tabletop img')),dialogue:rect(document.querySelector('#storyDialogue')),stage:rect(document.querySelector('#storyStage')),layout:art.dataset.composition,tabletPortrait:art.dataset.tabletPortrait==='true',background:{variant:mode.variant,selected:HSKSceneLayers.variantAsset(bgSpec,mode.variant),naturalWidth:bg.naturalWidth,naturalHeight:bg.naturalHeight,src:bg.currentSrc},bowl:bowl?await paintedBounds(bowl):null}});
      const viewport=page.viewportSize();
-     if(viewport.width<=900&&viewport.height>viewport.width){assert.equal(composition.background.naturalWidth,600,'Portrait tablet should use the 600px native SVG portrait plate: '+JSON.stringify(composition.background));if(viewport.width>690&&composition.stage.height>composition.stage.width*.72)assert.equal(composition.layout,'portrait','Tablet portrait should compose actors below the dialogue on its portrait plate')}
+      if(viewport.width<=690&&viewport.height>viewport.width){assert.equal(composition.background.naturalWidth,600,'Portrait phone should use the 600px native SVG portrait plate: '+JSON.stringify(composition.background));assert.equal(composition.layout,'portrait','Phone portrait should compose actors below the dialogue')}
+      if(viewport.width>690&&viewport.width<=900&&viewport.height>viewport.width){assert.equal(composition.tabletPortrait,true,'Portrait tablet should use the dedicated tablet actor layout');assert.equal(composition.background.variant,'tablet','Portrait tablet should select its authored art variant');assert.equal(composition.background.naturalWidth,600,'Portrait tablet noodle scene should use its native portrait plate');assert.ok(composition.background.src.endsWith('/art/'+composition.background.selected),'Tablet background should match the renderer-selected responsive variant')}
     await page.screenshot({path:path.join(OUT,label+'-noodle-'+artId+'-visual-gate.png')});
     assert.ok(composition.menu.width>0&&composition.menu.height>0,'Noodle menu must be visible: '+artId);
     assert.ok(composition.table.width>0&&composition.table.height>0,'Noodle table top must be visible: '+artId);
@@ -181,13 +183,50 @@ async function goStory(page,label){
   }
   if(await visible(page,"#completionPane")){finished=true;break}
   if(await visible(page,"#storyInterlude")){
+   if(artId==='hsk1.e01.liu-payment'){
+    const heading=await page.locator('#interludeHeading').innerText();
+    if(heading==='Tiểu Vũ hỏi giá'){
+     assert.equal(priceConversation,0);priceConversation=1;
+     assert.equal(await page.locator('#speaker').innerText(),'小雨 · Tiểu Vũ');
+     assert.equal(await page.locator('#dialogueText').innerText(),await page.evaluate(()=>HSKContent.scenes[8].zh));
+     assert.equal(await page.locator('#stageIllustration [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
+     assert.notEqual(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking');
+    }else if(heading==='Bà Lưu báo giá'){
+     assert.equal(priceConversation,1);priceConversation=2;
+     assert.equal(await page.locator('#speaker').innerText(),'刘奶奶 · Bà Lưu');
+     assert.equal(await page.locator('#dialogueText').innerText(),await page.evaluate(()=>HSKContent.scenes[5].zh));
+     assert.equal(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking');
+     assert.notEqual(await page.locator('#stageIllustration [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
+    }
+    assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('hai-que-huong-progress-v3')).history[5]||null),null,'context and the model cannot complete the payment task');
+   }
+   const paymentModel=artId==='hsk1.e01.liu-payment'&&await page.locator('#storyInterlude').getAttribute('data-kind')==='model';
+   if(paymentModel){
+    assert.equal(priceConversation,2,'the price response comes before the thanks model');priceConversation=3;
+    assert.equal(await page.locator('#speaker').innerText(),'小雨 · Tiểu Vũ · nhắc An');
+    assert.equal(await page.locator('#stageIllustration [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking');
+    assert.notEqual(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking','bà Lưu listens while Tiểu Vũ models thanks');
+   }
    if(artId==='hsk1.e01.school-introduction'&&await page.locator('#storyInterlude').getAttribute('data-kind')!=='model')assert.equal(await page.locator('#stageIllustration [data-character="wang"]').getAttribute('data-expression'),'smile','Narrative beat keeps the teacher smile before her prompt');
    if((await page.locator('#interludeHeading').innerText())==='Mùi hương trong ngõ'){
     assert.equal((await page.locator('#dialogueText').innerText()).trim(),'安和小雨在面馆里。','Noodle-shop illustration must match the narrated place');
     assert.equal(await page.locator('#interludeTranslation').count(),0,'Story translation is already shown in the dialogue layer');
     assert.equal(await page.locator('#stageIllustration [data-character="sparrow"]').count(),1,'The scene must show exactly one Sẻ');
    }
-   await page.locator("#interludeContinue").click();continue
+   await page.locator("#interludeContinue").click();
+   if(paymentModel){
+    while(await visible(page,'#storyInterlude')&&await page.locator('#interludeContinue').innerText()==='Cách nói tiếp →'){
+     assert.equal(await visible(page,'#interludeContinue'),true,'Each authored model page must keep its continue action visible');
+     await page.locator('#interludeContinue').click();
+    }
+    if(await visible(page,'#storyInterlude')){
+     assert.equal(await visible(page,'#interludeContinue'),true,'The final authored model page must keep its action visible');
+     await page.locator('#interludeContinue').click();
+    }
+    assert.equal(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking');
+    assert.notEqual(await page.locator('#stageIllustration [data-character="xiaoyu"]').getAttribute('data-expression'),'speaking','the model speaker returns to listening when the actual question resumes');
+   }
+   continue
   }
   const stepText=await page.locator("#stepText").innerText();
   if((!arrivalObserved&&stepText.trim()==='01 / 10'||!returnedTree&&stepText.trim()==='07 / 10')&&!await visible(page,'#worldPanel')&&await visible(page,'#worldOpenBtn'))await page.locator('#worldOpenBtn').click();
@@ -305,8 +344,8 @@ async function goStory(page,label){
    assert.equal(await page.locator('#stageIllustration [data-character="'+speakerCharacter+'"]').getAttribute('data-expression'),'speaking','The active HSK speaker should use the speaking frame');
    if(['hsk1.e01.liu-noodle-order','hsk1.e01.liu-payment'].includes(artId))assert.equal(await page.locator('#stageIllustration [data-character="liu"]').getAttribute('data-expression'),'speaking','Liu should be speaking in both her order question and price line');
    if(!supportUsed){
-     await page.waitForFunction(()=>{const stage=document.querySelector('#storyStage'),r=stage.getBoundingClientRect(),background=HSKSceneLayers.backgrounds['school-gate'],portrait=matchMedia('(max-width:900px) and (orientation:portrait)').matches&&r.height>r.width*.72,compact=r.height<300&&r.width>r.height,asset=compact&&background.compact?background.compact:portrait?background.mobile:background.desktop;return performance.getEntriesByType('resource').some(x=>x.name.endsWith('/art/'+asset))});
-     const preload=await page.evaluate(()=>{const stage=document.querySelector('#storyStage'),r=stage.getBoundingClientRect(),background=HSKSceneLayers.backgrounds['school-gate'],portrait=matchMedia('(max-width:900px) and (orientation:portrait)').matches&&r.height>r.width*.72,compact=r.height<300&&r.width>r.height,variant=compact&&background.compact?'compact':portrait?'mobile':'desktop',asset=background[variant],resource=performance.getEntriesByType('resource').find(x=>x.name.endsWith('/art/'+asset));return {scene:'hsk1.e01.school-introduction',variant,asset,stage:{width:Math.round(r.width),height:Math.round(r.height)},resourceFound:!!resource}});
+      await page.waitForFunction(()=>{const stage=document.querySelector('#storyStage'),scene=HSKSceneLayers.scenes['hsk1.e01.school-introduction'],background=HSKSceneLayers.backgrounds[scene.background],mode=HSKSceneLayers.responsiveMode(scene,background,stage.getBoundingClientRect(),matchMedia('(max-width:1100px) and (orientation:portrait)').matches),asset=HSKSceneLayers.variantAsset(background,mode.variant);return performance.getEntriesByType('resource').some(x=>x.name.endsWith('/art/'+asset))});
+      const preload=await page.evaluate(()=>{const stage=document.querySelector('#storyStage'),scene=HSKSceneLayers.scenes['hsk1.e01.school-introduction'],background=HSKSceneLayers.backgrounds[scene.background],mode=HSKSceneLayers.responsiveMode(scene,background,stage.getBoundingClientRect(),matchMedia('(max-width:1100px) and (orientation:portrait)').matches),asset=HSKSceneLayers.variantAsset(background,mode.variant),resource=performance.getEntriesByType('resource').find(x=>x.name.endsWith('/art/'+asset));return {scene:'hsk1.e01.school-introduction',variant:mode.variant,asset,stage:{width:Math.round(stage.getBoundingClientRect().width),height:Math.round(stage.getBoundingClientRect().height)},resourceFound:!!resource}});
      assert.equal(preload.resourceFound,true,`Next scene background should be prefetched for the current viewport: ${JSON.stringify(preload)}`);nativePreloadChecks.push({device:label,...preload});
     if(await visible(page,'#worldPanel'))await page.locator('#worldCloseBtn').click();
     assert.equal(await visible(page,'#sparrowWhisper'),false,'Ambient speech must not cover the lesson');
@@ -336,6 +375,7 @@ async function goStory(page,label){
  }
  if(!finished){await page.screenshot({path:path.join(OUT,label+'-stuck.png')});console.error(await page.evaluate(()=>({step:document.querySelector('#stepText').textContent,feedback:document.querySelector('#feedback').textContent,answer:document.querySelector('#answerInput').value,panels:['storyInterlude','encounterPanel','skillPanel','storyChoicePanel','nextBtn','answerForm'].map(id=>[id,!document.getElementById(id).hidden])})))}
  assert.equal(finished,true,"End-to-end story not finished after "+steps+" steps");
+ assert.equal(priceConversation,3,'the played route includes the full question, response and thanks model');
  const expectedCaptures=await page.evaluate(()=>[...HSKSceneLayers.sceneIds,'lost-notebook-office'].sort());
  assert.deepEqual([...capturedScenes].sort(),expectedCaptures,'Every state-authored story/encounter scene needs a real decoded-image capture');
  const stats=await page.locator("#summaryStats").textContent();
@@ -388,20 +428,22 @@ async function goReview(page,label,withStory){
   assert.equal(await page.locator("#emptyLink").innerText(),"Bắt đầu HSK 1 cùng An ↗");
   return;
  }
- assert.equal(locked,"18","Full demo should unlock all authored review items");
- assert.equal(await page.locator("#dueCount").textContent(),"18");
+ assert.equal(locked,"23","Full demo should unlock all authored review items");
+ assert.equal(await page.locator("#dueCount").textContent(),"23");
  const oldV3=await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v3"));
  const oldV4=await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v4"));
  const first=await page.evaluate(()=>HSKReviewData.items[0]);
- const idx=first.options.findIndex(x=>x[0]===first.correct);
+ const idx=await page.evaluate(id=>HSKReviewCore.presentationOptions(HSKReviewData,HSKReviewCore.read(localStorage,HSKReviewData),id).findIndex(x=>x[0]===HSKReviewData.items.find(item=>item.id===id).correct),first.id);
+ assert.equal(await page.locator('#choiceOptions button').nth(idx).innerText(),first.options.find(x=>x[0]===first.correct)[1],'the shuffled presentation still keeps the answer attached to its authored ID');
  await page.locator("#choiceOptions button").nth(idx).click();
  await auditLayout(page,label,'review-first-feedback');
  assert.equal(await page.locator("#independentCount").textContent(),"1");
- assert.equal(await page.locator("#dueCount").textContent(),"17");
+ assert.equal(await page.locator("#dueCount").textContent(),"22");
  await page.locator("#nextBtn").click();
  await page.locator("#hintBtn").click();
  const second=await page.evaluate(()=>HSKReviewData.items[1]);
- await page.locator("#choiceOptions button").nth(second.options.findIndex(x=>x[0]===second.correct)).click();
+ const secondIdx=await page.evaluate(id=>HSKReviewCore.presentationOptions(HSKReviewData,HSKReviewCore.read(localStorage,HSKReviewData),id).findIndex(x=>x[0]===HSKReviewData.items.find(item=>item.id===id).correct),second.id);
+ await page.locator("#choiceOptions button").nth(secondIdx).click();
  assert.equal(await page.locator("#assistedCount").textContent(),"1");
  await page.locator("#nextBtn").click();
  await page.locator("#skipBtn").click();
@@ -410,7 +452,7 @@ async function goReview(page,label,withStory){
  await page.locator("#typedAnswer").fill("我叫安");
  await page.locator("#submitTyped").click();
  assert.equal(await page.locator("#independentCount").textContent(),"2");
- assert.equal(await page.locator("#dueCount").textContent(),"14");
+ assert.equal(await page.locator("#dueCount").textContent(),"19");
  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("hai-que-huong-review-v1")));
  assert.equal(saved.items["self-introduction"].status,"independent");
  assert.equal(saved.items["arrived-city"].status,"assisted");
@@ -419,13 +461,13 @@ async function goReview(page,label,withStory){
  assert.equal(await page.evaluate(()=>localStorage.getItem("hai-que-huong-progress-v4")),oldV4,"Optional review mutated V4 shadow");
  await page.screenshot({path:path.join(OUT,label+"-spaced-review.png"),fullPage:true});
  await page.reload({waitUntil:"networkidle"});
- assert.equal(await page.locator("#dueCount").textContent(),"14","Review schedule did not survive reload");
- for(let n=0;n<14;n++){
+ assert.equal(await page.locator("#dueCount").textContent(),"19","Review schedule did not survive reload");
+ for(let n=0;n<19;n++){
   await auditLayout(page,label,'review-item-'+(n+5));
   const item=await page.evaluate(()=>HSKReviewData.items.find(x=>x.question===document.querySelector('#questionPrompt').textContent));
   assert.ok(item,'Active review item must be authored');
   if(item.kind==='typed'){await page.locator('#typedAnswer').fill(item.answers[0]);await page.locator('#submitTyped').click()}
-  else await page.locator('#choiceOptions button').nth(item.options.findIndex(x=>x[0]===item.correct)).click();
+  else{const idx=await page.evaluate(id=>HSKReviewCore.presentationOptions(HSKReviewData,HSKReviewCore.read(localStorage,HSKReviewData),id).findIndex(x=>x[0]===HSKReviewData.items.find(item=>item.id===id).correct),item.id);await page.locator('#choiceOptions button').nth(idx).click()}
   await auditLayout(page,label,'review-feedback-'+(n+5));await page.locator('#nextBtn').click();
  }
  assert.equal(await page.locator('#dueCount').textContent(),'0');await auditLayout(page,label,'review-finished');
@@ -508,7 +550,7 @@ async function verifyKeyboard(browser,device){
  const page=await ctx.newPage();watch(page,'keyboard');page.setDefaultTimeout(8000);
  try{
   await page.goto(ROOT+'/?play=hsk1',{waitUntil:'domcontentloaded'});
-  for(let n=0;n<4&&await page.locator('#storyInterlude').isVisible();n++)await page.locator('#interludeContinue').click();
+  for(let n=0;n<12&&await page.locator('#storyInterlude').isVisible();n++)await page.locator('#interludeContinue').click();
   if(device.name==='phone'){
    const insetStyle=await page.addStyleTag({content:'.game-top{padding-top:42px!important}'});
    await page.waitForFunction(()=>Math.abs(parseFloat(document.querySelector('#storyStage').style.getPropertyValue('--scene-header'))-document.querySelector('.game-top').getBoundingClientRect().bottom)<1);

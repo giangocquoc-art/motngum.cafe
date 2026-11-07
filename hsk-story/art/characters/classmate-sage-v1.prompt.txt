@@ -1,0 +1,12 @@
+# Classmate sage v1
+
+Purpose: add the third student required by the classroom counting scene without duplicating An or Tiểu Vũ.
+
+Style source: current Production capture `art/reference/production-style-20261029.png`.
+
+Prompt: Create an isolated full-body 11-year-old Chinese schoolgirl classmate sprite for Chim Sẻ. Match the current Production art reference: simple flat muted fills, sparse dark-brown outlines, simplified child proportions and restrained facial marks. Low side ponytail, dusty sage cardigan with cream collar, faded blue-green trousers, simple sneakers, holding a plain exercise book. Slightly uncertain attentive expression and naturally imperfect posture. Transparent background; no scenery, shadows, gradients, texture, text, other characters or birds.
+
+Edit prompt: Keep identity, pose, expression, clothing, colors, proportions, and linework unchanged. Remove background haze, glow, vignette, edge fringe, and shadow; preserve true transparent alpha.
+
+Master: `classmate-sage-v1.png` (1024×1536 RGBA)
+Runtime: `classmate-sage-v1.webp` (1024×1536 WebP, alpha)

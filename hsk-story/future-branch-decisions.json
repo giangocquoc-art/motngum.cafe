@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "status": "AUTHORED BRANCH TREATMENTS / NON-PLAYABLE UNTIL HSK MAPPING AND EDUCATOR REVIEW",
+  "contract": {
+    "decisionChoicesCreateNarrativeBranches": true,
+    "languageAssessmentChangesNarrativeState": false,
+    "branchesRejoinBeforeCommonLearningAnchors": true,
+    "allFutureLevelsRemainLocked": true
+  },
+  "acts": {
+    "hsk2.first-friend": {
+      "level": 2,
+      "commonLearningAnchorIds": ["hsk2.time-and-repair", "hsk2.daily-rhythm", "hsk2.ask-for-help", "hsk2.routes-and-positions", "hsk2.compare-and-plan", "hsk2.shopping-decisions"],
+      "decisions": {
+        "misunderstanding": {
+          "id": "hsk2.misunderstanding.decision",
+          "purpose": "An phát hiện một cuộc hẹn có thể bị hiểu khác nhau mà không ai cố ý làm bạn buồn.",
+          "convergenceSceneId": "hsk2.misunderstanding.shared",
+          "choices": [
+            {"id": "ask-again", "label": "Hỏi Tiểu Vũ thêm lần nữa", "branchSceneId": "hsk2.misunderstanding.ask-again", "reaction": "An hỏi lại giờ hẹn, rồi nhận ra mình đã nghe thiếu chữ ‘sáng’. Cậu hơi đỏ mặt nhưng không giả vờ là mình đã hiểu.", "memory": {"key": "hsk2.friendship.clarity", "value": "An chọn hỏi lại khi còn lấn cấn"}, "laterConsequence": {"episodeId": "term-conversation", "sceneId": "hsk2.term-conversation.callback-ask", "text": "Khi kể về lần lỡ hẹn, An nhớ rằng một câu hỏi nhỏ đã giúp hai đứa khỏi chờ nhau."}, "joinsAtSceneId": "hsk2.misunderstanding.shared"},
+            {"id": "write-message", "label": "Nhắn tin giải thích trước", "branchSceneId": "hsk2.misunderstanding.write", "reaction": "An gõ rồi xóa mấy lần mới gửi được một tin ngắn. Tiểu Vũ trả lời bằng biểu tượng mặt cười và hỏi lại giờ cho chắc.", "memory": {"key": "hsk2.friendship.clarity", "value": "An dùng tin nhắn để hẹn lại cho rõ"}, "laterConsequence": {"episodeId": "term-conversation", "sceneId": "hsk2.term-conversation.callback-message", "text": "Tiểu Vũ vẫn giữ tin nhắn cũ; hai bạn nhìn nó rồi cười vì An đã sửa giờ hẹn tới ba lần."}, "joinsAtSceneId": "hsk2.misunderstanding.shared"}
+          ]
+        },
+        "street-map": {
+          "id": "hsk2.street-map.decision",
+          "purpose": "An và Tiểu Vũ chọn cách tìm đường khi bảng chỉ dẫn làm cả hai rối mắt.",
+          "convergenceSceneId": "hsk2.street-map.shared",
+          "choices": [
+            {"id": "ask-worker", "label": "Hỏi cô bán vé", "branchSceneId": "hsk2.street-map.ask-worker", "reaction": "An hỏi cô bán vé, nhưng chỉ tay nhầm sang tuyến ngược chiều. Tiểu Vũ khẽ chạm vai cậu và hai đứa cùng nhìn lại bản đồ.", "memory": {"key": "hsk2.friendship.directions", "value": "An nhớ lần Tiểu Vũ giúp cậu hỏi lại đường"}, "laterConsequence": {"episodeId": "term-conversation", "sceneId": "hsk2.term-conversation.callback-worker", "text": "Trong buổi kể chuyện, Tiểu Vũ chủ động hỏi giúp An một câu rồi nhường cậu tự xác nhận điểm đến."}, "joinsAtSceneId": "hsk2.street-map.shared"},
+            {"id": "read-sign", "label": "Cùng đọc biển chỉ đường", "branchSceneId": "hsk2.street-map.read-sign", "reaction": "An đọc biển từng dòng, chậm tới mức Tiểu Vũ tưởng cậu đang đọc thơ. Cả hai vẫn lên nhầm một bậc cầu thang, rồi tìm thấy lối đúng ở tầng bên dưới.", "memory": {"key": "hsk2.friendship.directions", "value": "An và Tiểu Vũ kiên nhẫn dò từng dòng trên biển"}, "laterConsequence": {"episodeId": "term-conversation", "sceneId": "hsk2.term-conversation.callback-sign", "text": "An vẽ lại tấm biển chỉ đường trong sổ; Tiểu Vũ nhận ra nét mũi tên bị vẽ ngược và sửa cùng bạn."}, "joinsAtSceneId": "hsk2.street-map.shared"}
+          ]
+        },
+        "market-money": {
+          "id": "hsk2.market-money.decision",
+          "purpose": "Món quà nhỏ nói lên điều An nhớ về người bạn, không phải giá tiền.",
+          "convergenceSceneId": "hsk2.market-money.shared",
+          "choices": [
+            {"id": "choose-favorite", "label": "Chọn món Tiểu Vũ thích", "branchSceneId": "hsk2.market-money.favorite", "reaction": "An chọn chiếc móc khóa hình tàu điện Tiểu Vũ từng ngắm. Cậu phát hiện mình nhớ được chuyện đó, dù lại quên mất phải xin túi giấy.", "memory": {"key": "hsk2.friendship.gift", "value": "An nhớ món đồ Tiểu Vũ từng thích"}, "laterConsequence": {"episodeId": "term-conversation", "sceneId": "hsk2.term-conversation.callback-favorite", "text": "Tiểu Vũ gắn chiếc móc khóa lên cặp; mỗi lần nó kêu lách cách, An lại nhớ buổi chợ."}, "joinsAtSceneId": "hsk2.market-money.shared"},
+            {"id": "choose-useful", "label": "Chọn món hai đứa cùng dùng", "branchSceneId": "hsk2.market-money.useful", "reaction": "An mua một cuốn sổ mỏng để hai đứa ghi đường đi. Cậu lỡ chọn bìa màu hồng, Tiểu Vũ nói màu ấy cũng được rồi cất sổ vào cặp.", "memory": {"key": "hsk2.friendship.gift", "value": "An chọn món quà để hai người cùng viết"}, "laterConsequence": {"episodeId": "term-conversation", "sceneId": "hsk2.term-conversation.callback-notebook", "text": "Cuốn sổ được chuyền qua lại, giờ có cả bản đồ méo và danh sách những chỗ hai đứa muốn tới."}, "joinsAtSceneId": "hsk2.market-money.shared"}
+          ]
+        },
+        "term-conversation": {
+          "id": "hsk2.term-conversation.decision",
+          "purpose": "An thử kể thật về một lần ngại hỏi, thay vì biến mình thành người luôn biết cách xử lý.",
+          "convergenceSceneId": "hsk2.term-conversation.shared",
+          "choices": [
+            {"id": "admit-nervous", "label": "Nói mình đã hơi sợ hỏi", "branchSceneId": "hsk2.term-conversation.admit", "reaction": "An thú nhận lúc ấy cậu sợ bị cười. Tiểu Vũ không trêu; bạn kể lần mình cũng hỏi nhầm đường và còn cảm ơn chú bảo vệ.", "memory": {"key": "hsk2.friendship.honesty", "value": "An đã nói ra điều mình ngại"}, "laterConsequence": {"episodeId": "term-conversation", "sceneId": "hsk2.term-conversation.closing-honesty", "text": "Khi ra về, Tiểu Vũ chờ An hỏi đường trước rồi mới cùng bước đi."}, "joinsAtSceneId": "hsk2.term-conversation.shared"},
+            {"id": "tell-funny-detail", "label": "Kể chuyện cầu thang đi nhầm", "branchSceneId": "hsk2.term-conversation.stairs", "reaction": "An bỏ qua đoạn mình lo lắng, chỉ kể chuyện hai đứa leo nhầm cầu thang. Cả lớp bật cười, còn An cười theo sau cùng.", "memory": {"key": "hsk2.friendship.honesty", "value": "An kể chuyện nhầm đường bằng chút hài hước"}, "laterConsequence": {"episodeId": "term-conversation", "sceneId": "hsk2.term-conversation.closing-stairs", "text": "Tiểu Vũ vẽ thêm một cầu thang vào cuốn sổ chung, lần này có mũi tên đi xuống."}, "joinsAtSceneId": "hsk2.term-conversation.shared"}
+          ]
+        }
+      }
+    },
+    "hsk3.spring-promise": {
+      "level": 3,
+      "commonLearningAnchorIds": ["hsk3.intent-and-coordination", "hsk3.handle-a-setback", "hsk3.plan-and-compare", "hsk3.hear-another-view", "hsk3.recount-and-present", "hsk3.culture-through-experience"],
+      "decisions": {
+        "fair-invitation": {
+          "id": "hsk3.fair-invitation.decision",
+          "purpose": "Nhóm phải chọn điều mình thực sự muốn chia sẻ trước khi nghĩ tới một gian hàng thật bắt mắt.",
+          "convergenceSceneId": "hsk3.fair-invitation.shared",
+          "choices": [
+            {"id": "food-memory", "label": "Kể về một món ăn", "branchSceneId": "hsk3.fair-invitation.food", "reaction": "An kể chuyện mẹ gói bánh mang sang trường, nhưng quên mất tên một loại lá. Cậu nhìn Tiểu Vũ cầu cứu; bạn không biết, nên hai đứa quyết định hỏi mẹ sau.", "memory": {"key": "hsk3.fair.topic", "value": "Nhóm bắt đầu từ ký ức về bữa ăn gia đình"}, "laterConsequence": {"episodeId": "festival-presentation", "sceneId": "hsk3.festival.callback-food", "text": "Một bạn trong hội chợ hỏi về chiếc lá; An xin hẹn trả lời sau và bổ sung câu trả lời lên tấm bảng hôm sau."}, "joinsAtSceneId": "hsk3.fair-invitation.shared"},
+            {"id": "playground-game", "label": "Chọn một trò chơi dân gian", "branchSceneId": "hsk3.fair-invitation.game", "reaction": "An đề nghị dạy trò chơi cậu từng chơi ở Việt Nam. Lúc làm thử, cậu giải thích luật thiếu một bước, cả nhóm chơi sai rồi phải cùng sửa.", "memory": {"key": "hsk3.fair.topic", "value": "Nhóm chọn một trò chơi An muốn học cách giới thiệu"}, "laterConsequence": {"episodeId": "festival-presentation", "sceneId": "hsk3.festival.callback-game", "text": "Một em nhỏ hỏi lại luật chơi; lần này An dùng tấm hình Tiểu Vũ vẽ để giải thích đủ từng bước."}, "joinsAtSceneId": "hsk3.fair-invitation.shared"}
+          ]
+        },
+        "planning": {
+          "id": "hsk3.planning.decision",
+          "purpose": "Kế hoạch đổi khác khi kinh phí không đủ; An học cách hỏi nhóm trước khi tự quyết.",
+          "convergenceSceneId": "hsk3.planning.shared",
+          "choices": [
+            {"id": "reuse-material", "label": "Tận dụng bìa cũ", "branchSceneId": "hsk3.planning.reuse", "reaction": "An nhặt bìa carton ở cửa hàng, rồi mang về một tấm to đến mức không lọt cửa lớp. Nhóm cắt nhỏ ra và dùng được phần sạch.", "memory": {"key": "hsk3.fair.material", "value": "An nhớ nhóm đã cứu được kế hoạch bằng đồ tái sử dụng"}, "laterConsequence": {"episodeId": "bridge", "sceneId": "hsk3.bridge.callback-reuse", "text": "Khi chuẩn bị bảng giới thiệu, Tiểu Vũ tìm lại mẩu bìa màu vàng mà An đã cắt quá tay."}, "joinsAtSceneId": "hsk3.planning.shared"},
+            {"id": "simplify-design", "label": "Làm gian hàng gọn hơn", "branchSceneId": "hsk3.planning.simple", "reaction": "An xóa bớt nửa bản vẽ sau khi cả nhóm tranh luận. Cậu tiếc chiếc đèn giấy tự vẽ, nhưng chừa chỗ cho người ghé hội chợ đứng lại xem.", "memory": {"key": "hsk3.fair.material", "value": "Nhóm ưu tiên một gian hàng đơn giản để khách có chỗ trải nghiệm"}, "laterConsequence": {"episodeId": "bridge", "sceneId": "hsk3.bridge.callback-simple", "text": "Bà Lưu tìm thấy chiếc đèn giấy An xếp sang một bên. Bà treo nó lên mái hiên, không chắn lối đi; gian hàng vẫn gọn và khách còn chỗ dừng lại xem."}, "joinsAtSceneId": "hsk3.planning.shared"}
+          ]
+        },
+        "bridge": {
+          "id": "hsk3.bridge.decision",
+          "purpose": "Câu chuyện hai ngôn ngữ bắt đầu từ trải nghiệm mà An nhớ rõ, không phải lời giới thiệu hoàn hảo.",
+          "convergenceSceneId": "hsk3.bridge.shared",
+          "choices": [
+            {"id": "start-at-kitchen", "label": "Mở đầu ở căn bếp của mẹ", "branchSceneId": "hsk3.bridge.kitchen", "reaction": "An kể mẹ vừa gói đồ ăn vừa nhắc cậu đừng làm rơi. Cậu làm rơi thật, rồi quên đoạn kế tiếp nên phải nhìn vào trang sổ nhăn.", "memory": {"key": "hsk3.fair.opening", "value": "An chọn ký ức vụng về trong căn bếp của mẹ"}, "laterConsequence": {"episodeId": "festival-presentation", "sceneId": "hsk3.festival.callback-kitchen", "text": "Khi bạn nghe nhầm một từ, An nối lại bằng câu chuyện chiếc bánh rơi khiến cả nhóm nhớ tới đoạn sau."}, "joinsAtSceneId": "hsk3.bridge.shared"},
+            {"id": "start-at-noodle-shop", "label": "Mở đầu ở quán mì bà Lưu", "branchSceneId": "hsk3.bridge.noodle-shop", "reaction": "An nhớ bà Lưu để riêng một phần rau cho người khách lớn tuổi. Cậu kể sai thứ tự món ăn, bà cười hiền và giúp cậu xếp lại.", "memory": {"key": "hsk3.fair.opening", "value": "An mở đầu bằng một điều nhỏ cậu quan sát ở quán mì"}, "laterConsequence": {"episodeId": "festival-presentation", "sceneId": "hsk3.festival.callback-noodle-shop", "text": "Bà Lưu ghé gian hàng và nhận ra An đã nhớ đúng cử chỉ nhỏ ấy, dù câu kể vẫn hơi vòng vo."}, "joinsAtSceneId": "hsk3.bridge.shared"}
+          ]
+        },
+        "festival-presentation": {
+          "id": "hsk3.festival-presentation.decision",
+          "purpose": "Một lỗi nhỏ trên sân khấu để cả nhóm cùng xử lý, không biến An thành người hùng biết hết.",
+          "convergenceSceneId": "hsk3.festival-presentation.shared",
+          "choices": [
+            {"id": "invite-question", "label": "Mời bạn hỏi lại", "branchSceneId": "hsk3.festival.invite-question", "reaction": "An mời bạn hỏi lại, nhưng chính cậu cũng chưa nghe rõ câu hỏi. Cả nhóm kéo ghế gần hơn và nhờ bạn nói chậm lại.", "memory": {"key": "hsk3.fair.stage", "value": "An nhớ rằng mình có thể xin người khác nói lại trên sân khấu"}, "laterConsequence": {"episodeId": "festival-presentation", "sceneId": "hsk3.festival.closing-question", "text": "Sau phần trình bày, bạn kia để lại một câu hỏi chưa trả lời; nhóm hẹn tìm hiểu cùng nhau."}, "joinsAtSceneId": "hsk3.festival-presentation.shared"},
+            {"id": "admit-mistake", "label": "Thú nhận mình vừa nói nhầm", "branchSceneId": "hsk3.festival.admit-mistake", "reaction": "An dừng lại giữa câu, thú nhận đã nói nhầm tên món ăn. Tiểu Vũ lật tấm thẻ đúng lên; cả hai tiếp tục mà không cố che lỗi.", "memory": {"key": "hsk3.fair.stage", "value": "An nhớ cảm giác sửa một lỗi ngay trước mọi người"}, "laterConsequence": {"episodeId": "festival-presentation", "sceneId": "hsk3.festival.closing-correction", "text": "Tấm thẻ sửa lại được giữ trên bàn; một em nhỏ chỉ vào nó và nói lần sau em cũng muốn thử."}, "joinsAtSceneId": "hsk3.festival-presentation.shared"}
+          ]
+        }
+      }
+    },
+    "hsk4.change-season": {
+      "level": 4,
+      "commonLearningAnchorIds": ["hsk4.fact-and-inference", "hsk4.trace-cause-and-result", "hsk4.report-perspectives", "hsk4.community-responsibilities", "hsk4.propose-with-evidence", "hsk4.negotiate-conditions"],
+      "decisions": {
+        "notice": {
+          "id": "hsk4.notice.decision",
+          "purpose": "Tờ thông báo có nhiều chỗ khó hiểu; An phải phân biệt điều đọc được với điều mình đang đoán.",
+          "convergenceSceneId": "hsk4.notice.shared",
+          "choices": [
+            {"id": "ask-liu", "label": "Hỏi bà Lưu trước", "branchSceneId": "hsk4.notice.ask-liu", "reaction": "An đem tờ giấy tới quán, nhưng đọc vội dòng về ngày sửa chữa thành ngày đóng cửa. Bà Lưu đưa kính cho cậu, rồi cả hai đọc lại từng dòng.", "memory": {"key": "hsk4.community.first-source", "value": "An bắt đầu bằng cách hỏi người chịu ảnh hưởng trực tiếp"}, "laterConsequence": {"episodeId": "sides", "sceneId": "hsk4.sides.callback-liu", "text": "Bà Lưu đem bản thông báo đã gạch chân tới buổi họp; An giúp đối chiếu nó với lịch sửa chữa."}, "joinsAtSceneId": "hsk4.notice.shared"},
+            {"id": "ask-manager", "label": "Hỏi ban quản lý về văn bản", "branchSceneId": "hsk4.notice.ask-manager", "reaction": "An đến văn phòng nhưng quên chụp lại trang sau. Nhân viên tìm giúp bản đầy đủ, trong đó có dòng nói việc sửa chữa chưa được quyết định.", "memory": {"key": "hsk4.community.first-source", "value": "An nhớ kiểm tra cả trang sau và tình trạng quyết định"}, "laterConsequence": {"episodeId": "sides", "sceneId": "hsk4.sides.callback-notice", "text": "Trong buổi họp, An đặt bản đủ trang cạnh tờ thông báo cũ để mọi người cùng nhìn."}, "joinsAtSceneId": "hsk4.notice.shared"}
+          ]
+        },
+        "sides": {
+          "id": "hsk4.sides.decision",
+          "purpose": "Người thuê, cư dân và chủ mặt bằng đều có lý do; An chọn nghe ai trước nhưng phải ghi đủ các bên.",
+          "convergenceSceneId": "hsk4.sides.shared",
+          "choices": [
+            {"id": "listen-residents", "label": "Nghe cư dân bên cạnh", "branchSceneId": "hsk4.sides.residents", "reaction": "Một cư dân kể đêm qua xe giao hàng chắn lối. An ghi câu chuyện thành ‘quán gây nguy hiểm’, rồi nhận ra mình đã viết rộng hơn điều cô ấy nói.", "memory": {"key": "hsk4.community.first-voice", "value": "An ghi nhớ lời cư dân về lối đi bị chắn vào buổi tối"}, "laterConsequence": {"episodeId": "proposal", "sceneId": "hsk4.proposal.callback-resident", "text": "An sửa ghi chú thành sự việc cụ thể và đề xuất khung giờ giao hàng để không chắn lối."}, "joinsAtSceneId": "hsk4.sides.shared"},
+            {"id": "listen-landlord", "label": "Nghe chủ mặt bằng giải thích", "branchSceneId": "hsk4.sides.landlord", "reaction": "Chủ mặt bằng cho xem lịch kiểm tra đường ống. An tưởng đó là quyết định dời quán, nhưng bác dừng lại và nói giấy này chỉ là bản nháp.", "memory": {"key": "hsk4.community.first-voice", "value": "An ghi rằng lịch kiểm tra chưa phải quyết định cuối"}, "laterConsequence": {"episodeId": "proposal", "sceneId": "hsk4.proposal.callback-landlord", "text": "Trong bản kiến nghị, An ghi rõ cần thông báo lại khi lịch kiểm tra chuyển thành quyết định."}, "joinsAtSceneId": "hsk4.sides.shared"}
+          ]
+        },
+        "proposal": {
+          "id": "hsk4.proposal.decision",
+          "purpose": "Một đề xuất cần điều kiện thực tế để bảo vệ sinh kế và lối đi chung.",
+          "convergenceSceneId": "hsk4.proposal.shared",
+          "choices": [
+            {"id": "focus-sanitation", "label": "Đề nghị kiểm tra vệ sinh trước", "branchSceneId": "hsk4.proposal.sanitation", "reaction": "An viết đề nghị dọn sạch khu bếp trước. Cậu quên nêu ngày kiểm tra nên bà Lưu hỏi lại khi nào; An phải để trống chỗ đó cho nhóm bàn tiếp.", "memory": {"key": "hsk4.community.condition", "value": "An đặt việc kiểm tra vệ sinh thành điều kiện đầu tiên"}, "laterConsequence": {"episodeId": "public-debate", "sceneId": "hsk4.debate.callback-sanitation", "text": "An bổ sung ngày kiểm tra và người phụ trách sau khi nghe ban quản lý xác nhận lịch."}, "joinsAtSceneId": "hsk4.proposal.shared"},
+            {"id": "focus-delivery", "label": "Đề nghị thử giờ giao hàng mới", "branchSceneId": "hsk4.proposal.delivery", "reaction": "An đề xuất đổi giờ giao hàng một tuần. Cư dân bên cạnh đồng ý thử, nhưng nhắc rằng xe nhỏ sẽ tốn thêm chuyến.", "memory": {"key": "hsk4.community.condition", "value": "An muốn thử giờ giao hàng rồi ghi nhận chi phí phát sinh"}, "laterConsequence": {"episodeId": "public-debate", "sceneId": "hsk4.debate.callback-delivery", "text": "Nhóm mang bảng theo dõi một tuần tới cuộc họp để xem lối đi có bớt bị chắn không."}, "joinsAtSceneId": "hsk4.proposal.shared"}
+          ]
+        },
+        "public-debate": {
+          "id": "hsk4.public-debate.decision",
+          "purpose": "An chọn điều có thể nói chắc tại cuộc họp và điều cần hỏi lại sau.",
+          "convergenceSceneId": "hsk4.public-debate.shared",
+          "choices": [
+            {"id": "present-limits", "label": "Nêu đề nghị kèm điều kiện", "branchSceneId": "hsk4.debate.present-limits", "reaction": "An trình bày phương án nhưng nói rõ nhóm chưa biết chi phí cuối cùng. Cậu nhìn giấy suốt và lỡ bỏ sót tên người phụ trách.", "memory": {"key": "hsk4.community.public-voice", "value": "An nói rõ điều chưa biết trước khi đề xuất"}, "laterConsequence": {"episodeId": "public-debate", "sceneId": "hsk4.debate.closing-limits", "text": "Cô Vương giúp An bổ sung phần người phụ trách vào biên bản; phương án vẫn cần cuộc họp sau."}, "joinsAtSceneId": "hsk4.public-debate.shared"},
+            {"id": "ask-for-time", "label": "Xin thêm một ngày để kiểm tra", "branchSceneId": "hsk4.debate.ask-time", "reaction": "An xin thêm một ngày vì chưa chắc lịch sửa đường ống. Vài người sốt ruột, nhưng ban quản lý đồng ý gửi bản đầy đủ vào sáng hôm sau.", "memory": {"key": "hsk4.community.public-voice", "value": "An chọn hoãn kết luận để kiểm tra lịch sửa chữa"}, "laterConsequence": {"episodeId": "public-debate", "sceneId": "hsk4.debate.closing-confirmation", "text": "Sáng hôm sau, An đọc bản lịch đã xác nhận cùng Tiểu Vũ trước khi viết lại đề xuất."}, "joinsAtSceneId": "hsk4.public-debate.shared"}
+          ]
+        }
+      }
+    },
+    "hsk5.two-homes": {
+      "level": 5,
+      "commonLearningAnchorIds": ["hsk5.explain-and-choose", "hsk5.compare-perspectives", "hsk5.reflect-and-relate", "hsk5.reframe-a-memory", "hsk5.analyze-and-compose", "hsk5.edit-for-a-reader"],
+      "decisions": {
+        "letter-home": {
+          "id": "hsk5.letter-home.decision",
+          "purpose": "Lá thư làm An lo sắp phải rời Thành Đô; chưa ai nói rằng quyết định đã được đưa ra.",
+          "convergenceSceneId": "hsk5.letter-home.shared",
+          "choices": [
+            {"id": "ask-mother-first", "label": "Hỏi mẹ xem chuyện gì đã xảy ra", "branchSceneId": "hsk5.letter-home.ask-mother", "reaction": "An hỏi mẹ có phải cả nhà sắp chuyển đi không. Mẹ nói lá thư mới chỉ hỏi thăm cơ hội; An thở phào rồi thấy mình đã tự viết tiếp một nửa câu chuyện.", "memory": {"key": "hsk5.family.letter", "value": "An nhớ rằng lá thư mới là câu hỏi, chưa phải quyết định"}, "laterConsequence": {"episodeId": "farewells", "sceneId": "hsk5.farewells.callback-letter", "text": "Khi Tiểu Vũ hỏi về tương lai, An kể điều lá thư thật sự viết thay vì điều cậu đã tưởng tượng."}, "joinsAtSceneId": "hsk5.letter-home.shared"},
+            {"id": "read-with-family", "label": "Đọc thư cùng cả nhà", "branchSceneId": "hsk5.letter-home.read-together", "reaction": "An mời mẹ và dì cùng đọc. Cậu đọc sót một dòng cuối, dì chỉ ra rằng người gửi còn hỏi thăm bà Lưu.", "memory": {"key": "hsk5.family.letter", "value": "An nhớ cả nhà đã cùng đọc đủ lá thư"}, "laterConsequence": {"episodeId": "farewells", "sceneId": "hsk5.farewells.callback-reading", "text": "An giữ bản thư trong sổ để kể cho Tiểu Vũ nghe nguyên văn câu hỏi cuối."}, "joinsAtSceneId": "hsk5.letter-home.shared"}
+          ]
+        },
+        "farewells": {
+          "id": "hsk5.farewells.decision",
+          "purpose": "An muốn giữ tình bạn nhưng chưa biết tương lai sẽ ra sao.",
+          "convergenceSceneId": "hsk5.farewells.shared",
+          "choices": [
+            {"id": "talk-face-to-face", "label": "Nói chuyện với Tiểu Vũ sau giờ học", "branchSceneId": "hsk5.farewells.talk", "reaction": "An nói vòng vo ba lần rồi mới thừa nhận cậu sợ ít gặp bạn hơn. Tiểu Vũ im lặng một lúc, sau đó hỏi An muốn làm gì vào cuối tuần.", "memory": {"key": "hsk5.friendship.future", "value": "An chọn nói trực tiếp về nỗi lo với Tiểu Vũ"}, "laterConsequence": {"episodeId": "draft", "sceneId": "hsk5.draft.callback-talk", "text": "Trong bản nháp, An viết lại câu mình đã nói với Tiểu Vũ và nhận ra lời thật thường không gọn như câu mẫu."}, "joinsAtSceneId": "hsk5.farewells.shared"},
+            {"id": "write-first", "label": "Viết ra rồi mới kể", "branchSceneId": "hsk5.farewells.write", "reaction": "An viết kín nửa trang, sau đó gấp giấy lại vì chưa dám đưa. Tiểu Vũ nhìn thấy mép giấy nhô khỏi sổ nhưng không hỏi ép.", "memory": {"key": "hsk5.friendship.future", "value": "An viết điều lo lắng trước khi chọn cách kể với bạn"}, "laterConsequence": {"episodeId": "draft", "sceneId": "hsk5.draft.callback-note", "text": "An mang mảnh giấy tới thư viện; Tiểu Vũ đọc phần cậu cho phép và để lại một dấu chấm hỏi bên lề."}, "joinsAtSceneId": "hsk5.farewells.shared"}
+          ]
+        },
+        "draft": {
+          "id": "hsk5.draft.decision",
+          "purpose": "An tìm giọng của mình qua bản nháp còn vụng, với một người đọc thật bên cạnh.",
+          "convergenceSceneId": "hsk5.draft.shared",
+          "choices": [
+            {"id": "write-memory", "label": "Viết một ký ức trước", "branchSceneId": "hsk5.draft.memory", "reaction": "An viết về lần mẹ đón cậu dưới mưa, nhưng quên mất màu chiếc ô. Cậu để dấu ngoặc trống thay vì bịa ra màu mình không nhớ.", "memory": {"key": "hsk5.story.voice", "value": "An để trống chi tiết mình không còn nhớ rõ"}, "laterConsequence": {"episodeId": "graduation", "sceneId": "hsk5.graduation.callback-memory", "text": "Trong bài cuối, An quay lại dấu ngoặc trống và hỏi mẹ; chiếc ô hóa ra màu vàng đã bạc."}, "joinsAtSceneId": "hsk5.draft.shared"},
+            {"id": "translate-story", "label": "Dịch một đoạn mẹ đã viết", "branchSceneId": "hsk5.draft.translate", "reaction": "An chọn đoạn ghi chú ngắn của mẹ. Cậu dịch sát từng chữ khiến câu nghe cứng, rồi cùng cô Vương tìm cách giữ lại ý mà vẫn giống lời An.", "memory": {"key": "hsk5.story.voice", "value": "An học cách giữ ý của mẹ mà không mượn nguyên giọng mẹ"}, "laterConsequence": {"episodeId": "graduation", "sceneId": "hsk5.graduation.callback-translation", "text": "An đặt bản đầu cạnh bản sửa để người nghe thấy hai câu có thể khác mà vẫn giữ cùng một ý."}, "joinsAtSceneId": "hsk5.draft.shared"}
+          ]
+        },
+        "graduation": {
+          "id": "hsk5.graduation.decision",
+          "purpose": "An nói về hai nơi mình nhớ mà không cần chọn một nơi để phủ nhận nơi kia.",
+          "convergenceSceneId": "hsk5.graduation.shared",
+          "choices": [
+            {"id": "end-with-home-question", "label": "Kết bằng câu hỏi về quê nhà", "branchSceneId": "hsk5.graduation.question", "reaction": "An hỏi liệu một người có thể gọi hai nơi là nhà không. Cậu nhìn xuống giấy ngay sau câu hỏi, còn Tiểu Vũ gật đầu từ hàng ghế sau.", "memory": {"key": "hsk5.ending.voice", "value": "An để câu hỏi về hai quê hương còn mở"}, "laterConsequence": {"episodeId": "graduation", "sceneId": "hsk5.graduation.epilogue-question", "text": "Sau buổi lễ, mẹ không trả lời thay An; hai mẹ con cùng ghi thêm một dòng vào quyển sổ."}, "joinsAtSceneId": "hsk5.graduation.shared"},
+            {"id": "end-with-small-detail", "label": "Kết bằng một chi tiết đời thường", "branchSceneId": "hsk5.graduation.detail", "reaction": "An kể chiếc cặp xanh bạc màu vẫn nằm cạnh cửa ở cả hai căn nhà. Cậu nói câu cuối hơi nhỏ, phải nhắc lại khi bạn cuối lớp chưa nghe thấy.", "memory": {"key": "hsk5.ending.voice", "value": "An kết bằng hình ảnh chiếc cặp đi cùng mình"}, "laterConsequence": {"episodeId": "graduation", "sceneId": "hsk5.graduation.epilogue-detail", "text": "Tiểu Vũ gửi An một tấm ảnh chiếc cặp ở bậc cửa trường, kèm lời hẹn viết tiếp khi gặp nhau."}, "joinsAtSceneId": "hsk5.graduation.shared"}
+          ]
+        }
+      }
+    },
+    "hsk6.letters-we-leave": {
+      "level": 6,
+      "commonLearningAnchorIds": ["hsk6.compare-sources", "hsk6.separate-fact-and-inference", "hsk6.recount-with-attribution", "hsk6.compare-voices", "hsk6.revise-a-position", "hsk6.synthesize-with-limits"],
+      "decisions": {
+        "old-streets": {
+          "id": "hsk6.old-streets.decision",
+          "purpose": "Con phố đã đổi khác; An cần ghi lại đâu là điều được nhìn thấy và đâu là ký ức của người khác.",
+          "convergenceSceneId": "hsk6.old-streets.shared",
+          "choices": [
+            {"id": "ask-neighbor", "label": "Hỏi thêm người bán hàng lâu năm", "branchSceneId": "hsk6.old-streets.ask-neighbor", "reaction": "An hỏi một bác bán hàng, nhưng ghi nhầm năm cửa hiệu chuyển chỗ. Bác đưa cuốn lịch cũ cho cậu đối chiếu rồi bảo cứ để dấu hỏi nếu chưa chắc.", "memory": {"key": "hsk6.street.source", "value": "An đối chiếu lời kể với tấm lịch cũ của người bán hàng"}, "laterConsequence": {"episodeId": "three-voices", "sceneId": "hsk6.three-voices.callback-neighbor", "text": "An đưa tấm lịch vào hồ sơ, ghi rõ đây là tư liệu của cửa hiệu chứ không phải ngày cả con phố đổi khác."}, "joinsAtSceneId": "hsk6.old-streets.shared"},
+            {"id": "mark-uncertain", "label": "Đánh dấu phần chưa biết trước", "branchSceneId": "hsk6.old-streets.uncertain", "reaction": "An khoanh tròn hai dòng còn mơ hồ. Cậu thấy trang sổ trông như bài làm chưa xong, nhưng không xóa vòng tròn đi.", "memory": {"key": "hsk6.street.source", "value": "An để dấu hỏi ở chỗ ghi chép chưa đủ nguồn"}, "laterConsequence": {"episodeId": "three-voices", "sceneId": "hsk6.three-voices.callback-uncertain", "text": "Khi ba người nhớ khác nhau, An đặt dấu hỏi cạnh những chỗ lời kể chưa trùng nhau."}, "joinsAtSceneId": "hsk6.old-streets.shared"}
+          ]
+        },
+        "three-voices": {
+          "id": "hsk6.three-voices.decision",
+          "purpose": "Mẹ, Tiểu Vũ và bà Lưu nhớ cùng một buổi chiều theo những cách khác nhau.",
+          "convergenceSceneId": "hsk6.three-voices.shared",
+          "choices": [
+            {"id": "keep-three-notes", "label": "Giữ ba ghi chú riêng", "branchSceneId": "hsk6.three-voices.separate-notes", "reaction": "An chép mỗi lời vào một mảnh giấy. Một mảnh bị gió thổi xuống gầm bàn; cậu cúi tìm và lỡ làm rơi cây bút.", "memory": {"key": "hsk6.memory.voices", "value": "An giữ nguyên ba lời kể trên ba ghi chú riêng"}, "laterConsequence": {"episodeId": "open-letter", "sceneId": "hsk6.open-letter.callback-notes", "text": "An đặt ba mảnh giấy cạnh nhau trong thư, không ép chúng thành một ký ức duy nhất."}, "joinsAtSceneId": "hsk6.three-voices.shared"},
+            {"id": "make-timeline", "label": "Thử xếp các việc theo thời gian", "branchSceneId": "hsk6.three-voices.timeline", "reaction": "An vẽ dòng thời gian, rồi nhận ra không ai nhớ rõ bữa ăn diễn ra trước hay sau cơn mưa. Cậu để hai mốc song song thay vì chọn bừa.", "memory": {"key": "hsk6.memory.voices", "value": "An ghi hai khả năng thời gian chưa phân định"}, "laterConsequence": {"episodeId": "open-letter", "sceneId": "hsk6.open-letter.callback-timeline", "text": "Trong thư, An giữ hai khả năng cạnh nhau và giải thích vì sao mình chưa thể xếp chúng."}, "joinsAtSceneId": "hsk6.three-voices.shared"}
+          ]
+        },
+        "open-letter": {
+          "id": "hsk6.open-letter.decision",
+          "purpose": "An sửa một lá thư dài mà không biến điều chưa biết thành kết luận chắc chắn.",
+          "convergenceSceneId": "hsk6.open-letter.shared",
+          "choices": [
+            {"id": "state-limited-claim", "label": "Viết điều mình tin, kèm căn cứ", "branchSceneId": "hsk6.open-letter.claim", "reaction": "An viết rằng con phố đã đổi khác, rồi trích hai tấm ảnh. Cậu nhận ra ảnh chụp được góc đường chứ không nói được ai đã phải rời đi.", "memory": {"key": "hsk6.letter.limit", "value": "An giới hạn nhận định theo đúng điều tấm ảnh cho thấy"}, "laterConsequence": {"episodeId": "sparrow-window", "sceneId": "hsk6.sparrow-window.callback-claim", "text": "An dùng lại cách giới hạn câu nói khi kể điều cậu không thể thay người bán hàng xác nhận."}, "joinsAtSceneId": "hsk6.open-letter.shared"},
+            {"id": "leave-question", "label": "Giữ câu hỏi ở cuối bản nháp", "branchSceneId": "hsk6.open-letter.question", "reaction": "An để câu ‘mình đã bỏ sót ai?’ ở cuối trang. Cậu thấy nó làm bức thư giống chưa hoàn thành, nhưng không xóa đi.", "memory": {"key": "hsk6.letter.limit", "value": "An giữ câu hỏi về người chưa được lắng nghe"}, "laterConsequence": {"episodeId": "sparrow-window", "sceneId": "hsk6.sparrow-window.callback-question", "text": "Trước khi khép sổ, An tìm đến hỏi người bán hàng xem họ có muốn kể thêm điều gì không."}, "joinsAtSceneId": "hsk6.open-letter.shared"}
+          ]
+        },
+        "sparrow-window": {
+          "id": "hsk6.sparrow-window.decision",
+          "purpose": "An chọn cách khép lại một chặng đường mà vẫn chừa chỗ cho điều chưa biết.",
+          "convergenceSceneId": "hsk6.sparrow-window.shared",
+          "choices": [
+            {"id": "end-with-answer", "label": "Viết một câu trả lời còn giới hạn", "branchSceneId": "hsk6.sparrow-window.answer", "reaction": "An viết mình thuộc về những người đã cùng cậu chăm sóc con phố. Cậu gạch chữ ‘mọi người’ đi và thay bằng ba cái tên cậu thật sự đã hỏi.", "memory": {"key": "hsk6.ending.point-of-view", "value": "An nói về sự gắn bó qua ba người cụ thể"}, "laterConsequence": {"episodeId": "sparrow-window", "sceneId": "hsk6.sparrow-window.epilogue-answer", "text": "Sẻ đậu ngoài cửa sổ, còn An để quyển sổ mở ở trang ba cái tên ấy."}, "joinsAtSceneId": "hsk6.sparrow-window.shared"},
+            {"id": "end-with-question", "label": "Để ngỏ câu hỏi muốn nghe tiếp", "branchSceneId": "hsk6.sparrow-window.question", "reaction": "An viết ‘còn ai nữa muốn kể không?’ rồi ngập ngừng vì câu hỏi chưa có dấu chấm. Cậu để nguyên như vậy.", "memory": {"key": "hsk6.ending.point-of-view", "value": "An để câu chuyện mở cho một người chưa kịp lên tiếng"}, "laterConsequence": {"episodeId": "sparrow-window", "sceneId": "hsk6.sparrow-window.epilogue-question", "text": "Sẻ nghiêng đầu ngoài khung cửa; An lấy thêm một trang trắng và ghi ngày mai sẽ đi hỏi tiếp."}, "joinsAtSceneId": "hsk6.sparrow-window.shared"}
+          ]
+        }
+      }
+    }
+  }
+}
