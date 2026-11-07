@@ -193,7 +193,8 @@ async function goStory(page,label){
   if((!arrivalObserved&&stepText.trim()==='01 / 10'||!returnedTree&&stepText.trim()==='07 / 10')&&!await visible(page,'#worldPanel')&&await visible(page,'#worldOpenBtn'))await page.locator('#worldOpenBtn').click();
   if(!streetEchoObserved&&stepText.trim()==="07 / 10"&&await visible(page,"#storyEcho")){
    const echo=await page.locator("#storyEcho").innerText();
-   assert.ok(echo.includes("明天见"),"The walk-home scene did not reuse a known expression");
+   assert.ok(echo.includes("谢谢"),"The walk-home scene should reuse a known expression already learned");
+   assert.ok(!echo.includes("明天见"),"The walk-home echo must not reveal the invitation response before An chooses");
    assert.ok(echo.includes("Tiểu Vũ")||echo.includes("An nhận ra"),"Missing continuity from earlier story choices");
    streetEchoObserved=true;
   }

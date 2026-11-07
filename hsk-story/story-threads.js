@@ -48,7 +48,7 @@ var HSKStoryThreads=(function(){"use strict";
    var friend=mem.friendship==="sit-with-friend"?"Tiểu Vũ đi cạnh An như một người bạn mới.":mem.friendship==="ask-teacher"?"Tiểu Vũ nhớ hôm An được cô Vương đưa tới chỗ ngồi.":"An nhận ra có những người đã nhớ tên mình.";
    var flavor=mem["noodle-taste"]==="mild"?"An còn nhớ bà Lưu để ớt riêng.":mem["noodle-taste"]==="try-spicy"?"An vẫn nhớ cốc nước bà Lưu đưa khi thử mì cay.":"An nhớ hơi ấm từ quán mì.";
    var notebook=encounter&&encounter.stage==="done"?" Quyển sổ mẹ tặng đã được tìm lại; hôm nay nó có thêm một kỷ niệm.":"";
-   return {zh:"谢谢。明天见！",py:"Xièxie. Míngtiān jiàn!",vi:friend+" "+flavor+notebook+" Tiếng Trung giờ nối những người An gặp, chứ không chỉ là câu mẫu.",kind:"continuity"};
+   return {zh:"谢谢。",py:"Xièxie.",vi:friend+" "+flavor+notebook+" An cảm ơn bạn vì quãng đường vừa đi cùng nhau. Chuyện ngày mai, cậu vẫn chưa biết sẽ ra sao.",kind:"continuity"};
   }
   return null;
  }

@@ -43,7 +43,9 @@ test("Gate5 both food choices change the thank-you moment and later memory",()=>
 });
 test("Gate5 walk-home reflection appears only after real prior episodes, remembers completed diary",()=>{
  const a=T.echo(6,done([5]),{friendship:"ask-teacher","noodle-taste":"mild"},{stage:"done"});
- assert.ok(a.zh.includes("明天见"));assert.ok(a.vi.includes("Tiểu Vũ"));assert.ok(a.vi.includes("sổ"));
+ assert.equal(a.zh,"谢谢。");assert.equal(a.py,"Xièxie.");assert.ok(a.vi.includes("Tiểu Vũ"));assert.ok(a.vi.includes("sổ"));
+ assert.doesNotMatch(a.zh,/明天见|明天一起上学/);assert.doesNotMatch(a.py,/Míngtiān jiàn/);
+ assert.match(C.scenes[6].zh,/明天一起上学/);assert.ok(C.scenes[6].answers.some(answer=>answer.includes("明天见")),"the invitation answer remains available only after An chooses a response");
  const b=T.echo(6,done([5]),{},null);
  assert.ok(!b.vi.includes("sổ mẹ tặng đã được tìm lại"));
 });
@@ -75,7 +77,7 @@ test("Gate5 chapter chronology: notebook was opened the previous evening, not ha
  assert.ok(intro.includes("Đêm trước buổi học đầu tiên"));
  assert.ok(B.beats[0].story.includes("Sáng hôm sau"));
  assert.ok(B.beats[0].story.includes("tối qua"));
- assert.equal(C.scenes[0].tag,"SÁNG ĐẦU TIÊN TỚI TRƯỜNG");
+	 assert.equal(C.scenes[0].tag,"TRƯỚC CỔNG TRƯỜNG MỚI");
  assert.equal(C.scenes[0].id,0);
 });
 
