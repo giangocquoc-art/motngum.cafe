@@ -25,6 +25,9 @@ test("Week-later return recalls greeting before the meal and price checkpoint wi
  assert.match(response,/我还好/);assert.match(response,/Wǒ hái hǎo/);assert.doesNotMatch(response,/十块钱|十块|十元/);
  assert.match(checkin,/sau buổi ghé quán/);assert.doesNotMatch(checkin,/kéo ghế/);assert.doesNotMatch(response,/hỏi.*giá/);
  assert.match(checkin,/Mẹ nhìn cậu, khẽ hỏi/);assert.doesNotMatch(checkin,/ngồi xuống cạnh|đặt cặp xuống/,'the copy matches the standing scene without inventing a visible action');
+ assert.match(checkin,/Mẹ vẫn cầm tờ hóa đơn gập lại/);assert.match(response,/Tờ hóa đơn vẫn gập trong tay mẹ/);assert.match(pricePrompt,/Mẹ đưa An tờ hóa đơn còn gấp/);
+ assert.doesNotMatch([checkin,response,pricePrompt].join(" "),/hóa đơn.{0,24}(?:trên bàn|cạnh quyển sổ)/,'the copy no longer places the receipt on an absent table');
+ assert.doesNotMatch([checkin,response,pricePrompt].join(" "),/十块钱|十块|十元|mười tệ/,'the receipt still does not expose the price before independent recall');
  assert.match(meal,/mì được mang ra/);assert.match(meal,/hóa đơn/);assert.doesNotMatch(meal,/十块钱|十块|十元/);
  assert.doesNotMatch(pricePrompt,/十块钱|十块|十元|10\s*元|10\s*块/);
  assert.deepEqual(Array.from(L.sceneAt(11).answers),["十块钱","十块","十元"],"the independent price answer key is unchanged");
