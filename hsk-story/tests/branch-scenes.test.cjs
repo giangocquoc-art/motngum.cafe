@@ -55,3 +55,17 @@ test('week-later learning cues keep the speaker, scene and single Sẻ aligned',
     assert.equal(scene.actors.some(actor=>actor.character==='sparrow'),false,id+' must not add a second bird sprite');
   }
 });
+test('the shared classroom reuse shows An, Tiểu Vũ and cô Vương with Sẻ perched once',()=>{
+  const scene=box.HSKSceneManifest.scenes['branch.day2-counting-group'];
+  assert.equal(scene.background,'classroom');
+  assert.deepEqual(Array.from(scene.actors,a=>a.character),['an','xiaoyu','wang']);
+  assert.deepEqual(Array.from(scene.actors,a=>a.expression),['listening','friendly','speaking']);
+  assert.equal(scene.sparrow.flight,false);
+  assert.equal(scene.sparrow.asset,box.HSKSceneManifest.sprites.sparrow.asset);
+  assert.ok(scene.sparrow.desktop.left<30&&scene.sparrow.desktop.top<20,'Sẻ sits by the classroom window');
+  assert.equal(scene.actors.some(a=>a.character==='classmates'),false,'avoid the composite sprite that resembles a second An');
+  const checkin=box.HSKSceneManifest.scenes['branch.week-later-home-checkin'];
+  const answer=box.HSKSceneManifest.scenes['branch.week-later-home-answer'];
+  assert.deepEqual(Array.from(checkin.actors,a=>a.expression),['listening','speaking']);
+  assert.deepEqual(Array.from(answer.actors,a=>a.expression),['smile','neutral']);
+});

@@ -10,14 +10,14 @@ const learning = require("../duong-re/branch-learning.js");
 const plan = require("../story-session-plan.js");
 const { audit, canReach, nextAnchor } = require("../scripts/audit-story-plan.cjs");
 
-test("session plan partitions all 52 nodes, 15 branch tasks, and eight candidate objectives", () => {
+test("session plan partitions all 53 nodes, 15 branch tasks, and eight candidate objectives", () => {
   assert.deepEqual(plan.validate(story, blueprint, content, learning, curriculum), []);
   assert.equal(plan.segments.length, 10);
   assert.deepEqual(plan.segments.map(segment => segment.order), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   assert.ok(plan.segments.every(segment => segment.durationMinutes.min === 10 && segment.durationMinutes.max === 15));
   assert.ok(plan.segments.every(segment => segment.choiceSceneIds.length <= 2));
   assert.ok(plan.segments.every(segment => segment.primaryObjectiveIds.length >= 1 && segment.primaryObjectiveIds.length <= 2));
-  assert.equal(new Set(plan.segments.flatMap(segment => segment.sceneIds)).size, 52);
+  assert.equal(new Set(plan.segments.flatMap(segment => segment.sceneIds)).size, 53);
   assert.deepEqual(plan.segments.flatMap(segment => segment.taskIds).sort((a, b) => a - b), Array.from({ length: 15 }, (_, index) => index));
   assert.deepEqual([...new Set(plan.segments.flatMap(segment => segment.primaryObjectiveIds))].sort(), blueprint.objectives.map(objective => objective.id).sort());
   assert.equal(plan.getSegmentForScene("missing-node"), null);
@@ -88,6 +88,7 @@ test("conditional routes and gated options retain their authored behavior and co
   }
   const bird = story.byId[state.node];
   assert.ok(engine.availableOptions(bird, state).some(option => option.id === "bird-with-friend"));
+  for (const option of engine.availableOptions(bird, state)) assert.ok(canReach(option.to, "day2-counting-group"));
   for (const option of engine.availableOptions(bird, state)) assert.ok(canReach(option.to, "day2-liu"));
   const route = story.byId["day2-arrival"];
   assert.equal(route.routes.find(item => engine.meets(item.requires, { flags: { "invite-friend": true } })).to, "day2-guest-arrives");

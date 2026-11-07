@@ -67,13 +67,13 @@ The labels below are authored lesson goals. Their HSK 3.0 page references are ca
 | `greeting` | 0, 1 | — | 1 | Common story reuse appears before the price checkpoint; no individually measured delayed recall yet |
 | `introduce-self` | 1, 2, 7 | — | 1 | Exact task, topic, word, character, and grammar matching pending; task 7 remains a combined checkpoint |
 | `student-identity` | 2, 3, 7 | — | 1 | Exact task, topic, word, character, and grammar matching pending; task 7 remains a combined checkpoint |
-| `numbers` | 3 | 12 | 1 | Scene 3 introduces counting; task 12 is a separate delayed recall checkpoint |
+| `numbers` | 3 | 12 | 1 | Common day-two reuse at `day2-counting-group`; task 12 is a separate delayed recall checkpoint |
 | `order-noodles` | 4, 5, 9 | 10 | 1 | Task 9 remains the early checkpoint; task 10 adds delayed recall |
 | `price` | 5, 8 | 11 | 1 | Task 8 is text-based recall, not listening evidence; task 11 adds delayed recall |
 | `gratitude` | 5 | 13 | 1 | Scene 5 introduces thanks; task 13 adds delayed recall after Tiểu Vũ helps An |
 | `farewell` | 6 | 14 | 1 | Scene 6 introduces accepting a plan; task 14 adds delayed recall with a different cue |
 
-The machine-readable blueprint records tasks 10–14 as objective-specific delayed recall opportunities. Greeting now has a common story reuse beat in `week-later-home-checkin` and `week-later-home-answer`; this is contextual exposure, not assessment evidence, so its independent-recall stage remains incomplete. The other incomplete objectives still lack at least one required story stage. HSK item matches, educator approval, and release readiness remain pending.
+The machine-readable blueprint records tasks 10–14 as objective-specific delayed recall opportunities. Greeting now has a common story reuse beat in `week-later-home-checkin` and `week-later-home-answer`; this is contextual exposure, not assessment evidence, so its independent-recall stage remains incomplete. Numbers also has a common day-two reuse before task 12, after a narrative gap. HSK item matches, educator approval, and release readiness remain pending.
 
 ### HSK1 candidate vocabulary spot-check — 2026-11-07
 

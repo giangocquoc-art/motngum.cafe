@@ -56,21 +56,21 @@ test("HSK1 stage report separates mandatory story learning, delayed branch recal
  assert.deepEqual(Array.from(report.pilotStageCoverage,x=>x.objectiveId),Array.from(blueprint.objectives,x=>x.id));
  const recallScenes={"introduce-self":[7],"student-identity":[7],price:[8],"order-noodles":[9]};
  const branchTasks={numbers:[12],price:[11],"order-noodles":[10],gratitude:[13],farewell:[14]};
- const reuseNodes={greeting:["week-later-home-checkin","week-later-home-answer"],"order-noodles":["day2-liu"],price:["day2-liu"]};
+ const reuseNodes={greeting:["week-later-home-checkin","week-later-home-answer"],numbers:["day2-counting-group"],"order-noodles":["day2-liu"],price:["day2-liu"]};
  for(const row of report.pilotStageCoverage){
   assert.equal(row.introduction.complete,true,row.objectiveId+" has an authored introduction");
-  assert.equal(row.commonStoryReuse.complete,["greeting","order-noodles","price"].includes(row.objectiveId),row.objectiveId+" reports only authored shared-story reuse");
+  assert.equal(row.commonStoryReuse.complete,["greeting","numbers","order-noodles","price"].includes(row.objectiveId),row.objectiveId+" reports only authored shared-story reuse");
   assert.deepEqual(Array.from(row.commonStoryReuse.branchNodeIds),reuseNodes[row.objectiveId]||[],row.objectiveId+" uses only a common story node that contains its target form");
   assert.deepEqual(Array.from(row.independentRecall.curriculumSceneIds),recallScenes[row.objectiveId]||[],row.objectiveId+" reports only its separate authored recall task");
   assert.deepEqual(Array.from(row.independentRecall.branchTaskIds),branchTasks[row.objectiveId]||[],row.objectiveId+" reports its stable branch checkpoint IDs separately");
   const individuallyMeasured=["numbers","price","order-noodles","gratitude","farewell"].includes(row.objectiveId);
   assert.equal(row.independentRecall.complete,individuallyMeasured,row.objectiveId+" only counts an objective-specific response as recall evidence");
   assert.deepEqual(Array.from(row.independentRecall.sharedAssessmentSceneIds),["introduce-self","student-identity"].includes(row.objectiveId)?[7]:[]);
-  if(["order-noodles","price"].includes(row.objectiveId))assert.match(row.sequenceStatus,/main-story reuse and individually measured recall authored/);
+  if(["numbers","order-noodles","price"].includes(row.objectiveId))assert.match(row.sequenceStatus,/main-story reuse and individually measured recall authored/);
   else assert.match(row.sequenceStatus,/individually measured recall incomplete/);
   assert.equal(row.releaseReady,false,row.objectiveId+" remains locked until content and educator review are complete");
  }
- assert.deepEqual(Array.from(report.incompletePilotSequences),["greeting","introduce-self","student-identity","numbers","gratitude","farewell"]);
+ assert.deepEqual(Array.from(report.incompletePilotSequences),["greeting","introduce-self","student-identity","gratitude","farewell"]);
  assert.ok(report.optionalReviewSequences.length>0,"optional cards stay visible as optional support, not mandatory coverage");
  assert.equal(report.officiallyVerifiedObjectives,0);assert.equal(report.educatorReviewedObjectives,0);assert.equal(report.objectiveCrosswalkComplete,false);
 });

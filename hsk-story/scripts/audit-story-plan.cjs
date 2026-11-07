@@ -8,7 +8,7 @@ const content = require("../content-manifest.js");
 const learning = require("../duong-re/branch-learning.js");
 const curriculum = require("../curriculum-data.js");
 
-const requiredAnchors = ["school-gate", "lost-diary", "staff-office", "canteen", "noodle-order", "walk-home", "night", "epilogue", "day2-arrival", "day2-breakfast", "day2-bird", "day2-liu", "day2-night", "week-later-shop", "week-later-meal", "week-later-home-checkin", "week-later-home-answer", "week-later-home", "week-later-count", "week-later-thanks", "week-later-goodbye"];
+const requiredAnchors = ["school-gate", "lost-diary", "staff-office", "canteen", "noodle-order", "walk-home", "night", "epilogue", "day2-arrival", "day2-breakfast", "day2-bird", "day2-counting-group", "day2-liu", "day2-night", "week-later-shop", "week-later-meal", "week-later-home-checkin", "week-later-home-answer", "week-later-home", "week-later-count", "week-later-thanks", "week-later-goodbye"];
 function edges(node) {
   if (node.kind === "ending") return [];
   if (node.kind === "route") return node.routes.map(route => route.to);

@@ -18,7 +18,7 @@ These tasks are common to every story route. Each assesses one candidate objecti
 
 The task 14 prompt no longer displays an accepted Chinese answer before the learner responds. Tiểu Vũ says `我先回家了。`; the requested farewell model remains behind help. This protects the independent-recall attempt without changing its accepted variants.
 
-The objective report links shared day-two story node `day2-liu` to ordering and price reuse, then lists their delayed checkpoints separately. Greeting now has a common reuse beat in `week-later-home-checkin` and `week-later-home-answer`, before the price checkpoint; it still lacks individually measured recall. The five remaining objectives (self-introduction, student identity, numbers, gratitude and farewell) also lack at least one required story stage. All six sequences remain incomplete. No objective is release-ready; verified HSK item matches and educator approvals remain zero.
+The objective report links shared day-two story node `day2-liu` to ordering and price reuse, then lists their delayed checkpoints separately. Numbers now has a shared, unscored model in `day2-counting-group` before the week-later task 12 checkpoint. That passage belongs to the school segment and each route shows An, Tiểu Vũ, cô Vương and one perched Sẻ. Greeting has a common reuse beat in `week-later-home-checkin` and `week-later-home-answer`, before the price checkpoint; it still lacks individually measured recall. Five sequences remain incomplete: greeting, self-introduction, student identity, gratitude and farewell. No objective is release-ready; verified HSK item matches and educator approvals remain zero.
 
 ## Compatibility and continuity
 
@@ -36,8 +36,8 @@ The curriculum mappings are candidates, not verified official HSK 3.0 item match
 ## Verification completed locally — 2026-11-07
 
 - All 425 Node logic and integration tests passed, including delayed task-to-objective mapping, the meal-to-price-recall continuity bridge and the task 14 no-answer-leak regression.
-- Story audit passed: 52 nodes, 12 choice nodes, 37 options, 15 branch tasks, 10 segments and zero reachable-consequence or convergence gaps across 1,259,712 structural paths.
-- Edge browser smoke passed 833 layout states. Edge branch integration passed three complete routes (511 states) at desktop, short-phone and phone-landscape sizes; each reached all 15 learning rows, kept one visible Sẻ, hid task 14's accepted answer before a response, and had no page or content overflow. The common meal and greeting passages precede the price checkpoint; neither displays the price answer.
+- Story audit passed: 53 nodes, 12 choice nodes, 37 options, 15 branch tasks, 10 segments and zero reachable-consequence or convergence gaps across 1,259,712 structural paths.
+- Edge browser smoke passed 833 layout states. Edge branch integration passed three complete routes (515 states) at desktop, short-phone and phone-landscape sizes; each reached all 15 learning rows, kept one visible Sẻ, hid task 14's accepted answer before a response, and had no page or content overflow. The common meal and greeting passages precede the price checkpoint; neither displays the price answer. A save-replay fixture also verifies that a prior day-two choice remains in the journal and retains its relationship effects after insertion of the unscored classroom passage.
 - The approved kitchen passed 35 integrated Edge states covering seven scene branches and five responsive compositions. The save-migration check passed desktop and phone: a former-ending save resumed at its stable node, preserved old choices/results and legacy progress keys, then recorded tasks 10–11 without replaying story decisions.
 
 Teacher/native-speaker review, measured learner outcomes, signed-in Preview checks and physical-device checks remain release gates. The latest story and greeting-reuse changes are local; no new Preview deployment exists for them.

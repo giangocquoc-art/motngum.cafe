@@ -10,6 +10,13 @@ AnBranchStory.scenes.forEach(function(node){
  var scene=copy(manifest.scenes[base[node.place]||base.street]);
  if(node.id==="school-gate"){scene=copy(manifest.scenes["hsk1.e01.xiaoyu-friendship"]);scene.actors=group(["an","wang","xiaoyu"])}
  if(node.id==="week-later-count")scene=copy(manifest.scenes["hsk1.e01.class-counting"]);
+ if(node.id==="day2-counting-group"){
+  scene=copy(manifest.scenes["hsk1.e01.class-counting"]);scene.fullStageActors=true;
+  scene.actors=[actor("an",0),actor("xiaoyu",1),actor("wang",2)];
+  scene.actors.forEach(function(a,index){var desktop=[14,39,68][index],mobile=[0,34,68][index];a.desktop={left:desktop,bottom:0,width:24};a.mobile={left:mobile,bottom:0,width:31};a.tablet={left:[14,39,68][index],bottom:0,width:24};a.wide={left:desktop,bottom:0,width:24};a.compact={left:mobile,bottom:0,width:31};});
+  scene.actors[0].expression="listening";scene.actors[1].expression="friendly";scene.actors[2].expression="speaking";
+  scene.sparrow.flight=false;scene.sparrow.desktop={left:18,top:14};scene.sparrow.mobile={left:14,top:13};
+ }
  if(node.id==="week-later-thanks"||node.id==="week-later-goodbye"){scene=copy(manifest.scenes["hsk1.e01.xiaoyu-friendship"]);scene.actors=[actor("an",0),actor("xiaoyu",1)];}
  if(node.id==="search-friend")scene.actors=[actor("an",0),actor("xiaoyu",1)];
  if(node.id==="search-teacher")scene.actors=[actor("an",0),actor("wang",1)];
@@ -30,7 +37,7 @@ AnBranchStory.scenes.forEach(function(node){
    scene.sparrow.flight=false;
   }
  }
- if(node.place==="class"&&/Vương/.test(node.speaker))scene.actors=[actor("an",0),actor("wang",1)];
+ if(node.place==="class"&&/Vương/.test(node.speaker)&&node.id!=="day2-counting-group")scene.actors=[actor("an",0),actor("wang",1)];
  if(node.id==="day2-bird-teacher")scene.actors=group(["an","wang","xiaoyu"]);
  if(node.id==="arrival"||node.id==="arrival-mother")scene.actors=[actor("an",0),actor("mother",1)];
  if(node.id==="walk-home"){scene=copy(manifest.scenes["hsk1.e01.walk-home"]);scene.actors=group(["an","mother","xiaoyu"]);}
@@ -40,6 +47,8 @@ AnBranchStory.scenes.forEach(function(node){
  else if(/school|watch/.test(node.id))scene.actors[0].expression="shy";
  else if(/search-friend|search-teacher/.test(node.id))scene.actors[0].expression="determined";
  if(/home-confide|day2-confession/.test(node.id)){var mother=scene.actors.find(function(a){return a.character==="mother"});if(mother)mother.expression="concerned";}
+ if(node.id==="week-later-home-checkin"){scene.actors.find(function(a){return a.character==="mother"}).expression="speaking";scene.actors.find(function(a){return a.character==="an"}).expression="listening";}
+ if(node.id==="week-later-home-answer"){scene.actors.find(function(a){return a.character==="mother"}).expression="neutral";scene.actors.find(function(a){return a.character==="an"}).expression="smile";}
  scene.sparrow.expression=/bird/.test(node.id)?"worried":"curious";
  if(/^day2-bird-(quiet|teacher|team)$/.test(node.id)){scene.sparrow.expression="happy";scene.sparrow.flight=true;scene.sparrow.desktop={left:91,top:4};scene.sparrow.mobile={left:87,top:4};}
  manifest.scenes["branch."+node.id]=scene;

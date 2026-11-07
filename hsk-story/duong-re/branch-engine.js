@@ -19,7 +19,11 @@ if(!data.byId[link])return {ok:false,error:"Mạch truyện bị thiếu liên k
 var next={version:1,node:link,path:state.path.concat([{at:scene.id,choice:choiceId}]),traits:Object.assign({},state.traits),relationships:Object.assign({},state.relationships),flags:Object.assign({},state.flags),journal:state.journal.slice(),done:data.byId[link].kind==="ending"};
 if(chosen){addDelta(next.traits,chosen.traits,TRAITS);addDelta(next.relationships,chosen.relationships,RELATIONS);next.flags[chosen.id]=true;next.journal.push({scene:scene.id,choice:chosen.id,zh:chosen.zh,vi:chosen.vi,memory:chosen.memory,consequence:{kind:chosen.consequence.kind,text:chosen.consequence.text},reply:chosen.reply});}
 return {ok:true,state:next,reply:chosen?chosen.reply:null};}
-function load(value){var obj;try{obj=typeof value==="string"?JSON.parse(value):value;}catch(e){return fresh();}if(!obj||obj.version!==1||!Array.isArray(obj.path))return fresh();var state=fresh();for(var i=0;i<obj.path.length&&i<50;i++){var item=obj.path[i];if(!item||item.at!==state.node||typeof item.choice!=="string")break;var moved=step(state,item.choice);if(!moved.ok)break;state=moved.state;}return state;}
+function load(value){var obj;try{obj=typeof value==="string"?JSON.parse(value):value;}catch(e){return fresh();}if(!obj||obj.version!==1||!Array.isArray(obj.path))return fresh();var state=fresh();for(var i=0;i<obj.path.length&&i<50;i++){var item=obj.path[i];if(!item||typeof item.choice!=="string")break;
+// The unscored day-two counting passage was inserted before bà Lưu. Older
+// saves jump directly from a bird choice to the first bà Lưu choice.
+if(item.at==="day2-liu"&&state.node==="day2-counting-group"){var reuse=step(state,"next");if(!reuse.ok)break;state=reuse.state;}
+if(item.at!==state.node)break;var moved=step(state,item.choice);if(!moved.ok)break;state=moved.state;}return state;}
 // Unsupported future records must be preserved by storage owners, even when
 // load() cannot interpret their path and can only produce an in-memory start.
 function isNewerSave(value){var obj;try{obj=typeof value==="string"?JSON.parse(value):value;}catch(e){return false;}var seen=new WeakSet(),pending=[obj];while(pending.length){var record=pending.pop();if(!record||typeof record!=="object"||seen.has(record))continue;seen.add(record);if(Array.isArray(record)){record.forEach(function(item){pending.push(item);});continue;}if([record.version,record.schemaVersion].some(function(version){return Number.isInteger(version)&&version>1;}))return true;["path","learning","draft"].forEach(function(key){pending.push(record[key]);});}return false;}
@@ -94,7 +98,7 @@ function validate(){
  }
  dfs(data.start);
  data.scenes.forEach(function(s){if(!visited.has(s.id))errors.push("Unreachable "+s.id);});
- var required=["school-gate","lost-diary","staff-office","canteen","noodle-order","walk-home","night","epilogue","day2-arrival","day2-breakfast","day2-bird","day2-liu","day2-night","week-later-shop","week-later-meal","week-later-home-checkin","week-later-home-answer","week-later-home","week-later-count","week-later-thanks","week-later-goodbye"];
+ var required=["school-gate","lost-diary","staff-office","canteen","noodle-order","walk-home","night","epilogue","day2-arrival","day2-breakfast","day2-bird","day2-counting-group","day2-liu","day2-night","week-later-shop","week-later-meal","week-later-home-checkin","week-later-home-answer","week-later-home","week-later-count","week-later-thanks","week-later-goodbye"];
  function endingReachableWithout(start,excluded){
   var seen=new Set(),stack=[start];while(stack.length){var id=stack.pop();if(id===excluded||seen.has(id))continue;seen.add(id);
    var node=data.byId[id];if(!node)continue;if(node.kind==="ending")return true;edges(node).forEach(function(n){stack.push(n);});

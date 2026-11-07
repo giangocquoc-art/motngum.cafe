@@ -11,7 +11,7 @@ const CARE={"arrival":"hold-mother","school-gate":"ask-friend","lost-diary":"fri
 const WONDER={"arrival":"look-around","school-gate":"watch-first","lost-diary":"solo-search","staff-office":"ask-again","canteen":"read-menu","noodle-order":"try-hot","walk-home":"keep-secret","night":"write-question","day2-breakfast":"ask-diary-question","day2-bird":"bird-quiet","day2-liu":"liu-menu","day2-night":"day2-letter-curious"};
 
 test("Two-day graph has no cycles, dead nodes, missing links or shortcuts around canon",()=>{
- const v=E.validate();assert.deepEqual(Array.from(v.errors),[]);assert.equal(v.branchNodes,12);assert.equal(v.nodeCount,52);
+ const v=E.validate();assert.deepEqual(Array.from(v.errors),[]);assert.equal(v.branchNodes,12);assert.equal(v.nodeCount,53);
  assert.ok(v.structuralPaths>4000);assert.equal(D.scenes.filter(x=>x.kind==="ending").length,1);
  assert.equal(D.byId.epilogue.kind,"milestone");
 });
@@ -21,11 +21,19 @@ test("Week-later return recalls greeting before the meal and price checkpoint wi
  assert.equal(D.byId["week-later-home-checkin"].to,"week-later-home-answer");
  assert.equal(D.byId["week-later-home-answer"].to,"week-later-home");
  const checkin=D.byId["week-later-home-checkin"].story,response=D.byId["week-later-home-answer"].story,meal=D.byId["week-later-meal"].story,pricePrompt=D.byId["week-later-home"].story;
- assert.match(checkin,/安，你还好吗/);assert.doesNotMatch(checkin,/我还好|我很好|很好/);
- assert.match(response,/我还好/);assert.doesNotMatch(response,/十块钱|十块|十元/);
+ assert.match(checkin,/安，你还好吗/);assert.match(checkin,/Ān, nǐ hái hǎo ma/);assert.doesNotMatch(checkin,/我还好|我很好|很好/);
+ assert.match(response,/我还好/);assert.match(response,/Wǒ hái hǎo/);assert.doesNotMatch(response,/十块钱|十块|十元/);
+ assert.match(checkin,/sau buổi ghé quán/);assert.doesNotMatch(checkin,/kéo ghế/);assert.doesNotMatch(response,/hỏi.*giá/);
  assert.match(meal,/mì được mang ra/);assert.match(meal,/hóa đơn/);assert.doesNotMatch(meal,/十块钱|十块|十元/);
  assert.doesNotMatch(pricePrompt,/十块钱|十块|十元|10\s*元|10\s*块/);
  assert.deepEqual(Array.from(L.sceneAt(11).answers),["十块钱","十块","十元"],"the independent price answer key is unchanged");
+});
+test("All bird outcomes converge through the shared day-two number reuse before bà Lưu",()=>{
+ const shared=D.byId["day2-counting-group"];
+ for(const id of ["day2-bird-quiet","day2-bird-teacher","day2-bird-team"])assert.equal(D.byId[id].to,shared.id);
+ assert.equal(shared.to,"day2-liu");assert.match(shared.story,/你们组有三个学生/);assert.match(shared.story,/Nǐmen zǔ yǒu sān ge xuésheng/);assert.match(shared.story,/Nhóm em có ba học sinh/);
+ assert.deepEqual(Array.from(L.sceneAt(12).answers),["三个学生","有三个学生","三个人","有三个人","三个"]);
+ assert.match(L.sceneAt(12).request,/có thể thêm/);assert.match(L.sceneAt(12).error,/muốn nói rõ hơn/);
 });
 test("Every authored choice has a unique reply and a journal-visible persisted consequence",()=>{
  const choices=D.scenes.flatMap(s=>s.kind==="choice"?s.options:[]),replies=new Set(),ids=new Set();
@@ -109,6 +117,17 @@ test("Existing day-one v1 save resumes at end of day one then continues forward 
  const day2=next(restored,"next");assert.equal(day2.node,"day2-arrival");
  const routed=next(day2,"next");assert.equal(routed.node,"day2-guest-arrives");
  assert.equal(routed.flags["invite-friend"],true);assert.equal(routed.journal.length,8);
+});
+test("A pre-insertion save at bà Lưu replays through the new unscored classroom passage",()=>{
+ const current=go({...CARE,"day2-liu":"liu-help"},"day2-liu-help"),legacy=JSON.parse(E.exportSave(current));
+ const restored=E.load(legacy);
+ assert.equal(restored.node,"day2-liu-help");
+ assert.deepEqual(restored.path,current.path);
+ assert.deepEqual(restored.journal,current.journal);
+ assert.deepEqual(restored.traits,current.traits);
+ assert.deepEqual(restored.relationships,current.relationships);
+ assert.equal(restored.flags["bird-with-friend"],true);
+ assert.equal(restored.flags["liu-help"],true);
 });
 test("A completed two-day save resumes from its former ending and keeps its chosen memories",()=>{
  const completedDayTwo=go(CARE,"day2-epilogue"),saved=E.exportSave(completedDayTwo),restored=E.load(saved);
