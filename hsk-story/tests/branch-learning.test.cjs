@@ -124,6 +124,7 @@ test("delayed greeting, self-introduction, and student-identity checkpoints are 
  const expected={15:["greeting","week-later-home-checkin"],16:["introduce-self","week-later-count"],17:["student-identity","week-later-count"]};
  for(const [index,[objective,anchor]] of Object.entries(expected)){const task=Number(index),scene=L.sceneAt(task),visible=[scene.zh,scene.py,scene.vi,scene.request].join(" "),history=Array.from({length:L.total},()=>({status:"correct",attempts:0,hint:false}));history[task]=null;assert.equal(L.metaAt(task).assessmentObjectiveIds[0],objective);assert.ok(visible.length>0);assert.equal(L.anchors.find(item=>item.tasks.includes(task)).at,anchor);for(const answer of scene.answers||[])assert.equal(visible.includes(answer),false,"default cue must not reveal "+answer);assert.equal(L.pending({node:anchor,path:[]},history).index,task);}
  assert.equal(L.evaluate(15,"我还好，谢谢").ok,true);assert.equal(L.evaluate(15,"你好").ok,false);
+ assert.equal(L.evaluate(15,"还好，谢谢").ok,true);assert.equal(L.evaluate(15,"我还好").ok,false,"the task asks An to thank his mother as well as answer");
  assert.equal(L.evaluate(16,"我叫明安").ok,true);assert.equal(L.evaluate(16,"我是学生").ok,false);
  assert.equal(L.evaluate(17,"我是学生").ok,true);assert.equal(L.evaluate(17,"我叫安").ok,false);
 });

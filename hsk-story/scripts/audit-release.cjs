@@ -16,6 +16,9 @@ const REQUIRED = [
   'duong-re/style.css', 'art/brand/flat-favicon.svg', 'art/brand/flat-sparrow.svg',
   // Runtime-only dependencies loaded by code/manifests instead of HTML or CSS references.
   'api/branch-progress.js', 'art/flat/characters/classmate-sage-v1.webp',
+  'api/account.js', 'api/progress.js', 'api/auth-handler.js', 'api/ai/tutor.js',
+  'nhap-mon.html', 'intro.css', 'intro-data.js', 'intro-core.js', 'intro.js',
+  'ren-luyen.html', 'review.css', 'review-data.js', 'review-core.js', 'review.js',
   'art/backgrounds/kitchen/day2-kitchen-desktop-v1.webp',
   'art/backgrounds/kitchen/day2-kitchen-mobile-v1.webp',
   'art/backgrounds/kitchen/day2-kitchen-tablet-v1.webp',
@@ -63,27 +66,59 @@ function audit(root = path.resolve(__dirname, '../..'), trackedOverride, ignoreO
   for (const item of PRIVATE_INVENTORIES) {
     if (fs.existsSync(path.join(root, 'hsk-story', item)) && !ignores(item)) issues.push(`source inventory could enter deployment package: ${item}`);
   }
-  const index = read(root, 'hsk-story/index.html');
-  const branch = read(root, 'hsk-story/duong-re/index.html');
-  for (const [page, html, base] of [['index.html', index, ''], ['duong-re/index.html', branch, 'duong-re/']]) {
+  const pages = ['index.html', 'duong-re/index.html', 'nhap-mon.html', 'ren-luyen.html'];
+  for (const page of pages) {
+    const html = read(root, `hsk-story/${page}`);
+    const base = path.posix.dirname(page) === '.' ? '' : `${path.posix.dirname(page)}/`;
     const refs = [...html.matchAll(/(?:src|href)=["']([^"']+)["']/gi)].map((m) => m[1]);
     for (const ref of refs) {
       if (/^(?:[a-z]+:|\/\/|#|data:|%)/i.test(ref)) continue;
       if (ref.endsWith('/')) continue;
-      const rel = path.posix.normalize(ref.startsWith('/') ? ref.slice(1) : path.posix.join(base, ref.replace(/^\.\//, '')));
+      const cleanRef = ref.split(/[?#]/, 1)[0];
+      const rel = path.posix.normalize(cleanRef.startsWith('/') ? cleanRef.slice(1) : path.posix.join(base, cleanRef.replace(/^\.\//, '')));
       if (rel.startsWith('../') || !fs.existsSync(path.join(root, 'hsk-story', rel))) issues.push(`local HTML asset missing: hsk-story/${rel} (referenced by ${page})`);
       else if (!tracked.has(`hsk-story/${rel}`)) issues.push(`local HTML asset is not Git tracked: hsk-story/${rel}`);
       else if (ignores(rel)) issues.push(`local HTML asset excluded by .vercelignore: hsk-story/${rel} (referenced by ${page})`);
     }
   }
   const cssFiles = new Set();
-  for (const page of ['index.html', 'duong-re/index.html']) {
+  for (const page of pages) {
     const html = read(root, `hsk-story/${page}`);
     for (const [, ref] of html.matchAll(/href=["']([^"']+\.css(?:\?[^"']*)?)["']/gi)) {
       const rel = ref.startsWith('/') ? ref.slice(1) : path.posix.join(path.posix.dirname(page), ref.split('?')[0]);
       if (fs.existsSync(path.join(root, 'hsk-story', rel))) cssFiles.add(rel);
     }
   }
+  // The scene renderer loads these files from scene-manifest.js at runtime,
+  // so they are not necessarily visible to the HTML/CSS reference scan above.
+  try {
+    const sceneBox = { module: { exports: {} } };
+    const vm = require('node:vm');
+    vm.runInNewContext(read(root, 'hsk-story/scene-manifest.js'), sceneBox, { filename: 'scene-manifest.js' });
+    const sceneFiles = new Set();
+    const addSceneFile = (value) => {
+      if (typeof value === 'string' && /(?:^|\/)(?:art\/)?(?:flat|backgrounds|layers|characters)\/[^?#]+\.(?:svg|webp|png|jpe?g|avif|woff2|mp3|ogg|wav)$/i.test(value)) sceneFiles.add(value.replace(/^\//, ''));
+    };
+    const visitScene = (value, key = '', inBackgroundMap = false) => {
+      if (typeof value === 'string') {
+        if (inBackgroundMap || /^(?:asset|.*Asset)$/i.test(key)) addSceneFile(value);
+      } else if (Array.isArray(value)) value.forEach((entry) => visitScene(entry, key, inBackgroundMap));
+      else if (value && typeof value === 'object') {
+        if (key === 'frameAssets') Object.values(value).forEach(addSceneFile);
+        else Object.entries(value).forEach(([childKey, child]) => {
+          if (childKey === 'metadata') return; // archivedRaster is authoring history, not a runtime URL.
+          visitScene(child, childKey, inBackgroundMap || childKey === 'backgrounds');
+        });
+      }
+    };
+    visitScene(sceneBox.module.exports);
+    for (const asset of sceneFiles) {
+      const rel = asset.startsWith('art/') ? asset : `art/${asset}`;
+      if (!fs.existsSync(path.join(root, 'hsk-story', rel))) issues.push(`scene manifest asset missing: hsk-story/${rel}`);
+      else if (!tracked.has(`hsk-story/${rel}`)) issues.push(`scene manifest asset is not Git tracked: hsk-story/${rel}`);
+      else if (ignores(rel)) issues.push(`scene manifest asset excluded by .vercelignore: hsk-story/${rel}`);
+    }
+  } catch (error) { issues.push(`scene manifest asset check failed: ${error.message}`); }
   for (const css of cssFiles) {
     const source = read(root, `hsk-story/${css}`);
     for (const [, raw] of source.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/gi)) {

@@ -42,4 +42,11 @@ test('release audit detects HTML, CSS and runtime-only files excluded by Vercel 
 
   const sprite = audit(root, undefined, `${baseIgnore}\nart/flat/characters/*.webp`);
   assert.ok(sprite.gates.packageInputs.issues.some((issue) => issue.includes('required deployed file excluded by .vercelignore: hsk-story/art/flat/characters/classmate-sage-v1.webp')));
+
+  const intro = audit(root, undefined, `${baseIgnore}\nintro.css`);
+  assert.ok(intro.gates.packageInputs.issues.some((issue) => issue.includes('local HTML asset excluded by .vercelignore: hsk-story/intro.css')));
+  const apiAccount = audit(root, undefined, `${baseIgnore}\napi/account.js`);
+  assert.ok(apiAccount.gates.packageInputs.issues.some((issue) => issue.includes('required deployed file excluded by .vercelignore: hsk-story/api/account.js')));
+  const sceneAsset = audit(root, undefined, `${baseIgnore}\nart/flat/backgrounds/school-gate.svg`);
+  assert.ok(sceneAsset.gates.packageInputs.issues.some((issue) => issue.includes('scene manifest asset excluded by .vercelignore: hsk-story/art/flat/backgrounds/school-gate.svg')));
 });
