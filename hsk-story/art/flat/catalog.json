@@ -225,6 +225,19 @@
         0.7,
         0.44
       ]
+    },
+    "classmate": {
+      "asset": "characters/classmate-sage-v1.webp",
+      "format": "webp",
+      "frameAssets": {
+        "attentive": "characters/classmate-sage-v1.webp"
+      },
+      "face": [
+        0.36,
+        0.13,
+        0.66,
+        0.34
+      ]
     }
   },
   "props": {

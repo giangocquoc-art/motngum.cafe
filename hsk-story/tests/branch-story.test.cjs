@@ -24,6 +24,7 @@ test("Week-later return recalls greeting before the meal and price checkpoint wi
  assert.match(checkin,/安，你还好吗/);assert.match(checkin,/Ān, nǐ hái hǎo ma/);assert.doesNotMatch(checkin,/我还好|我很好|很好/);
  assert.match(response,/我还好/);assert.match(response,/Wǒ hái hǎo/);assert.doesNotMatch(response,/十块钱|十块|十元/);
  assert.match(checkin,/sau buổi ghé quán/);assert.doesNotMatch(checkin,/kéo ghế/);assert.doesNotMatch(response,/hỏi.*giá/);
+ assert.match(checkin,/Mẹ nhìn cậu, khẽ hỏi/);assert.doesNotMatch(checkin,/ngồi xuống cạnh|đặt cặp xuống/,'the copy matches the standing scene without inventing a visible action');
  assert.match(meal,/mì được mang ra/);assert.match(meal,/hóa đơn/);assert.doesNotMatch(meal,/十块钱|十块|十元/);
  assert.doesNotMatch(pricePrompt,/十块钱|十块|十元|10\s*元|10\s*块/);
  assert.deepEqual(Array.from(L.sceneAt(11).answers),["十块钱","十块","十元"],"the independent price answer key is unchanged");
@@ -34,6 +35,16 @@ test("All bird outcomes converge through the shared day-two number reuse before 
  assert.equal(shared.to,"day2-liu");assert.match(shared.story,/你们组有三个学生/);assert.match(shared.story,/Nǐmen zǔ yǒu sān ge xuésheng/);assert.match(shared.story,/Nhóm em có ba học sinh/);
  assert.deepEqual(Array.from(L.sceneAt(12).answers),["三个学生","有三个学生","三个人","有三个人","三个"]);
  assert.match(L.sceneAt(12).request,/có thể thêm/);assert.match(L.sceneAt(12).error,/muốn nói rõ hơn/);
+});
+test("Bà Lưu's shared meal gives An a natural thanks reuse without changing the later checkpoint",()=>{
+ const meal=D.byId["day2-liu"],task=L.sceneAt(13);
+ assert.equal(meal.kind,"choice");assert.match(meal.story,/An nhận bát bằng hai tay rồi khẽ nói: “谢谢。” \(Xièxie\.\) — Cảm ơn bà\./);
+ assert.deepEqual(Array.from(task.answers),["谢谢你","谢谢"]);
+ assert.doesNotMatch(task.zh+task.request+task.error,/谢谢/);
+ assert.match(task.hint,/谢谢你/);
+ const state=go({...CARE,"day2-liu":"liu-help"},"day2-liu");
+ assert.equal(state.node,"day2-liu");assert.equal(state.path.some(item=>item.at==="day2-liu"),false,"seeing the shared beat is not a story decision");
+ assert.ok(E.availableOptions(meal,state).length>0,"the learning beat stays before the story choice");
 });
 test("Every authored choice has a unique reply and a journal-visible persisted consequence",()=>{
  const choices=D.scenes.flatMap(s=>s.kind==="choice"?s.options:[]),replies=new Set(),ids=new Set();

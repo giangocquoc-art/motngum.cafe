@@ -70,10 +70,10 @@ The labels below are authored lesson goals. Their HSK 3.0 page references are ca
 | `numbers` | 3 | 12 | 1 | Common day-two reuse at `day2-counting-group`; task 12 is a separate delayed recall checkpoint |
 | `order-noodles` | 4, 5, 9 | 10 | 1 | Task 9 remains the early checkpoint; task 10 adds delayed recall |
 | `price` | 5, 8 | 11 | 1 | Task 8 is text-based recall, not listening evidence; task 11 adds delayed recall |
-| `gratitude` | 5 | 13 | 1 | Scene 5 introduces thanks; task 13 adds delayed recall after Tiểu Vũ helps An |
+| `gratitude` | 5 | 13 | 1 | Scene 5 introduces thanks; shared `day2-liu` models `谢谢` when An receives his noodles; task 13 adds delayed recall after Tiểu Vũ helps An |
 | `farewell` | 6 | 14 | 1 | Scene 6 introduces accepting a plan; task 14 adds delayed recall with a different cue |
 
-The machine-readable blueprint records tasks 10–14 as objective-specific delayed recall opportunities. Greeting now has a common story reuse beat in `week-later-home-checkin` and `week-later-home-answer`; this is contextual exposure, not assessment evidence, so its independent-recall stage remains incomplete. Numbers also has a common day-two reuse before task 12, after a narrative gap. HSK item matches, educator approval, and release readiness remain pending.
+The machine-readable blueprint records tasks 10–14 as objective-specific delayed recall opportunities. Gratitude now has a common, unscored story reuse beat at `day2-liu`, alongside its delayed task 13 checkpoint. Greeting has common story reuse in `week-later-home-checkin` and `week-later-home-answer`; this is contextual exposure, not assessment evidence, so its independent-recall stage remains incomplete. Numbers also has common day-two reuse before task 12, after a narrative gap. HSK item matches, educator approval, and release readiness remain pending.
 
 ### HSK1 candidate vocabulary spot-check — 2026-11-07
 

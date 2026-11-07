@@ -101,6 +101,26 @@ test('sprite specs retain semantic frame indices while resolving each expression
   for (const [name, spec] of Object.entries(manifest.spriteCharacters)) {
     const compiled = sceneManifest.sprites[name];
     const exported = catalog.sprites[name];
+    if (spec.format !== 'svg') {
+      assert.equal(name, 'classmate', 'only the generated classmate uses a raster sprite');
+      assert.equal(spec.format, 'webp');
+      assert.equal(compiled.format, 'webp');
+      assert.deepEqual({ ...compiled.frames }, { ...spec.frames });
+      assert.deepEqual({ ...compiled.frameAssets }, { ...spec.frameAssets });
+      assert.deepEqual({ ...exported.frameAssets }, { ...spec.frameAssets });
+      assert.equal(exported.asset, spec.asset);
+      const runtimeFile = fs.readFileSync(path.join(artRoot, spec.asset));
+      assert.equal(runtimeFile.toString('ascii', 0, 4), 'RIFF');
+      assert.equal(runtimeFile.toString('ascii', 8, 12), 'WEBP');
+      const masterFile = fs.readFileSync(path.join(artRoot, spec.metadata.archivedRaster));
+      assert.equal(masterFile.toString('hex', 0, 8), '89504e470d0a1a0a');
+      assert.equal(masterFile.readUInt32BE(16), 1024);
+      assert.equal(masterFile.readUInt32BE(20), 1536);
+      assert.equal(masterFile[25], 6, 'PNG master stores true RGBA alpha');
+      assert.equal(spec.columns, 1);
+      assert.equal(spec.rows, 1);
+      continue;
+    }
     assert.equal(spec.format, 'svg', `${name} uses native SVG`);
     assert.equal('columns' in spec || 'rows' in spec, false, `${name} has no raster atlas grid`);
     assert.equal(compiled.format, 'svg');

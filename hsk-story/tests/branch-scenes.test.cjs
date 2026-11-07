@@ -55,17 +55,32 @@ test('week-later learning cues keep the speaker, scene and single Sẻ aligned',
     assert.equal(scene.actors.some(actor=>actor.character==='sparrow'),false,id+' must not add a second bird sprite');
   }
 });
-test('the shared classroom reuse shows An, Tiểu Vũ and cô Vương with Sẻ perched once',()=>{
+test('the shared classroom reuse shows all three students, cô Vương and one perched Sẻ',()=>{
   const scene=box.HSKSceneManifest.scenes['branch.day2-counting-group'];
   assert.equal(scene.background,'classroom');
-  assert.deepEqual(Array.from(scene.actors,a=>a.character),['an','xiaoyu','wang']);
-  assert.deepEqual(Array.from(scene.actors,a=>a.expression),['listening','friendly','speaking']);
+  assert.deepEqual(Array.from(scene.actors,a=>a.character),['an','xiaoyu','classmate','wang']);
+  assert.deepEqual(Array.from(scene.actors,a=>a.expression),['listening','friendly','attentive','speaking']);
   assert.equal(scene.sparrow.flight,false);
   assert.equal(scene.sparrow.asset,box.HSKSceneManifest.sprites.sparrow.asset);
   assert.ok(scene.sparrow.desktop.left<30&&scene.sparrow.desktop.top<20,'Sẻ sits by the classroom window');
-  assert.equal(scene.actors.some(a=>a.character==='classmates'),false,'avoid the composite sprite that resembles a second An');
+  assert.equal(JSON.stringify(scene.sparrow.mobile),JSON.stringify({left:14,top:34}));
+  assert.equal(JSON.stringify(scene.sparrow.tablet),JSON.stringify({left:14,top:46}));
+  assert.equal(scene.actors.filter(a=>['an','xiaoyu','classmate'].includes(a.character)).length,3,'the story count of three students is visibly represented');
   const checkin=box.HSKSceneManifest.scenes['branch.week-later-home-checkin'];
   const answer=box.HSKSceneManifest.scenes['branch.week-later-home-answer'];
   assert.deepEqual(Array.from(checkin.actors,a=>a.expression),['listening','speaking']);
   assert.deepEqual(Array.from(answer.actors,a=>a.expression),['smile','neutral']);
+});
+test('the first noodle-shop scene shows the served meal and keeps a single Sẻ',()=>{
+  const scene=box.HSKSceneManifest.scenes['branch.day2-liu'];
+  assert.equal(scene.background,'noodle-shop');
+  assert.ok(scene.layers.foreground.some(layer=>layer.asset==='flat/layers/bowl.svg'));
+  assert.equal(scene.actors.filter(actor=>actor.character==='sparrow').length,0);
+  assert.notEqual(scene.sparrow.visible,false);
+});
+test('Sẻ leaves the later home conversation to An and his mother',()=>{
+  for(const id of ['week-later-home-checkin','week-later-home-answer','week-later-home']){
+    const scene=box.HSKSceneManifest.scenes['branch.'+id];
+    assert.equal(scene.sparrow.visible,false,id);
+  }
 });

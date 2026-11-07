@@ -1,7 +1,7 @@
 {
   "brand": "Chim Sẻ",
   "version": "3.0.0",
-  "visualReference": "Current owner-approved style authority: current Production hsk.motngum.cafe, deployment dpl_2sWy8xHJ7WAajSPRTFWPraMeWVZS. Direct captures and audit: data/art-reference/production-current-20261029/. Earlier publication lineage: dpl_9Nb3d6QXVJniHMdcM7VS45i8di1w / cba551bd7810d7bd86f70611f1bb8f46a289f23a in data/art-reference/production-cba551bd-20261028/.",
+  "visualReference": "Current owner-approved style authority: current Production hsk.motngum.cafe captured at art/reference/production-style-20261029.png; the screenshot is used only as a drawing and palette reference.",
   "style": {
     "line": "Sparse slightly irregular dark brown-grey outlines matching verified Production",
     "fill": "Large flat muted colors matching verified Production; avoid detailed watercolor texture",
@@ -21,7 +21,7 @@
       "learning text remains HTML",
       "transparent sprite layers"
     ],
-    "authority": "data/art-reference/production-current-20261029/home-art-style-390x844.png",
+    "authority": "art/reference/production-style-20261029.png",
     "localRuntimeStatus": "Native flat art is deployed on hsk.motngum.cafe; sourceDigest 8f96baddc4be7e0e50355b73982dacffbb7840f00f14151d0143558909969d53. Live mobile and landscape scene acceptance: test-results/native-flat-20261028/content-production/acceptance.json."
   },
   "layers": {
@@ -3598,6 +3598,47 @@
       "bytes": 410,
       "authoringSource": "../scene-flat-art.js",
       "prompt": "Authored native SVG from Production drawing vocabulary: broad muted flat fills, sparse dark contours, simple expressive face. Separate character/background/prop geometry, no learned text."
+    },
+    "characters/classmate-sage-v1.png": {
+      "role": "Image-generated master sprite for the distinct third student in the day-two classroom counting scene.",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "format": "PNG",
+      "alpha": true,
+      "master": "characters/classmate-sage-v1.png",
+      "masterFormat": "PNG",
+      "bytes": 1053127,
+      "authoringSource": "OpenAI image generation; prompt and style reference recorded in art/characters/classmate-sage-v1.prompt.txt",
+      "prompt": "Create an isolated full-body 11-year-old Chinese schoolgirl classmate sprite for Chim Sẻ. Match the current Production art reference at art/reference/production-style-20261029.png: simple flat muted fills, sparse dark-brown outlines, simplified child proportions and restrained facial marks. Low side ponytail, dusty sage cardigan with cream collar, faded blue-green trousers, simple sneakers, holding a plain exercise book. Slightly uncertain attentive expression and naturally imperfect posture. Transparent background; no scenery, shadows, gradients, texture, text, other characters or birds."
+    },
+    "characters/classmate-sage-v1.webp": {
+      "role": "Optimized transparent runtime sprite for the distinct third student in the day-two classroom counting scene.",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "format": "WebP",
+      "alpha": true,
+      "master": "characters/classmate-sage-v1.png",
+      "masterFormat": "PNG",
+      "bytes": 75028,
+      "authoringSource": "Converted from classmate-sage-v1.png, WebP quality 93",
+      "prompt": "Create an isolated full-body 11-year-old Chinese schoolgirl classmate sprite for Chim Sẻ. Match the current Production art reference at art/reference/production-style-20261029.png: simple flat muted fills, sparse dark-brown outlines, simplified child proportions and restrained facial marks. Low side ponytail, dusty sage cardigan with cream collar, faded blue-green trousers, simple sneakers, holding a plain exercise book. Slightly uncertain attentive expression and naturally imperfect posture. Transparent background; no scenery, shadows, gradients, texture, text, other characters or birds."
+    },
+    "reference/production-style-20261029.png": {
+      "role": "Production-only style reference used for the generated classmate sprite; not served in the game.",
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "format": "PNG",
+      "alpha": false,
+      "master": "reference/production-style-20261029.png",
+      "masterFormat": "PNG",
+      "bytes": 74618,
+      "authoringSource": "Captured from owner-approved Production hsk.motngum.cafe on 2026-10-29"
     }
   },
   "spriteCharacters": {
@@ -3930,6 +3971,31 @@
         "thoughtful": "flat/characters/xiaoyuNoodle-thoughtful.svg"
       },
       "frameCount": 6
+    },
+    "classmate": {
+      "asset": "characters/classmate-sage-v1.webp",
+      "frames": {
+        "attentive": 0
+      },
+      "face": [
+        0.36,
+        0.13,
+        0.66,
+        0.34
+      ],
+      "columns": 1,
+      "rows": 1,
+      "frameCount": 1,
+      "format": "webp",
+      "metadata": {
+        "authoringSource": "OpenAI image generation; prompt and style reference recorded in art/characters/classmate-sage-v1.prompt.txt",
+        "styleAuthority": "Current Production hsk.motngum.cafe art captured 2026-10-29",
+        "archivedRaster": "characters/classmate-sage-v1.png",
+        "role": "A single, distinct attentive classmate, separate from An, Tiểu Vũ, cô Vương and Sẻ."
+      },
+      "frameAssets": {
+        "attentive": "characters/classmate-sage-v1.webp"
+      }
     }
   },
   "auxiliaryScenes": {

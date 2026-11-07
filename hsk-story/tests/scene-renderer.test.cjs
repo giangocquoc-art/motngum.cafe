@@ -29,8 +29,9 @@ test('compiled scene data is current and preserves canonical story IDs and sprit
   assert.deepEqual(runtime.scenes, { ...manifest.scenes, ...manifest.auxiliaryScenes });
   assert.deepEqual(Array.from(layers.validate(Object.keys(runtime.scenes))), []);
   for (const [name, sprite] of Object.entries(runtime.sprites)) {
-    assert.equal(sprite.format, 'svg', `${name} uses native SVG`);
-    assert.equal('columns' in sprite || 'rows' in sprite, false, `${name} does not retain a raster atlas grid`);
+    assert.equal(sprite.format, name === 'classmate' ? 'webp' : 'svg', `${name} uses its authored asset format`);
+    if (name === 'classmate') { assert.equal(sprite.columns, 1); assert.equal(sprite.rows, 1); }
+    else assert.equal('columns' in sprite || 'rows' in sprite, false, `${name} does not retain a raster atlas grid`);
     assert.equal(sprite.frameCount, manifest.spriteCharacters[name].frameCount);
   }
 });
@@ -54,6 +55,15 @@ test('renderer emits inline native characters and exactly one separate Sparrow p
       assert.ok(sprite?.frameAssets[actor.expression], `${id}/${actor.character}/${actor.expression} has a frame asset`);
     }
   }
+});
+
+test('renderer omits Sparrow in scenes that do not include him in the story beat', () => {
+  const id = 'intro.bedroom', scene=box.HSKSceneManifest.scenes[id], wasVisible=scene.sparrow.visible;
+  scene.sparrow.visible = false;
+  const markup = layers.render(null, id);
+  scene.sparrow.visible = wasVisible;
+  assert.doesNotMatch(markup, /data-character="sparrow"/);
+  assert.doesNotMatch(markup, /class="cs-sparrow/);
 });
 
 test('scene DOM order preserves independent counter/table/actor/apron depth', () => {
