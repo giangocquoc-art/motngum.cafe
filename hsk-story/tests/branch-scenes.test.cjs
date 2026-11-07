@@ -41,3 +41,17 @@ test('day two morning uses the dedicated kitchen plates and keeps one Sẻ',()=>
   assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].wide,'flat/backgrounds/day2-kitchen-wide.svg');
   assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].compact,'flat/backgrounds/day2-kitchen-compact.svg');
 });
+
+test('week-later learning cues keep the speaker, scene and single Sẻ aligned',()=>{
+  const count=box.HSKSceneManifest.scenes['branch.week-later-count'];
+  assert.equal(count.background,'classroom');
+  assert.equal(JSON.stringify(count.actors.map(actor=>actor.character)),JSON.stringify(['an','wang']));
+  const countingArt=box.HSKSceneManifest.scenes['hsk1.e01.class-counting'];
+  assert.equal(countingArt.sparrow.asset,box.HSKSceneManifest.sprites.sparrow.asset);
+  for(const id of ['branch.week-later-thanks','branch.week-later-goodbye']){
+    const scene=box.HSKSceneManifest.scenes[id];
+    assert.equal(JSON.stringify(scene.actors.map(actor=>actor.character)),JSON.stringify(['an','xiaoyu']),id);
+    assert.equal(scene.sparrow.asset,box.HSKSceneManifest.sprites.sparrow.asset,id);
+    assert.equal(scene.actors.some(actor=>actor.character==='sparrow'),false,id+' must not add a second bird sprite');
+  }
+});

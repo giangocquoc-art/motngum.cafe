@@ -6,21 +6,21 @@ function next(state,choice){const out=E.step(state,choice);assert.equal(out.ok,t
 function finish(state,history){let pending;while((pending=L.pending(state,history)))history=L.record(history,pending.index,{status:"correct",attempts:0,hint:false});return history;}
 
 test("all branch tasks gate their shared anchors in story order",()=>{
- const expected={arrival:[0],"school-gate":[1],"lost-diary":[2,3],"noodle-order":[4],"walk-home":[5,6],"day2-bird":[7,8,9],"week-later-shop":[10],"week-later-home":[11]};
+ const expected={arrival:[0],"school-gate":[1],"lost-diary":[2,3],"noodle-order":[4],"walk-home":[5,6],"day2-bird":[7,8,9],"week-later-shop":[10],"week-later-home":[11],"week-later-count":[12],"week-later-thanks":[13],"week-later-goodbye":[14]};
  let history=L.clean([]);
  for(const [anchor,tasks] of Object.entries(expected)){
   const state={node:anchor,path:[]};
   for(const index of tasks){const pending=L.pending(state,history);assert.equal(pending.index,index);assert.equal(pending.scene,L.sceneAt(index));assert.equal(pending.meta,L.metaAt(index));history=L.record(history,index,{status:"correct",attempts:0,hint:false});}
   assert.equal(L.pending(state,history),null);
  }
- assert.equal(history.filter(Boolean).length,12);
+ assert.equal(history.filter(Boolean).length,15);
 });
 
 test("an existing experimental save cannot bypass earlier learning by resuming after its anchor",()=>{
  let state=E.fresh();while(!state.done){const scene=D.byId[state.node];state=next(state,scene.kind==="choice"?E.availableOptions(scene,state)[0].id:"next");}
  const restored=E.load(E.exportSave(state));let history=L.clean([]),indices=[];
  while(L.pending(restored,history)){const item=L.pending(restored,history);indices.push(item.index);history=L.record(history,item.index,{status:"correct",attempts:0,hint:false});}
- assert.deepEqual(indices,[0,1,2,3,4,5,6,7,8,9,10,11]);
+ assert.deepEqual(indices,[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]);
  assert.equal(L.pending(restored,history),null);
 });
 
@@ -55,13 +55,13 @@ test("all condition-equivalent day-two routes keep the same final HSK anchors",(
  }
  visitDayOne(E.fresh());assert.equal(firstDayRoutes,4374);assert.equal(groups.size,72);
  let representativeSuffixes=0,weightedFullRoutes=0;
- const expectedObjectives={7:["introduce-self","student-identity"],8:["price"],9:["order-noodles"],10:["order-noodles"],11:["price"]};
+ const expectedObjectives={7:["introduce-self","student-identity"],8:["price"],9:["order-noodles"],10:["order-noodles"],11:["price"],12:["numbers"],13:["gratitude"],14:["farewell"]};
  function visitDayTwo(state,history,seenNodes){
   assert.equal(seenNodes.has(state.node),false,"Day-two route loop at "+state.node);seenNodes.add(state.node);
   let pending;
-  while((pending=L.pending(state,history))){const expectedAnchor=pending.index<10?"day2-bird":pending.index===10?"week-later-shop":"week-later-home";assert.equal(state.node,expectedAnchor,"each delayed prompt belongs after its story cue");assert.deepEqual(Array.from(pending.meta.assessmentObjectiveIds),expectedObjectives[pending.index]);history=L.record(history,pending.index,{status:"correct",attempts:0,hint:false});}
-  if(state.node==="week-later-ending"){
-   assert.equal(state.done,true);assert.equal(history.slice(0,12).every(Boolean),true);assert.equal(L.pending(state,history),null);representativeSuffixes++;return 1;
+  while((pending=L.pending(state,history))){const expectedAnchor={10:"week-later-shop",11:"week-later-home",12:"week-later-count",13:"week-later-thanks",14:"week-later-goodbye"}[pending.index]||"day2-bird";assert.equal(state.node,expectedAnchor,"each delayed prompt belongs after its story cue");assert.deepEqual(Array.from(pending.meta.assessmentObjectiveIds),expectedObjectives[pending.index]);history=L.record(history,pending.index,{status:"correct",attempts:0,hint:false});}
+  if(state.node==="week-later-final"){
+   assert.equal(state.done,true);assert.equal(history.slice(0,15).every(Boolean),true);assert.equal(L.pending(state,history),null);representativeSuffixes++;return 1;
   }
   const scene=D.byId[state.node],options=scene.kind==="choice"?E.availableOptions(scene,state):[null];assert.ok(options.length,"No valid continuation at "+state.node);
   let count=0;for(const option of options){const choice=option?option.id:"next";count+=visitDayTwo(next(state,choice),history,new Set(seenNodes));}return count;
@@ -90,7 +90,7 @@ test("the shared return to bà Lưu reuses ordering and price language after the
  assert.deepEqual(Array.from(returnScene.options,option=>option.to).sort(),["day2-liu-chat","day2-liu-help","day2-liu-menu","day2-liu-stock"].sort());
 });
 
-test("different complete story branches expose the same twelve learning tasks in the same order",()=>{
+test("different complete story branches expose the same fifteen learning tasks in the same order",()=>{
  const routes=[
   {name:"friendship",choices:{arrival:"hold-mother","school-gate":"ask-friend","lost-diary":"friend-search","staff-office":"say-simple",canteen:"help-liu","noodle-order":"share-bowl","walk-home":"invite-friend",night:"write-people","day2-breakfast":"prepare-for-guest","day2-bird":"bird-with-friend","day2-liu":"liu-stock","day2-night":"day2-letter-kind"}},
   {name:"curiosity",choices:{arrival:"look-around","school-gate":"watch-first","lost-diary":"solo-search","staff-office":"ask-again",canteen:"read-menu","noodle-order":"try-hot","walk-home":"keep-secret",night:"write-question","day2-breakfast":"confess-yesterday","day2-bird":"bird-quiet","day2-liu":"liu-menu","day2-night":"day2-letter-curious"}}
@@ -99,8 +99,8 @@ test("different complete story branches expose the same twelve learning tasks in
   while(!state.done){if(++guard>100)throw Error(route.name+" route did not finish");let pending=L.pending(state,history);while(pending){observed.push(pending.index);history=L.record(history,pending.index,{status:"correct",attempts:0,hint:false});pending=L.pending(state,history)}
    const scene=D.byId[state.node],choice=scene.kind==="choice"?(route.choices[scene.id]||E.availableOptions(scene,state)[0]?.id):"next";assert.ok(choice,route.name+" has no available option at "+scene.id);state=next(state,choice);
   }
-  assert.deepEqual(observed,[0,1,2,3,4,5,6,7,8,9,10,11],route.name+" learning objectives");
-  assert.equal(history.filter(Boolean).length,12);
+  assert.deepEqual(observed,[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],route.name+" learning objectives");
+  assert.equal(history.filter(Boolean).length,15);
  }
 });
 
@@ -113,7 +113,7 @@ test("practice supplies existing authored models and checkpoints never expose a 
 test("existing deterministic rubric grades input without recording personality or learning evidence",()=>{
  const history=L.clean([]),state=E.fresh(),before=JSON.stringify(state);
  assert.equal(L.evaluate(0,"我还好").ok,true);assert.equal(L.evaluate(3,"三个").ok,true);assert.equal(L.evaluate(3,"四个").ok,false);assert.equal(L.evaluate(0,"wǒ hěn hǎo").ok,false);
- assert.equal(L.evaluate(10,"我想吃面条").ok,true);assert.equal(L.evaluate(11,"十块钱").ok,true);assert.equal(history.some(Boolean),false);assert.equal(JSON.stringify(state),before);assert.throws(()=>L.evaluate(12,"你好"));
+ assert.equal(L.evaluate(10,"我想吃面条").ok,true);assert.equal(L.evaluate(11,"十块钱").ok,true);assert.equal(L.evaluate(12,"三个学生").ok,true);assert.equal(L.evaluate(13,"谢谢你").ok,true);assert.equal(L.evaluate(14,"明天见").ok,true);assert.equal(history.some(Boolean),false);assert.equal(JSON.stringify(state),before);assert.throws(()=>L.evaluate(15,"你好"));
 });
 
 test("wrong, assisted/sample, and skipped learning outcomes never mutate narrative state or award independent credit",()=>{

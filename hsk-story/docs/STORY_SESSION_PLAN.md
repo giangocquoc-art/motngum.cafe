@@ -1,6 +1,6 @@
 # Story session plan — HSK1 pilot
 
-This file describes editorially targeted 10–15 minute reading sessions for the existing two-day branching story. The seven segments partition all 42 story nodes, including route and ending nodes. They organize the existing story; they do not change its choices, routes, saves, learning tasks, or progress rules. Session duration is not measured yet.
+This file describes editorially targeted 10–15 minute reading sessions for the current branching story. The ten segments partition all 49 story nodes, including route and ending nodes. Three common delayed-recall segments were added for numbers, gratitude and farewell; prior scene IDs and task positions 0–9 stay stable. Session duration is not measured yet.
 
 All eight HSK1 objective links are candidate editorial crosswalks. The syllabus item mapping and qualified Mandarin educator review remain pending. The plan does not claim full HSK1 coverage, exam readiness, or teacher approval. HSK2–6 remain outline-only.
 
@@ -29,16 +29,19 @@ Treat the lookup as display metadata. It is not a route selector, lesson prerequ
 | 5 | Trên đường về và trang sổ | `walk-home`, `night` | 5, 6 | `gratitude`, `farewell` |
 | 6 | Sáng thứ hai và chú chim sẻ | `day2-breakfast`, `day2-bird` | 7, 8, 9 | `introduce-self`, `student-identity` |
 | 7 | Gặp lại bà Lưu | `day2-liu`, `day2-night` | — | `price`, `order-noodles` |
+| 8 | Nhớ lại bữa mì | `week-later-shop`, `week-later-home`, `week-later-ending` | 10, 11 | `order-noodles`, `price` |
+| 9 | Đếm nhóm, cảm ơn bạn | `week-later-count`, `week-later-thanks` | 12, 13 | `numbers`, `gratitude` |
+| 10 | Hẹn gặp ngày mai | `week-later-goodbye`, `week-later-final` | 14 | `farewell` |
 
-The ordered task-to-segment mapping is total and unique: tasks 0–9 map to segments 1–6, with tasks 7–9 grouped in segment 6 because the existing learning runtime presents them at the `day2-bird` anchor. Segment 7 contains story reuse and no learning task. Segment-level `primaryObjectiveIds` limit the number of goals shown together; `taskObjectiveRefs` separately preserve the existing task-to-assessment-objective crosswalk (including all checkpoint objectives for tasks 7–9). These links are candidate mappings pending educator review; they do not assert that every story passage teaches or assesses an objective.
+The ordered task-to-segment mapping is total and unique. Tasks 7–9 remain grouped at their existing `day2-bird` anchor. Tasks 10–14 add shared delayed recall for ordering, price, numbers, gratitude and farewell. Segment-level `primaryObjectiveIds` limit the number of goals shown together; `taskObjectiveRefs` separately preserve the task-to-assessment-objective crosswalk. These links are candidate mappings pending educator review; they do not assert that every story passage teaches or assesses an objective.
 
 At the end of either arrival route (`arrival-street` or `arrival-mother`), the player reaches an unscored recall prompt at `school-gate`, before common task 1. It reminds the learner that An's mother asked whether he was okay, without showing Chinese text before the first attempt. It is an authored retention probe for the first practice, not a graded HSK checkpoint or mastery claim, and not yet validated with learners. A wrong answer can be retried; optional help is gated until after an attempt; skipping records only that it was skipped. Raw text is not persisted. Story route memories and learning evidence remain unchanged.
 
 ## Exposure and evidence
 
-Tasks 0–6 are the existing guided practice scenes. Their appearance in a story segment means practice in context; a response there is not relabeled as an independent checkpoint. Tasks 7–9 are the existing separate typed-response checkpoints for self-introduction, recalling the price previously read in story context, and ordering. Task 8 is not an independent listening assessment. Story choices, callbacks, route memories, and narrative reuse create no language evidence.
+Tasks 0–6 are the existing guided practice scenes. Their appearance in a story segment means practice in context; a response there is not relabeled as an independent checkpoint. Tasks 7–9 remain the existing separate typed-response checkpoints. Tasks 10–14 add delayed independent responses after a week-later story visit; wrong, assisted and skipped responses record learning evidence only and do not alter narrative state. Task 8 is not an independent listening assessment. Story choices, callbacks and route memories create no language evidence.
 
-The blueprint report's `pilotStageCoverage` separates introduction, common-story reuse, individually measured independent recall, and optional review. On the current content, all eight candidate objectives have an introduction but no mandatory common-story reuse. Price and noodle-order have objective-specific recall checkpoints. Task 7 is one combined response for name and student identity, so it is recorded as a shared assessment opportunity and does **not** count as independent evidence for either objective on its own. The remaining objectives do not yet have an independent checkpoint. Optional review cards are listed separately and cannot fill these mandatory story-stage gaps.
+The blueprint report's `pilotStageCoverage` separates introduction, common-story reuse, individually measured independent recall and optional review. The new delayed tasks provide a second independent opportunity for numbers, gratitude and farewell; they do not complete the full objective set. Task 7 remains one historical combined response for name and student identity, so it does **not** count as separate evidence for either objective. Source matching, educator review and learning-outcome validation remain open.
 
 The segment durations are editorial targets, not measured session analytics. A future interface may show the target duration or chapter name, but must continue to use the established story and learning runtimes for actual progression and evidence.
 

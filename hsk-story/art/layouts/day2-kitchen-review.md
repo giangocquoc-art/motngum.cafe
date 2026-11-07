@@ -53,6 +53,7 @@ Máy tính bảng dọc trong khoảng 691–1100 px dùng bố cục tablet ri�
 - [x] Tạo năm nền SVG native từ `scene-flat-art.js`: desktop, portrait, tablet-portrait, ultra-wide và short-landscape.
 - [x] Renderer và manifest trỏ tới đúng năm biến thể native; script dựng và kiểm tra drift đã được thêm.
 - [x] Kiểm cảnh tích hợp `branch.day2-arrival` tại 1365×900 (wide), 768×1024 (tablet dọc), 390×844 (điện thoại dọc) và 844×390 (điện thoại ngang thấp). Mỗi kích thước chọn đúng nền, giữ một Sẻ, khớp người nói “Mẹ” với nhân vật mẹ và không làm trang cuộn.
-- [ ] Kiểm từng nhánh bếp để đúng người nói, biểu cảm, đạo cụ và chỉ một Sẻ.
+- [x] Kiểm đủ bảy nhánh bếp tại desktop, điện thoại dọc/ngang, tablet dọc và ultra-wide: chọn đúng biến thể nền, nhân vật người nói có trong khung, chỉ một Sẻ và không tràn viewport (35 trạng thái Chromium).
+- [x] Chụp và rà trực quan cảnh đến nhà, mẹ nghe An kể và Tiểu Vũ tới chơi ở các tỉ lệ đại diện.
 
-Lưu ý: các ảnh chụp layout trước đây được tạo bằng cách gắn art của `day2-arrival` lên trang vẫn đang hiển thị node mở đầu. Chúng chỉ là phép dò kích thước/tọa độ, không được tính là kiểm duyệt cảnh tích hợp. Lượt kiểm tra mới đã seed đúng node; checklist duyệt toàn bộ biến thể/nội dung khác vẫn mở.
+Lưu ý: ảnh chụp nghiệm thu hiện nằm trong `test-results/kitchen-layout/` và được tạo bằng cách seed đúng ID cảnh trước khi mở trang. Các cảnh được xác nhận theo bố cục/người nói/số Sẻ; việc rà nội dung và biểu cảm từng lượt thoại vẫn thuộc vòng duyệt nội dung.

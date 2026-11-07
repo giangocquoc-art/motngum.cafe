@@ -9,6 +9,8 @@ function kitchenGroup(names){return names.map(function(name,index){var a=actor(n
 AnBranchStory.scenes.forEach(function(node){
  var scene=copy(manifest.scenes[base[node.place]||base.street]);
  if(node.id==="school-gate"){scene=copy(manifest.scenes["hsk1.e01.xiaoyu-friendship"]);scene.actors=group(["an","wang","xiaoyu"])}
+ if(node.id==="week-later-count")scene=copy(manifest.scenes["hsk1.e01.class-counting"]);
+ if(node.id==="week-later-thanks"||node.id==="week-later-goodbye"){scene=copy(manifest.scenes["hsk1.e01.xiaoyu-friendship"]);scene.actors=[actor("an",0),actor("xiaoyu",1)];}
  if(node.id==="search-friend")scene.actors=[actor("an",0),actor("xiaoyu",1)];
  if(node.id==="search-teacher")scene.actors=[actor("an",0),actor("wang",1)];
  if(node.id==="day2-ready")scene.actors=[actor("an",0)];

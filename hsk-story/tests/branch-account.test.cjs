@@ -67,9 +67,9 @@ test('capture and apply preserve newer local records, owner backups, and restore
   [C.keys.path,newer],[C.keys.learning,newer],[L.objectiveStorageKey,newer],[C.keys.draft,newer],
   [C.keys.learning,'[{"status":"correct","attempts":0,"hint":false,"version":2}]'],
   [C.keys.path,'{"version":1,"path":[{"at":"arrival","choice":"hold-mother","version":2}]}'],
-  ['chimse-branch-pending-reply-v1',newer],['chimse-branch-pending-feedback-v1',newer],[C.keys.meta,newer],[C.keys.guest,'{"version":4}'],
-  [C.keys.cache,JSON.stringify({other:{snapshot:{version:4},revision:7,base:C.empty()}})],
-  [C.keys.restore,JSON.stringify([{owner:'other',snapshot:{version:4},at:1}])]
+  ['chimse-branch-pending-reply-v1',newer],['chimse-branch-pending-feedback-v1',newer],[C.keys.meta,newer],[C.keys.guest,'{"version":5}'],
+  [C.keys.cache,JSON.stringify({other:{snapshot:{version:5},revision:7,base:C.empty()}})],
+  [C.keys.restore,JSON.stringify([{owner:'other',snapshot:{version:5},at:1}])]
  ];
  const keys=[...Object.values(C.keys),L.objectiveStorageKey,'chimse-branch-pending-reply-v1','chimse-branch-pending-feedback-v1','hai-que-huong-progress-v3'];
  for(const [key,raw] of cases){
@@ -90,13 +90,14 @@ test('a newer record appearing during account use blocks sync and owner changes 
  assert.equal(requests,requestCount);assert.deepEqual(keys.map(k=>[k,s.getItem(k)]),before);assert.equal(JSON.parse(s.getItem(C.keys.meta)).owner,'alice');
 });
 
-test('v1 and v2 migrate to v3, recall sync preserves terminal records through rewind, and newer data stays untouched',()=>{
+test('v1, v2, and v3 migrate to v4, appending new tasks without changing old evidence',()=>{
  const old={version:1,path:[],learning:Array(10).fill(null),draft:null},migrated=C.normalize(old);
- assert.equal(migrated.version,3);assert.equal(migrated.learning.length,12);assert.deepEqual(migrated.recall,{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'});
- const oldV2={version:2,path:[],learning:Array(10).fill(null),draft:null,recall:{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'}};assert.equal(C.normalize(oldV2).version,3);
- const completedPath=E.load({version:1,path:goPathToOldEnding()}).path;const completedV2=C.normalize({version:2,path:completedPath,learning:Array.from({length:10},(_,i)=>i===9?{status:'correct',attempts:1,hint:false}:null),draft:null,recall:{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'}});assert.equal(completedV2.learning[9].status,'correct');assert.deepEqual(completedV2.learning.slice(10),[null,null]);
+ assert.equal(migrated.version,4);assert.equal(migrated.learning.length,15);assert.deepEqual(migrated.recall,{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'});
+ const oldV2={version:2,path:[],learning:Array(10).fill(null),draft:null,recall:{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'}};assert.equal(C.normalize(oldV2).version,4);
+ const completedPath=E.load({version:1,path:goPathToOldEnding()}).path;const completedV2=C.normalize({version:2,path:completedPath,learning:Array.from({length:10},(_,i)=>i===9?{status:'correct',attempts:1,hint:false}:null),draft:null,recall:{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'}});assert.equal(completedV2.learning[9].status,'correct');assert.equal(completedV2.learning.length,15);assert.equal(completedV2.learning.slice(10).every(x=>x===null),true);
+ const legacyV3=C.normalize({version:3,path:goPathToOldEnding(),learning:Array.from({length:12},(_,i)=>i===10?{status:'correct',attempts:2,hint:false}:null),draft:null,recall:{version:2,status:'unseen',attempts:0,helpUsed:false,boundary:'pending'}});assert.equal(legacyV3.version,4);assert.equal(legacyV3.learning[10].attempts,2);assert.equal(legacyV3.learning.length,15);assert.deepEqual(legacyV3.learning.slice(12),[null,null,null]);
  const s=storage(),snapshot=C.empty();snapshot.recall={version:2,status:'unassisted',attempts:1,helpUsed:false,boundary:'continued'};C.apply(s,snapshot);assert.deepEqual(C.capture(s).recall,snapshot.recall);assert.equal(C.hasProgress(snapshot),true);
- const before=JSON.stringify({...snapshot,version:4}),raw=JSON.parse(before);assert.throws(()=>C.normalize(raw));assert.equal(JSON.stringify(raw),before);
+ const before=JSON.stringify({...snapshot,version:5}),raw=JSON.parse(before);assert.throws(()=>C.normalize(raw));assert.equal(JSON.stringify(raw),before);
  s.setItem(C.keys.recall,'{"version":3,"future":true}');const unchanged=s.getItem(C.keys.recall);assert.throws(()=>C.apply(s,snapshot));assert.equal(s.getItem(C.keys.recall),unchanged);
 });
 test('recall rejects invalid states and only allows in-progress at the school gate after arrival',()=>{
@@ -111,6 +112,6 @@ test('a storage failure during apply rolls back path, evidence and recall togeth
 });
 
 test('a newer cloud snapshot is rejected before any local bytes change',async()=>{
- const s=storage();C.apply(s,state());s.setItem('hai-que-huong-progress-v3','legacy');const before=[...Object.values(C.keys),'hai-que-huong-progress-v3'].map(k=>[k,s.getItem(k)]);let a=C.create({storage:s,fetch:async()=>({ok:true,status:200,json:async()=>({revision:7,snapshot:{version:4,path:[],learning:[],draft:null}})})});
+ const s=storage();C.apply(s,state());s.setItem('hai-que-huong-progress-v3','legacy');const before=[...Object.values(C.keys),'hai-que-huong-progress-v3'].map(k=>[k,s.getItem(k)]);let a=C.create({storage:s,fetch:async()=>({ok:true,status:200,json:async()=>({revision:7,snapshot:{version:5,path:[],learning:[],draft:null}})})});
  assert.equal((await a.reconcile('alice')).ok,false);assert.deepEqual(before.map(([k])=>[k,s.getItem(k)]),before);
 });

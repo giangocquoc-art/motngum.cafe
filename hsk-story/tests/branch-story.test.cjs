@@ -11,7 +11,7 @@ const CARE={"arrival":"hold-mother","school-gate":"ask-friend","lost-diary":"fri
 const WONDER={"arrival":"look-around","school-gate":"watch-first","lost-diary":"solo-search","staff-office":"ask-again","canteen":"read-menu","noodle-order":"try-hot","walk-home":"keep-secret","night":"write-question","day2-breakfast":"ask-diary-question","day2-bird":"bird-quiet","day2-liu":"liu-menu","day2-night":"day2-letter-curious"};
 
 test("Two-day graph has no cycles, dead nodes, missing links or shortcuts around canon",()=>{
- const v=E.validate();assert.deepEqual(Array.from(v.errors),[]);assert.equal(v.branchNodes,12);assert.equal(v.nodeCount,45);
+ const v=E.validate();assert.deepEqual(Array.from(v.errors),[]);assert.equal(v.branchNodes,12);assert.equal(v.nodeCount,49);
  assert.ok(v.structuralPaths>4000);assert.equal(D.scenes.filter(x=>x.kind==="ending").length,1);
  assert.equal(D.byId.epilogue.kind,"milestone");
 });
@@ -77,7 +77,7 @@ test("Every available choice keeps its authored consequence through save replay 
 });
 test("Three distinct An personalities arise from different coherent two-day playthroughs",()=>{
  const b=go(BRAVE),c=go(CARE),w=go(WONDER);
- assert.equal(b.node,"week-later-ending");assert.equal(b.done,true);
+ assert.equal(b.node,"week-later-final");assert.equal(b.done,true);
  assert.equal(E.ending(b).key,"courage");assert.equal(E.ending(c).key,"empathy");assert.equal(E.ending(w).key,"curiosity");
  assert.notDeepEqual(b.relationships,c.relationships);assert.notDeepEqual(c.flags,w.flags);
  assert.ok(E.ending(c).extra.some(x=>x.includes("Tiểu Vũ")));

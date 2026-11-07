@@ -10,18 +10,18 @@ const learning = require("../duong-re/branch-learning.js");
 const plan = require("../story-session-plan.js");
 const { audit, canReach, nextAnchor } = require("../scripts/audit-story-plan.cjs");
 
-test("session plan partitions all 45 nodes, 12 branch tasks, and eight candidate objectives", () => {
+test("session plan partitions all 49 nodes, 15 branch tasks, and eight candidate objectives", () => {
   assert.deepEqual(plan.validate(story, blueprint, content, learning, curriculum), []);
-  assert.equal(plan.segments.length, 8);
-  assert.deepEqual(plan.segments.map(segment => segment.order), [1, 2, 3, 4, 5, 6, 7, 8]);
+  assert.equal(plan.segments.length, 10);
+  assert.deepEqual(plan.segments.map(segment => segment.order), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   assert.ok(plan.segments.every(segment => segment.durationMinutes.min === 10 && segment.durationMinutes.max === 15));
   assert.ok(plan.segments.every(segment => segment.choiceSceneIds.length <= 2));
   assert.ok(plan.segments.every(segment => segment.primaryObjectiveIds.length >= 1 && segment.primaryObjectiveIds.length <= 2));
-  assert.equal(new Set(plan.segments.flatMap(segment => segment.sceneIds)).size, 45);
-  assert.deepEqual(plan.segments.flatMap(segment => segment.taskIds).sort((a, b) => a - b), Array.from({ length: 12 }, (_, index) => index));
+  assert.equal(new Set(plan.segments.flatMap(segment => segment.sceneIds)).size, 49);
+  assert.deepEqual(plan.segments.flatMap(segment => segment.taskIds).sort((a, b) => a - b), Array.from({ length: 15 }, (_, index) => index));
   assert.deepEqual([...new Set(plan.segments.flatMap(segment => segment.primaryObjectiveIds))].sort(), blueprint.objectives.map(objective => objective.id).sort());
   assert.equal(plan.getSegmentForScene("missing-node"), null);
-  assert.equal(plan.getSegmentForTask(12), null);
+  assert.equal(plan.getSegmentForTask(15), null);
 });
 
 test("common tasks keep guided exposure separate from independent recall", () => {
@@ -39,9 +39,13 @@ test("common tasks keep guided exposure separate from independent recall", () =>
   assert.deepEqual([learning.metaAt(10).assessmentObjectiveIds[0], learning.metaAt(11).assessmentObjectiveIds[0]], ["order-noodles", "price"]);
   assert.equal(plan.getSegmentForTask(10).id, "week-later-recall");
   assert.equal(plan.getSegmentForTask(11).id, "week-later-recall");
+  assert.deepEqual([12,13,14].map(index=>learning.metaAt(index).assessmentObjectiveIds[0]), ["numbers","gratitude","farewell"]);
+  assert.equal(plan.getSegmentForTask(12).id, "back-at-school");
+  assert.equal(plan.getSegmentForTask(13).id, "back-at-school");
+  assert.equal(plan.getSegmentForTask(14).id, "school-goodbye");
   const dayTwo = plan.getSegmentForTask(7);
   assert.match(dayTwo.stageNote, /not listening assessment/);
-  assert.equal(learning.anchors.flatMap(anchor => anchor.tasks).length, 12);
+  assert.equal(learning.anchors.flatMap(anchor => anchor.tasks).length, 15);
 });
 
 test("all 37 selected options have a reachable later consequence and reach the next common anchor", () => {
