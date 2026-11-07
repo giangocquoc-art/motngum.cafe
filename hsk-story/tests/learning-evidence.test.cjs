@@ -34,6 +34,24 @@ test('a partial storage failure restores the old records and draft, with an expl
  ui.get('retrySaveBtn').click();assert.equal(ui.get('retrySaveBtn').hidden,true);assert.equal(JSON.parse(ui.values.get(L.storageKey))[0].evidence.events[0].result,'correct');assert.equal(ui.values.has('chimse-branch-lesson-draft-v1'),false);
 });
 
+test('a failed in-progress answer draft stays marked unsaved until retry persists it',()=>{
+ const ui=boot('arrival',0);until(ui,'lesson');const key='chimse-branch-lesson-draft-v1',put=ui.box.localStorage.setItem;let fail=true;ui.box.localStorage.setItem=(name,value)=>{if(name===key&&fail){fail=false;throw Error('quota')}return put(name,value)};
+ ui.get('answerInput').value='我还好';ui.get('answerInput').fire('input');assert.equal(ui.get('retrySaveBtn').hidden,false);assert.equal(ui.values.has(key),false);
+ let prevented=false;ui.box.dispatchEvent({type:'beforeunload',returnValue:null,preventDefault(){prevented=true}});assert.equal(prevented,true,'unsaved answer prevents accidental navigation');
+ ui.get('retrySaveBtn').click();assert.equal(ui.get('retrySaveBtn').hidden,true);assert.equal(JSON.parse(ui.values.get(key)).draft,'我还好','retry writes the exact current draft');
+});
+
+test('a failed choice-reply marker is atomic with its route and warns before leaving',()=>{
+ const ui=boot('arrival',0);until(ui,'lesson');ui.get('answerInput').value=ui.box.HSKContent.scenes[0].answers[0];ui.get('content').children.find(c=>c.tagName==='FORM').fire('submit');ui.get('nextBtn').click();assert.equal(ui.phase(),'choose');const storyKey=ui.box.AnBranchStory.storageKey,replyKey='chimse-branch-pending-reply-v1',before=ui.values.get(storyKey),put=ui.box.localStorage.setItem;let fail=true;
+ ui.box.localStorage.setItem=(key,value)=>{if(key===replyKey&&fail){fail=false;throw Error('quota')}return put(key,value)};
+ ui.get('nextBtn').click();assert.equal(ui.phase(),'reply');assert.equal(ui.get('retrySaveBtn').hidden,false);assert.equal(ui.values.get(storyKey),before,'route write rolls back when the reply marker cannot be saved');assert.equal(ui.values.has(replyKey),false);
+ let prevented=false;const warning={type:'beforeunload',returnValue:null,preventDefault(){prevented=true}};ui.box.dispatchEvent(warning);assert.equal(prevented,true);assert.equal(warning.returnValue,'');
+ ui.get('retrySaveBtn').click();assert.equal(ui.get('retrySaveBtn').hidden,true);const saved=ui.values.get(storyKey),marker=JSON.parse(ui.values.get(replyKey));assert.deepEqual(marker,JSON.parse(saved).path,'retry persists the exact selected route and its reaction marker together');
+ const refreshed=boot('arrival',0,{seed:{[storyKey]:saved,[replyKey]:ui.values.get(replyKey)}});assert.equal(refreshed.phase(),'reply','reload restores the authored reaction once');
+ refreshed.get('nextBtn').click();assert.notEqual(refreshed.phase(),'reply');assert.equal(refreshed.values.has(replyKey),false,'continuing the reaction durably consumes its marker');
+ const resumed=boot('arrival',0,{seed:{[storyKey]:refreshed.values.get(storyKey)}});assert.notEqual(resumed.phase(),'reply','a consumed reply does not replay after reload');
+});
+
 test('checkpoint journal keeps learned question/answer cues out of the self-recall turn',()=>{
  const ui=boot('day2-bird',7);until(ui,'lesson');ui.get('journalToggle').click();assert.equal(ui.get('journalWords').disabled,true);assert.equal(ui.get('journalReview').disabled,true);const text=ui.get('journalContent').children.map(c=>c.textContent).join(' ');assert.equal(text.includes('十块钱'),false);assert.equal(text.includes('我叫安'),false);for(let i=0;i<50&&!ui.get('journalNext').disabled;i++)ui.get('journalNext').click();const actions=ui.get('journalContent').children.find(c=>c.className==='journal-actions');assert.ok(actions.children.some(c=>c.textContent==='Đọc lại từ đầu'));assert.equal(actions.children.some(c=>c.textContent==='Mở góc ôn'),false);
 });

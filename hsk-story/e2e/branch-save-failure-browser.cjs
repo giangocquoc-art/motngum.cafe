@@ -54,9 +54,46 @@ async function reachLesson(page) {
     assert.equal(await page.locator('#retrySaveBtn').isVisible(), false, 'retry clears the save warning after success');
     assert.equal(await page.locator('#branchShell').getAttribute('data-phase'), 'feedback', 'the pending response resumes after it is durable');
     assert.equal(await page.evaluate((key) => JSON.parse(localStorage.getItem(key))[0].status, keys.learning), 'correct');
+
+    const replyKey = 'chimse-branch-pending-reply-v1';
+    await page.evaluate(() => {
+      const history = Array.from({ length: ChimSeBranchLearning.total }, () => null);
+      history[0] = { status: 'correct', attempts: 0, hint: false };
+      const state = AnBranchEngine.fresh();
+      localStorage.setItem(AnBranchStory.storageKey, AnBranchEngine.exportSave(state));
+      localStorage.setItem(ChimSeBranchLearning.storageKey, JSON.stringify(history));
+      localStorage.setItem(ChimSeBranchLearning.objectiveStorageKey, JSON.stringify(ChimSeBranchLearning.objectiveEvidence(history)));
+      localStorage.removeItem('chimse-branch-pending-reply-v1');
+      localStorage.removeItem('chimse-branch-pending-feedback-v1');
+    });
+    await page.reload({ waitUntil: 'networkidle' });
+    if (await page.locator('#branchShell').getAttribute('data-phase') === 'read') await page.locator('#nextBtn').click();
+    assert.equal(await page.locator('#branchShell').getAttribute('data-phase'), 'choose', 'seeded first lesson opens its story choice');
+    const oldRoute = await page.evaluate((key) => localStorage.getItem(key), keys.story);
+    await page.evaluate((key) => { window.__saveFailure = { key, remaining: 1 }; }, replyKey);
+    await page.locator('#nextBtn').click();
+    assert.equal(await page.locator('#branchShell').getAttribute('data-phase'), 'reply', 'choice reaction remains visible in memory while storage recovers');
+    assert.equal(await page.locator('#retrySaveBtn').isVisible(), true, 'a failed reaction marker exposes the save retry');
+    assert.equal(await page.evaluate((key) => localStorage.getItem(key), keys.story), oldRoute, 'the route does not persist without its reaction marker');
+    assert.equal(await page.evaluate((key) => localStorage.getItem(key), replyKey), null, 'failed reaction marker is rolled back');
+    await page.locator('#retrySaveBtn').click();
+    const routeAndReply = await page.evaluate(({ storyKey, replyKey }) => ({
+      route: JSON.parse(localStorage.getItem(storyKey)),
+      reply: JSON.parse(localStorage.getItem(replyKey)),
+    }), { storyKey: keys.story, replyKey });
+    assert.deepEqual(routeAndReply.reply, routeAndReply.route.path, 'retry atomically saves the chosen route and reply marker');
+    await page.reload({ waitUntil: 'networkidle' });
+    assert.equal(await page.locator('#branchShell').getAttribute('data-phase'), 'reply', 'reload restores the saved reaction');
+    for (let pageIndex = 0; pageIndex < 4 && await page.locator('#branchShell').getAttribute('data-phase') === 'reply'; pageIndex += 1) {
+      await page.locator('#nextBtn').click();
+    }
+    assert.notEqual(await page.locator('#branchShell').getAttribute('data-phase'), 'reply', 'reaction can be consumed');
+    assert.equal(await page.evaluate((key) => localStorage.getItem(key), replyKey), null, 'continuing clears the reaction marker durably');
+    await page.reload({ waitUntil: 'networkidle' });
+    assert.notEqual(await page.locator('#branchShell').getAttribute('data-phase'), 'reply', 'a consumed reaction does not replay after another reload');
     assert.deepEqual(errors, []);
     await context.close();
-    console.log('Branch save failure recovery: 1 simulated quota failure passed');
+    console.log('Branch save failure recovery: lesson completion and atomic choice-reply marker failures passed');
   } finally {
     await browser.close();
   }
