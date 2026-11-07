@@ -4,7 +4,11 @@ art/characters/candidates/
 art/layers/candidates/
 # Archived watercolor studies are kept locally; the current product uses art/flat/.
 art/characters/
-art/backgrounds/
+# Keep the five generated kitchen WebP runtime plates; all other background sources stay local.
+art/backgrounds/*
+!art/backgrounds/kitchen/
+art/backgrounds/kitchen/*
+!art/backgrounds/kitchen/*.webp
 art/layers/
 art/reference/
 art/scenes/

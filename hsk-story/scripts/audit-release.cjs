@@ -14,6 +14,11 @@ const REQUIRED = [
   'duong-re/index.html', 'duong-re/branch-data.js', 'duong-re/branch-engine.js',
   'duong-re/branch-learning.js', 'duong-re/branch-scenes.js', 'duong-re/branch-ui.js',
   'duong-re/style.css', 'art/brand/flat-favicon.svg', 'art/brand/flat-sparrow.svg',
+  'art/backgrounds/kitchen/day2-kitchen-desktop-v1.webp',
+  'art/backgrounds/kitchen/day2-kitchen-mobile-v1.webp',
+  'art/backgrounds/kitchen/day2-kitchen-tablet-v1.webp',
+  'art/backgrounds/kitchen/day2-kitchen-wide-v1.webp',
+  'art/backgrounds/kitchen/day2-kitchen-compact-v1.webp',
 ];
 const PRIVATE_INVENTORIES = ['hsk30-syllabus-inventory.json', 'candidate-source-index.json'];
 const FUTURE_FILES = ['future-acts.js', 'future-branch-runtime.js', 'future-branch-decisions.json', 'learning-blueprint.js'];
@@ -25,7 +30,24 @@ function audit(root = path.resolve(__dirname, '../..'), trackedOverride) {
   const issues = [];
   const tracked = new Set(trackedOverride || filesUnder(root));
   const ignore = read(root, 'hsk-story/.vercelignore').replace(/\r/g, '');
-  const ignores = (name) => ignore.split('\n').some((line) => line.trim() === name || line.trim() === `hsk-story/${name}` || line.trim() === `**/${name}`);
+  const rules = ignore.split('\n').map((line) => line.trim()).filter((line) => line && !line.startsWith('#'));
+  const globMatches = (pattern, value) => {
+    const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*\*/g, '\u0000').replace(/\*/g, '[^/]*').replace(/\u0000/g, '.*');
+    return new RegExp(`^${escaped}$`).test(value);
+  };
+  const ignores = (name) => {
+    const parts = name.split('/');
+    const prefixes = parts.map((_, index) => parts.slice(0, index + 1).join('/'));
+    let excluded = false;
+    for (const prefix of prefixes) {
+      for (const rawRule of rules) {
+        const negated = rawRule.startsWith('!');
+        const pattern = rawRule.replace(/^!/, '').replace(/\/$/, '');
+        if (globMatches(pattern, prefix)) excluded = !negated;
+      }
+    }
+    return excluded;
+  };
   for (const item of REQUIRED) {
     const full = path.join(root, 'hsk-story', item);
     if (!fs.existsSync(full) || !fs.statSync(full).isFile()) issues.push(`required deployed file missing: hsk-story/${item}`);
