@@ -9,7 +9,7 @@ function kitchenGroup(names){return names.map(function(name,index){var a=actor(n
 AnBranchStory.scenes.forEach(function(node){
  var scene=copy(manifest.scenes[base[node.place]||base.street]);
  if(node.id==="school-gate"){scene=copy(manifest.scenes["hsk1.e01.xiaoyu-friendship"]);scene.actors=group(["an","wang","xiaoyu"])}
- if(node.id==="week-later-count")scene=copy(manifest.scenes["hsk1.e01.class-counting"]);
+ if(node.id==="week-later-count")scene=copy(manifest.scenes["branch.day2-counting-group"]||manifest.scenes["hsk1.e01.class-counting"]);
  if(node.id==="day2-counting-group"){
   scene=copy(manifest.scenes["hsk1.e01.class-counting"]);scene.fullStageActors=true;
   scene.actors=[actor("an",0),actor("xiaoyu",1),actor("classmate",2),actor("wang",3)];
@@ -38,7 +38,7 @@ AnBranchStory.scenes.forEach(function(node){
    scene.sparrow.flight=false;
   }
  }
- if(node.place==="class"&&/Vương/.test(node.speaker)&&node.id!=="day2-counting-group")scene.actors=[actor("an",0),actor("wang",1)];
+ if(node.place==="class"&&/Vương/.test(node.speaker)&&node.id!=="day2-counting-group"&&node.id!=="week-later-count")scene.actors=[actor("an",0),actor("wang",1)];
  if(node.id==="day2-bird-teacher")scene.actors=group(["an","wang","xiaoyu"]);
  if(node.id==="arrival"||node.id==="arrival-mother")scene.actors=[actor("an",0),actor("mother",1)];
  if(node.id==="walk-home"){scene=copy(manifest.scenes["hsk1.e01.walk-home"]);scene.actors=group(["an","mother","xiaoyu"]);}

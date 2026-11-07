@@ -22,7 +22,7 @@ function boot(target,completed,options={}){
   const scene=E.data.byId[state.node],available=E.availableOptions(scene,state),preferred=options.choices&&options.choices[state.node],choice=scene.kind==='choice'?(available.some(item=>item.id===preferred)?preferred:available[0].id):'next',result=E.step(state,choice);assert.equal(result.ok,true,result.error);state=result.state;
  }
  assert.equal(state.node,target,'test route reaches its authored lesson anchor');
- values.set(E.data.storageKey,E.exportSave(state));values.set(L.storageKey,JSON.stringify(Array.from({length:L.total},(_,index)=>index<completed?{status:'correct',attempts:0,hint:false}:null)));
+ values.set(E.data.storageKey,E.exportSave(state));values.set(L.storageKey,JSON.stringify(Array.from({length:L.total},(_,index)=>(Array.isArray(completed)?completed.includes(index):index<completed)?{status:'correct',attempts:0,hint:false}:null)));
  const seed=typeof options.seed==='function'?options.seed({state,box}):options.seed||{};for(const [key,value] of Object.entries(seed))values.set(key,value);
  load('duong-re/branch-ui.js');
  return {box,values,writes,spoken,actors,host,get:id=>document.getElementById(id),phase:()=>document.getElementById('branchShell').dataset.phase};

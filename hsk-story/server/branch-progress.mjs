@@ -8,7 +8,7 @@ import Recall from '../duong-re/session-recall.js';
 const invalid = () => Object.assign(new Error('Invalid branch snapshot'), { status: 400 });
 const plain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 export function sanitizeSnapshot(raw) {
-  const expectedLearningLength = raw && (raw.version === 1 || raw.version === 2) ? Learning.legacyTotal : raw && raw.version === 3 ? 12 : Learning.total;
+  const expectedLearningLength = raw && (raw.version === 1 || raw.version === 2) ? Learning.legacyTotal : raw && raw.version === 3 ? 12 : raw && raw.version === 4 && Array.isArray(raw.learning) && raw.learning.length === 15 ? 15 : Learning.total;
   if (!plain(raw) || ![1, 2, 3, 4].includes(raw.version) || !Array.isArray(raw.path) || raw.path.length > 50 || !Array.isArray(raw.learning) || raw.learning.length !== expectedLearningLength) throw invalid();
   const path = raw.path.map(item => {
     if (!plain(item) || typeof item.at !== 'string' || typeof item.choice !== 'string' || item.at.length > 100 || item.choice.length > 100) throw invalid();

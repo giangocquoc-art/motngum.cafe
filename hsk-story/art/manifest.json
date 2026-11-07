@@ -1,6 +1,6 @@
 {
   "brand": "Chim Sẻ",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "visualReference": "Current owner-approved style authority: current Production hsk.motngum.cafe captured at art/reference/production-style-20261029.png; the screenshot is used only as a drawing and palette reference.",
   "style": {
     "line": "Sparse slightly irregular dark brown-grey outlines matching verified Production",
@@ -260,18 +260,22 @@
       "compact": "flat/backgrounds/bedroom-compact.svg"
     },
     "day2-kitchen": {
-      "desktop": "flat/backgrounds/day2-kitchen.svg",
-      "mobile": "flat/backgrounds/day2-kitchen-portrait.svg",
-      "tablet": "flat/backgrounds/day2-kitchen-tablet.svg",
-      "wide": "flat/backgrounds/day2-kitchen-wide.svg",
-      "compact": "flat/backgrounds/day2-kitchen-compact.svg",
+      "desktop": "backgrounds/kitchen/day2-kitchen-desktop-v1.webp",
+      "mobile": "backgrounds/kitchen/day2-kitchen-mobile-v1.webp",
+      "tablet": "backgrounds/kitchen/day2-kitchen-tablet-v1.webp",
+      "wide": "backgrounds/kitchen/day2-kitchen-wide-v1.webp",
+      "compact": "backgrounds/kitchen/day2-kitchen-compact-v1.webp",
       "metadata": {
-        "role": "Responsive native-flat home kitchen for An’s second morning; no people, birds or learned text.",
-        "styleAuthority": "Current production art on hsk.motngum.cafe",
-        "composition": "Approved in art/layouts/day2-kitchen-review.md",
-        "mobileComposition": "Independent square composition fitted to the portrait phone story-stage viewport",
-        "wideComposition": "Independent 3:1 composition for very wide desktop story stages",
-        "compactComposition": "Independent low-height scene for short landscape viewports"
+        "role": "ImageGen background-only plates for the approved second-morning home kitchen; character sprites and exactly one separate sparrow layer remain in the renderer.",
+        "styleAuthority": "Current production art at hsk.motngum.cafe, captured at art/reference/production-style-20261029.png",
+        "composition": "Owner-approved five-variant scene plan at art/layouts/day2-kitchen-review.md",
+        "mobileComposition": "Independently composed square scene for the portrait phone story stage; window, table, chairs and backpack remain visible.",
+        "tabletComposition": "Independently composed portrait-tablet scene.",
+        "wideComposition": "Independently composed 3:1 ultra-wide plate.",
+        "compactComposition": "Independently composed short phone-landscape plate.",
+        "generatedWith": "OpenAI image_gen built-in tool",
+        "sourceReference": "reference/production-style-20261029.png",
+        "promptSet": "prompts/day2-kitchen.md"
       }
     }
   },
@@ -3639,6 +3643,81 @@
       "masterFormat": "PNG",
       "bytes": 74618,
       "authoringSource": "Captured from owner-approved Production hsk.motngum.cafe on 2026-10-29"
+    },
+    "backgrounds/kitchen/day2-kitchen-desktop-v1.webp": {
+      "role": "Generated background-only desktop composition for An’s second-morning kitchen; no characters or sparrow are baked in.",
+      "dimensions": {
+        "width": 1200,
+        "height": 620
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "art/prompts/day2-kitchen.md#desktop",
+      "master": "backgrounds/kitchen/day2-kitchen-desktop-v1.png",
+      "masterFormat": "PNG",
+      "bytes": 37252,
+      "generator": "OpenAI image_gen built-in tool",
+      "reference": "reference/production-style-20261029.png"
+    },
+    "backgrounds/kitchen/day2-kitchen-mobile-v1.webp": {
+      "role": "Generated background-only mobile composition for An’s second-morning kitchen; no characters or sparrow are baked in.",
+      "dimensions": {
+        "width": 900,
+        "height": 900
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "art/prompts/day2-kitchen.md#mobile",
+      "master": "backgrounds/kitchen/day2-kitchen-mobile-v1.png",
+      "masterFormat": "PNG",
+      "bytes": 33416,
+      "generator": "OpenAI image_gen built-in tool",
+      "reference": "reference/production-style-20261029.png"
+    },
+    "backgrounds/kitchen/day2-kitchen-tablet-v1.webp": {
+      "role": "Generated background-only tablet composition for An’s second-morning kitchen; no characters or sparrow are baked in.",
+      "dimensions": {
+        "width": 1200,
+        "height": 740
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "art/prompts/day2-kitchen.md#tablet",
+      "master": "backgrounds/kitchen/day2-kitchen-tablet-v1.png",
+      "masterFormat": "PNG",
+      "bytes": 37806,
+      "generator": "OpenAI image_gen built-in tool",
+      "reference": "reference/production-style-20261029.png"
+    },
+    "backgrounds/kitchen/day2-kitchen-wide-v1.webp": {
+      "role": "Generated background-only wide composition for An’s second-morning kitchen; no characters or sparrow are baked in.",
+      "dimensions": {
+        "width": 1800,
+        "height": 600
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "art/prompts/day2-kitchen.md#wide",
+      "master": "backgrounds/kitchen/day2-kitchen-wide-v1.png",
+      "masterFormat": "PNG",
+      "bytes": 33184,
+      "generator": "OpenAI image_gen built-in tool",
+      "reference": "reference/production-style-20261029.png"
+    },
+    "backgrounds/kitchen/day2-kitchen-compact-v1.webp": {
+      "role": "Generated background-only compact composition for An’s second-morning kitchen; no characters or sparrow are baked in.",
+      "dimensions": {
+        "width": 1200,
+        "height": 380
+      },
+      "format": "WebP",
+      "alpha": false,
+      "prompt": "art/prompts/day2-kitchen.md#compact",
+      "master": "backgrounds/kitchen/day2-kitchen-compact-v1.png",
+      "masterFormat": "PNG",
+      "bytes": 16532,
+      "generator": "OpenAI image_gen built-in tool",
+      "reference": "reference/production-style-20261029.png"
     }
   },
   "spriteCharacters": {

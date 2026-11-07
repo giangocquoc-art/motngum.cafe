@@ -44,7 +44,7 @@ test('a completed thanks task and an existing feedback save never reopen the pri
 test('week-later recalls show a contextual reply after the learner answers',()=>{
  for(const [anchor,completed,index,answer,reply] of [
   ['week-later-shop',10,10,'我想吃面条','好，还是老样子。'],
-  ['week-later-home',11,11,'十块钱','你记得真清楚。']
+  ['week-later-home',[0,1,2,3,4,5,6,7,8,9,10,15],11,'十块钱','你记得真清楚。']
  ]){
   const ui=boot(anchor,completed);until(ui,'lesson');assert.equal(ui.get('branchShell').dataset.lesson,String(index));
   ui.get('answerInput').value=answer;ui.get('content').children.find(child=>child.tagName==='FORM').fire('submit');

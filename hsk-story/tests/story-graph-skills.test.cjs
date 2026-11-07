@@ -95,7 +95,7 @@ test("V17 versioned blueprint maps six levels and exposes unverified coverage",(
  assert.deepEqual(Array.from(B.levels,x=>x.verifiedOfficialItems),[0,0,0,0,0,0]);
  assert.deepEqual(Array.from(B.levels,x=>[x.sourcePages.tasks,x.sourcePages.topics,x.sourcePages.vocabulary,x.sourcePages.characters,x.sourcePages.grammar]),[[2,56,77,353,383],[6,58,84,355,386],[11,60,89,356,389],[18,63,102,358,392],[29,66,127,361,395],[37,69,167,364,398]]);
  assert.ok(B.levels.slice(1).every(x=>x.storyStatus==="outline-only"&&x.teacherSignoff==="PENDING"));
- assert.deepEqual(Array.from(report.incompletePilotSequences).sort(),["farewell","greeting","introduce-self","student-identity"]);
+ assert.deepEqual(Array.from(report.incompletePilotSequences),[]);
  assert.deepEqual(Array.from(report.optionalReviewSequences).sort(),["farewell","gratitude","greeting","introduce-self","numbers","order-noodles","price","student-identity"]);
 });
 test("V17 stable objective IDs point to the unchanged ten lesson/checkpoint scenes",()=>{
@@ -119,15 +119,14 @@ test("V18 HSK1 optional spaced review stays distinct from mandatory story reuse 
   const stages=objective.storyStages;
   assert.ok(stages.introSceneIds.length,objective.id+" has an introduction");
   assert.equal(stages.reuseSceneIds.length,0,objective.id+" must not treat optional review as story reuse");
-  const expectedBranchReuse=objective.id==="greeting"?["week-later-home-checkin","week-later-home-answer"]:objective.id==="numbers"?["day2-counting-group"]:["order-noodles","price","gratitude"].includes(objective.id)?["day2-liu"]:[];
+  const expectedBranchReuse=objective.id==="greeting"?["week-later-home-checkin","week-later-home-answer"]:["introduce-self","student-identity"].includes(objective.id)?["week-later-count"]:objective.id==="farewell"?["home-confide","home-quiet","home-invite"]:objective.id==="numbers"?["day2-counting-group"]:["order-noodles","price","gratitude"].includes(objective.id)?["day2-liu"]:[];
   assert.deepEqual(Array.from(stages.branchReuseNodeIds),expectedBranchReuse,objective.id+" maps only a source-verified common story beat");
-  if(["numbers","order-noodles","price","gratitude"].includes(objective.id))assert.ok(stages.status.includes("main-story reuse and individually measured recall authored"));
-  else assert.ok(stages.status.includes("main-story")&&stages.status.includes("incomplete"));
+  assert.ok(stages.status.includes("main-story reuse and individually measured recall authored"));
   for(const id of stages.reviewReuseItemIds){assert.equal(reviews[id].objectiveId,objective.id);assert.equal(reviews[id].stage,"reuse")}
   for(const id of stages.reviewCheckpointItemIds){assert.equal(reviews[id].objectiveId,objective.id);assert.equal(reviews[id].stage,"checkpoint")}
   assert.equal(stages.reviewChannel,"optional-spaced-review");
  }
- assert.deepEqual(Array.from(B.report(K,F).incompletePilotSequences).sort(),["farewell","greeting","introduce-self","student-identity"]);
+ assert.deepEqual(Array.from(B.report(K,F).incompletePilotSequences),[]);
  assert.deepEqual(Array.from(B.objectives.find(x=>x.id==="numbers").storyStages.checkpointSceneIds),[]);
  assert.ok(R.items.find(x=>x.id==="greeting-checkpoint").after===9);
  assert.ok(R.items.find(x=>x.id==="farewell-checkpoint").after===9);

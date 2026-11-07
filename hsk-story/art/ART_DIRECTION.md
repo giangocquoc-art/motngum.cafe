@@ -1,32 +1,23 @@
 # Chim Sẻ — visual guide
 
-## Main reference
+## Approved style authority
 
-Use the character and world concept sheet shared by the project owner as the visual authority. It sets the character shapes, clothes, color swatches, paper, line, and the small everyday scene vignettes. Keep generated images in the same family: recognizable people drawn with a few expressive marks, imperfect ink that stays consistent from scene to scene, and quiet warm color. Do not substitute generic anime polish, vector shapes, photorealism, glossy lighting, or unrelated stock illustration.
+The currently released art on `hsk.motngum.cafe` is the visual authority. The capture at `reference/production-style-20261029.png` records its recognizable look: simple flat muted fills, sparse dark brown-gray contours, slightly imperfect hand-drawn lines, warm cream surroundings, readable silhouettes, and small everyday details. Keep the imperfection consistent across scenes and characters. The style is intentionally simple and emotionally clear; do not add watercolor grain, glossy polish, generic anime rendering, photorealism, or perfect vector geometry.
 
-## Character continuity
+The owner's character concept sheet remains useful for identity, expression range and the lived-in Chengdu world. It does not override the live site's approved line weight, flat colors, or current character identity. Minh An is the 11-year-old boy established in the accepted game story, with slightly tousled dark hair, mustard hoodie and faded blue-green backpack. Sẻ is the small pale-blue sparrow with a cream belly, dark outline, round eye and small orange beak. Sẻ can be curious or mistaken; only An understands its words.
 
-- **Minh An:** an 11-year-old boy; short, slightly tousled black hair; mustard yellow hoodie; faded blue-green backpack. The owner's explicit redesign plan controls identity; the supplied concept sheet controls line/color rather than changing An's gender or clothes. Keep childlike proportions and small asymmetries. Feelings should read through head angle, hands, shoulders and stance as well as the face. Never make An look like a polished adult model.
-- **Sẻ:** a small, pale sky-blue sparrow with a cream belly, charcoal ink edge, dark round eye, and a small orange beak. It is curious and fallible, and only An understands its words.
-- Keep exactly one drawn Sẻ in a visible story frame. When the scene already shows the mascot, use the word seal in the page header; keep the bird icon for the browser tab rather than repeating it beside the scene.
-- **Mother, Tiểu Vũ, cô Vương, bà Lưu, and the school receptionist:** the active per-character expression atlases under `characters/*-expressions-v1.webp` now define their face, silhouette, clothes and rendered moods. `supporting-cast-v2.webp` remains an identity reference only. Preserve distinctions between the short bob and glasses of cô Vương and the receptionist's low ponytail and no glasses.
+## Character and scene continuity
 
-## Drawing and color
+- Keep exactly one visible Sẻ in each ordinary story frame. If a background needs a perch, leave it empty; the renderer owns the single bird layer. Do not add bird drawings, silhouettes or pictures to the background.
+- Keep every character's face, silhouette, clothes, proportions and small asymmetries stable. Show emotion through face, head angle, hands and shoulders instead of making An look polished or unusually composed.
+- Give each scene a composition pass first. Record who is present and speaking, expression, prop continuity, foreground overlap, sparrow position and independently composed mobile/tablet view.
+- Background plates contain no characters, Sẻ, lesson text, answer hints, captions, labels or UI. HTML owns all readable dialogue and learning content.
+- Use actual generated raster art for approved new scene plates and sprites; do not substitute temporary inline SVG geometry for a requested generated illustration. Retain raster masters, optimized WebP runtime assets, prompt provenance and manifest entries.
 
-- Let black-brown pen contours wobble slightly and vary in pressure. Repeat the same face, hair silhouette, body proportions, clothing shapes and recurring object details. Imperfection should describe the person; it should not make the art style drift.
-- Use warm cream paper, quiet flat watercolor fills, and muted orange, faded teal, dusty sage, tan, dark brown and occasional brick red. Keep the texture fine and low contrast so it does not compete with Chinese text.
-- Scenes should feel observed and ordinary: a dish, chair, notebook, school gate, classroom window or neighborhood plant can carry the moment. Keep props readable and leave deliberate sprite and dialogue space.
-- Never put Chinese lesson text, answer hints, captions, labels or generated pseudo-writing in an image. Dialogue and study text stay in HTML.
-- Sprites and foreground cutouts need real alpha transparency. Give each expression or pose a clear silhouette and preserve the shared model sheet.
+## Responsive layered scenes
 
-## Layers and responsive scenes
+The shared renderer composes background, optional midground, character sprites, foreground/occlusion, one Sẻ sprite, and accessible HTML dialogue. The authored source is `art/manifest.json`, compiled by `node scripts/build-scene-manifest.cjs`. Portrait phone, portrait tablet, wide desktop and short landscape scenes use compositions designed for their visible stage area; they are not blindly cropped desktop pictures. Art must keep faces, props and interaction targets inside the scene region while the full game remains in one viewport.
 
-Scene art is assembled by the shared `scene-renderer.js` and `scene-layers.css`. `manifest.json` is the authored source; `node scripts/build-scene-manifest.cjs` compiles its browser data. Layers are background, optional midground, independent character sprites, optional foreground, and Sẻ. An unnecessary image layer is `null`, never a fictional filename. Dialogue, Hanzi, Pinyin, translation, choices and controls stay accessible HTML. Use the separate portrait plates in `backgrounds/mobile/`; preserve faces and gestures when changing composition.
+## Prompt recipe
 
-## Prompt recipe for future art
-
-Always use the owner-provided character concept sheet as the line/color authority when it is available, together with the current An/Sẻ sprites and reviewed environment samples. Use the active per-character atlases as NPC identity references. Identify which reference controls identity and which controls line/color; never use an older polished sprite as the sole style reference. Original conversation reference images are not stored in this repo, so keep the written owner style description below with the assets. Then adapt the prompt to the requested single asset:
-
-> Make one new Chim Sẻ story asset consistent with the owner's character concept sheet. Preserve the same slightly uneven black-ink contour, flat muted watercolor, warm textured cream paper, simple expressive faces, and small lived-in details. Match character shape, child proportions, clothing, face and palette to the approved sprite. Imperfect marks should feel deliberate and repeatable. Keep all learning text out of the image. Avoid glossy polish, generic anime, photorealism, crisp vector art, cinematic lighting and style drift. [Describe the single asset, pose/emotion, composition, and required transparent or landscape/portrait layout here.]
-
-Record each finished file, dimensions, transparency, prompt and its role in `manifest.json`. Save the final optimized asset inside this repository and update the manifest before using it.
+Use `reference/production-style-20261029.png` as the style reference for new art. Treat the current approved An/Sẻ sprite and the relevant NPC sheet as identity references when available. State that identity and line/color are separate references. Generate one layer at a time and name the viewport composition. Specify the exact scene props and what must remain empty for HTML or sprites. Explicitly exclude people and birds from backgrounds, and require true alpha for isolated sprite cutouts. Record the exact prompt, model path, source references, dimensions, alpha status and runtime filename in `art/manifest.json` and the prompt log.

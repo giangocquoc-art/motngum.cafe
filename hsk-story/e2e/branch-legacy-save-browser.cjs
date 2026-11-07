@@ -43,7 +43,7 @@ const LEGACY=['hai-que-huong-progress-v3','hai-que-huong-intro-v1'];
     assert.equal(await page.locator('#branchShell').getAttribute('data-lesson'),'10',size.name+' should resume at the first newly added recall task');
     assert.equal(await page.evaluate(key=>localStorage.getItem(key), 'hai-que-huong-branching-novel-v1'),fixture.legacyPath,'resume must preserve the old route through the former ending');
     assert.equal(await page.locator('.cs-sparrow').count(),1,'the scene keeps one Sẻ');
-    for(const taskId of [10,11]){
+    for(const taskId of [10,15,11]){
      try{await page.waitForFunction(id=>document.querySelector('#branchShell')?.dataset.lesson===String(id),taskId,{timeout:5000});}
      catch(error){const view=await page.evaluate(()=>({node:document.querySelector('#branchShell')?.dataset.node,phase:document.querySelector('#branchShell')?.dataset.phase,lesson:document.querySelector('#branchShell')?.dataset.lesson,learning:localStorage.getItem(ChimSeBranchLearning.storageKey)}));throw new Error('Could not reach learning task '+taskId+': '+JSON.stringify(view)+'; '+error.message)}
      const answer=await page.evaluate(id=>ChimSeBranchLearning.sceneAt(id).answers[0],taskId);
@@ -56,21 +56,21 @@ const LEGACY=['hai-que-huong-progress-v3','hai-que-huong-intro-v1'];
       }else await page.locator('#nextBtn').click();
      }
      await page.waitForFunction(id=>ChimSeBranchLearning.clean(JSON.parse(localStorage.getItem(ChimSeBranchLearning.storageKey)||'null'))[id]?.status==='correct',taskId);
-     if(taskId===10)await page.locator('#nextBtn').click();
+     if([10,15].includes(taskId))await page.locator('#nextBtn').click();
     }
     const result=await page.evaluate(({legacyKeys})=>({
-     learning:ChimSeBranchLearning.clean(JSON.parse(localStorage.getItem(ChimSeBranchLearning.storageKey)||'null')),
+     learning:ChimSeBranchLearning.clean(JSON.parse(localStorage.getItem(ChimSeBranchLearning.storageKey)||'null')),node:AnBranchEngine.load(localStorage.getItem(AnBranchStory.storageKey)).node,lesson:document.querySelector('#branchShell').dataset.lesson,
      path:AnBranchEngine.load(localStorage.getItem(AnBranchStory.storageKey)).path,
      choiceCount:AnBranchEngine.load(localStorage.getItem(AnBranchStory.storageKey)).path.filter(item=>AnBranchStory.byId[item.at].kind==='choice').length,
      legacy:Object.fromEntries(legacyKeys.map(key=>[key,localStorage.getItem(key)])),
      layout:{page:document.documentElement.scrollWidth<=innerWidth+1&&document.documentElement.scrollHeight<=innerHeight+1,content:(()=>{const node=document.querySelector('#content');return node.scrollHeight<=node.clientHeight+2})(),birds:document.querySelectorAll('.cs-sparrow').length}
     }),{legacyKeys:LEGACY});
-    assert.equal(result.learning.length,15);
+    assert.equal(result.learning.length,18);
     assert.ok(result.learning.slice(0,10).every(item=>item?.status==='correct'&&item.attempts===1),'the migration must retain prior learning rows');
-    assert.ok(result.learning[10]&&result.learning[11],'the newly reached recall tasks must be recorded');
+    assert.ok(result.learning[10]&&result.learning[11]&&result.learning[15],'the newly reached recall tasks must be recorded');
     assert.equal(result.choiceCount,fixture.choiceCount,'the old route must not replay or add choices during migration');
     assert.deepEqual(result.legacy,Object.fromEntries(LEGACY.map(key=>[key,'legacy-sentinel'])));
-    assert.equal(result.layout.page,true);assert.equal(result.layout.content,true);assert.equal(result.layout.birds,1);
+    assert.equal(result.layout.page,true);assert.equal(result.layout.content,true);assert.equal(result.layout.birds,result.lesson==='11'||result.node==='week-later-home'?0:1,JSON.stringify({node:result.node,lesson:result.lesson,birds:result.layout.birds}));
     assert.deepEqual(errors,[]);
     checks++;
    }finally{await context.close();}

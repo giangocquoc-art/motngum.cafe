@@ -5,11 +5,11 @@ const fs=require('node:fs'),path=require('node:path');
 const BASE=process.env.BRANCH_BASE_URL||'http://127.0.0.1:4181/duong-re/';
 const OUT=path.resolve(process.env.BRANCH_TEST_OUTPUT||path.join(__dirname,'../test-results/kitchen-layout'));fs.mkdirSync(OUT,{recursive:true});
 const sizes=[
- {name:'desktop',width:1365,height:900,variant:'day2-kitchen-wide.svg'},
- {name:'phone-portrait',width:390,height:844,variant:'day2-kitchen-portrait.svg'},
- {name:'tablet-portrait',width:768,height:1024,variant:'day2-kitchen-tablet.svg'},
- {name:'phone-landscape',width:844,height:390,variant:'day2-kitchen-compact.svg'},
- {name:'ultra-wide',width:1680,height:720,variant:'day2-kitchen-wide.svg'}
+ {name:'desktop',width:1365,height:900,variant:'day2-kitchen-wide-v1.webp'},
+ {name:'phone-portrait',width:390,height:844,variant:'day2-kitchen-mobile-v1.webp'},
+ {name:'tablet-portrait',width:768,height:1024,variant:'day2-kitchen-tablet-v1.webp'},
+ {name:'phone-landscape',width:844,height:390,variant:'day2-kitchen-compact-v1.webp'},
+ {name:'ultra-wide',width:1680,height:720,variant:'day2-kitchen-wide-v1.webp'}
 ];
 const targets=['day2-arrival','day2-guest-arrives','day2-home-quiet','day2-breakfast','day2-confession','day2-mother-explains','day2-guest-prep'];
 function expectedSpeakerCharacter(speaker){return /Mẹ/.test(speaker)?'mother':/小雨|Tiểu Vũ/.test(speaker)?'xiaoyu':null}

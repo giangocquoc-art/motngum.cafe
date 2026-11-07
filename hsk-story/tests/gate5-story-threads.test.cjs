@@ -43,7 +43,7 @@ test("Gate5 both food choices change the thank-you moment and later memory",()=>
 });
 test("Gate5 walk-home reflection appears only after real prior episodes, remembers completed diary",()=>{
  const a=T.echo(6,done([5]),{friendship:"ask-teacher","noodle-taste":"mild"},{stage:"done"});
- assert.ok(a.zh.includes("明天见"));assert.ok(a.vi.includes("Tiểu Vũ"));assert.ok(a.vi.includes("sổ"));
+ assert.equal(a.zh,"谢谢。");assert.equal(a.zh.includes("明天见"),false);assert.ok(a.vi.includes("Tiểu Vũ"));assert.ok(a.vi.includes("sổ"));
  const b=T.echo(6,done([5]),{},null);
  assert.ok(!b.vi.includes("sổ mẹ tặng đã được tìm lại"));
 });

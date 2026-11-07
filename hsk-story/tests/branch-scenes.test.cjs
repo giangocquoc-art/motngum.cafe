@@ -35,17 +35,20 @@ test('day two morning uses the dedicated kitchen plates and keeps one Sẻ',()=>
   assert.equal(JSON.stringify(box.HSKSceneManifest.scenes['branch.day2-arrival'].actorRegion),JSON.stringify({desktop:{left:45,right:3},mobile:{left:3,right:3},tablet:{left:3,right:3},wide:{left:28,right:3},compact:{left:0,right:0}}));
   assert.equal(JSON.stringify(box.HSKSceneManifest.scenes['branch.day2-guest-prep'].actors.map(a=>a.character)),JSON.stringify(['an','xiaoyu']));
   assert.equal(box.HSKSceneManifest.scenes['branch.day2-night'].background,'bedroom');
-  assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].desktop,'flat/backgrounds/day2-kitchen.svg');
-  assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].mobile,'flat/backgrounds/day2-kitchen-portrait.svg');
-  assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].tablet,'flat/backgrounds/day2-kitchen-tablet.svg');
-  assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].wide,'flat/backgrounds/day2-kitchen-wide.svg');
-  assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].compact,'flat/backgrounds/day2-kitchen-compact.svg');
+  assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].desktop,'backgrounds/kitchen/day2-kitchen-desktop-v1.webp');
+  assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].mobile,'backgrounds/kitchen/day2-kitchen-mobile-v1.webp');
+  assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].tablet,'backgrounds/kitchen/day2-kitchen-tablet-v1.webp');
+  assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].wide,'backgrounds/kitchen/day2-kitchen-wide-v1.webp');
+  assert.equal(box.HSKSceneManifest.backgrounds['day2-kitchen'].compact,'backgrounds/kitchen/day2-kitchen-compact-v1.webp');
 });
 
 test('week-later learning cues keep the speaker, scene and single Sẻ aligned',()=>{
   const count=box.HSKSceneManifest.scenes['branch.week-later-count'];
   assert.equal(count.background,'classroom');
-  assert.equal(JSON.stringify(count.actors.map(actor=>actor.character)),JSON.stringify(['an','wang']));
+  assert.equal(JSON.stringify(count.actors.map(actor=>actor.character)),JSON.stringify(['an','xiaoyu','classmate','wang']));
+  assert.equal(count.actors.filter(actor=>['an','xiaoyu','classmate'].includes(actor.character)).length,3);
+  assert.equal(count.actors.filter(actor=>actor.character==='sparrow').length,0);
+  assert.notEqual(count.sparrow.visible,false);
   const countingArt=box.HSKSceneManifest.scenes['hsk1.e01.class-counting'];
   assert.equal(countingArt.sparrow.asset,box.HSKSceneManifest.sprites.sparrow.asset);
   for(const id of ['branch.week-later-thanks','branch.week-later-goodbye']){
@@ -54,6 +57,17 @@ test('week-later learning cues keep the speaker, scene and single Sẻ aligned',
     assert.equal(scene.sparrow.asset,box.HSKSceneManifest.sprites.sparrow.asset,id);
     assert.equal(scene.actors.some(actor=>actor.character==='sparrow'),false,id+' must not add a second bird sprite');
   }
+});
+
+test('week-later classroom cue introduces one new classmate before the two independent prompts',()=>{
+  const node=box.AnBranchStory.byId['week-later-count'];
+  assert.match(node.story,/một bạn vừa chuyển vào nhóm/);
+  assert.match(node.story,/你叫什么名字/);
+  assert.match(node.story,/có học ở đây không/);
+  const scene=box.HSKSceneManifest.scenes['branch.week-later-count'];
+  assert.ok(scene.actors.some(actor=>actor.character==='classmate'));
+  assert.equal(scene.actors.filter(actor=>actor.character==='classmate').length,1);
+  assert.notEqual(scene.sparrow.visible,false);
 });
 test('the shared classroom reuse shows all three students, cô Vương and one perched Sẻ',()=>{
   const scene=box.HSKSceneManifest.scenes['branch.day2-counting-group'];

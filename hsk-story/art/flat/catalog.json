@@ -36,13 +36,6 @@
       "desktop": "flat/backgrounds/bedroom.svg",
       "mobile": "flat/backgrounds/bedroom-portrait.svg",
       "compact": "flat/backgrounds/bedroom-compact.svg"
-    },
-    "day2-kitchen": {
-      "desktop": "flat/backgrounds/day2-kitchen.svg",
-      "mobile": "flat/backgrounds/day2-kitchen-portrait.svg",
-      "tablet": "flat/backgrounds/day2-kitchen-tablet.svg",
-      "wide": "flat/backgrounds/day2-kitchen-wide.svg",
-      "compact": "flat/backgrounds/day2-kitchen-compact.svg"
     }
   },
   "sprites": {
@@ -270,6 +263,15 @@
       "desktop": "flat/layers/steam.svg",
       "mobile": "flat/layers/steam-portrait.svg",
       "compact": "flat/layers/steam-compact.svg"
+    }
+  },
+  "illustratedBackgrounds": {
+    "day2-kitchen": {
+      "desktop": "backgrounds/kitchen/day2-kitchen-desktop-v1.webp",
+      "mobile": "backgrounds/kitchen/day2-kitchen-mobile-v1.webp",
+      "tablet": "backgrounds/kitchen/day2-kitchen-tablet-v1.webp",
+      "wide": "backgrounds/kitchen/day2-kitchen-wide-v1.webp",
+      "compact": "backgrounds/kitchen/day2-kitchen-compact-v1.webp"
     }
   }
 }

@@ -35,6 +35,7 @@ test('native art catalog covers all responsive scenes and separate authored laye
   assert.match(catalog.authority, /Production hsk\.motngum\.cafe/);
   const nativeBackgrounds=Object.entries(manifest.backgrounds).filter(([,plates])=>plates.desktop.startsWith('flat/')&&plates.mobile.startsWith('flat/')).map(([id])=>id).sort();
   assert.deepEqual(Object.keys(catalog.backgrounds).sort(), nativeBackgrounds);
+  assert.deepEqual(Object.keys(catalog.illustratedBackgrounds).sort(), ['day2-kitchen'], 'generated story backgrounds are cataloged separately from native vector scenes');
 
   for (const [backgroundId, variants] of Object.entries(catalog.backgrounds)) {
     const expectedVariants = backgroundId === 'day2-kitchen' ? ['compact', 'desktop', 'mobile', 'tablet', 'wide'] : ['compact', 'desktop', 'mobile'];
@@ -67,19 +68,30 @@ test('native art catalog covers all responsive scenes and separate authored laye
   }
 });
 
-test('day-two kitchen uses the current native-flat style in all five story-stage compositions',()=>{
+test('day-two kitchen uses generated, responsive image plates with no baked-in cast',()=>{
   const kitchen=manifest.backgrounds['day2-kitchen'];
   assert.ok(kitchen,'day-two kitchen has a dedicated art entry');
-  assert.deepEqual({desktop:kitchen.desktop,mobile:kitchen.mobile,tablet:kitchen.tablet,wide:kitchen.wide,compact:kitchen.compact},{desktop:'flat/backgrounds/day2-kitchen.svg',mobile:'flat/backgrounds/day2-kitchen-portrait.svg',tablet:'flat/backgrounds/day2-kitchen-tablet.svg',wide:'flat/backgrounds/day2-kitchen-wide.svg',compact:'flat/backgrounds/day2-kitchen-compact.svg'});
-  assert.deepEqual(Object.keys(catalog.backgrounds['day2-kitchen']).sort(),['compact','desktop','mobile','tablet','wide']);
-  assert.equal(manifest.assetCatalog['backgrounds/day2-kitchen-v1.webp'],undefined,'the superseded watercolor plate is not catalogued as release art');
-  assert.equal(flat.background('day2-kitchen',false,false,false),readArt(kitchen.desktop));
-  assert.equal(flat.background('day2-kitchen',true,false,false),readArt(kitchen.mobile));
-  assert.equal(flat.background('day2-kitchen',false,false,false,true),readArt(kitchen.tablet));
-  assert.equal(flat.background('day2-kitchen',false,false,true),readArt(kitchen.wide));
-  assert.equal(flat.background('day2-kitchen',false,true,false),readArt(kitchen.compact));
+  const expected={desktop:'backgrounds/kitchen/day2-kitchen-desktop-v1.webp',mobile:'backgrounds/kitchen/day2-kitchen-mobile-v1.webp',tablet:'backgrounds/kitchen/day2-kitchen-tablet-v1.webp',wide:'backgrounds/kitchen/day2-kitchen-wide-v1.webp',compact:'backgrounds/kitchen/day2-kitchen-compact-v1.webp'};
+  assert.deepEqual({desktop:kitchen.desktop,mobile:kitchen.mobile,tablet:kitchen.tablet,wide:kitchen.wide,compact:kitchen.compact},expected);
+  assert.deepEqual(catalog.illustratedBackgrounds['day2-kitchen'],expected);
   assert.match(kitchen.metadata.styleAuthority,/current production art/i);
-  assert.equal(require('node:child_process').spawnSync(process.execPath,[path.join(root,'scripts/build-kitchen-art.cjs'),'--check'],{encoding:'utf8'}).status,0,'static scene plates can be regenerated from the shared authoring source');
+  assert.match(kitchen.metadata.promptSet,/prompts\/day2-kitchen\.md/);
+  const promptFile=fs.readFileSync(path.join(artRoot,'prompts/day2-kitchen.md'),'utf8');
+  for(const [variant,file] of Object.entries(expected)){
+    const entry=manifest.assetCatalog[file];
+    assert.ok(entry,`${variant} runtime plate has manifest metadata`);
+    assert.equal(entry.format,'WebP');
+    assert.equal(entry.alpha,false);
+    assert.equal(entry.generator,'OpenAI image_gen built-in tool');
+    assert.deepEqual([entry.dimensions.width,entry.dimensions.height],({desktop:[1200,620],mobile:[900,900],tablet:[1200,740],wide:[1800,600],compact:[1200,380]})[variant]);
+    assert.match(promptFile,new RegExp(`# ${variant}\\b`));
+    const webp=fs.readFileSync(path.join(artRoot,file));
+    assert.equal(webp.toString('ascii',0,4),'RIFF',`${variant} runtime file is WebP`);
+    assert.equal(webp.toString('ascii',8,12),'WEBP',`${variant} runtime file is WebP`);
+    assert.ok(fs.existsSync(path.join(artRoot,entry.master)),`${variant} PNG master is retained`);
+  }
+  assert.match(promptFile,/one separate sparrow sprite/i);
+  assert.match(promptFile,/no characters, birds or bird pictures/i);
 });
 
 test('responsive scene selector shares exact authored variant and fallback across stage shapes',()=>{
