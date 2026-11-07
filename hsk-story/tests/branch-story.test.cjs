@@ -32,6 +32,18 @@ test("Week-later return recalls greeting before the meal and price checkpoint wi
  assert.doesNotMatch(pricePrompt,/十块钱|十块|十元|10\s*元|10\s*块/);
  assert.deepEqual(Array.from(L.sceneAt(11).answers),["十块钱","十块","十元"],"the independent price answer key is unchanged");
 });
+test("Week-later number recall keeps the spoken story from giving the answer before An counts",()=>{
+ const arrival=D.byId["week-later-ending"],cue=D.byId["week-later-count"],task=L.sceneAt(12);
+ assert.equal(arrival.to,cue.id);
+ assert.doesNotMatch(arrival.story,/ba bạn|ba học sinh|một, hai, ba|三个/);
+ assert.match(cue.story,/hỏi nhóm có mấy học sinh/);
+ assert.match(cue.story,/chờ nghe câu trả lời/);
+ assert.doesNotMatch(cue.story,/ba bạn|ba học sinh|đếm xong|một, hai, ba|三个/);
+ assert.doesNotMatch([task.zh,task.py,task.vi,task.request,task.error].join(" "),/三个|三个人|ba học sinh|ba người/);
+ assert.equal(L.evaluate(12,"三个学生").ok,true);
+ assert.equal(L.evaluate(12,"四个学生").ok,false);
+ assert.deepEqual(Array.from(task.answers),["三个学生","有三个学生","三个人","有三个人","三个"]);
+});
 test("All bird outcomes converge through the shared day-two number reuse before bà Lưu",()=>{
  const shared=D.byId["day2-counting-group"];
  for(const id of ["day2-bird-quiet","day2-bird-teacher","day2-bird-team"])assert.equal(D.byId[id].to,shared.id);

@@ -61,7 +61,7 @@ test('week-later learning cues keep the speaker, scene and single Sẻ aligned',
 
 test('week-later classroom cue introduces one new classmate before the two independent prompts',()=>{
   const node=box.AnBranchStory.byId['week-later-count'];
-  assert.match(node.story,/một bạn vừa chuyển vào nhóm/);
+  assert.match(node.story,/Bạn mới ngồi cạnh An/);
   assert.match(node.story,/你叫什么名字/);
   assert.match(node.story,/có học ở đây không/);
   const scene=box.HSKSceneManifest.scenes['branch.week-later-count'];

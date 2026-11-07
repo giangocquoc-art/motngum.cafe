@@ -168,4 +168,10 @@ The shared database URL record applies to both Preview and Production, so migrat
 
 - The package audit now checks all four learner pages (`index`, branching story, introduction, and review), their linked CSS/assets, all scene-manifest runtime files, and the API handlers used by account, progress, auth, tutor, and branching progress. Historical `archivedRaster` metadata is not mistaken for a deployed runtime image.
 - The delayed mother check-in prompt asks An to answer and thank her; its rubric now accepts concise answers with both parts and no longer accepts answers that omit thanks. Regression coverage checks both.
-- Verification: all 435 Node tests pass; `node scripts/audit-release.cjs --check`, compiled scene-manifest check, and `git diff --check` pass. Hosted Preview is still not verified for these local changes; no Production or custom-domain change was made.
+- Verification at commit `7d90a52`: all 435 Node tests pass; `node scripts/audit-release.cjs --check`, compiled scene-manifest check, and `git diff --check` pass. The Vercel API confirms the Preview project and current deployments, but no deployment exists for that SHA. No Production or custom-domain change was made.
+
+### Delayed number-recall cue correction — 2026-11-07 — local working tree
+
+- The home scene leading into the next-day classroom no longer says the group has three members. The classroom narration no longer says An has already finished counting before the player reaches the number checkpoint. The composition still shows the people An needs to count.
+- Regression coverage confirms the pre-checkpoint story and task cues do not reveal a numeric answer, `三个学生` remains accepted, and `四个学生` is rejected. The authored scene IDs and accepted-answer set are unchanged.
+- Verification: all 436 Node tests pass; story graph audit confirms 53 nodes, 37 choices, 18 learning tasks, and zero consequence/convergence gaps; package and scene-manifest audits pass. Connected Microsoft Edge completed all four route replays (care 148, curious-phone 212, brave-landscape 194, tablet-portrait 148 states), each retaining 18 learning results; the simulated save-quota failure and retry passed. Initial runs against stale local ports failed, so the rerun used a fresh local static server. Hosted Preview remains pending for the current source.
