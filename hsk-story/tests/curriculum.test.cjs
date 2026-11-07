@@ -1,6 +1,6 @@
 const {test}=require("node:test");const assert=require("node:assert/strict");const {readFileSync}=require("node:fs");const {runInNewContext}=require("node:vm");const path=require("node:path");
 function get(file){const x={module:{exports:{}}};runInNewContext(readFileSync(path.join(__dirname,"..",file),"utf8"),x);return x.module.exports}
-const syllabus=get("curriculum-data.js"),blueprint=get("learning-blueprint.js"),content=get("content-manifest.js");
+const syllabus=get("curriculum-data.js"),blueprint=get("learning-blueprint.js"),content=get("content-manifest.js"),branchLearning=require("../duong-re/branch-learning.js"),branchStory=require("../duong-re/branch-data.js");
 const beats=get("story-beats.js");
 test("HSK 3.0 roadmap includes levels 1 to 6 with pinned source and pending review state",()=>{
  assert.deepEqual(Array.from(syllabus.levels,x=>x.level),[1,2,3,4,5,6]);
@@ -50,23 +50,29 @@ test("all ten stable lesson records point to the blueprint objective IDs",()=>{
  assert.equal(JSON.stringify(actual),JSON.stringify(expected));
  assert.equal(new Set(blueprint.objectives.map(o=>o.id)).size,blueprint.objectives.length);
 });
-test("HSK1 stage report separates mandatory story learning from optional review",()=>{
- const report=blueprint.report(syllabus,require("../future-acts.js"));
+test("HSK1 stage report separates mandatory story learning, delayed branch recall, and optional review",()=>{
+ const report=blueprint.report(syllabus,require("../future-acts.js"),branchLearning,branchStory);
  assert.equal(report.pilotStageCoverage.length,8);
  assert.deepEqual(Array.from(report.pilotStageCoverage,x=>x.objectiveId),Array.from(blueprint.objectives,x=>x.id));
  const recallScenes={"introduce-self":[7],"student-identity":[7],price:[8],"order-noodles":[9]};
+ const branchTasks={numbers:[12],price:[11],"order-noodles":[10],gratitude:[13],farewell:[14]};
+ const reuseNodes={"order-noodles":["day2-liu"],price:["day2-liu"]};
  for(const row of report.pilotStageCoverage){
   assert.equal(row.introduction.complete,true,row.objectiveId+" has an authored introduction");
-  assert.equal(row.commonStoryReuse.complete,false,row.objectiveId+" must not mistake optional review for story reuse");
+  assert.equal(row.commonStoryReuse.complete,["order-noodles","price"].includes(row.objectiveId),row.objectiveId+" reports only authored shared-story reuse");
+  assert.deepEqual(Array.from(row.commonStoryReuse.branchNodeIds),reuseNodes[row.objectiveId]||[],row.objectiveId+" uses only a common story node that contains its target form");
   assert.deepEqual(Array.from(row.independentRecall.curriculumSceneIds),recallScenes[row.objectiveId]||[],row.objectiveId+" reports only its separate authored recall task");
-  const individuallyMeasured=["price","order-noodles"].includes(row.objectiveId);
+  assert.deepEqual(Array.from(row.independentRecall.branchTaskIds),branchTasks[row.objectiveId]||[],row.objectiveId+" reports its stable branch checkpoint IDs separately");
+  const individuallyMeasured=["numbers","price","order-noodles","gratitude","farewell"].includes(row.objectiveId);
   assert.equal(row.independentRecall.complete,individuallyMeasured,row.objectiveId+" only counts an objective-specific response as recall evidence");
   assert.deepEqual(Array.from(row.independentRecall.sharedAssessmentSceneIds),["introduce-self","student-identity"].includes(row.objectiveId)?[7]:[]);
-  assert.match(row.sequenceStatus,/individually measured recall incomplete/);
+  if(["order-noodles","price"].includes(row.objectiveId))assert.match(row.sequenceStatus,/main-story reuse and individually measured recall authored/);
+  else assert.match(row.sequenceStatus,/individually measured recall incomplete/);
   assert.equal(row.releaseReady,false,row.objectiveId+" remains locked until content and educator review are complete");
  }
- assert.deepEqual(Array.from(report.incompletePilotSequences),Array.from(blueprint.objectives,x=>x.id));
+ assert.deepEqual(Array.from(report.incompletePilotSequences),["greeting","introduce-self","student-identity","numbers","gratitude","farewell"]);
  assert.ok(report.optionalReviewSequences.length>0,"optional cards stay visible as optional support, not mandatory coverage");
+ assert.equal(report.officiallyVerifiedObjectives,0);assert.equal(report.educatorReviewedObjectives,0);assert.equal(report.objectiveCrosswalkComplete,false);
 });
 test("lesson assessment evidence credits only what its answer evaluates",()=>{
  const expected=["greeting","introduce-self","student-identity","numbers","order-noodles","gratitude","farewell"];

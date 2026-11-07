@@ -110,6 +110,14 @@ test("practice supplies existing authored models and checkpoints never expose a 
  const checkpoint=L.pending({node:"day2-bird",path:[]},history);assert.equal(checkpoint.index,7);assert.equal(checkpoint.checkpoint,true);assert.equal(checkpoint.model,null);
 });
 
+test("delayed farewell recall cue does not show an accepted answer before help is requested",()=>{
+ const scene=L.sceneAt(14),visible=[scene.zh,scene.py,scene.vi,scene.request].join(" ");
+ assert.equal(scene.zh,"我先回家了。");
+ for(const answer of scene.answers)assert.equal(visible.includes(answer),false,"default cue must not reveal "+answer);
+ assert.match(scene.hint,/明天见/,"the answer remains available only through requested help");
+ assert.deepEqual(Array.from(L.metaAt(14).assessmentObjectiveIds),["farewell"]);
+});
+
 test("existing deterministic rubric grades input without recording personality or learning evidence",()=>{
  const history=L.clean([]),state=E.fresh(),before=JSON.stringify(state);
  assert.equal(L.evaluate(0,"我还好").ok,true);assert.equal(L.evaluate(3,"三个").ok,true);assert.equal(L.evaluate(3,"四个").ok,false);assert.equal(L.evaluate(0,"wǒ hěn hǎo").ok,false);

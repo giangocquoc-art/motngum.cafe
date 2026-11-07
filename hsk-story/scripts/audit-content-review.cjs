@@ -77,7 +77,7 @@ function sourceCrosswalk(objective) {
     officialItemIds: Array.isArray(objective.officialItemIds) ? objective.officialItemIds : [],
   };
 }
-function buildReport({ content, curriculum, blueprint, futureActs, inventory, ledger = { version: 1, receipts: [] } }) {
+function buildReport({ content, curriculum, blueprint, futureActs, branchLearning, inventory, ledger = { version: 1, receipts: [] } }) {
   const objectives = blueprint.allObjectives(curriculum, futureActs);
   const byId = new Map(objectives.map((objective) => [objective.id, objective]));
   const units = [];
@@ -145,7 +145,7 @@ function buildReport({ content, curriculum, blueprint, futureActs, inventory, le
     }));
     unit.reviewStatus = REVIEW_SCOPES.every((scope) => unit.reviews[scope].status === 'reviewed') ? 'reviewed' : 'pending';
   }
-  const roadmap = blueprint.report(curriculum, futureActs);
+  const roadmap = blueprint.report(curriculum, futureActs, branchLearning);
   const levels = roadmap.objectivesByLevel.map((level) => ({ level: level.level, objectiveCount: level.count, status: level.status, locked: level.status !== 'pilot-playable' }));
   const missingReviews = Object.fromEntries(REVIEW_SCOPES.map((scope) => [scope, units.filter((unit) => unit.reviews[scope].status !== 'reviewed').map((unit) => unit.unitId)]));
   const missingCrosswalk = units.filter((unit) => unit.sourceCrosswalk.status !== 'reviewed-match').map((unit) => ({ unitId: unit.unitId, missing: unit.sourceCrosswalk.missingComponents || unit.sourceCrosswalk.missingObjectiveIds }));
@@ -172,7 +172,7 @@ function loadInputs(root = path.resolve(__dirname, '..')) {
   const ledger = fs.existsSync(ledgerPath) ? JSON.parse(fs.readFileSync(ledgerPath, 'utf8')) : { version: 1, receipts: [] };
   return {
     content: load('content-manifest.js'), curriculum: load('curriculum-data.js'), blueprint: load('learning-blueprint.js'),
-    futureActs: load('future-acts.js'), inventory: load('hsk30-syllabus-inventory.json'), ledger,
+    futureActs: load('future-acts.js'), branchLearning: load('duong-re/branch-learning.js'), inventory: load('hsk30-syllabus-inventory.json'), ledger,
   };
 }
 function main(argv) {

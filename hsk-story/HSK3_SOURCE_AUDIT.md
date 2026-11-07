@@ -62,16 +62,18 @@ Future objective stages are ordered as introduction in context, later reuse, and
 
 The labels below are authored lesson goals. Their HSK 3.0 page references are candidate review locations, **not verified item matches**. The current map has no official syllabus item IDs or educator sign-off, so the official match count stays zero. `curriculumSceneIds` preserve the current 10-record lesson/checkpoint contract; their IDs remain stable. `assessmentObjectiveIds` separately records only goals directly evaluated by each accepted answer, avoiding credit for language that merely appears in a scene.
 
-| Stable objective ID | Current lesson/checkpoint scene IDs | Candidate source level | Alignment |
+| Stable objective ID | Current lesson/checkpoint scene IDs | Delayed branch recall task IDs | Candidate source level | Alignment |
 | --- | --- | --- | --- |
-| `greeting` | 0, 1 | 1 | Scene 0 checks the reply to a check-in; optional reuse practices both the check-in response and a hello, with a combined independent recall item |
-| `introduce-self` | 1, 2, 7 | 1 | Exact task, topic, word, character, and grammar matching pending |
-| `student-identity` | 2, 3, 7 | 1 | Exact task, topic, word, character, and grammar matching pending |
-| `numbers` | 3 | 1 | Scene 3 checks counting; optional recognition/reading cards provide later practice and recall |
-| `order-noodles` | 4, 5, 9 | 1 | Exact task, topic, word, character, and grammar matching pending |
-| `price` | 5, 8 | 1 | Scene 8 is text-based recall, not listening evidence; `price-ten` is optional reuse |
-| `gratitude` | 5 | 1 | Scene 5 evaluates thanks; reuse and typed recall are optional review items |
-| `farewell` | 6 | 1 | Scene 6 evaluates accepting the invitation; later reading and typed recall are optional review items |
+| `greeting` | 0, 1 | — | 1 | Scene 0 checks the reply to a check-in; optional practice remains separate from main-story reuse |
+| `introduce-self` | 1, 2, 7 | — | 1 | Exact task, topic, word, character, and grammar matching pending; task 7 remains a combined checkpoint |
+| `student-identity` | 2, 3, 7 | — | 1 | Exact task, topic, word, character, and grammar matching pending; task 7 remains a combined checkpoint |
+| `numbers` | 3 | 12 | 1 | Scene 3 introduces counting; task 12 is a separate delayed recall checkpoint |
+| `order-noodles` | 4, 5, 9 | 10 | 1 | Task 9 remains the early checkpoint; task 10 adds delayed recall |
+| `price` | 5, 8 | 11 | 1 | Task 8 is text-based recall, not listening evidence; task 11 adds delayed recall |
+| `gratitude` | 5 | 13 | 1 | Scene 5 introduces thanks; task 13 adds delayed recall after Tiểu Vũ helps An |
+| `farewell` | 6 | 14 | 1 | Scene 6 introduces accepting a plan; task 14 adds delayed recall with a different cue |
+
+The machine-readable blueprint records tasks 10–14 as objective-specific delayed recall opportunities. It still reports main-story reuse as incomplete where no common reuse beat is authored, and keeps HSK item matches, educator approval, and release readiness pending.
 
 ### HSK1 candidate vocabulary spot-check — 2026-11-07
 
@@ -92,7 +94,7 @@ These scope notes are candidate-level documentation only. All five component mat
 
 ## Verification gaps
 
-- Level 1: map each authored objective to exact official rows/items across all five syllabus components; confirm the Chinese, Pinyin, Vietnamese glosses, accepted variants, difficulty, and scene sequencing with a qualified Mandarin/HSK educator. The three in-story checkpoints and optional review cards are formative tasks, not official exam items.
+- Level 1: map each authored objective to exact official rows/items across all five syllabus components; confirm the Chinese, Pinyin, Vietnamese glosses, accepted variants, difficulty, and scene sequencing with a qualified Mandarin/HSK educator. Pilot story checkpoints (tasks 7–14) and optional review cards are formative tasks, not official exam items.
 - Levels 2–6: the source locator inventory is complete, but six curated story-spine candidates per level are not a complete set of instructional objectives. The page-level geometry review is complete; perform a full cell-text and item transcription check, then verify every candidate row, Chinese form, Pinyin, Vietnamese gloss, grammar structure, topic/task relationship, character list, and skill activity with a qualified educator. Expand the crosswalk to the level's complete planned learning objectives before authoring playable lessons.
 - Exam section references are separated from Chim Sẻ practice claims: the current official pages list listening/reading for levels 1–2 and listening/reading/writing for levels 3–6. The app has no validated native listening, speaking, handwriting, or exam-grade writing evidence.
 - Do not infer listening or speaking proficiency from browser TTS or speech recognition; no validated native recordings, pronunciation rubric, or handwriting evidence is established here.

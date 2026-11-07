@@ -12,9 +12,13 @@ Tasks 0–9 in `content-manifest.js` and `curriculum-data.js` retain their exist
 | 11 | `week-later-home` | Recall the quoted noodle price to Mẹ | `十块钱` and existing accepted variants |
 | 12 | `week-later-count` | Count An, Tiểu Vũ and one classmate as a group | A three-person count using `个` |
 | 13 | `week-later-thanks` | Thank Tiểu Vũ for lending An a pencil | `谢谢你` or `谢谢` |
-| 14 | `week-later-goodbye` | Answer Tiểu Vũ’s plan to meet tomorrow | `明天见` or `再见` |
+| 14 | `week-later-goodbye` | Respond when Tiểu Vũ says she is heading home | `明天见` or `再见` |
 
-These tasks are common to every story route. Each assesses one candidate objective. Wrong, assisted or skipped answers affect learning evidence only; they do not change story choices, relationship values or endings. The “one week later” interval is narrative time, not a validated real-world spacing schedule.
+These tasks are common to every story route. Each assesses one candidate objective. Tasks 10–14 now appear as separate delayed-recall entries in the machine-readable objective report; tasks 10–14 do not count as common story reuse. Wrong, assisted or skipped answers affect learning evidence only; they do not change story choices, relationship values or endings. The “one week later” interval is narrative time, not a validated real-world spacing schedule.
+
+The task 14 prompt no longer displays an accepted Chinese answer before the learner responds. Tiểu Vũ says `我先回家了。`; the requested farewell model remains behind help. This protects the independent-recall attempt without changing its accepted variants.
+
+The objective report links shared day-two story node `day2-liu` to ordering and price reuse, then lists their delayed checkpoints separately. The other six objectives still lack at least one main-story reuse or individually measured recall stage. No objective is release-ready; verified HSK item matches and educator approvals remain zero.
 
 ## Compatibility and continuity
 
@@ -31,9 +35,9 @@ The curriculum mappings are candidates, not verified official HSK 3.0 item match
 
 ## Verification completed locally — 2026-11-07
 
-- All 422 Node logic and integration tests passed, including the one-Sẻ scene assertion.
+- All 424 Node logic and integration tests passed, including delayed task-to-objective mapping and the task 14 no-answer-leak regression.
 - Story audit passed: 49 nodes, 12 choice nodes, 37 options, 15 branch tasks, 10 segments and zero reachable-consequence or convergence gaps across 1,259,712 structural paths.
-- Edge browser smoke passed 833 layout states. Branch integration passed three complete routes (501 states) at desktop, short-phone and phone-landscape sizes; each reached all 15 learning rows and kept one visible Sẻ without page or content overflow.
+- Edge browser smoke passed 833 layout states. Edge branch integration passed three complete routes (501 states) at desktop, short-phone and phone-landscape sizes; each reached all 15 learning rows, kept one visible Sẻ, hid task 14's accepted answer before a response, and had no page or content overflow.
 - The approved kitchen passed 35 integrated Edge states covering seven scene branches and five responsive compositions. The save-migration check passed desktop and phone: a former-ending save resumed at its stable node, preserved old choices/results and legacy progress keys, then recorded tasks 10–11 without replaying story decisions.
 
 Teacher/native-speaker review, measured learner outcomes, signed-in Preview checks and physical-device checks remain release gates.

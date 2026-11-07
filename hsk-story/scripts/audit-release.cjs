@@ -87,7 +87,8 @@ function audit(root = path.resolve(__dirname, '../..'), trackedOverride) {
     if (curriculumData && fs.existsSync(blueprintPath) && fs.existsSync(futureActsPath)) {
       const blueprint = require(blueprintPath);
       const futureActs = require(futureActsPath);
-      roadmap = blueprint.report(curriculumData, futureActs);
+      const branchLearning = require(path.join(root, 'hsk-story/duong-re/branch-learning.js'));
+      roadmap = blueprint.report(curriculumData, futureActs, branchLearning);
     }
   } catch (error) { issues.push(`roadmap state check failed: ${error.message}`); }
   const candidateObjectiveIds = [...new Set((curriculumData?.scenes || []).flatMap((scene) => Array.isArray(scene.objectiveIds) ? scene.objectiveIds : []))];
