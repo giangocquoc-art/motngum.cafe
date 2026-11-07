@@ -3613,7 +3613,7 @@
       "authoringSource": "OpenAI image generation; prompt and style reference recorded in art/characters/classmate-sage-v1.prompt.txt",
       "prompt": "Create an isolated full-body 11-year-old Chinese schoolgirl classmate sprite for Chim Sẻ. Match the current Production art reference at art/reference/production-style-20261029.png: simple flat muted fills, sparse dark-brown outlines, simplified child proportions and restrained facial marks. Low side ponytail, dusty sage cardigan with cream collar, faded blue-green trousers, simple sneakers, holding a plain exercise book. Slightly uncertain attentive expression and naturally imperfect posture. Transparent background; no scenery, shadows, gradients, texture, text, other characters or birds."
     },
-    "characters/classmate-sage-v1.webp": {
+    "flat/characters/classmate-sage-v1.webp": {
       "role": "Optimized transparent runtime sprite for the distinct third student in the day-two classroom counting scene.",
       "dimensions": {
         "width": 1024,
@@ -3973,7 +3973,7 @@
       "frameCount": 6
     },
     "classmate": {
-      "asset": "characters/classmate-sage-v1.webp",
+      "asset": "flat/characters/classmate-sage-v1.webp",
       "frames": {
         "attentive": 0
       },
@@ -3994,7 +3994,7 @@
         "role": "A single, distinct attentive classmate, separate from An, Tiểu Vũ, cô Vương and Sẻ."
       },
       "frameAssets": {
-        "attentive": "characters/classmate-sage-v1.webp"
+        "attentive": "flat/characters/classmate-sage-v1.webp"
       }
     }
   },

@@ -227,10 +227,10 @@
       ]
     },
     "classmate": {
-      "asset": "characters/classmate-sage-v1.webp",
+      "asset": "flat/characters/classmate-sage-v1.webp",
       "format": "webp",
       "frameAssets": {
-        "attentive": "characters/classmate-sage-v1.webp"
+        "attentive": "flat/characters/classmate-sage-v1.webp"
       },
       "face": [
         0.36,
