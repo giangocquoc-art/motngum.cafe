@@ -76,3 +76,7 @@ Ba nhóm ECC rà riêng toàn bộ 37 phương án theo ý định, phản hồi
 Đã tải PDF syllabus từ liên kết ChineseTest chính thức và xác nhận SHA-256 trùng snapshot đã ghim. Trích lại đầy đủ các trang từ vựng HSK1 bằng script repo; fixture nay chứa 30 dòng từ bậc 1 được các mục tiêu ứng viên tham chiếu, trong đó bổ sung chín liên kết còn thiếu (对、见、可以、您、人、是、谢谢、要、有). Validator kiểm tra serial, trang in, hash và dạng đối chiếu chính xác/gần nhất của từng dòng ứng viên. Tám mục tiêu vẫn ở trạng thái ứng viên, không tăng số mục HSK đã xác minh và không mở bậc.
 
 Rà này cũng ghi rõ ranh giới học liệu: `三个`, `十块钱` và các lời như `明天见` là cụm ghép từ các mục riêng; `面条` chỉ gần với dạng liệt kê `面条儿`; `碗` và `奶奶` được giữ làm từ hỗ trợ trong truyện, không tính là từ vựng HSK1. Task/topic/ngữ pháp/chữ Hán, độ tự nhiên của thoại, Pinyin/diễn giải và duyệt giáo viên vẫn còn mở. Chi tiết nằm trong `HSK3_SOURCE_AUDIT.md`.
+
+## Làm rõ mục tiêu lời hẹn — 07/11/2026
+
+Nhóm rà soát học liệu nhận ra `farewell` đang kiểm tra việc nhận lời rủ đi học cùng nhau ngày mai, chứ chưa kiểm tra một lời tạm biệt. Đổi nhãn hiển thị và mô tả thành “Nhận lời hẹn và hẹn gặp lại”; giữ nguyên ID `farewell`, scene 6, câu tiếng Trung và đáp án để bản lưu không đổi. Đây là sửa chính xác tên mục tiêu theo hoạt động hiện có; chưa tính là lượt ôn lại bắt buộc hay bằng chứng HSK đã duyệt.

@@ -42,6 +42,7 @@ test("objective and lesson vocabulary maps include the variants shown in guided 
  const expected={"introduce-self":[[1,["我叫明安","我是安"]]],"student-identity":[[2,["是","对"]]],numbers:[[3,["有","人"]]],"order-noodles":[[4,["我想要","我要","一碗","碗"]]],gratitude:[[5,["您","奶奶"]]],farewell:[[6,["好的","好啊","可以","明天见"]]]};
  for(const [objectiveId,scenes] of Object.entries(expected)){const objective=blueprint.objectives.find(x=>x.id===objectiveId);for(const [sceneId,forms] of scenes){const lesson=syllabus.scenes[sceneId],lessonForms=lesson.words.map(row=>row[0]);for(const form of forms){assert.ok(objective.candidateContent.vocabulary.includes(form),objectiveId+" candidate vocabulary includes "+form);assert.ok(lessonForms.includes(form),"lesson "+sceneId+" records modeled "+form)}}}
  const price=blueprint.objectives.find(x=>x.id==="price");assert.ok(content.scenes[8].answers.includes("十元"));assert.ok(!price.candidateContent.vocabulary.includes("十元"),"accepted equivalent is not mislabeled as a taught model");
+ const invitation=blueprint.objectives.find(x=>x.id==="farewell");assert.equal(invitation.label,"Nhận lời hẹn và hẹn gặp lại");assert.match(invitation.candidateTask,/Nhận lời mời/);assert.match(syllabus.scenes[6].objective,/Nhận lời hẹn/);
 });
 test("all ten stable lesson records point to the blueprint objective IDs",()=>{
  const expected=syllabus.scenes.map((_,index)=>blueprint.objectives.filter(o=>o.curriculumSceneIds.includes(index)).map(o=>o.id).sort());
