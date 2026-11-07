@@ -11,9 +11,17 @@ const CARE={"arrival":"hold-mother","school-gate":"ask-friend","lost-diary":"fri
 const WONDER={"arrival":"look-around","school-gate":"watch-first","lost-diary":"solo-search","staff-office":"ask-again","canteen":"read-menu","noodle-order":"try-hot","walk-home":"keep-secret","night":"write-question","day2-breakfast":"ask-diary-question","day2-bird":"bird-quiet","day2-liu":"liu-menu","day2-night":"day2-letter-curious"};
 
 test("Two-day graph has no cycles, dead nodes, missing links or shortcuts around canon",()=>{
- const v=E.validate();assert.deepEqual(Array.from(v.errors),[]);assert.equal(v.branchNodes,12);assert.equal(v.nodeCount,49);
+ const v=E.validate();assert.deepEqual(Array.from(v.errors),[]);assert.equal(v.branchNodes,12);assert.equal(v.nodeCount,50);
  assert.ok(v.structuralPaths>4000);assert.equal(D.scenes.filter(x=>x.kind==="ending").length,1);
  assert.equal(D.byId.epilogue.kind,"milestone");
+});
+test("Week-later noodle attempt has a shared meal bridge before price recall without exposing the price",()=>{
+ assert.equal(D.byId["week-later-shop"].to,"week-later-meal");
+ assert.equal(D.byId["week-later-meal"].to,"week-later-home");
+ const bridge=D.byId["week-later-meal"].story;
+ assert.match(bridge,/mì được mang ra/);
+ assert.match(bridge,/hóa đơn/);
+ assert.doesNotMatch(bridge,/十块钱|十块|十元|10\s*元|10\s*块/);
 });
 test("Every authored choice has a unique reply and a journal-visible persisted consequence",()=>{
  const choices=D.scenes.flatMap(s=>s.kind==="choice"?s.options:[]),replies=new Set(),ids=new Set();

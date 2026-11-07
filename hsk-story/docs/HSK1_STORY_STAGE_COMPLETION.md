@@ -35,9 +35,9 @@ The curriculum mappings are candidates, not verified official HSK 3.0 item match
 
 ## Verification completed locally — 2026-11-07
 
-- All 424 Node logic and integration tests passed, including delayed task-to-objective mapping and the task 14 no-answer-leak regression.
-- Story audit passed: 49 nodes, 12 choice nodes, 37 options, 15 branch tasks, 10 segments and zero reachable-consequence or convergence gaps across 1,259,712 structural paths.
-- Edge browser smoke passed 833 layout states. Edge branch integration passed three complete routes (501 states) at desktop, short-phone and phone-landscape sizes; each reached all 15 learning rows, kept one visible Sẻ, hid task 14's accepted answer before a response, and had no page or content overflow.
+- All 425 Node logic and integration tests passed, including delayed task-to-objective mapping, the meal-to-price-recall continuity bridge and the task 14 no-answer-leak regression.
+- Story audit passed: 50 nodes, 12 choice nodes, 37 options, 15 branch tasks, 10 segments and zero reachable-consequence or convergence gaps across 1,259,712 structural paths.
+- Edge browser smoke passed 833 layout states. Edge branch integration passed three complete routes (505 states) at desktop, short-phone and phone-landscape sizes; each reached all 15 learning rows, kept one visible Sẻ, hid task 14's accepted answer before a response, and had no page or content overflow. The new common meal passage precedes the price checkpoint and does not display the answer.
 - The approved kitchen passed 35 integrated Edge states covering seven scene branches and five responsive compositions. The save-migration check passed desktop and phone: a former-ending save resumed at its stable node, preserved old choices/results and legacy progress keys, then recorded tasks 10–11 without replaying story decisions.
 
-Teacher/native-speaker review, measured learner outcomes, signed-in Preview checks and physical-device checks remain release gates.
+Teacher/native-speaker review, measured learner outcomes, signed-in Preview checks and physical-device checks remain release gates. The meal-bridge change is currently local; no new Preview deployment exists for it.
