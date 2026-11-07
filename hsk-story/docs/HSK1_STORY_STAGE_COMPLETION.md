@@ -1,6 +1,8 @@
 # HSK1 story stages: completion proposal
 
-**Status:** editorial/runtime proposal only. No content, task, answer, or save behavior has been changed by this document.
+**Status:** partial implementation. This document records the remaining stage-completion design; its full proposed prompt set, task additions, and save changes are not yet implemented.
+
+**Progress note (2026-11-07):** the common `day2-liu` return scene now shows An reusing the existing noodle-order phrase and hearing the familiar price in a changed shop visit. A route test confirms this happens after the current day-two recall gate and is shared by all routes. It is ungraded story exposure; delayed one-objective recall for all eight objectives remains unimplemented, and task 7 remains a historical compound response.
 
 The HSK1 objectives below are candidate crosswalks in `curriculum-data.js`; their source-item mapping and Mandarin wording still need qualified educator review. This proposal does not claim complete HSK1 coverage or validated learning outcomes. Use the existing approved-in-repo phrases and accepted answer sets only when implementing measured tasks.
 

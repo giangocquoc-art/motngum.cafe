@@ -70,6 +70,26 @@ test("all condition-equivalent day-two routes keep the same final HSK anchors",(
  assert.equal(representativeSuffixes,3552);assert.equal(weightedFullRoutes,190944);
 });
 
+test("the shared return to bà Lưu reuses ordering and price language after the first recall checkpoint",()=>{
+ const firstDay=E.fresh();let state=firstDay,history=L.clean([]),guard=0;
+ while(state.node!=="day2-bird"){
+  if(++guard>100)throw Error("Could not reach the shared second-day story");
+  const lesson=L.pending(state,history);if(lesson){history=L.record(history,lesson.index,{status:"correct",attempts:0,hint:false});continue;}
+  const scene=D.byId[state.node],choice=scene.kind==="choice"?E.availableOptions(scene,state)[0].id:"next";state=next(state,choice);
+ }
+ for(const index of [7,8,9])history=L.record(history,index,{status:"correct",attempts:0,hint:false});
+ while(state.node!=="day2-liu"){
+  if(++guard>150)throw Error("Could not reach bà Lưu after the bird scene");
+  const scene=D.byId[state.node],choice=scene.kind==="choice"?E.availableOptions(scene,state)[0].id:"next";state=next(state,choice);
+ }
+ const returnScene=D.byId[state.node];
+ assert.equal(returnScene.kind,"choice");
+ assert.match(returnScene.story,/我想吃面条/);
+ assert.match(returnScene.story,/这碗面十块钱/);
+ assert.match(returnScene.story,/tự mở lời trước/);
+ assert.deepEqual(Array.from(returnScene.options,option=>option.to).sort(),["day2-liu-chat","day2-liu-help","day2-liu-menu","day2-liu-stock"].sort());
+});
+
 test("different complete two-day story branches expose the same ten learning tasks in the same order",()=>{
  const routes=[
   {name:"friendship",choices:{arrival:"hold-mother","school-gate":"ask-friend","lost-diary":"friend-search","staff-office":"say-simple",canteen:"help-liu","noodle-order":"share-bowl","walk-home":"invite-friend",night:"write-people","day2-breakfast":"prepare-for-guest","day2-bird":"bird-with-friend","day2-liu":"liu-stock","day2-night":"day2-letter-kind"}},
