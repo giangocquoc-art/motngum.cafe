@@ -113,7 +113,7 @@ The shared database URL record applies to both Preview and Production, so migrat
 
 ### Objective-stage reporting and delayed-farewell prompt — 2026-11-07
 
-- The HSK1 blueprint now maps branch checkpoint tasks 10–14 to their stable objective IDs and validates the mapping against the runtime task registry. It separately records the shared `day2-liu` reuse beat for ordering and price. The six other objectives remain sequence-incomplete where main-story reuse or a separate independent recall is missing; all educator approvals and official item matches remain pending.
+- The HSK1 blueprint now maps branch checkpoint tasks 10–14 to their stable objective IDs and validates the mapping against the runtime task registry. It separately records shared `day2-liu` reuse for ordering and price. The greeting goal now has common story reuse, but still lacks an individually measured recall; the other five goals also remain sequence-incomplete. All educator approvals and official item matches remain pending.
 - Task 14's default cue is now `我先回家了。` and does not show any accepted farewell answer. A browser regression checks visible pre-answer content; requested help still provides the authored answer.
 - `node --test tests/*.test.cjs`: 425 passed. Story graph audit: 50 nodes, 37 options, 15 learning tasks, zero consequence/convergence gaps. Release package inputs pass; CI, hosted Preview, educator review, audio and physical-device gates remain pending.
 - Edge branch integration completed three routes in 505 states across desktop, 320px phone and landscape; all 15 learning results were recorded with one visible Sẻ and no overflow. The first phone run found the longer task request overflowed; the shortened copy now passes.
@@ -123,5 +123,13 @@ The shared database URL record applies to both Preview and Production, so migrat
 
 - Added the shared `week-later-meal` passage between the delayed noodle-order task and the home price-recall task. It shows bà Lưu confirming the dish, serving the meal and handing An a folded receipt; the amount stays hidden until An attempts recall at home.
 - Updated the session segment, required graph anchors and node-count expectations. A regression confirms the price prompt follows the meal bridge and that the bridge itself does not reveal accepted price forms.
-- Local verification: all 425 Node tests pass; graph audit passes for 50 nodes, 37 options, 15 tasks and 1,259,712 structural paths, with no consequence or convergence gaps. Connected Microsoft Edge completed three full routes in 505 states (desktop, 320px phone portrait, landscape); each records all 15 tasks with one visible Sẻ and no overflow.
+- Local verification at that point: all 425 Node tests pass; graph audit passes for 50 nodes, 37 options, 15 tasks and 1,259,712 structural paths, with no consequence or convergence gaps. Connected Microsoft Edge completed three full routes in 505 states (desktop, 320px phone portrait, landscape); each records all 15 tasks with one visible Sẻ and no overflow.
 - These source changes are local and not deployed. Vercel Preview creation remains blocked by the daily deployment limit; the Vercel Edge connection does not remove that project limit. No Production or custom-domain change was made.
+
+### Greeting reuse before the delayed price checkpoint — 2026-11-07 — local branch
+
+- Added two common home passages before `week-later-home`: Mẹ checks on An using `安，你还好吗？`; after the player advances, An answers with the previously practiced `我还好。` The answer appears in the subsequent passage, not with the question or during the price checkpoint.
+- These story lines do not create learning evidence, new tasks, route consequences or relationship changes. Task 11 and its accepted price answers remain unchanged. The story graph and authoring blueprint now map the paired question/answer forms to their respective passages; fixed the report helper so it checks each form against its corresponding node.
+- The stage report now recognizes greeting as having a common-story reuse beat, while correctly keeping its independent-recall stage incomplete. Six pilot objectives remain incomplete overall; none is release-ready, and qualified language/source review remains pending.
+- Local verification: all 425 Node tests pass; graph audit passes at 52 nodes, 37 options, 15 branch tasks and 1,259,712 structural paths, with no consequence/convergence gaps. Microsoft Edge completed the three full desktop/phone portrait/phone landscape routes in 511 states; all 15 tasks were recorded, one Sẻ remained visible and no viewport/content overflow occurred.
+- These edits are not deployed and have no Vercel deployment. No Production or custom-domain change was made.

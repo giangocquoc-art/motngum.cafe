@@ -119,9 +119,9 @@ test("V18 HSK1 optional spaced review stays distinct from mandatory story reuse 
   const stages=objective.storyStages;
   assert.ok(stages.introSceneIds.length,objective.id+" has an introduction");
   assert.equal(stages.reuseSceneIds.length,0,objective.id+" must not treat optional review as story reuse");
-  const expectedBranchReuse=["order-noodles","price"].includes(objective.id)?["day2-liu"]:[];
+  const expectedBranchReuse=objective.id==="greeting"?["week-later-home-checkin","week-later-home-answer"]:["order-noodles","price"].includes(objective.id)?["day2-liu"]:[];
   assert.deepEqual(Array.from(stages.branchReuseNodeIds),expectedBranchReuse,objective.id+" maps only a source-verified common story beat");
-  if(expectedBranchReuse.length)assert.ok(stages.status.includes("main-story reuse and individually measured recall authored"));
+  if(["order-noodles","price"].includes(objective.id))assert.ok(stages.status.includes("main-story reuse and individually measured recall authored"));
   else assert.ok(stages.status.includes("main-story")&&stages.status.includes("incomplete"));
   for(const id of stages.reviewReuseItemIds){assert.equal(reviews[id].objectiveId,objective.id);assert.equal(reviews[id].stage,"reuse")}
   for(const id of stages.reviewCheckpointItemIds){assert.equal(reviews[id].objectiveId,objective.id);assert.equal(reviews[id].stage,"checkpoint")}

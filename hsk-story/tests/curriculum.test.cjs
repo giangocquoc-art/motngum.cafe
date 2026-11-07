@@ -56,10 +56,10 @@ test("HSK1 stage report separates mandatory story learning, delayed branch recal
  assert.deepEqual(Array.from(report.pilotStageCoverage,x=>x.objectiveId),Array.from(blueprint.objectives,x=>x.id));
  const recallScenes={"introduce-self":[7],"student-identity":[7],price:[8],"order-noodles":[9]};
  const branchTasks={numbers:[12],price:[11],"order-noodles":[10],gratitude:[13],farewell:[14]};
- const reuseNodes={"order-noodles":["day2-liu"],price:["day2-liu"]};
+ const reuseNodes={greeting:["week-later-home-checkin","week-later-home-answer"],"order-noodles":["day2-liu"],price:["day2-liu"]};
  for(const row of report.pilotStageCoverage){
   assert.equal(row.introduction.complete,true,row.objectiveId+" has an authored introduction");
-  assert.equal(row.commonStoryReuse.complete,["order-noodles","price"].includes(row.objectiveId),row.objectiveId+" reports only authored shared-story reuse");
+  assert.equal(row.commonStoryReuse.complete,["greeting","order-noodles","price"].includes(row.objectiveId),row.objectiveId+" reports only authored shared-story reuse");
   assert.deepEqual(Array.from(row.commonStoryReuse.branchNodeIds),reuseNodes[row.objectiveId]||[],row.objectiveId+" uses only a common story node that contains its target form");
   assert.deepEqual(Array.from(row.independentRecall.curriculumSceneIds),recallScenes[row.objectiveId]||[],row.objectiveId+" reports only its separate authored recall task");
   assert.deepEqual(Array.from(row.independentRecall.branchTaskIds),branchTasks[row.objectiveId]||[],row.objectiveId+" reports its stable branch checkpoint IDs separately");

@@ -2,7 +2,7 @@ const test=require("node:test"),assert=require("node:assert/strict"),fs=require(
 const dir=path.join(__dirname,"../duong-re");
 const sandbox={};sandbox.globalThis=sandbox;
 for(const file of ["branch-data.js","branch-engine.js"])vm.runInNewContext(fs.readFileSync(path.join(dir,file),"utf8"),sandbox,{filename:file});
-const D=sandbox.AnBranchStory,E=sandbox.AnBranchEngine,A=sandbox.AnBranchPortraits;
+const D=sandbox.AnBranchStory,E=sandbox.AnBranchEngine,A=sandbox.AnBranchPortraits,L=require("../duong-re/branch-learning.js");
 function next(s,choice){const r=E.step(s,choice);assert.equal(r.ok,true,s.node+" → "+choice+": "+r.error);return r.state}
 function go(choices,stop){let s=E.fresh(),guard=0;while(!s.done&&s.node!==stop){if(++guard>60)throw Error("Loop at "+s.node);const n=D.byId[s.node],list=E.availableOptions(n,s),choice=n.kind==="choice"?(choices[n.id]||list[0]?.id):"next";if(!choice)throw Error("No unlocked option at "+s.node);s=next(s,choice);}return s}
 function findState(start,predicate){const seen=new Set();function walk(state){const key=state.node+"|"+JSON.stringify(state.flags)+"|"+JSON.stringify(state.traits)+"|"+JSON.stringify(state.relationships);if(seen.has(key))return null;seen.add(key);if(predicate(state))return state;const scene=D.byId[state.node];if(!scene||scene.kind==="ending")return null;const options=scene.kind==="choice"?E.availableOptions(scene,state).map(x=>x.id):["next"];for(const id of options){const moved=E.step(state,id);if(moved.ok){const found=walk(moved.state);if(found)return found;}}return null}return walk(start)}
@@ -11,17 +11,21 @@ const CARE={"arrival":"hold-mother","school-gate":"ask-friend","lost-diary":"fri
 const WONDER={"arrival":"look-around","school-gate":"watch-first","lost-diary":"solo-search","staff-office":"ask-again","canteen":"read-menu","noodle-order":"try-hot","walk-home":"keep-secret","night":"write-question","day2-breakfast":"ask-diary-question","day2-bird":"bird-quiet","day2-liu":"liu-menu","day2-night":"day2-letter-curious"};
 
 test("Two-day graph has no cycles, dead nodes, missing links or shortcuts around canon",()=>{
- const v=E.validate();assert.deepEqual(Array.from(v.errors),[]);assert.equal(v.branchNodes,12);assert.equal(v.nodeCount,50);
+ const v=E.validate();assert.deepEqual(Array.from(v.errors),[]);assert.equal(v.branchNodes,12);assert.equal(v.nodeCount,52);
  assert.ok(v.structuralPaths>4000);assert.equal(D.scenes.filter(x=>x.kind==="ending").length,1);
  assert.equal(D.byId.epilogue.kind,"milestone");
 });
-test("Week-later noodle attempt has a shared meal bridge before price recall without exposing the price",()=>{
+test("Week-later return recalls greeting before the meal and price checkpoint without leaking either answer",()=>{
  assert.equal(D.byId["week-later-shop"].to,"week-later-meal");
- assert.equal(D.byId["week-later-meal"].to,"week-later-home");
- const bridge=D.byId["week-later-meal"].story;
- assert.match(bridge,/mì được mang ra/);
- assert.match(bridge,/hóa đơn/);
- assert.doesNotMatch(bridge,/十块钱|十块|十元|10\s*元|10\s*块/);
+ assert.equal(D.byId["week-later-meal"].to,"week-later-home-checkin");
+ assert.equal(D.byId["week-later-home-checkin"].to,"week-later-home-answer");
+ assert.equal(D.byId["week-later-home-answer"].to,"week-later-home");
+ const checkin=D.byId["week-later-home-checkin"].story,response=D.byId["week-later-home-answer"].story,meal=D.byId["week-later-meal"].story,pricePrompt=D.byId["week-later-home"].story;
+ assert.match(checkin,/安，你还好吗/);assert.doesNotMatch(checkin,/我还好|我很好|很好/);
+ assert.match(response,/我还好/);assert.doesNotMatch(response,/十块钱|十块|十元/);
+ assert.match(meal,/mì được mang ra/);assert.match(meal,/hóa đơn/);assert.doesNotMatch(meal,/十块钱|十块|十元/);
+ assert.doesNotMatch(pricePrompt,/十块钱|十块|十元|10\s*元|10\s*块/);
+ assert.deepEqual(Array.from(L.sceneAt(11).answers),["十块钱","十块","十元"],"the independent price answer key is unchanged");
 });
 test("Every authored choice has a unique reply and a journal-visible persisted consequence",()=>{
  const choices=D.scenes.flatMap(s=>s.kind==="choice"?s.options:[]),replies=new Set(),ids=new Set();

@@ -94,7 +94,7 @@ function validate(){
  }
  dfs(data.start);
  data.scenes.forEach(function(s){if(!visited.has(s.id))errors.push("Unreachable "+s.id);});
- var required=["school-gate","lost-diary","staff-office","canteen","noodle-order","walk-home","night","epilogue","day2-arrival","day2-breakfast","day2-bird","day2-liu","day2-night","week-later-shop","week-later-meal","week-later-home","week-later-count","week-later-thanks","week-later-goodbye"];
+ var required=["school-gate","lost-diary","staff-office","canteen","noodle-order","walk-home","night","epilogue","day2-arrival","day2-breakfast","day2-bird","day2-liu","day2-night","week-later-shop","week-later-meal","week-later-home-checkin","week-later-home-answer","week-later-home","week-later-count","week-later-thanks","week-later-goodbye"];
  function endingReachableWithout(start,excluded){
   var seen=new Set(),stack=[start];while(stack.length){var id=stack.pop();if(id===excluded||seen.has(id))continue;seen.add(id);
    var node=data.byId[id];if(!node)continue;if(node.kind==="ending")return true;edges(node).forEach(function(n){stack.push(n);});
