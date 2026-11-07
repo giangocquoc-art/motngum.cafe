@@ -6,6 +6,7 @@ on:
       - "hsk-story/e2e/branch-integration-browser.cjs"
       - "hsk-story/tests/branch-*.test.cjs"
       - "hsk-story/e2e/branch-newer-save-browser.cjs"
+      - "hsk-story/e2e/branch-save-failure-browser.cjs"
       - "hsk-story/duong-re/*.css"
       - "hsk-story/duong-re/*.js"
       - "hsk-story/account.css"
@@ -57,6 +58,7 @@ jobs:
           node hsk-story/e2e/branch-feedback-refresh-browser.cjs
           node hsk-story/e2e/branch-rewind-draft-browser.cjs
           node hsk-story/e2e/branch-newer-save-browser.cjs
+          node hsk-story/e2e/branch-save-failure-browser.cjs
           node hsk-story/e2e/branch-roadmap-browser.cjs
           node hsk-story/e2e/review-practice-browser.cjs
       - uses: actions/upload-artifact@v4

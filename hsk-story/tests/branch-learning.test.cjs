@@ -115,6 +115,8 @@ test("delayed farewell recall cue does not show an accepted answer before help i
  assert.equal(scene.zh,"我先回家了。");
  for(const answer of scene.answers)assert.equal(visible.includes(answer),false,"default cue must not reveal "+answer);
  assert.match(scene.hint,/明天见/,"the answer remains available only through requested help");
+ assert.equal(L.evaluate(14,"明天见").ok,true);
+ assert.equal(L.evaluate(14,"再见").ok,false,"a plain goodbye must not satisfy the specifically tested next-day invitation");
  assert.deepEqual(Array.from(L.metaAt(14).assessmentObjectiveIds),["farewell"]);
 });
 

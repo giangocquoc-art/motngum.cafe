@@ -14,6 +14,8 @@ const REQUIRED = [
   'duong-re/index.html', 'duong-re/branch-data.js', 'duong-re/branch-engine.js',
   'duong-re/branch-learning.js', 'duong-re/branch-scenes.js', 'duong-re/branch-ui.js',
   'duong-re/style.css', 'art/brand/flat-favicon.svg', 'art/brand/flat-sparrow.svg',
+  // Runtime-only dependencies loaded by code/manifests instead of HTML or CSS references.
+  'api/branch-progress.js', 'art/flat/characters/classmate-sage-v1.webp',
   'art/backgrounds/kitchen/day2-kitchen-desktop-v1.webp',
   'art/backgrounds/kitchen/day2-kitchen-mobile-v1.webp',
   'art/backgrounds/kitchen/day2-kitchen-tablet-v1.webp',
@@ -26,10 +28,10 @@ function filesUnder(root) {
   return execFileSync('git', ['ls-files', '-z'], { cwd: root, encoding: 'buffer' }).toString().split('\0').filter(Boolean);
 }
 function read(root, name) { return fs.readFileSync(path.join(root, name), 'utf8'); }
-function audit(root = path.resolve(__dirname, '../..'), trackedOverride) {
+function audit(root = path.resolve(__dirname, '../..'), trackedOverride, ignoreOverride) {
   const issues = [];
   const tracked = new Set(trackedOverride || filesUnder(root));
-  const ignore = read(root, 'hsk-story/.vercelignore').replace(/\r/g, '');
+  const ignore = (ignoreOverride ?? read(root, 'hsk-story/.vercelignore')).replace(/\r/g, '');
   const rules = ignore.split('\n').map((line) => line.trim()).filter((line) => line && !line.startsWith('#'));
   const globMatches = (pattern, value) => {
     const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*\*/g, '\u0000').replace(/\*/g, '[^/]*').replace(/\u0000/g, '.*');
@@ -71,6 +73,7 @@ function audit(root = path.resolve(__dirname, '../..'), trackedOverride) {
       const rel = path.posix.normalize(ref.startsWith('/') ? ref.slice(1) : path.posix.join(base, ref.replace(/^\.\//, '')));
       if (rel.startsWith('../') || !fs.existsSync(path.join(root, 'hsk-story', rel))) issues.push(`local HTML asset missing: hsk-story/${rel} (referenced by ${page})`);
       else if (!tracked.has(`hsk-story/${rel}`)) issues.push(`local HTML asset is not Git tracked: hsk-story/${rel}`);
+      else if (ignores(rel)) issues.push(`local HTML asset excluded by .vercelignore: hsk-story/${rel} (referenced by ${page})`);
     }
   }
   const cssFiles = new Set();
@@ -89,6 +92,7 @@ function audit(root = path.resolve(__dirname, '../..'), trackedOverride) {
       const rel = path.posix.normalize(ref.startsWith('/') ? ref.slice(1) : path.posix.join(path.posix.dirname(css), ref.split('?')[0]));
       if (!fs.existsSync(path.join(root, 'hsk-story', rel))) issues.push(`local CSS asset missing: hsk-story/${rel} (referenced by ${css})`);
       else if (!tracked.has(`hsk-story/${rel}`)) issues.push(`local CSS asset is not Git tracked: hsk-story/${rel}`);
+      else if (ignores(rel)) issues.push(`local CSS asset excluded by .vercelignore: hsk-story/${rel} (referenced by ${css})`);
     }
   }
   const manifestBox = { module: { exports: {} } };

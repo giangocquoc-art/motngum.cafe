@@ -13,7 +13,7 @@ AnBranchStory.scenes.forEach(function(node){
  if(node.id==="day2-counting-group"){
   scene=copy(manifest.scenes["hsk1.e01.class-counting"]);scene.fullStageActors=true;
   scene.actors=[actor("an",0),actor("xiaoyu",1),actor("classmate",2),actor("wang",3)];
-  scene.actors.forEach(function(a,index){var desktop=[2,26,50,74][index],mobile=[0,25,50,75][index],width=a.character==="classmate"?15:22,mobileWidth=a.character==="classmate"?15:24;a.desktop={left:desktop,bottom:0,width:width};a.mobile={left:mobile,bottom:0,width:mobileWidth};a.tablet={left:desktop,bottom:0,width:width};a.wide={left:desktop,bottom:0,width:width};a.compact={left:mobile,bottom:0,width:mobileWidth};});
+  scene.actors.forEach(function(a,index){var desktop=[20,38,56,83][index],mobile=[8,30,52,78][index],tablet=[23,41,59,82][index],wide=[28,46,64,83][index],compact=[6,26,46,74][index],width=a.character==="classmate"?14:17,mobileWidth=a.character==="classmate"?14:20;a.desktop={left:desktop,bottom:0,width:width};a.mobile={left:mobile,bottom:0,width:mobileWidth};a.tablet={left:tablet,bottom:0,width:width};a.wide={left:wide,bottom:0,width:width};a.compact={left:compact,bottom:0,width:mobileWidth};});
   scene.actors[0].expression="listening";scene.actors[1].expression="friendly";scene.actors[2].expression="attentive";scene.actors[3].expression="speaking";
   scene.sparrow.flight=false;scene.sparrow.desktop={left:18,top:14};scene.sparrow.mobile={left:14,top:34};scene.sparrow.tablet={left:14,top:46};
  }
@@ -30,9 +30,10 @@ AnBranchStory.scenes.forEach(function(node){
    scene.background="day2-kitchen";
    scene.actorRegion={desktop:{left:45,right:3},mobile:{left:3,right:3},tablet:{left:3,right:3},wide:{left:28,right:3},compact:{left:0,right:0}};
    scene.actors=kitchenGroup(names);
-   scene.sparrow.desktop={left:70,top:12};
-   scene.sparrow.mobile={left:82,top:10};
-   scene.sparrow.wide={left:70,top:12};
+   scene.sparrow.desktop={left:73,top:54};
+   scene.sparrow.mobile={left:74,top:15};
+   scene.sparrow.tablet={left:74,top:42};
+   scene.sparrow.wide={left:73,top:54};
    scene.sparrow.compact={left:94,top:54};
    scene.sparrow.compactFlight=true;
    scene.sparrow.flight=false;

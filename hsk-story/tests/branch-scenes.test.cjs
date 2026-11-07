@@ -22,7 +22,7 @@ test('day two morning uses the dedicated kitchen plates and keeps one Sẻ',()=>
     const scene=box.HSKSceneManifest.scenes['branch.'+id];
     assert.equal(scene.background,'day2-kitchen',id);
     assert.equal(scene.sparrow.asset,box.HSKSceneManifest.sprites.sparrow.asset,id);
-    assert.equal(JSON.stringify({desktop:scene.sparrow.desktop,mobile:scene.sparrow.mobile,wide:scene.sparrow.wide,compact:scene.sparrow.compact}),JSON.stringify({desktop:{left:70,top:12},mobile:{left:82,top:10},wide:{left:70,top:12},compact:{left:94,top:54}}),id+' keeps one Sẻ by a visible window perch in each composition');
+    assert.equal(JSON.stringify({desktop:scene.sparrow.desktop,mobile:scene.sparrow.mobile,tablet:scene.sparrow.tablet,wide:scene.sparrow.wide,compact:scene.sparrow.compact}),JSON.stringify({desktop:{left:73,top:54},mobile:{left:74,top:15},tablet:{left:74,top:42},wide:{left:73,top:54},compact:{left:94,top:54}}),id+' keeps one Sẻ by a visible window perch in each composition');
     assert.equal(scene.sparrow.flight,false,id+' keeps Sẻ perched on the ordinary stage');
     assert.equal(scene.sparrow.compactFlight,true,id+' gives Sẻ a deliberate flight beat in the shallow landscape crop');
     assert.equal(scene.actors.filter(a=>a.character==='sparrow').length,0,id);
