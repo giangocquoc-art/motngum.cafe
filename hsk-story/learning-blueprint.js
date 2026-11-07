@@ -10,7 +10,7 @@ var source={
  sha256:"d8b6646599bc9a0c9616a4cb06d4b37461f8792f70a3171016d00fcd8eda09ad",
  pageConvention:"Printed page + 2 is the pypdf zero-based page index; topic and grammar cell boxes use PDF page coordinates. These source locators are not educator-approved curricular matches.",
  components:["tasks","topics","vocabulary","grammar","characters"],
- rolloutStatus:"The 2025-11 syllabus is the selected HSK 3.0 reference and took effect in 2026-07; worldwide launch is officially scheduled for 2026-12-13.",rolloutNoticeUrl:"https://old.chinesetest.cn/gonewcontent.do?flag=kdnew&id=51336883",asOf:"2026-11-06",
+ rolloutStatus:"The 2025-11 syllabus is the selected HSK 3.0 reference and took effect in 2026-07; worldwide launch is officially scheduled for 2026-12-13.",rolloutNoticeUrl:"https://old.chinesetest.cn/gonewcontent.do?flag=kdnew&id=51336883",asOf:"2026-11-07",
  status:"All five level 1–6 source locator sections are inventoried; topic cells have geometry-derived parent links and grammar physical rows have cell/page anchors. Visual source reconciliation, complete learning crosswalks, and qualified educator sign-off remain pending."
 };
 var candidateSourceIndex=typeof require==="function"?require("./candidate-source-index.json"):null;
@@ -174,7 +174,7 @@ function validate(curriculum,content,skill,encounter,futureActs,review,branchLea
  var problems=[],componentSet=source.components;
  branchLearning=branchLearning||defaultBranchLearning;
  branchStory=branchStory||defaultBranchStory;
- if(source.url!=="https://hsk.cn-bj.ufileos.com/3.0/%E6%96%B0%E7%89%88HSK%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B21219.pdf"||source.published!=="2025-11"||source.effective!=="2026-07"||source.framework!=="HSK 3.0"||source.rolloutStatus.indexOf("2026-12-13")<0||source.asOf!=="2026-11-06"||!candidateSourceIndex||candidateSourceIndex.sourceSha256!==source.sha256||syllabusInventory.sourceSha256!==source.sha256)problems.push("Unexpected pinned HSK 3.0 syllabus or rollout metadata");
+ if(source.url!=="https://hsk.cn-bj.ufileos.com/3.0/%E6%96%B0%E7%89%88HSK%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B21219.pdf"||source.published!=="2025-11"||source.effective!=="2026-07"||source.framework!=="HSK 3.0"||source.rolloutStatus.indexOf("2026-12-13")<0||source.asOf!=="2026-11-07"||!candidateSourceIndex||candidateSourceIndex.sourceSha256!==source.sha256||syllabusInventory.sourceSha256!==source.sha256)problems.push("Unexpected pinned HSK 3.0 syllabus or rollout metadata");
  if(!candidateSourceIndex||candidateSourceIndex.sourceUrl!==source.url||!candidateSourceIndex.vocabularyRows||!candidateSourceIndex.characterRefsByTargetLevel||!Array.isArray(candidateSourceIndex.grammarEntries))problems.push("Pinned per-item HSK 3.0 source index is unavailable or mismatched");
  if(syllabusInventory&&(!sourceInventoryComplete()||syllabusInventory.edition!=="HSK 3.0 syllabus, 2025-11"||syllabusInventory.sourceUrl!==source.url))problems.push("Complete pinned HSK 3.0 level 1–6 source inventory is unavailable or mismatched");
  if(levels.length!==6||levels.some(function(level,index){return level.level!==index+1;}))problems.push("Expected HSK 3.0 levels 1..6");
